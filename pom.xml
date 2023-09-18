@@ -17,18 +17,45 @@
         <!-- Maven version -->
         <maven.compiler.version>3.8.1</maven.compiler.version>
         <maven.shade.version>3.2.4</maven.shade.version>
+        <maven.jar.version>3.2.2</maven.jar.version>
 
         <!-- Dependencies -->
         <spigot.version>1.20.1</spigot.version>
         <google.guice.version>7.0.0</google.guice.version>
+        <java.serializer.version>1.1.0</java.serializer.version>
+        <acf.version>0.5.1</acf.version>
     </properties>
+
+    <profiles>
+        <!-- Development profile -->
+        <profile>
+            <id>development</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>${maven.jar.version}</version>
+                        <configuration>
+                            <outputDirectory>E:\Projects\TestServer\plugins</outputDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Release profile -->
+        <profile>
+            <id>release</id>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven.compiler.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -37,7 +64,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>${maven.shade.version}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -61,13 +88,15 @@
     </build>
 
     <repositories>
+        <!-- Spigot -->
         <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <!-- ACF -->
         <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
     </repositories>
 
@@ -82,6 +111,16 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${google.guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.elytrium</groupId>
+            <artifactId>serializer</artifactId>
+            <version>${java.serializer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-bukkit</artifactId>
+            <version>${acf.version}-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
