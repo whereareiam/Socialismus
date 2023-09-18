@@ -1,0 +1,9 @@
+name: Socialismus
+version: '${project.version}'
+main: me.whereareiam.socialismus.Socialismus
+api-version: '1.20'
+load: STARTUP
+depend: [PlaceholderAPI]
+authors: [whereareiam]
+description: Adds many things and changes for communication between players
+website: whereareiam.me
