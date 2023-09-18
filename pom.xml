@@ -20,6 +20,7 @@
 
         <!-- Dependencies -->
         <spigot.version>1.20.1</spigot.version>
+        <google.guice.version>7.0.0</google.guice.version>
     </properties>
 
     <build>
@@ -74,8 +75,13 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <version>${spigot.version}-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${google.guice.version}</version>
         </dependency>
     </dependencies>
 </project>
