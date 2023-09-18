@@ -22,4 +22,11 @@ public class SettingsConfig extends YamlSerializable {
             at = Comment.At.PREPEND
     )
     public String formattingType = FormattingType.CUSTOM.toString();
+    @Comment(
+            value = {
+                    @CommentValue(" If enabled, it prints additional information to the console."),
+            },
+            at = Comment.At.PREPEND
+    )
+    public boolean debug;
 }
