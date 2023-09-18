@@ -2,12 +2,35 @@ package me.whereareiam.socialismus.util.platform;
 
 public class PlatformIdentifier {
     public static boolean isFolia() {
-        return false;
+        try {
+            Class.forName("io.papermc.paper.threadedregions.ThreadedRegionizer");
+        }
+        catch (Exception e) {
+            return false;
+        }
+
+        return true;
     }
+
     public static boolean isPaper() {
-        return false;
+        try {
+            Class.forName("com.destroystokyo.paper.PaperConfig");
+        }
+        catch (Exception e) {
+            return false;
+        }
+
+        return true;
     }
+
     public static boolean isSpigot() {
-        return false;
+        try {
+            Class.forName("org.spigotmc.SpigotConfig");
+        }
+        catch (Exception e) {
+            return false;
+        }
+
+        return true;
     }
 }
