@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.config;
 
-import me.whereareiam.socialismus.util.message.FormattingType;
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
@@ -13,15 +12,6 @@ public class SettingsConfig extends YamlSerializable {
         super(SettingsConfig.SETTINGS);
     }
 
-    @Comment(
-            value = {
-                    @CommentValue(" Select a text formatting method, available:"),
-                    @CommentValue("  CUSTOM - Custom text formatting that works on all platforms."),
-                    @CommentValue("  MINIMESSAGE - Text formatting from Mini Message, works on Paper and its forks.")
-            },
-            at = Comment.At.PREPEND
-    )
-    public String formattingType = FormattingType.CUSTOM.toString();
     @Comment(
             value = {
                     @CommentValue(" If enabled, it prints additional information to the console."),

@@ -5,8 +5,10 @@ import me.whereareiam.socialismus.command.manager.CommandManager;
 import me.whereareiam.socialismus.config.CommandsConfig;
 import me.whereareiam.socialismus.config.MessagesConfig;
 import me.whereareiam.socialismus.config.SettingsConfig;
+import me.whereareiam.socialismus.util.Formatter;
 import me.whereareiam.socialismus.util.InfoPrinter;
 import me.whereareiam.socialismus.util.Logger;
+import me.whereareiam.socialismus.util.integration.IntegrationManager;
 import org.bukkit.plugin.Plugin;
 
 public class SocialismusConfig extends AbstractModule {
@@ -23,9 +25,12 @@ public class SocialismusConfig extends AbstractModule {
         bind(SettingsConfig.class).asEagerSingleton();
         bind(MessagesConfig.class).asEagerSingleton();
         bind(CommandsConfig.class).asEagerSingleton();
+        bind(Formatter.class).asEagerSingleton();
+
+        bind(CommandManager.class).asEagerSingleton();
+        bind(IntegrationManager.class).asEagerSingleton();
 
         bind(Logger.class).asEagerSingleton();
         bind(InfoPrinter.class).asEagerSingleton();
-        bind(CommandManager.class).asEagerSingleton();
     }
 }

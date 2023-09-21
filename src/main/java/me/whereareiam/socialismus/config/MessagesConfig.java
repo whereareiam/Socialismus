@@ -19,5 +19,10 @@ public class MessagesConfig extends YamlSerializable {
         public String unknownCommand = "You used a command that doesn't exist.";
         public String errorOccurred = "An error occurred while executing the command.";
         public String missingArgument = "You did not specify the required argument to execute the command.";
+
+        public ReloadCommand reloadCommand = new ReloadCommand();
+        public static class ReloadCommand {
+            public String reloadedSuccessfully = "Plugin was successfully reloaded";
+        }
     }
 }

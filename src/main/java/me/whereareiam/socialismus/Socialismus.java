@@ -9,21 +9,25 @@ import me.whereareiam.socialismus.config.MessagesConfig;
 import me.whereareiam.socialismus.config.SettingsConfig;
 import me.whereareiam.socialismus.util.InfoPrinter;
 import me.whereareiam.socialismus.util.Logger;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Socialismus extends JavaPlugin {
     private Injector injector;
     private Logger logger;
 
+    private BukkitAudiences bukkitAudiences;
+
     public static String version;
 
     @Override
-    public void onLoad() {
-        version = getDescription().getVersion();
-    }
+    public void onLoad() {}
 
     @Override
     public void onEnable() {
+        bukkitAudiences = BukkitAudiences.create(this);
+        version = getDescription().getVersion();
+
         injector = Guice.createInjector(new SocialismusConfig(this));
         logger = injector.getInstance(Logger.class);
         logger.setBukkitLogger(getLogger());
@@ -41,5 +45,7 @@ public final class Socialismus extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+        bukkitAudiences.close();
+    }
 }

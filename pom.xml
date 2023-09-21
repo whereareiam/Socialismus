@@ -24,6 +24,9 @@
         <google.guice.version>7.0.0</google.guice.version>
         <java.serializer.version>1.1.0</java.serializer.version>
         <acf.version>0.5.1</acf.version>
+        <adventure.version>4.3.0</adventure.version>
+        <serializer-plain.version>4.14.0</serializer-plain.version>
+        <serializer-minimessage.version>4.14.0</serializer-minimessage.version>
     </properties>
 
     <profiles>
@@ -121,6 +124,21 @@
             <groupId>co.aikar</groupId>
             <artifactId>acf-bukkit</artifactId>
             <version>${acf.version}-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>${adventure.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-plain</artifactId>
+            <version>${serializer-plain.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <version>${serializer-minimessage.version}</version>
         </dependency>
     </dependencies>
 </project>
