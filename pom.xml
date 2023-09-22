@@ -28,6 +28,7 @@
         <serializer-plain.version>4.14.0</serializer-plain.version>
         <serializer-minimessage.version>4.14.0</serializer-minimessage.version>
         <bstats.version>3.0.2</bstats.version>
+        <placeholderapi.version>2.11.3</placeholderapi.version>
     </properties>
 
     <profiles>
@@ -110,6 +111,11 @@
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
+        <!-- PlaceholderAPI -->
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -154,6 +160,12 @@
             <artifactId>bstats-bukkit</artifactId>
             <version>${bstats.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>${placeholderapi.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

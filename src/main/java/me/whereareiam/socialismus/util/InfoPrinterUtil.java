@@ -5,6 +5,7 @@ import me.whereareiam.socialismus.Socialismus;
 import me.whereareiam.socialismus.command.management.CommandManager;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.IntegrationManager;
+import me.whereareiam.socialismus.integration.placeholderAPI.PlaceholderAPI;
 import me.whereareiam.socialismus.platform.PlatformType;
 
 import java.util.List;
@@ -41,6 +42,9 @@ public class InfoPrinterUtil {
 
         int commandCount = commandManager.getCommandCount();
         loggerUtil.info("  Registered " + commandCount + " " + (commandCount == 1 ? "command" : "commands"));
+
+        int placeholdersCount = PlaceholderAPI.getPlaceholdersCount();
+        loggerUtil.info("  Registered " + placeholdersCount + " " + (placeholdersCount == 1 ? "placeholder" : "placeholders"));
         loggerUtil.info("");
     }
 }

@@ -1,12 +1,20 @@
 package me.whereareiam.socialismus.integration.placeholderAPI;
 
 import me.whereareiam.socialismus.integration.Integration;
+import me.whereareiam.socialismus.integration.placeholderAPI.placeholders.Placeholders;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 public class PlaceholderAPI implements Integration {
+    private static int placeholdersCount;
     private final Plugin plugin = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
     private boolean isEnabled;
+
+    public static int getPlaceholdersCount() {
+        return placeholdersCount;
+    }
 
     @Override
     public void initialize() {
@@ -14,6 +22,11 @@ public class PlaceholderAPI implements Integration {
             isEnabled = plugin.isEnabled();
         } catch (NullPointerException e) {
             isEnabled = false;
+        }
+
+        Placeholders placeholders = new Placeholders();
+        if (placeholders.register()) {
+            placeholdersCount = placeholders.getPlaceholdersCount();
         }
     }
 
@@ -27,6 +40,12 @@ public class PlaceholderAPI implements Integration {
         return this.isEnabled;
     }
 
-    //TODO
+    public String setPlaceholders(Player player, @NotNull String text) {
+        if (!isEnabled) {
+            return text;
+        }
+
+        return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
+    }
 }
 
