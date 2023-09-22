@@ -50,4 +50,14 @@ public class ReloadCommand extends CommandBase {
     public boolean isEnabled() {
         return commandsConfig.reloadCommand.enabled;
     }
+
+    @Override
+    public void addTranslations() {
+    }
+
+    @Override
+    public void addReplacements() {
+        commandHelper.addReplacement(commandsConfig.reloadCommand.subCommand, "command.reload");
+        commandHelper.addReplacement(commandsConfig.reloadCommand.permission, "permission.reload");
+    }
 }

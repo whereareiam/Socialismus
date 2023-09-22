@@ -6,33 +6,34 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
-import org.bukkit.plugin.Plugin;
 
 import java.util.Locale;
 
 public class CommandManager {
     private final Injector injector;
+    private final BukkitCommandManager bukkitCommandManager;
     private final MessagesConfig messagesConfig;
     private final CommandsConfig commandsConfig;
-    private final BukkitCommandManager bukkitCommandManager;
     private int commandCount = 0;
 
     @Inject
-    public CommandManager(Injector injector, Plugin plugin, MessagesConfig messagesConfig, CommandsConfig commandsConfig) {
+    public CommandManager(Injector injector, BukkitCommandManager bukkitCommandManager, MessagesConfig messagesConfig, CommandsConfig commandsConfig) {
         this.injector = injector;
+        this.bukkitCommandManager = bukkitCommandManager;
         this.messagesConfig = messagesConfig;
         this.commandsConfig = commandsConfig;
-        this.bukkitCommandManager = new BukkitCommandManager(plugin);
 
-        addReplacements();
         addTranslations();
     }
 
     public void registerCommand(Class<? extends CommandBase> commandClass) {
         try {
             CommandBase commandInstance = injector.getInstance(commandClass);
-            if (commandInstance.isEnabled())
+            if (commandInstance.isEnabled()) {
+                commandInstance.addReplacements();
+                commandInstance.addTranslations();
                 bukkitCommandManager.registerCommand(commandInstance);
+            }
             commandCount++;
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,16 +47,6 @@ public class CommandManager {
         addTranslation(messagesConfig.commands.unknownCommand, "acf-core.unknown_command");
         addTranslation(messagesConfig.commands.errorOccurred, "acf-core.error_performing_command");
         addTranslation(messagesConfig.commands.missingArgument, "acf-core.please_specify_one_of");
-    }
-
-    public void addReplacements() {
-        addReplacement(commandsConfig.mainCommand, "command.main");
-        addReplacement(commandsConfig.reloadCommand.subCommand, "command.reload");
-        addReplacement(commandsConfig.reloadCommand.permission, "permission.reload");
-    }
-
-    private void addReplacement(String message, String replacementId) {
-        bukkitCommandManager.getCommandReplacements().addReplacement(replacementId, message);
     }
 
     private void addTranslation(String message, String acfKey) {

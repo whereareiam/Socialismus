@@ -2,6 +2,7 @@ package me.whereareiam.socialismus;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import me.whereareiam.socialismus.command.MainCommand;
 import me.whereareiam.socialismus.command.ReloadCommand;
 import me.whereareiam.socialismus.command.manager.CommandManager;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
@@ -38,6 +39,7 @@ public final class Socialismus extends JavaPlugin {
         messages.reload(getDataFolder().toPath().resolve("messages.yml"));
         commands.reload(getDataFolder().toPath().resolve("commands.yml"));
 
+        injector.getInstance(CommandManager.class).registerCommand(MainCommand.class);
         injector.getInstance(CommandManager.class).registerCommand(ReloadCommand.class);
 
         InfoPrinterUtil.printStartMessage();
