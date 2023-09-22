@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.command.manager;
+package me.whereareiam.socialismus.command.base;
 
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.locales.MessageKey;

@@ -1,10 +1,10 @@
-package me.whereareiam.socialismus.command.manager;
+package me.whereareiam.socialismus.command.management;
 
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.locales.MessageKey;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import me.whereareiam.socialismus.config.command.CommandsConfig;
+import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 
 import java.util.Locale;
@@ -13,15 +13,13 @@ public class CommandManager {
     private final Injector injector;
     private final BukkitCommandManager bukkitCommandManager;
     private final MessagesConfig messagesConfig;
-    private final CommandsConfig commandsConfig;
     private int commandCount = 0;
 
     @Inject
-    public CommandManager(Injector injector, BukkitCommandManager bukkitCommandManager, MessagesConfig messagesConfig, CommandsConfig commandsConfig) {
+    public CommandManager(Injector injector, BukkitCommandManager bukkitCommandManager, MessagesConfig messagesConfig) {
         this.injector = injector;
         this.bukkitCommandManager = bukkitCommandManager;
         this.messagesConfig = messagesConfig;
-        this.commandsConfig = commandsConfig;
 
         addTranslations();
     }

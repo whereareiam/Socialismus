@@ -2,7 +2,8 @@ package me.whereareiam.socialismus;
 
 import co.aikar.commands.BukkitCommandManager;
 import com.google.inject.AbstractModule;
-import me.whereareiam.socialismus.command.manager.CommandManager;
+import me.whereareiam.socialismus.command.management.CommandManager;
+import me.whereareiam.socialismus.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
@@ -30,6 +31,7 @@ public class SocialismusConfig extends AbstractModule {
 
         bind(BukkitCommandManager.class).toInstance(new BukkitCommandManager(plugin));
         bind(CommandManager.class).asEagerSingleton();
+        bind(CommandRegistrar.class).asEagerSingleton();
         bind(IntegrationManager.class).asEagerSingleton();
 
         bind(LoggerUtil.class).asEagerSingleton();

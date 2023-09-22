@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.util;
 
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.Socialismus;
-import me.whereareiam.socialismus.command.manager.CommandManager;
+import me.whereareiam.socialismus.command.management.CommandManager;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.IntegrationManager;
 import me.whereareiam.socialismus.platform.PlatformType;

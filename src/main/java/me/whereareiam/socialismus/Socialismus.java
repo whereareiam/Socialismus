@@ -2,9 +2,7 @@ package me.whereareiam.socialismus;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import me.whereareiam.socialismus.command.MainCommand;
-import me.whereareiam.socialismus.command.ReloadCommand;
-import me.whereareiam.socialismus.command.manager.CommandManager;
+import me.whereareiam.socialismus.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
@@ -16,7 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Socialismus extends JavaPlugin {
     public static String version;
     private Injector injector;
-    private LoggerUtil loggerUtil;
     private BukkitAudiences bukkitAudiences;
 
     @Override
@@ -29,8 +26,7 @@ public final class Socialismus extends JavaPlugin {
         version = getDescription().getVersion();
 
         injector = Guice.createInjector(new SocialismusConfig(this));
-        loggerUtil = injector.getInstance(LoggerUtil.class);
-        loggerUtil.setBukkitLogger(getLogger());
+        injector.getInstance(LoggerUtil.class).setBukkitLogger(getLogger());
 
         SettingsConfig settings = injector.getInstance(SettingsConfig.class);
         MessagesConfig messages = injector.getInstance(MessagesConfig.class);
@@ -39,8 +35,7 @@ public final class Socialismus extends JavaPlugin {
         messages.reload(getDataFolder().toPath().resolve("messages.yml"));
         commands.reload(getDataFolder().toPath().resolve("commands.yml"));
 
-        injector.getInstance(CommandManager.class).registerCommand(MainCommand.class);
-        injector.getInstance(CommandManager.class).registerCommand(ReloadCommand.class);
+        injector.getInstance(CommandRegistrar.class).registerCommands();
 
         InfoPrinterUtil.printStartMessage();
     }
