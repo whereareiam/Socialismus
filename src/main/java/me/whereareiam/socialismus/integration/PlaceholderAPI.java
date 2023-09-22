@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.util.integration;
+package me.whereareiam.socialismus.integration;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;

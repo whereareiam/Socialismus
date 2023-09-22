@@ -6,8 +6,8 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.inject.Inject;
-import me.whereareiam.socialismus.config.MessagesConfig;
-import me.whereareiam.socialismus.util.Formatter;
+import me.whereareiam.socialismus.config.message.MessagesConfig;
+import me.whereareiam.socialismus.util.FormatterUtil;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,13 +16,13 @@ import org.bukkit.plugin.Plugin;
 @CommandAlias("%command.main")
 public class ReloadCommand extends BaseCommand {
     private final Plugin plugin;
-    private final Formatter formatter;
+    private final FormatterUtil formatterUtil;
     private final MessagesConfig messagesConfig;
 
     @Inject
-    public ReloadCommand(Plugin plugin, Formatter formatter, MessagesConfig messagesConfig) {
+    public ReloadCommand(Plugin plugin, FormatterUtil formatterUtil, MessagesConfig messagesConfig) {
         this.plugin = plugin;
-        this.formatter = formatter;
+        this.formatterUtil = formatterUtil;
         this.messagesConfig = messagesConfig;
     }
 
@@ -32,7 +32,7 @@ public class ReloadCommand extends BaseCommand {
         if (issuer.getIssuer() instanceof Player) {
             Audience audience = issuer.getIssuer();
             audience.sendMessage(
-                    formatter.formatMessage(messagesConfig.commands.reloadCommand.reloadedSuccessfully));
+                    formatterUtil.formatMessage(messagesConfig.commands.reloadCommand.reloadedSuccessfully));
         }
 
         doReload();

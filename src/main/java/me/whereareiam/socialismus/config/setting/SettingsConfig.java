@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.config;
+package me.whereareiam.socialismus.config.setting;
 
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;

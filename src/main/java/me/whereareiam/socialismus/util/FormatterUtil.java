@@ -4,7 +4,7 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
-public class Formatter {
+public class FormatterUtil {
 
     public ComponentLike formatMessage(String message) {
         final MiniMessage miniMessage = MiniMessage.miniMessage();

@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.util.integration;
+package me.whereareiam.socialismus.integration;
 
 import java.util.ArrayList;
 import java.util.Arrays;

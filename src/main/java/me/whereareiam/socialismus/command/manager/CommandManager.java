@@ -5,8 +5,8 @@ import co.aikar.commands.BukkitCommandManager;
 import co.aikar.locales.MessageKey;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import me.whereareiam.socialismus.config.CommandsConfig;
-import me.whereareiam.socialismus.config.MessagesConfig;
+import me.whereareiam.socialismus.config.command.CommandsConfig;
+import me.whereareiam.socialismus.config.message.MessagesConfig;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Locale;

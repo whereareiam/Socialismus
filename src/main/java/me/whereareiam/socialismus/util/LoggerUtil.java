@@ -1,9 +1,9 @@
 package me.whereareiam.socialismus.util;
 
 import com.google.inject.Inject;
-import me.whereareiam.socialismus.config.SettingsConfig;
+import me.whereareiam.socialismus.config.setting.SettingsConfig;
 
-public class Logger {
+public class LoggerUtil {
     private static java.util.logging.Logger bukkitLogger;
     public void setBukkitLogger(java.util.logging.Logger logger) {
         bukkitLogger = logger;
@@ -12,13 +12,13 @@ public class Logger {
     private final SettingsConfig settingsConfig;
 
     @Inject
-    public Logger(final SettingsConfig settingsConfig) {
+    public LoggerUtil(final SettingsConfig settingsConfig) {
         this.settingsConfig = settingsConfig;
     }
 
     private boolean isBukkitLoggerAvailable() {
         if (bukkitLogger == null) {
-            System.out.println("Bukkit Logger is not set. Make sure to set it using setBukkitLogger.");
+            System.out.println("Bukkit LoggerUtil is not set. Make sure to set it using setBukkitLogger.");
             return false;
         }
         return true;

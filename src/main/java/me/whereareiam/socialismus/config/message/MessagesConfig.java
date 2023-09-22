@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.config;
+package me.whereareiam.socialismus.config.message;
 
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.language.object.YamlSerializable;
@@ -20,9 +20,6 @@ public class MessagesConfig extends YamlSerializable {
         public String errorOccurred = "An error occurred while executing the command.";
         public String missingArgument = "You did not specify the required argument to execute the command.";
 
-        public ReloadCommand reloadCommand = new ReloadCommand();
-        public static class ReloadCommand {
-            public String reloadedSuccessfully = "Plugin was successfully reloaded";
-        }
+        public ReloadCommandConfig reloadCommand = new ReloadCommandConfig();
     }
 }

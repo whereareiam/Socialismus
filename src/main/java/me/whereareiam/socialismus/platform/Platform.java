@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.util.platform;
+package me.whereareiam.socialismus.platform;
 
 public class Platform {
     public static boolean isFolia = PlatformIdentifier.isFolia();
