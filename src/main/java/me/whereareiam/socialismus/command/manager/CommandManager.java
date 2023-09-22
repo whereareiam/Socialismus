@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.command.manager;
 
-import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.locales.MessageKey;
 import com.google.inject.Inject;
@@ -29,10 +28,11 @@ public class CommandManager {
         addTranslations();
     }
 
-    public void registerCommand(Class<? extends BaseCommand> commandClass) {
+    public void registerCommand(Class<? extends CommandBase> commandClass) {
         try {
-            BaseCommand commandInstance = injector.getInstance(commandClass);
-            bukkitCommandManager.registerCommand(commandInstance);
+            CommandBase commandInstance = injector.getInstance(commandClass);
+            if (commandInstance.isEnabled())
+                bukkitCommandManager.registerCommand(commandInstance);
             commandCount++;
         } catch (Exception e) {
             e.printStackTrace();

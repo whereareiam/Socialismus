@@ -1,11 +1,12 @@
 package me.whereareiam.socialismus.command;
 
-import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.inject.Inject;
+import me.whereareiam.socialismus.command.manager.CommandBase;
+import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import net.kyori.adventure.audience.Audience;
@@ -14,15 +15,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 @CommandAlias("%command.main")
-public class ReloadCommand extends BaseCommand {
+public class ReloadCommand extends CommandBase {
     private final Plugin plugin;
     private final FormatterUtil formatterUtil;
+    private final CommandsConfig commandsConfig;
     private final MessagesConfig messagesConfig;
 
     @Inject
-    public ReloadCommand(Plugin plugin, FormatterUtil formatterUtil, MessagesConfig messagesConfig) {
+    public ReloadCommand(Plugin plugin, FormatterUtil formatterUtil, CommandsConfig commandsConfig, MessagesConfig messagesConfig) {
         this.plugin = plugin;
         this.formatterUtil = formatterUtil;
+        this.commandsConfig = commandsConfig;
         this.messagesConfig = messagesConfig;
     }
 
@@ -41,5 +44,10 @@ public class ReloadCommand extends BaseCommand {
     private void doReload() {
         Bukkit.getPluginManager().disablePlugin(plugin);
         Bukkit.getPluginManager().enablePlugin(plugin);
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return commandsConfig.reloadCommand.enabled;
     }
 }
