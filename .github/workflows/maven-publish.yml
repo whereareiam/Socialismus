@@ -32,3 +32,10 @@ jobs:
         elif [[ "${{ github.event_name }}" == "release" ]]; then
           mvn -B -P release package --file pom.xml
         fi
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: package
+        path: target/*.jar
+        
