@@ -37,14 +37,14 @@
             <id>development</id>
             <build>
                 <plugins>
-                    <plugin>
+                    <!--<plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
                         <version>${maven.jar.version}</version>
                         <configuration>
                             <outputDirectory>E:\Projects\TestServer\plugins</outputDirectory>
                         </configuration>
-                    </plugin>
+                    </plugin>-->
                 </plugins>
             </build>
         </profile>
