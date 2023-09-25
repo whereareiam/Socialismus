@@ -20,7 +20,7 @@
         <maven.jar.version>3.2.2</maven.jar.version>
 
         <!-- Dependencies -->
-        <spigot.version>1.20.1</spigot.version>
+        <spigot.version>1.20.2</spigot.version>
         <google.guice.version>7.0.0</google.guice.version>
         <java.serializer.version>1.1.0</java.serializer.version>
         <acf.version>0.5.1</acf.version>
@@ -28,7 +28,7 @@
         <serializer-plain.version>4.14.0</serializer-plain.version>
         <serializer-minimessage.version>4.14.0</serializer-minimessage.version>
         <bstats.version>3.0.2</bstats.version>
-        <placeholderapi.version>2.11.3</placeholderapi.version>
+        <placeholderapi.version>2.11.4</placeholderapi.version>
     </properties>
 
     <profiles>
