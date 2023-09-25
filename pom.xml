@@ -32,21 +32,26 @@
     </properties>
 
     <profiles>
-        <!-- Development profile -->
+        <!-- Local profile -->
         <profile>
-            <id>development</id>
+            <id>local</id>
             <build>
                 <plugins>
-                    <!--<plugin>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
                         <version>${maven.jar.version}</version>
                         <configuration>
                             <outputDirectory>E:\Projects\TestServer\plugins</outputDirectory>
                         </configuration>
-                    </plugin>-->
+                    </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <!-- Development profile -->
+        <profile>
+            <id>development</id>
         </profile>
 
         <!-- Release profile -->
