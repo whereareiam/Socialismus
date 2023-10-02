@@ -26,7 +26,7 @@ public class SettingsConfig extends YamlSerializable {
             },
             at = Comment.At.PREPEND
     )
-    public FeaturesConfig featuresConfig = new FeaturesConfig();
+    public FeaturesConfig features = new FeaturesConfig();
 
     public SettingsConfig() {
         super(SettingsConfig.SETTINGS);

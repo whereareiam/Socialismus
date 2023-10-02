@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
+import me.whereareiam.socialismus.feature.FeatureLoader;
 import me.whereareiam.socialismus.integration.IntegrationManager;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.InfoPrinterUtil;
@@ -33,6 +34,8 @@ public class SocialismusConfig extends AbstractModule {
         bind(CommandManager.class).asEagerSingleton();
         bind(CommandRegistrar.class).asEagerSingleton();
         bind(IntegrationManager.class).asEagerSingleton();
+
+        bind(FeatureLoader.class).asEagerSingleton();
 
         bind(LoggerUtil.class).asEagerSingleton();
         bind(InfoPrinterUtil.class).asEagerSingleton();
