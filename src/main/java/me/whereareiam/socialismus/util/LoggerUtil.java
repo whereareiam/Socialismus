@@ -5,15 +5,15 @@ import me.whereareiam.socialismus.config.setting.SettingsConfig;
 
 public class LoggerUtil {
     private static java.util.logging.Logger bukkitLogger;
-    public void setBukkitLogger(java.util.logging.Logger logger) {
-        bukkitLogger = logger;
-    }
-
     private final SettingsConfig settingsConfig;
 
     @Inject
     public LoggerUtil(final SettingsConfig settingsConfig) {
         this.settingsConfig = settingsConfig;
+    }
+
+    public void setBukkitLogger(java.util.logging.Logger logger) {
+        bukkitLogger = logger;
     }
 
     private boolean isBukkitLoggerAvailable() {
@@ -24,32 +24,54 @@ public class LoggerUtil {
         return true;
     }
 
-    public void info(String message) {
+    private void logMessage(String level, String message) {
         if (isBukkitLoggerAvailable()) {
-            bukkitLogger.info(message);
+            switch (level) {
+                case "INFO":
+                    bukkitLogger.info(message);
+                    break;
+                case "DEBUG":
+                    bukkitLogger.info("[DEBUG] " + message);
+                    break;
+                case "TRACE":
+                    bukkitLogger.info("[TRACE] " + message);
+                    break;
+                case "WARNING":
+                    bukkitLogger.warning(message);
+                    break;
+                case "SEVERE":
+                    bukkitLogger.severe(message);
+                    break;
+            }
         }
+    }
+
+    public void info(String message) {
+        if (settingsConfig.logLevel <= 0) {
+            return;
+        }
+        logMessage("INFO", message);
     }
 
     public void debug(String message) {
-        System.out.println(settingsConfig.debug);
-        if (!settingsConfig.debug) {
+        if (settingsConfig.logLevel != 1) {
             return;
         }
+        logMessage("DEBUG", message);
+    }
 
-        if (isBukkitLoggerAvailable()) {
-            bukkitLogger.info("[DEBUG] " + message);
+    public void trace(String message) {
+        if (settingsConfig.logLevel >= 2) {
+            return;
         }
+        logMessage("TRACE", message);
     }
 
     public void warning(String message) {
-        if (isBukkitLoggerAvailable()) {
-            bukkitLogger.warning(message);
-        }
+        logMessage("WARNING", message);
     }
 
     public void severe(String message) {
-        if (isBukkitLoggerAvailable()) {
-            bukkitLogger.severe(message);
-        }
+        logMessage("SEVERE", message);
     }
 }

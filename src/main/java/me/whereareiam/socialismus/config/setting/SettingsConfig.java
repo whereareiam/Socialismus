@@ -7,16 +7,17 @@ import net.elytrium.serializer.language.object.YamlSerializable;
 
 public class SettingsConfig extends YamlSerializable {
     private static final SerializerConfig SETTINGS = new SerializerConfig.Builder().build();
+    @Comment(
+            value = {
+                    @CommentValue(" 0 - Standard information"),
+                    @CommentValue(" 1 - Debug mode"),
+                    @CommentValue(" 2 - Debug mode but with much more information"),
+            },
+            at = Comment.At.PREPEND
+    )
+    public int logLevel = 0;
 
     public SettingsConfig() {
         super(SettingsConfig.SETTINGS);
     }
-
-    @Comment(
-            value = {
-                    @CommentValue(" If enabled, it prints additional information to the console."),
-            },
-            at = Comment.At.PREPEND
-    )
-    public boolean debug;
 }
