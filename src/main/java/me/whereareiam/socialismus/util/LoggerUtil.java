@@ -48,23 +48,20 @@ public class LoggerUtil {
 
     public void info(String message) {
         if (settingsConfig.logLevel <= 0) {
-            return;
+            logMessage("INFO", message);
         }
-        logMessage("INFO", message);
     }
 
     public void debug(String message) {
-        if (settingsConfig.logLevel != 1) {
-            return;
+        if (settingsConfig.logLevel == 1) {
+            logMessage("DEBUG", message);
         }
-        logMessage("DEBUG", message);
     }
 
     public void trace(String message) {
         if (settingsConfig.logLevel >= 2) {
-            return;
+            logMessage("TRACE", message);
         }
-        logMessage("TRACE", message);
     }
 
     public void warning(String message) {
