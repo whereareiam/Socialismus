@@ -1,39 +1,30 @@
 package me.whereareiam.socialismus.listener.player;
 
 import com.google.inject.Inject;
-import me.whereareiam.socialismus.feature.chat.Chat;
-import me.whereareiam.socialismus.feature.chat.ChatManager;
-import me.whereareiam.socialismus.util.LoggerUtil;
+import me.whereareiam.socialismus.feature.chat.ChatHandler;
+import me.whereareiam.socialismus.feature.chat.message.ChatMessage;
+import me.whereareiam.socialismus.feature.chat.message.ChatMessageFactory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerAsyncChatListener implements Listener {
-    private final ChatManager chatManager;
-    private final LoggerUtil loggerUtil;
+    private final ChatMessageFactory chatMessageFactory;
+    private final ChatHandler chatHandler;
 
     @Inject
-    public PlayerAsyncChatListener(ChatManager chatManager, LoggerUtil loggerUtil) {
-        this.chatManager = chatManager;
-        this.loggerUtil = loggerUtil;
+    public PlayerAsyncChatListener(ChatMessageFactory chatMessageFactory, ChatHandler chatHandler) {
+        this.chatMessageFactory = chatMessageFactory;
+        this.chatHandler = chatHandler;
     }
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        String message = event.getMessage();
-        char chatSymbol = message.charAt(0);
-        String symbol;
+        ChatMessage chatMessage = chatMessageFactory.createChatMessage(event.getPlayer(), event.getMessage());
 
-        if (!Character.isLetterOrDigit(chatSymbol)) {
-            symbol = String.valueOf(chatSymbol);
-        } else {
-            symbol = "";
-        }
-
-        Chat chat = chatManager.getChatBySymbol(symbol);
-
-        if (chat != null) {
-            loggerUtil.info("Chat: " + chat.id + " Message: " + event.getMessage());
+        if (chatMessage.chat().id != null) {
+            chatHandler.handleChat(chatMessage);
+            event.setCancelled(true);
         }
     }
 }
