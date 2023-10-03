@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.integration.placeholderAPI;
 
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.placeholderAPI.placeholders.Placeholders;
 import org.bukkit.Bukkit;
@@ -7,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+@Singleton
 public class PlaceholderAPI implements Integration {
     private static int placeholdersCount;
     private final Plugin plugin = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");

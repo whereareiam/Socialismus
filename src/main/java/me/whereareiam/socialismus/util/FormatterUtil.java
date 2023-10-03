@@ -38,6 +38,8 @@ public class FormatterUtil {
             message = placeholderAPI.setPlaceholders(player, message);
         }
 
+        // TODO Integration types
+
         return message;
     }
 }
