@@ -17,6 +17,17 @@ public class SettingsConfig extends YamlSerializable {
     )
     public int logLevel = 0;
 
+    @Comment(
+            value = {
+                    @CommentValue(type = CommentValue.Type.NEW_LINE),
+                    @CommentValue(" In this section you can disable or enable the desired features."),
+                    @CommentValue("  true - enabled"),
+                    @CommentValue("  false - disabled"),
+            },
+            at = Comment.At.PREPEND
+    )
+    public FeaturesConfig features = new FeaturesConfig();
+
     public SettingsConfig() {
         super(SettingsConfig.SETTINGS);
     }

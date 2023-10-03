@@ -7,7 +7,10 @@ import me.whereareiam.socialismus.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
+import me.whereareiam.socialismus.feature.FeatureLoader;
 import me.whereareiam.socialismus.integration.IntegrationManager;
+import me.whereareiam.socialismus.listener.ListenerRegistrar;
+import me.whereareiam.socialismus.service.player.PlayerAsyncChatService;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.InfoPrinterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
@@ -27,12 +30,18 @@ public class SocialismusConfig extends AbstractModule {
         bind(SettingsConfig.class).asEagerSingleton();
         bind(MessagesConfig.class).asEagerSingleton();
         bind(CommandsConfig.class).asEagerSingleton();
-        bind(FormatterUtil.class).asEagerSingleton();
 
         bind(BukkitCommandManager.class).toInstance(new BukkitCommandManager(plugin));
         bind(CommandManager.class).asEagerSingleton();
         bind(CommandRegistrar.class).asEagerSingleton();
         bind(IntegrationManager.class).asEagerSingleton();
+        bind(FormatterUtil.class).asEagerSingleton();
+
+        //Services
+        bind(PlayerAsyncChatService.class).asEagerSingleton();
+
+        bind(FeatureLoader.class).asEagerSingleton();
+        bind(ListenerRegistrar.class).asEagerSingleton();
 
         bind(LoggerUtil.class).asEagerSingleton();
         bind(InfoPrinterUtil.class).asEagerSingleton();
