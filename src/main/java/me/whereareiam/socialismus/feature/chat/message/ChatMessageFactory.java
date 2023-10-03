@@ -19,12 +19,14 @@ public class ChatMessageFactory {
 
         if (!Character.isLetterOrDigit(chatSymbol)) {
             symbol = String.valueOf(chatSymbol);
+            message = message.substring(1);
         } else {
             symbol = "";
         }
 
         Chat chat = chatManager.getChatBySymbol(symbol);
 
-        return new ChatMessage(sender, message, chat);
+        return new ChatMessage(sender, message.trim(), chat);
     }
+
 }

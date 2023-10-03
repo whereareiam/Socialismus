@@ -30,12 +30,12 @@ public class SocialismusConfig extends AbstractModule {
         bind(SettingsConfig.class).asEagerSingleton();
         bind(MessagesConfig.class).asEagerSingleton();
         bind(CommandsConfig.class).asEagerSingleton();
-        bind(FormatterUtil.class).asEagerSingleton();
 
         bind(BukkitCommandManager.class).toInstance(new BukkitCommandManager(plugin));
         bind(CommandManager.class).asEagerSingleton();
         bind(CommandRegistrar.class).asEagerSingleton();
         bind(IntegrationManager.class).asEagerSingleton();
+        bind(FormatterUtil.class).asEagerSingleton();
 
         //Services
         bind(PlayerAsyncChatService.class).asEagerSingleton();
