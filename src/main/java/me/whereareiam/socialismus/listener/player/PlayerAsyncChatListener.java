@@ -21,12 +21,19 @@ public class PlayerAsyncChatListener implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         String message = event.getMessage();
-        String chatSymbol = message.substring(0, 1);
+        char chatSymbol = message.charAt(0);
+        String symbol;
 
-        Chat chat = chatManager.getChatBySymbol(chatSymbol);
+        if (!Character.isLetterOrDigit(chatSymbol)) {
+            symbol = String.valueOf(chatSymbol);
+        } else {
+            symbol = "";
+        }
+
+        Chat chat = chatManager.getChatBySymbol(symbol);
 
         if (chat != null) {
-            loggerUtil.info("Chat: " + chat + " Message: " + event.getMessage());
+            loggerUtil.info("Chat: " + chat.id + " Message: " + event.getMessage());
         }
     }
 }
