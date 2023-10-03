@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.util;
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.Socialismus;
 import me.whereareiam.socialismus.command.management.CommandManager;
+import me.whereareiam.socialismus.feature.FeatureLoader;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.IntegrationManager;
 import me.whereareiam.socialismus.integration.placeholderAPI.PlaceholderAPI;
@@ -14,12 +15,14 @@ public class InfoPrinterUtil {
     private static LoggerUtil loggerUtil;
     private static CommandManager commandManager;
     private static IntegrationManager integrationManager;
+    private static FeatureLoader featureLoader;
 
     @Inject
-    public InfoPrinterUtil(LoggerUtil loggerUtil, CommandManager commandManager, IntegrationManager integrationManager) {
+    public InfoPrinterUtil(LoggerUtil loggerUtil, CommandManager commandManager, IntegrationManager integrationManager, FeatureLoader featureLoader) {
         InfoPrinterUtil.loggerUtil = loggerUtil;
         InfoPrinterUtil.commandManager = commandManager;
         InfoPrinterUtil.integrationManager = integrationManager;
+        InfoPrinterUtil.featureLoader = featureLoader;
     }
 
     public static void printStartMessage() {
@@ -45,6 +48,9 @@ public class InfoPrinterUtil {
 
         int placeholdersCount = PlaceholderAPI.getPlaceholdersCount();
         loggerUtil.info("  Registered " + placeholdersCount + " " + (placeholdersCount == 1 ? "placeholder" : "placeholders"));
+
+        int chatCount = featureLoader.getChatCount();
+        loggerUtil.info("  Registered " + chatCount + " " + (chatCount == 1 ? "chat" : "chats"));
         loggerUtil.info("");
     }
 }
