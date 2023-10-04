@@ -6,4 +6,6 @@ public interface Integration {
     String getName();
 
     boolean isEnabled();
+
+    IntegrationType getType();
 }
