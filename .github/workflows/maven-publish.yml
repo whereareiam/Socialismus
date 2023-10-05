@@ -5,37 +5,43 @@ on:
     branches:
       - dev
   release:
-    types: [created]
+    types: [ created ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        server-id: github
-        settings-path: ${{ github.workspace }}
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          server-id: github
+          settings-path: ${{ github.workspace }}
 
-    - name: Build with Maven
-      run: |
-        if [[ "${{ github.event_name }}" == "push" ]]; then
-          mvn -B -P development package --file pom.xml
-        elif [[ "${{ github.event_name }}" == "release" ]]; then
-          mvn -B -P release package --file pom.xml
-        fi
+      - name: Extract project details
+        id: project_details
+        run: |
+          echo "::set-output name=PROJECT_NAME::$(mvn -q -Dexec.executable=echo -Dexec.args='${name}' --non-recursive exec:exec)"
+          echo "::set-output name=PROJECT_VERSION::$(mvn -q -Dexec.executable=echo -Dexec.args='${version}' --non-recursive exec:exec)"
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: package
-        path: target/*.jar
-        
+      - name: Build with Maven
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            mvn -B package --file pom.xml
+          elif [[ "${{ github.event_name }}" == "release" ]]; then
+            mvn -B -P release package --file pom.xml
+          fi
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: |
+            spigot/target/${{ steps.project_details.outputs.PROJECT_NAME }}-SPIGOT-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar
+            paper/target/${{ steps.project_details.outputs.PROJECT_NAME }}-PAPER-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar

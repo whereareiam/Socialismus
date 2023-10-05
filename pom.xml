@@ -7,111 +7,42 @@
     <groupId>me.whereareiam</groupId>
     <artifactId>Socialismus</artifactId>
     <version>0.0.1</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <properties>
         <!-- Project config -->
+        <name>Socialismus</name>
+        <version>0.0.1</version>
+        <testDir>C:\Users\SY60PG\Projects\Socialismus\test\plugins</testDir>
+
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <minecraft.version>1.20.2</minecraft.version>
 
         <!-- Maven version -->
         <maven.compiler.version>3.8.1</maven.compiler.version>
         <maven.shade.version>3.5.0</maven.shade.version>
-        <maven.jar.version>3.2.2</maven.jar.version>
+        <maven.assembly.version>3.3.0</maven.assembly.version>
+        <maven.antrun.version>1.8</maven.antrun.version>
 
         <!-- Dependencies -->
-        <spigot.version>1.20.2</spigot.version>
+
+        <!-- core -->
         <google.guice.version>7.0.0</google.guice.version>
         <java.serializer.version>1.1.0</java.serializer.version>
         <acf.version>0.5.1</acf.version>
+
+        <bstats.version>3.0.2</bstats.version>
         <adventure.version>4.3.0</adventure.version>
         <serializer-plain.version>4.14.0</serializer-plain.version>
         <serializer-minimessage.version>4.14.0</serializer-minimessage.version>
-        <bstats.version>3.0.2</bstats.version>
         <placeholderapi.version>2.11.4</placeholderapi.version>
     </properties>
 
-    <profiles>
-        <!-- Local profile -->
-        <profile>
-            <id>local</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <version>${maven.jar.version}</version>
-                        <configuration>
-                            <outputDirectory>E:\Projects\TestServer\plugins</outputDirectory>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Development profile -->
-        <profile>
-            <id>development</id>
-        </profile>
-
-        <!-- Release profile -->
-        <profile>
-            <id>release</id>
-        </profile>
-    </profiles>
-
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/whereareiam/Socialismus</url>
-        </repository>
-    </distributionManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.version}</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>${maven.shade.version}</version>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>me.whereareiam.socialismus.bstats</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <finalName>${project.artifactId}</finalName>
-    </build>
+    <modules>
+        <module>core</module>
+        <module>spigot</module>
+    </modules>
 
     <repositories>
         <!-- Spigot -->
@@ -133,52 +64,21 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>${spigot.version}-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${google.guice.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.elytrium</groupId>
             <artifactId>serializer</artifactId>
             <version>${java.serializer.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>co.aikar</groupId>
-            <artifactId>acf-bukkit</artifactId>
-            <version>${acf.version}-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-platform-bukkit</artifactId>
-            <version>${adventure.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>${serializer-plain.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-text-minimessage</artifactId>
-            <version>${serializer-minimessage.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>${bstats.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>me.clip</groupId>
-            <artifactId>placeholderapi</artifactId>
-            <version>${placeholderapi.version}</version>
-            <scope>provided</scope>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-paper</artifactId>
+            <version>${acf.version}-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
