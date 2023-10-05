@@ -11,13 +11,13 @@ import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
 
 public class MainCommand extends CommandBase {
-    private final CommandsConfig commandsConfig;
-    private final MessagesConfig messagesConfig;
+    private final CommandsConfig commands;
+    private final MessagesConfig messages;
 
     @Inject
-    public MainCommand(CommandsConfig commandsConfig, MessagesConfig messagesConfig) {
-        this.commandsConfig = commandsConfig;
-        this.messagesConfig = messagesConfig;
+    public MainCommand(CommandsConfig commands, MessagesConfig messages) {
+        this.commands = commands;
+        this.messages = messages;
     }
 
     @CommandAlias("%command.main")
@@ -26,7 +26,7 @@ public class MainCommand extends CommandBase {
         if (issuer.getIssuer() instanceof Player) {
             Player player = issuer.getIssuer();
             Audience audience = issuer.getIssuer();
-            if (player.hasPermission(commandsConfig.mainCommand.staffPermission)) {
+            if (player.hasPermission(commands.mainCommand.staffPermission)) {
                 // TODO: Print staff help
             } else {
                 // TODO: Print player help
@@ -47,7 +47,7 @@ public class MainCommand extends CommandBase {
 
     @Override
     public void addReplacements() {
-        commandHelper.addReplacement(commandsConfig.mainCommand.command, "command.main");
-        commandHelper.addReplacement(commandsConfig.mainCommand.playerPermission, "permission.main");
+        commandHelper.addReplacement(commands.mainCommand.command, "command.main");
+        commandHelper.addReplacement(commands.mainCommand.playerPermission, "permission.main");
     }
 }
