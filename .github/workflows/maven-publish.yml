@@ -27,8 +27,8 @@ jobs:
       - name: Extract project details
         id: project_details
         run: |
-          echo "PROJECT_NAME=$(mvn -q -Dexec.executable=echo -Dexec.args='${name}' --non-recursive exec:exec)" >> $GITHUB_ENV
-          echo "PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${version}' --non-recursive exec:exec)" >> $GITHUB_ENV
+          echo "PROJECT_NAME=$(mvn -q -Dexec.executable=echo -Dexec.args='${properties.name}' --non-recursive exec:exec)" >> $GITHUB_ENV
+          echo "PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${properties.version}' --non-recursive exec:exec)" >> $GITHUB_ENV
 
       - name: Build with Maven
         run: |
