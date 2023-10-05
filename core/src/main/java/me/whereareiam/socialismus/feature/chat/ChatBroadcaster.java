@@ -20,6 +20,9 @@ public class ChatBroadcaster {
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             if (shouldSendMessage(sender, player, chat.radius)) {
+                if (player.hasPermission(chat.seePermission))
+                    return;
+
                 Component finalMessage = createFinalMessage(chatMessage, chat);
                 Audience audience = (Audience) player;
                 audience.sendMessage(finalMessage);
