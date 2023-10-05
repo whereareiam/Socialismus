@@ -27,7 +27,6 @@ jobs:
       - name: Extract project details
         id: project_details
         run: |
-          mkdir ${{ github.workspace }}
           echo "PROJECT_NAME=$(mvn -q -Dexec.executable=echo -Dexec.args='${name}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
           echo "PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
 
@@ -41,8 +40,8 @@ jobs:
 
       - name: Move Artifacts to Common Directory
         run: |
-          mv spigot/target/${{ steps.project_details.outputs.PROJECT_NAME }}-SPIGOT-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar /
-          mv paper/target/${{ steps.project_details.outputs.PROJECT_NAME }}-PAPER-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar /
+          mv spigot/target/${{ steps.project_details.outputs.PROJECT_NAME }}-SPIGOT-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar ${{ github.workspace }}/
+          mv paper/target/${{ steps.project_details.outputs.PROJECT_NAME }}-PAPER-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar ${{ github.workspace }}/
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
