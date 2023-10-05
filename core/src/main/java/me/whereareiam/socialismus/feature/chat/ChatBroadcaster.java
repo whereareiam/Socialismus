@@ -1,5 +1,7 @@
 package me.whereareiam.socialismus.feature.chat;
 
+import com.google.inject.Inject;
+import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.feature.chat.message.ChatMessage;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
@@ -10,21 +12,57 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.List;
 
 public class ChatBroadcaster {
+    private final MessagesConfig messages;
+
+    @Inject
+    public ChatBroadcaster(MessagesConfig messages) {
+        this.messages = messages;
+    }
 
     public void broadcastMessage(ChatMessage chatMessage) {
         Player sender = chatMessage.sender();
         Chat chat = chatMessage.chat();
 
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+        Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
+
+        if (onlinePlayers.isEmpty() || (onlinePlayers.size() == 1 && onlinePlayers.contains(sender))) {
+            String noOnlinePlayers = messages.chat.noOnlinePlayers;
+            if (noOnlinePlayers == null)
+                return;
+
+            sender.sendMessage(noOnlinePlayers);
+            return;
+        }
+
+        boolean isPlayerNearby = false;
+
+        for (Player player : onlinePlayers) {
+            if (!sender.equals(player) && DistanceCalculatorUtil.calculateDistance(sender, player) <= chat.radius) {
+                isPlayerNearby = true;
+                break;
+            }
+        }
+
+        if (!isPlayerNearby) {
+            String noNearbyPlayers = messages.chat.noNearbyPlayers;
+            if (noNearbyPlayers == null)
+                return;
+
+            sender.sendMessage(noNearbyPlayers);
+            return;
+        }
+
+        for (Player player : onlinePlayers) {
             if (shouldSendMessage(sender, player, chat.radius)) {
                 if (player.hasPermission(chat.seePermission))
-                    return;
+                    continue;
 
-                Component finalMessage = createFinalMessage(chatMessage, chat);
                 Audience audience = (Audience) player;
+                Component finalMessage = createFinalMessage(chatMessage, chat);
                 audience.sendMessage(finalMessage);
             }
         }

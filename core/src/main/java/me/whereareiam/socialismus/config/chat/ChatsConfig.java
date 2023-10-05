@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.config.chat;
 
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.feature.chat.Chat;
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
@@ -9,6 +10,7 @@ import net.elytrium.serializer.language.object.YamlSerializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class ChatsConfig extends YamlSerializable {
     private static final SerializerConfig CHATS = new SerializerConfig.Builder().build();
 

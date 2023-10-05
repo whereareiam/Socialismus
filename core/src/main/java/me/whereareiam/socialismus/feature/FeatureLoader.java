@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.feature;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import me.whereareiam.socialismus.config.chat.ChatsConfig;
-import me.whereareiam.socialismus.config.setting.FeaturesConfig;
+import me.whereareiam.socialismus.config.setting.FeaturesSettingsConfig;
 import me.whereareiam.socialismus.feature.chat.Chat;
 import me.whereareiam.socialismus.feature.chat.ChatManager;
 import me.whereareiam.socialismus.service.ChatService;
@@ -12,25 +12,25 @@ import org.bukkit.plugin.Plugin;
 public class FeatureLoader {
     private final Injector injector;
     private final Plugin plugin;
-    private final FeaturesConfig featuresConfig;
+    private final FeaturesSettingsConfig featuresSettingsConfig;
     private final ChatManager chatManager;
 
     private final ChatService chatService;
 
     @Inject
-    public FeatureLoader(Injector injector, Plugin plugin, FeaturesConfig featuresConfig,
+    public FeatureLoader(Injector injector, Plugin plugin, FeaturesSettingsConfig featuresSettingsConfig,
                          ChatManager chatManager, ChatService chatService
     ) {
         this.injector = injector;
         this.plugin = plugin;
-        this.featuresConfig = featuresConfig;
+        this.featuresSettingsConfig = featuresSettingsConfig;
         this.chatManager = chatManager;
 
         this.chatService = chatService;
     }
 
     public void loadFeatures() {
-        if (featuresConfig.chats) {
+        if (featuresSettingsConfig.chats) {
             chatService.setChatListenerRequired(true);
 
             ChatsConfig chatsConfig = injector.getInstance(ChatsConfig.class);

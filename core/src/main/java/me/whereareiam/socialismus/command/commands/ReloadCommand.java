@@ -6,25 +6,24 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.command.base.CommandBase;
+import me.whereareiam.socialismus.config.ConfigManager;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import net.kyori.adventure.audience.Audience;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 @CommandAlias("%command.main")
 public class ReloadCommand extends CommandBase {
-    private final Plugin plugin;
-    private final CommandsConfig commandsConfig;
-    private final MessagesConfig messagesConfig;
+    private final ConfigManager configManager;
+    private final CommandsConfig commands;
+    private final MessagesConfig messages;
 
     @Inject
-    public ReloadCommand(Plugin plugin, CommandsConfig commandsConfig, MessagesConfig messagesConfig) {
-        this.plugin = plugin;
-        this.commandsConfig = commandsConfig;
-        this.messagesConfig = messagesConfig;
+    public ReloadCommand(ConfigManager configManager, CommandsConfig commands, MessagesConfig messages) {
+        this.configManager = configManager;
+        this.commands = commands;
+        this.messages = messages;
     }
 
     @Subcommand("%command.reload")
@@ -33,20 +32,15 @@ public class ReloadCommand extends CommandBase {
         if (issuer.getIssuer() instanceof Player) {
             Audience audience = issuer.getIssuer();
             audience.sendMessage(
-                    FormatterUtil.formatMessage(messagesConfig.commands.reloadCommand.reloadedSuccessfully));
+                    FormatterUtil.formatMessage(messages.commands.reloadCommand.reloadedSuccessfully));
         }
 
-        doReload();
-    }
-
-    private void doReload() {
-        Bukkit.getPluginManager().disablePlugin(plugin);
-        Bukkit.getPluginManager().enablePlugin(plugin);
+        configManager.reloadConfigs();
     }
 
     @Override
     public boolean isEnabled() {
-        return commandsConfig.reloadCommand.enabled;
+        return commands.reloadCommand.enabled;
     }
 
     @Override
@@ -55,7 +49,7 @@ public class ReloadCommand extends CommandBase {
 
     @Override
     public void addReplacements() {
-        commandHelper.addReplacement(commandsConfig.reloadCommand.subCommand, "command.reload");
-        commandHelper.addReplacement(commandsConfig.reloadCommand.permission, "permission.reload");
+        commandHelper.addReplacement(commands.reloadCommand.subCommand, "command.reload");
+        commandHelper.addReplacement(commands.reloadCommand.permission, "permission.reload");
     }
 }
