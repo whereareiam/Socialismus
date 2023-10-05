@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.feature.chat;
 
-import jakarta.inject.Singleton;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.feature.Feature;
 
 import java.util.HashMap;
