@@ -1,0 +1,10 @@
+name: ${name}
+version: '${version}'
+main: me.whereareiam.socialismus.SocialismusPaper
+api-version: '1.20'
+dependencies:
+  bootstrap:
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
+      join-classpath: false

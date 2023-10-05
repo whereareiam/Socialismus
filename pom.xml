@@ -42,6 +42,7 @@
     <modules>
         <module>core</module>
         <module>spigot</module>
+        <module>paper</module>
     </modules>
 
     <repositories>
@@ -49,6 +50,11 @@
         <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <!-- Paper -->
+        <repository>
+            <id>papermc-repo</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <!-- ACF -->
         <repository>
