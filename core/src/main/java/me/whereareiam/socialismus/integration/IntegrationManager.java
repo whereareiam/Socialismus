@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.integration;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.integration.PlaceholderAPI.PlaceholderAPI;
 import me.whereareiam.socialismus.integration.bStats.bStats;
 import me.whereareiam.socialismus.util.LoggerUtil;
@@ -47,6 +48,7 @@ public class IntegrationManager {
         integrations.add(integration);
     }
 
+    @Cacheable
     public int getEnabledIntegrationCount() {
         int enabledIntegrationCount = 0;
 
@@ -60,6 +62,7 @@ public class IntegrationManager {
         return enabledIntegrationCount;
     }
 
+    @Cacheable
     public List<Integration> getEnabledIntegrations() {
         List<Integration> enabledIntegrations = new ArrayList<>();
 

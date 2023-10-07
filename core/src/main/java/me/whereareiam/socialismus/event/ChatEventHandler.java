@@ -21,7 +21,7 @@ public class ChatEventHandler {
     public void handleChatEvent(Player player, String message) {
         ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message);
 
-        if (chatMessage.chat().id != null) {
+        if (chatMessage.chat() != null) {
             chatHandler.handleChat(chatMessage);
         }
     }

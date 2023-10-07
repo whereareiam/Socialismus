@@ -1,8 +1,10 @@
 package me.whereareiam.socialismus.service;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
+@Singleton
 public class ChatService {
     private final LoggerUtil loggerUtil;
     private boolean chatListenerRequired = false;
