@@ -1,10 +1,12 @@
 package me.whereareiam.socialismus.feature.chat;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.feature.chat.message.ChatMessage;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
+import me.whereareiam.socialismus.util.LoggerUtil;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -15,17 +17,24 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.List;
 
+@Singleton
 public class ChatBroadcaster {
+    private final LoggerUtil loggerUtil;
     private final FormatterUtil formatterUtil;
     private final MessagesConfig messages;
 
     @Inject
-    public ChatBroadcaster(FormatterUtil formatterUtil, MessagesConfig messages) {
+    public ChatBroadcaster(LoggerUtil loggerUtil, FormatterUtil formatterUtil, MessagesConfig messages) {
+        this.loggerUtil = loggerUtil;
         this.formatterUtil = formatterUtil;
         this.messages = messages;
+
+        loggerUtil.trace("Initializing class: " + this);
     }
 
     public void broadcastMessage(ChatMessage chatMessage) {
+        loggerUtil.debug("Broadcasting message: " + chatMessage.content());
+
         Player sender = chatMessage.sender();
         Chat chat = chatMessage.chat();
 
@@ -66,6 +75,8 @@ public class ChatBroadcaster {
                 Audience audience = (Audience) player;
                 Component finalMessage = createFinalMessage(chatMessage, chat);
                 audience.sendMessage(finalMessage);
+
+                loggerUtil.trace("Sent message to player: " + player.getName());
             }
         }
     }

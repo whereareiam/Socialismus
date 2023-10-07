@@ -2,15 +2,19 @@ package me.whereareiam.socialismus.feature;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.chat.ChatsConfig;
 import me.whereareiam.socialismus.config.setting.FeaturesSettingsConfig;
 import me.whereareiam.socialismus.feature.chat.Chat;
 import me.whereareiam.socialismus.feature.chat.ChatManager;
 import me.whereareiam.socialismus.service.ChatService;
+import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
+@Singleton
 public class FeatureLoader {
     private final Injector injector;
+    private final LoggerUtil loggerUtil;
     private final Plugin plugin;
     private final FeaturesSettingsConfig featuresSettingsConfig;
     private final ChatManager chatManager;
@@ -18,18 +22,24 @@ public class FeatureLoader {
     private final ChatService chatService;
 
     @Inject
-    public FeatureLoader(Injector injector, Plugin plugin, FeaturesSettingsConfig featuresSettingsConfig,
+    public FeatureLoader(Injector injector, LoggerUtil loggerUtil,
+                         Plugin plugin, FeaturesSettingsConfig featuresSettingsConfig,
                          ChatManager chatManager, ChatService chatService
     ) {
         this.injector = injector;
+        this.loggerUtil = loggerUtil;
         this.plugin = plugin;
         this.featuresSettingsConfig = featuresSettingsConfig;
         this.chatManager = chatManager;
 
         this.chatService = chatService;
+
+        loggerUtil.trace("Initializing class: " + this);
     }
 
     public void loadFeatures() {
+        loggerUtil.debug("Loading features");
+
         if (featuresSettingsConfig.chats) {
             chatService.setChatListenerRequired(true);
 
