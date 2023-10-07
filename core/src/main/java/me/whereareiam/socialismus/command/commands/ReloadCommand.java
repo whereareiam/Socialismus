@@ -17,13 +17,15 @@ import org.bukkit.entity.Player;
 @CommandAlias("%command.main")
 public class ReloadCommand extends CommandBase {
     private final LoggerUtil loggerUtil;
+    private final FormatterUtil formatterUtil;
     private final ConfigManager configManager;
     private final CommandsConfig commands;
     private final MessagesConfig messages;
 
     @Inject
-    public ReloadCommand(LoggerUtil loggerUtil, ConfigManager configManager, CommandsConfig commands, MessagesConfig messages) {
+    public ReloadCommand(LoggerUtil loggerUtil, FormatterUtil formatterUtil, ConfigManager configManager, CommandsConfig commands, MessagesConfig messages) {
         this.loggerUtil = loggerUtil;
+        this.formatterUtil = formatterUtil;
         this.configManager = configManager;
         this.commands = commands;
         this.messages = messages;
@@ -36,7 +38,7 @@ public class ReloadCommand extends CommandBase {
         if (issuer.getIssuer() instanceof Player) {
             Audience audience = issuer.getIssuer();
             audience.sendMessage(
-                    FormatterUtil.formatMessage(issuer.getIssuer(), message));
+                    formatterUtil.formatMessage(issuer.getIssuer(), message));
         }
 
         loggerUtil.info(message);

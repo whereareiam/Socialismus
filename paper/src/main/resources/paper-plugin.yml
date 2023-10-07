@@ -3,8 +3,8 @@ version: '${version}'
 main: me.whereareiam.socialismus.SocialismusPaper
 api-version: '1.20'
 dependencies:
-  bootstrap:
+  server:
     PlaceholderAPI:
-      load: AFTER
-      required: false
-      join-classpath: false
+      load: BEFORE
+      required: true
+      join-classpath: true

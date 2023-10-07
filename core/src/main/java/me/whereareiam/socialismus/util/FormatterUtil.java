@@ -10,18 +10,18 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 
 public class FormatterUtil {
-    private static IntegrationManager integrationManager;
+    private final IntegrationManager integrationManager;
 
     @Inject
     public FormatterUtil(IntegrationManager integrationManager) {
-        FormatterUtil.integrationManager = integrationManager;
+        this.integrationManager = integrationManager;
     }
 
-    public static Component formatMessage(String message) {
+    public Component formatMessage(String message) {
         return formatMessage(null, message);
     }
 
-    public static Component formatMessage(Player player, String message) {
+    public Component formatMessage(Player player, String message) {
         final MiniMessage miniMessage = MiniMessage.miniMessage();
 
         message = hookIntegration(player, message);
@@ -29,7 +29,7 @@ public class FormatterUtil {
         return miniMessage.deserialize(message);
     }
 
-    public static String hookIntegration(Player player, String message) {
+    public String hookIntegration(Player player, String message) {
         for (Integration integration : integrationManager.getEnabledIntegrations()) {
             if (integration.getType() == IntegrationType.MESSAGING) {
                 MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
@@ -39,5 +39,4 @@ public class FormatterUtil {
 
         return message;
     }
-
 }

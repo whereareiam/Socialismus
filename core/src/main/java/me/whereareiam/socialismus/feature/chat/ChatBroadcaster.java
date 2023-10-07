@@ -16,10 +16,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class ChatBroadcaster {
+    private final FormatterUtil formatterUtil;
     private final MessagesConfig messages;
 
     @Inject
-    public ChatBroadcaster(MessagesConfig messages) {
+    public ChatBroadcaster(FormatterUtil formatterUtil, MessagesConfig messages) {
+        this.formatterUtil = formatterUtil;
         this.messages = messages;
     }
 
@@ -73,7 +75,7 @@ public class ChatBroadcaster {
     }
 
     private Component createFinalMessage(ChatMessage chatMessage, Chat chat) {
-        Component messageFormat = FormatterUtil.formatMessage(chatMessage.sender(), chat.messageFormat);
+        Component messageFormat = formatterUtil.formatMessage(chatMessage.sender(), chat.messageFormat);
         Component hoverFormat = createHoverFormat(chat.hoverFormat, chatMessage.sender());
 
         TextReplacementConfig config = TextReplacementConfig.builder()
@@ -95,6 +97,6 @@ public class ChatBroadcaster {
         }
 
         String hoverFormatString = String.join("\n", hoverFormatList);
-        return FormatterUtil.formatMessage(sender, hoverFormatString);
+        return formatterUtil.formatMessage(sender, hoverFormatString);
     }
 }

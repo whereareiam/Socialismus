@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.integration.placeholderAPI.placeholders;
+package me.whereareiam.socialismus.integration.PlaceholderAPI.placeholders;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.whereareiam.socialismus.SocialismusBase;

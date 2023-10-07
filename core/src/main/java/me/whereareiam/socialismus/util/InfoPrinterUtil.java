@@ -6,26 +6,26 @@ import me.whereareiam.socialismus.command.management.CommandManager;
 import me.whereareiam.socialismus.feature.FeatureLoader;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.IntegrationManager;
-import me.whereareiam.socialismus.integration.placeholderAPI.PlaceholderAPI;
+import me.whereareiam.socialismus.integration.PlaceholderAPI.PlaceholderAPI;
 import me.whereareiam.socialismus.platform.PlatformType;
 
 import java.util.List;
 
 public class InfoPrinterUtil {
-    private static LoggerUtil loggerUtil;
-    private static CommandManager commandManager;
-    private static IntegrationManager integrationManager;
-    private static FeatureLoader featureLoader;
+    private final LoggerUtil loggerUtil;
+    private final CommandManager commandManager;
+    private final IntegrationManager integrationManager;
+    private final FeatureLoader featureLoader;
 
     @Inject
     public InfoPrinterUtil(LoggerUtil loggerUtil, CommandManager commandManager, IntegrationManager integrationManager, FeatureLoader featureLoader) {
-        InfoPrinterUtil.loggerUtil = loggerUtil;
-        InfoPrinterUtil.commandManager = commandManager;
-        InfoPrinterUtil.integrationManager = integrationManager;
-        InfoPrinterUtil.featureLoader = featureLoader;
+        this.loggerUtil = loggerUtil;
+        this.commandManager = commandManager;
+        this.integrationManager = integrationManager;
+        this.featureLoader = featureLoader;
     }
 
-    public static void printStartMessage() {
+    public void printStartMessage() {
         loggerUtil.info("");
         loggerUtil.info("  █▀ █▀▀   Socialismus v" + SocialismusBase.version);
         loggerUtil.info("  ▄█ █▄▄   Platform: " + PlatformType.getCurrentPlatform());

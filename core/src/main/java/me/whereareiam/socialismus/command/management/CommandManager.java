@@ -4,11 +4,13 @@ import co.aikar.commands.BukkitCommandManager;
 import co.aikar.locales.MessageKey;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 
 import java.util.Locale;
 
+@Singleton
 public class CommandManager {
     private final Injector injector;
     private final BukkitCommandManager bukkitCommandManager;

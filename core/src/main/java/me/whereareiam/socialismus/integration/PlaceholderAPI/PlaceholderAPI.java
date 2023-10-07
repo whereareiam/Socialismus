@@ -1,9 +1,9 @@
-package me.whereareiam.socialismus.integration.placeholderAPI;
+package me.whereareiam.socialismus.integration.PlaceholderAPI;
 
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.integration.IntegrationType;
 import me.whereareiam.socialismus.integration.MessagingIntegration;
-import me.whereareiam.socialismus.integration.placeholderAPI.placeholders.Placeholders;
+import me.whereareiam.socialismus.integration.PlaceholderAPI.placeholders.Placeholders;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

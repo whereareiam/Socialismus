@@ -2,13 +2,15 @@ package me.whereareiam.socialismus.integration;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import me.whereareiam.socialismus.integration.PlaceholderAPI.PlaceholderAPI;
 import me.whereareiam.socialismus.integration.bStats.bStats;
-import me.whereareiam.socialismus.integration.placeholderAPI.PlaceholderAPI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Singleton
 public class IntegrationManager {
     private final List<Integration> integrations = new ArrayList<>();
 
