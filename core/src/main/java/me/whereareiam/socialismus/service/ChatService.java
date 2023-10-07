@@ -1,13 +1,26 @@
 package me.whereareiam.socialismus.service;
 
+import com.google.inject.Inject;
+import me.whereareiam.socialismus.util.LoggerUtil;
+
 public class ChatService {
+    private final LoggerUtil loggerUtil;
     private boolean chatListenerRequired = false;
 
+    @Inject
+    public ChatService(LoggerUtil loggerUtil) {
+        this.loggerUtil = loggerUtil;
+
+        loggerUtil.trace("Initializing class: " + this);
+    }
+
     public boolean isChatListenerRequired() {
+        loggerUtil.debug("isChatListenerRequired: " + chatListenerRequired);
         return chatListenerRequired;
     }
 
-    public void setChatListenerRequired(boolean required) {
-        this.chatListenerRequired = required;
+    public void setChatListenerRequired(boolean state) {
+        loggerUtil.debug("setChatListenerRequired: " + state);
+        this.chatListenerRequired = state;
     }
 }

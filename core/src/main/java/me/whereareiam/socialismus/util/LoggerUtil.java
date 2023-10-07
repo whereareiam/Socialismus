@@ -1,8 +1,10 @@
 package me.whereareiam.socialismus.util;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 
+@Singleton
 public class LoggerUtil {
     private static java.util.logging.Logger bukkitLogger;
     private final SettingsConfig settingsConfig;
@@ -47,13 +49,13 @@ public class LoggerUtil {
     }
 
     public void info(String message) {
-        if (settingsConfig.logLevel <= 0) {
+        if (settingsConfig.logLevel >= 0) {
             logMessage("INFO", message);
         }
     }
 
     public void debug(String message) {
-        if (settingsConfig.logLevel == 1) {
+        if (settingsConfig.logLevel >= 1) {
             logMessage("DEBUG", message);
         }
     }
