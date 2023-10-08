@@ -22,7 +22,7 @@ public class ChatEventHandler {
         ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message);
 
         if (chatMessage.chat() != null) {
-            chatMessageDistributor.broadcastMessage(chatMessage);
+            chatMessageDistributor.distributeMessage(chatMessage);
         }
     }
 }

@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.feature.chat.Chat;
 import me.whereareiam.socialismus.feature.chat.requirement.validator.RecipientRequirementValidator;
 import me.whereareiam.socialismus.feature.chat.requirement.validator.SenderRequirementValidator;
+import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import net.kyori.adventure.audience.Audience;
@@ -43,8 +44,8 @@ public class ChatMessageDistributor {
         loggerUtil.trace("Initializing class: " + this);
     }
 
-    public void broadcastMessage(ChatMessage chatMessage) {
-        loggerUtil.debug("Broadcasting message: " + chatMessage.content());
+    public void distributeMessage(ChatMessage chatMessage) {
+        loggerUtil.debug("Distributing message: " + chatMessage.content());
 
         Player sender = chatMessage.sender();
         Audience senderAudience = (Audience) sender;
@@ -58,6 +59,31 @@ public class ChatMessageDistributor {
         }
 
         Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
+
+        if (onlinePlayers.isEmpty() || (onlinePlayers.size() == 1 && onlinePlayers.contains(sender))) {
+            String noOnlinePlayers = messages.chat.noOnlinePlayers;
+            if (noOnlinePlayers == null)
+                return;
+
+            senderAudience.sendMessage(formatterUtil.formatMessage(sender, noOnlinePlayers));
+            return;
+        }
+
+        boolean isPlayerNearby = false;
+        for (Player player : onlinePlayers) {
+            if (!sender.equals(player) && DistanceCalculatorUtil.calculateDistance(sender, player) <= chat.radius) {
+                isPlayerNearby = true;
+                break;
+            }
+        }
+
+        if (!isPlayerNearby) {
+            String noNearbyPlayers = messages.chat.noNearbyPlayers;
+            if (noNearbyPlayers != null) {
+                senderAudience.sendMessage(formatterUtil.formatMessage(sender, noNearbyPlayers));
+            }
+            return;
+        }
 
         for (Player recipient : onlinePlayers) {
             if (recipientRequirementValidator.checkRequirements(recipient, chat)) {

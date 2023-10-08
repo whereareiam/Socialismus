@@ -29,7 +29,9 @@ public class CacheInterceptor implements MethodInterceptor {
         Object value = cache.getIfPresent(key);
         if (value == null) {
             value = invocation.proceed();
-            cache.put(key, value);
+            if (value != null) {
+                cache.put(key, value);
+            }
         }
         return value;
     }
@@ -40,5 +42,3 @@ public class CacheInterceptor implements MethodInterceptor {
         return methodName + args;
     }
 }
-
-
