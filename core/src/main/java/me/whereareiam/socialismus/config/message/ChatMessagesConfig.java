@@ -18,4 +18,5 @@ public class ChatMessagesConfig {
             at = Comment.At.PREPEND
     )
     public String noNearbyPlayers = "No one has heard you.";
+    public String lackOfRequirements = "You do not have the necessary requirements to write in this chat.";
 }

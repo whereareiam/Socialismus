@@ -1,7 +1,8 @@
 package me.whereareiam.socialismus.feature.chat.requirement;
 
-import me.whereareiam.socialismus.feature.chat.message.ChatMessage;
+import me.whereareiam.socialismus.feature.chat.Chat;
+import org.bukkit.entity.Player;
 
 public interface ChatRequirement {
-    boolean checkRequirement(ChatMessage chatMessage);
+    boolean checkRequirement(Player player, Chat chat);
 }
