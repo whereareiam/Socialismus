@@ -62,11 +62,10 @@ public class ChatMessageDistributor {
 
         if (onlinePlayers.isEmpty() || (onlinePlayers.size() == 1 && onlinePlayers.contains(sender))) {
             String noOnlinePlayers = messages.chat.noOnlinePlayers;
-            if (noOnlinePlayers == null)
+            if (noOnlinePlayers != null) {
+                senderAudience.sendMessage(formatterUtil.formatMessage(sender, noOnlinePlayers));
                 return;
-
-            senderAudience.sendMessage(formatterUtil.formatMessage(sender, noOnlinePlayers));
-            return;
+            }
         }
 
         boolean isPlayerNearby = false;
@@ -81,8 +80,8 @@ public class ChatMessageDistributor {
             String noNearbyPlayers = messages.chat.noNearbyPlayers;
             if (noNearbyPlayers != null) {
                 senderAudience.sendMessage(formatterUtil.formatMessage(sender, noNearbyPlayers));
+                return;
             }
-            return;
         }
 
         for (Player recipient : onlinePlayers) {
