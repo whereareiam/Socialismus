@@ -30,6 +30,18 @@ public class SettingsConfig extends YamlSerializable {
     )
     public FeaturesSettingsConfig features = new FeaturesSettingsConfig();
 
+    @Comment(
+            value = {
+                    @CommentValue(type = CommentValue.Type.NEW_LINE),
+                    @CommentValue(" In this section, you can switch the plugin's behavior mode, which"),
+                    @CommentValue(" can impact its performance and usage of resources."),
+                    @CommentValue("  true - enabled"),
+                    @CommentValue("  false - disabled"),
+            },
+            at = Comment.At.PREPEND
+    )
+    public PerformanceSettingsConfig performance = new PerformanceSettingsConfig();
+
     public SettingsConfig() {
         super(SettingsConfig.SETTINGS);
     }
