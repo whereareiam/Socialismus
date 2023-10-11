@@ -36,7 +36,9 @@ public class ChatMessageBroadcaster {
     }
 
     private boolean shouldSendMessage(Player sender, Player recipient, int radius) {
-        return sender.equals(recipient) || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= radius;
+        return sender.equals(recipient)
+                || radius == -1
+                || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= radius;
     }
 
     private Component createFinalMessage(ChatMessage chatMessage) {
