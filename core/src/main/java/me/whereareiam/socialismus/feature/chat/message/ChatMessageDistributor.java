@@ -68,14 +68,10 @@ public class ChatMessageDistributor {
             }
         }
 
-        boolean isPlayerNearby = false;
+        boolean isPlayerNearby;
         if (chat.radius != -1) {
-            for (Player player : onlinePlayers) {
-                if (!sender.equals(player) && DistanceCalculatorUtil.calculateDistance(sender, player) <= chat.radius) {
-                    isPlayerNearby = true;
-                    break;
-                }
-            }
+            isPlayerNearby = onlinePlayers.stream()
+                    .anyMatch(player -> !sender.equals(player) && DistanceCalculatorUtil.calculateDistance(sender, player) <= chat.radius);
 
             if (!isPlayerNearby) {
                 String noNearbyPlayers = messages.chat.noNearbyPlayers;
@@ -86,10 +82,8 @@ public class ChatMessageDistributor {
             }
         }
 
-        for (Player recipient : onlinePlayers) {
-            if (recipientRequirementValidator.checkRequirements(recipient, chat)) {
-                chatMessageBroadcaster.broadcastMessage(chatMessage, recipient);
-            }
-        }
+        onlinePlayers.stream()
+                .filter(recipient -> recipientRequirementValidator.checkRequirements(recipient, chat))
+                .forEach(recipient -> chatMessageBroadcaster.broadcastMessage(chatMessage, recipient));
     }
 }
