@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.feature.chat.message;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.feature.chat.Chat;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
@@ -41,6 +42,7 @@ public class ChatMessageBroadcaster {
                 || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= radius;
     }
 
+    @Cacheable
     private Component createFinalMessage(ChatMessage chatMessage) {
         Chat chat = chatMessage.chat();
 
@@ -60,6 +62,7 @@ public class ChatMessageBroadcaster {
         return finalMessage;
     }
 
+    @Cacheable
     private Component createHoverFormat(List<String> hoverFormatList, Player sender) {
         if (hoverFormatList == null || hoverFormatList.isEmpty()) {
             return null;

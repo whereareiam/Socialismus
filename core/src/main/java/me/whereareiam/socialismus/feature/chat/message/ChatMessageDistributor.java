@@ -84,6 +84,7 @@ public class ChatMessageDistributor {
 
         onlinePlayers.stream()
                 .filter(recipient -> recipientRequirementValidator.checkRequirements(recipient, chat))
+                .filter(recipient -> chat.radius == -1 || (sender.getWorld().equals(recipient.getWorld()) && DistanceCalculatorUtil.calculateDistance(sender, recipient) <= chat.radius))
                 .forEach(recipient -> chatMessageBroadcaster.broadcastMessage(chatMessage, recipient));
     }
 }

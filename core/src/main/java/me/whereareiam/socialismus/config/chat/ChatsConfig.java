@@ -24,7 +24,7 @@ public class ChatsConfig extends YamlSerializable {
                     @CommentValue("     write-permission: \"privilege.2\""),
                     @CommentValue("     chat-symbol: \"!\""),
                     @CommentValue("     radius: 50"),
-                    @CommentValue("     message-format: \"%luckperms_prefix%%display_name%: {message}\""),
+                    @CommentValue("     message-format: \"%luckperms_prefix%%player_name%: {message}\""),
                     @CommentValue("     hover-format: "),
                     @CommentValue("       - \" Some text1 \""),
                     @CommentValue("       - \" Some text2 \""),
