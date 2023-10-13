@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.event;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.feature.chat.message.ChatMessage;
-import me.whereareiam.socialismus.feature.chat.message.ChatMessageDistributor;
-import me.whereareiam.socialismus.feature.chat.message.ChatMessageFactory;
+import me.whereareiam.socialismus.chat.message.ChatMessage;
+import me.whereareiam.socialismus.chat.message.ChatMessageDistributor;
+import me.whereareiam.socialismus.chat.message.ChatMessageFactory;
 import org.bukkit.entity.Player;
 
 @Singleton

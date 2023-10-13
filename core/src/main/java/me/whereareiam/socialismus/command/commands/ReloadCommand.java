@@ -9,6 +9,7 @@ import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.config.ConfigManager;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
+import me.whereareiam.socialismus.feature.FeatureLoader;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import net.kyori.adventure.audience.Audience;
@@ -18,17 +19,19 @@ import org.bukkit.entity.Player;
 public class ReloadCommand extends CommandBase {
     private final LoggerUtil loggerUtil;
     private final FormatterUtil formatterUtil;
-    private final ConfigManager configManager;
     private final CommandsConfig commands;
     private final MessagesConfig messages;
+    private final ConfigManager configManager;
+    private final FeatureLoader featureLoader;
 
     @Inject
-    public ReloadCommand(LoggerUtil loggerUtil, FormatterUtil formatterUtil, ConfigManager configManager, CommandsConfig commands, MessagesConfig messages) {
+    public ReloadCommand(LoggerUtil loggerUtil, FormatterUtil formatterUtil, CommandsConfig commands, MessagesConfig messages, ConfigManager configManager, FeatureLoader featureLoader) {
         this.loggerUtil = loggerUtil;
         this.formatterUtil = formatterUtil;
-        this.configManager = configManager;
         this.commands = commands;
         this.messages = messages;
+        this.configManager = configManager;
+        this.featureLoader = featureLoader;
     }
 
     @Subcommand("%command.reload")
@@ -43,6 +46,7 @@ public class ReloadCommand extends CommandBase {
 
         loggerUtil.info(message);
         configManager.reloadConfigs();
+        featureLoader.reloadFeatures();
     }
 
     @Override

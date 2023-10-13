@@ -1,8 +1,8 @@
-package me.whereareiam.socialismus.feature.chat.message;
+package me.whereareiam.socialismus.chat.message;
 
 import com.google.inject.Inject;
-import me.whereareiam.socialismus.feature.chat.Chat;
-import me.whereareiam.socialismus.feature.chat.ChatManager;
+import me.whereareiam.socialismus.chat.Chat;
+import me.whereareiam.socialismus.feature.chats.ChatManager;
 import org.bukkit.entity.Player;
 
 public class ChatMessageFactory {

@@ -1,10 +1,10 @@
-package me.whereareiam.socialismus.feature.chat.requirement.validator;
+package me.whereareiam.socialismus.chat.requirement.validator;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.feature.chat.Chat;
-import me.whereareiam.socialismus.feature.chat.requirement.ChatRequirement;
-import me.whereareiam.socialismus.feature.chat.requirement.SeePermissionRequirement;
-import me.whereareiam.socialismus.feature.chat.requirement.WorldRequirement;
+import me.whereareiam.socialismus.chat.Chat;
+import me.whereareiam.socialismus.chat.requirement.ChatRequirement;
+import me.whereareiam.socialismus.chat.requirement.SeePermissionRequirement;
+import me.whereareiam.socialismus.chat.requirement.WorldRequirement;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

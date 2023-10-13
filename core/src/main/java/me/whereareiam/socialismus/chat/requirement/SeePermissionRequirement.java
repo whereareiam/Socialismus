@@ -1,7 +1,7 @@
-package me.whereareiam.socialismus.feature.chat.requirement;
+package me.whereareiam.socialismus.chat.requirement;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.feature.chat.Chat;
+import me.whereareiam.socialismus.chat.Chat;
 import org.bukkit.entity.Player;
 
 @Singleton

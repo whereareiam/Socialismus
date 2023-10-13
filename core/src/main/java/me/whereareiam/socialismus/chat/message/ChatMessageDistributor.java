@@ -1,11 +1,11 @@
-package me.whereareiam.socialismus.feature.chat.message;
+package me.whereareiam.socialismus.chat.message;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.chat.Chat;
+import me.whereareiam.socialismus.chat.requirement.validator.RecipientRequirementValidator;
+import me.whereareiam.socialismus.chat.requirement.validator.SenderRequirementValidator;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
-import me.whereareiam.socialismus.feature.chat.Chat;
-import me.whereareiam.socialismus.feature.chat.requirement.validator.RecipientRequirementValidator;
-import me.whereareiam.socialismus.feature.chat.requirement.validator.SenderRequirementValidator;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;

@@ -1,8 +1,9 @@
-package me.whereareiam.socialismus.feature.chat;
+package me.whereareiam.socialismus.feature.chats;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.cache.Cacheable;
+import me.whereareiam.socialismus.chat.Chat;
 import me.whereareiam.socialismus.feature.Feature;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
@@ -26,7 +27,12 @@ public class ChatManager implements Feature {
         chats.put(chat.id, chat);
     }
 
-    @Cacheable
+    public void cleanChats() {
+        chats.clear();
+        loggerUtil.trace("All chats have been cleaned");
+    }
+
+    @Cacheable(duration = 5)
     public Chat getChatBySymbol(String symbol) {
         for (Chat chat : chats.values()) {
             if (chat.chatSymbol.equals(symbol)) {
