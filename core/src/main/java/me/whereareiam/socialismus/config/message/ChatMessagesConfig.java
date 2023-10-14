@@ -17,6 +17,6 @@ public class ChatMessagesConfig {
             },
             at = Comment.At.PREPEND
     )
-    public String noNearbyPlayers = "<gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>No one has heard you.";
-    public String lackOfRequirements = "<gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>You <red>do not have the necessary requirements <white>to write in this chat.";
+    public String noNearbyPlayers = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>No one has heard you.";
+    public String lackOfRequirements = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>You <red>do not have the necessary requirements <white>to write in this chat.";
 }

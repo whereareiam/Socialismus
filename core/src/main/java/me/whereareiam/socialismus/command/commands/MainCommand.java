@@ -14,19 +14,22 @@ import me.whereareiam.socialismus.command.management.CommandManager;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.util.FormatterUtil;
+import me.whereareiam.socialismus.util.LoggerUtil;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public class MainCommand extends CommandBase {
+    private final LoggerUtil loggerUtil;
     private final CommandManager commandManager;
     private final FormatterUtil formatterUtil;
     private final CommandsConfig commands;
     private final MessagesConfig messages;
 
     @Inject
-    public MainCommand(CommandManager commandManager, FormatterUtil formatterUtil, CommandsConfig commands, MessagesConfig messages) {
+    public MainCommand(LoggerUtil loggerUtil, CommandManager commandManager, FormatterUtil formatterUtil, CommandsConfig commands, MessagesConfig messages) {
+        this.loggerUtil = loggerUtil;
         this.commandManager = commandManager;
         this.formatterUtil = formatterUtil;
         this.commands = commands;
@@ -88,7 +91,7 @@ public class MainCommand extends CommandBase {
                     descriptionToSubcommands.put(description, new ArrayList<>());
                 }
                 if (!subEntry.getKey().equals("__default")) {
-                    if (issuer instanceof Player && !hasRequiredPermissions((Player) issuer, subCommand)) {
+                    if (issuer.getIssuer() instanceof Player && !hasRequiredPermissions(issuer.getIssuer(), subCommand)) {
                         continue;
                     }
                     descriptionToSubcommands.get(description).add(subEntry.getKey());
@@ -101,6 +104,7 @@ public class MainCommand extends CommandBase {
 
     private boolean hasRequiredPermissions(Player player, RegisteredCommand<?> subCommand) {
         for (String permission : subCommand.getRequiredPermissions()) {
+            loggerUtil.trace("Checking permission " + permission + " for " + player.getName());
             if (player.hasPermission(permission)) {
                 return true;
             }
@@ -123,7 +127,7 @@ public class MainCommand extends CommandBase {
     }
 
     private void sendHelpMessage(CommandIssuer issuer, String helpMessage) {
-        if (issuer instanceof Player) {
+        if (issuer.getIssuer() instanceof Player) {
             Audience audience = issuer.getIssuer();
             audience.sendMessage(formatterUtil.formatMessage(issuer.getIssuer(), helpMessage));
         } else {
@@ -143,7 +147,7 @@ public class MainCommand extends CommandBase {
     @Override
     public void addReplacements() {
         commandHelper.addReplacement(commands.mainCommand.command, "command.main");
-        commandHelper.addReplacement(commands.mainCommand.playerPermission, "permission.main");
+        commandHelper.addReplacement(commands.mainCommand.permission, "permission.main");
         commandHelper.addReplacement(messages.commands.mainCommand.description, "description.main");
     }
 }
