@@ -6,5 +6,6 @@ public class CommandsMessagesConfig {
     public String errorOccurred = "An error occurred while executing the command.";
     public String missingArgument = "You did not specify the required argument to execute the command.";
 
+    public MainCommandMessagesConfig mainCommand = new MainCommandMessagesConfig();
     public ReloadCommandMessagesConfig reloadCommand = new ReloadCommandMessagesConfig();
 }

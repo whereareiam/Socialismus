@@ -23,6 +23,15 @@ public class FormatterUtil {
         loggerUtil.trace("Initializing class: " + this);
     }
 
+    public String cleanMessage(String message) {
+        message = message.replaceAll("<[^>]*>", "");
+
+        message = message.replaceAll("&[0-9a-fk-or]", "");
+        message = message.replaceAll("§[0-9a-fk-or]", "");
+
+        return message;
+    }
+
     public Component formatMessage(String message) {
         loggerUtil.debug("formatMessage: " + message);
 
