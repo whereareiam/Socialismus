@@ -24,7 +24,6 @@ public class FeatureLoader {
     private final SwapperManager swapperManager;
 
     private final ChatListenerState chatListenerState;
-    private final TabCompleteService tabCompleteService;
 
     @Inject
     public FeatureLoader(Injector injector, LoggerUtil loggerUtil,
@@ -32,7 +31,7 @@ public class FeatureLoader {
 
                          ChatManager chatManager, SwapperManager swapperManager,
 
-                         ChatListenerState chatListenerState, TabCompleteService tabCompleteService
+                         ChatListenerState chatListenerState
     ) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
@@ -43,7 +42,6 @@ public class FeatureLoader {
         this.swapperManager = swapperManager;
 
         this.chatListenerState = chatListenerState;
-        this.tabCompleteService = tabCompleteService;
 
         loggerUtil.trace("Initializing class: " + this);
     }
@@ -64,7 +62,6 @@ public class FeatureLoader {
 
         if (featuresSettingsConfig.swapper) {
             chatListenerState.setChatListenerRequired(true);
-            tabCompleteService.setTabCompleteListenerRequired(true);
 
             swapperManager.registerSwappers();
         }
