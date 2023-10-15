@@ -60,7 +60,7 @@ public class FeatureLoader {
             }
         }
 
-        if (featuresSettingsConfig.swapper) {
+        if (featuresSettingsConfig.swapper.enabled) {
             chatListenerState.setChatListenerRequired(true);
 
             swapperManager.registerSwappers();
@@ -78,7 +78,7 @@ public class FeatureLoader {
             }
         }
 
-        if (featuresSettingsConfig.swapper) {
+        if (featuresSettingsConfig.swapper.enabled) {
             swapperManager.cleanSwappers();
             swapperManager.registerSwappers();
         }

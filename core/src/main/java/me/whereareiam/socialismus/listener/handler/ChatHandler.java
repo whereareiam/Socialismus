@@ -29,7 +29,7 @@ public class ChatHandler {
     public void handleChatEvent(Player player, String message) {
         ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message);
 
-        if (settingsConfig.features.swapper) {
+        if (settingsConfig.features.swapper.enabled) {
             chatMessage = swapperService.swapPlaceholders(chatMessage);
         }
 
