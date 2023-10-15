@@ -2,8 +2,8 @@ package me.whereareiam.socialismus.listener.player;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.event.ChatEventHandler;
 import me.whereareiam.socialismus.listener.PlayerChatListener;
+import me.whereareiam.socialismus.listener.handler.ChatHandler;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,12 +12,12 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 @Singleton
 public class PlayerAsyncChatListener implements PlayerChatListener {
     private final LoggerUtil loggerUtil;
-    private final ChatEventHandler chatEventHandler;
+    private final ChatHandler chatHandler;
 
     @Inject
-    public PlayerAsyncChatListener(LoggerUtil loggerUtil, ChatEventHandler chatEventHandler) {
+    public PlayerAsyncChatListener(LoggerUtil loggerUtil, ChatHandler chatHandler) {
         this.loggerUtil = loggerUtil;
-        this.chatEventHandler = chatEventHandler;
+        this.chatHandler = chatHandler;
 
         loggerUtil.trace("Initializing class: " + this);
     }
@@ -35,6 +35,6 @@ public class PlayerAsyncChatListener implements PlayerChatListener {
 
     @Override
     public void onPlayerChatEvent(Player player, String message) {
-        chatEventHandler.handleChatEvent(player, message);
+        chatHandler.handleChatEvent(player, message);
     }
 }

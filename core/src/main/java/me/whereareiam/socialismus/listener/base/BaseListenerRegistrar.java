@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import me.whereareiam.socialismus.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.listener.PlayerChatListener;
-import me.whereareiam.socialismus.service.ChatService;
+import me.whereareiam.socialismus.listener.state.ChatListenerState;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -14,16 +14,16 @@ public abstract class BaseListenerRegistrar implements ListenerRegistrar {
     protected final LoggerUtil loggerUtil;
     protected final Plugin plugin;
 
-    protected final ChatService chatService;
+    protected final ChatListenerState chatListenerState;
 
     @Inject
     public BaseListenerRegistrar(Injector injector, LoggerUtil loggerUtil, Plugin plugin,
-                                 ChatService chatService) {
+                                 ChatListenerState chatListenerState) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
         this.plugin = plugin;
 
-        this.chatService = chatService;
+        this.chatListenerState = chatListenerState;
 
         loggerUtil.trace("Initializing class: " + this);
     }
@@ -32,7 +32,7 @@ public abstract class BaseListenerRegistrar implements ListenerRegistrar {
     public void registerListeners() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
 
-        boolean chatListenerRequired = chatService.isChatListenerRequired();
+        boolean chatListenerRequired = chatListenerState.isChatListenerRequired();
 
         if (chatListenerRequired) {
             loggerUtil.debug("Registering chat listener");

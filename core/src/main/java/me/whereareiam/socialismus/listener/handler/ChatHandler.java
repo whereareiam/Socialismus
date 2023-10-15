@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.event;
+package me.whereareiam.socialismus.listener.handler;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -10,7 +10,7 @@ import me.whereareiam.socialismus.feature.swapper.SwapperService;
 import org.bukkit.entity.Player;
 
 @Singleton
-public class ChatEventHandler {
+public class ChatHandler {
     private final ChatMessageFactory chatMessageFactory;
     private final SettingsConfig settingsConfig;
 
@@ -18,7 +18,7 @@ public class ChatEventHandler {
     private final ChatService chatService;
 
     @Inject
-    public ChatEventHandler(ChatMessageFactory chatMessageFactory, SettingsConfig settingsConfig, ChatService chatService, SwapperService swapperService) {
+    public ChatHandler(ChatMessageFactory chatMessageFactory, SettingsConfig settingsConfig, ChatService chatService, SwapperService swapperService) {
         this.chatMessageFactory = chatMessageFactory;
         this.settingsConfig = settingsConfig;
 

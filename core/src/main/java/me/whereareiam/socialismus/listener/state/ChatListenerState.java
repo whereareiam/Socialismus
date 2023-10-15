@@ -1,16 +1,16 @@
-package me.whereareiam.socialismus.service;
+package me.whereareiam.socialismus.listener.state;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
 @Singleton
-public class ChatService {
+public class ChatListenerState {
     private final LoggerUtil loggerUtil;
     private boolean chatListenerRequired = false;
 
     @Inject
-    public ChatService(LoggerUtil loggerUtil) {
+    public ChatListenerState(LoggerUtil loggerUtil) {
         this.loggerUtil = loggerUtil;
 
         loggerUtil.trace("Initializing class: " + this);

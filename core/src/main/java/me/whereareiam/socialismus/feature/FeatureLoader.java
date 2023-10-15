@@ -9,8 +9,7 @@ import me.whereareiam.socialismus.config.chat.ChatsConfig;
 import me.whereareiam.socialismus.config.setting.FeaturesSettingsConfig;
 import me.whereareiam.socialismus.feature.chats.ChatManager;
 import me.whereareiam.socialismus.feature.swapper.SwapperManager;
-import me.whereareiam.socialismus.service.ChatService;
-import me.whereareiam.socialismus.service.TabCompleteService;
+import me.whereareiam.socialismus.listener.state.ChatListenerState;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
@@ -24,7 +23,7 @@ public class FeatureLoader {
     private final ChatManager chatManager;
     private final SwapperManager swapperManager;
 
-    private final ChatService chatService;
+    private final ChatListenerState chatListenerState;
     private final TabCompleteService tabCompleteService;
 
     @Inject
@@ -33,7 +32,7 @@ public class FeatureLoader {
 
                          ChatManager chatManager, SwapperManager swapperManager,
 
-                         ChatService chatService, TabCompleteService tabCompleteService
+                         ChatListenerState chatListenerState, TabCompleteService tabCompleteService
     ) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
@@ -43,7 +42,7 @@ public class FeatureLoader {
         this.chatManager = chatManager;
         this.swapperManager = swapperManager;
 
-        this.chatService = chatService;
+        this.chatListenerState = chatListenerState;
         this.tabCompleteService = tabCompleteService;
 
         loggerUtil.trace("Initializing class: " + this);
@@ -53,7 +52,7 @@ public class FeatureLoader {
         loggerUtil.debug("Loading features");
 
         if (featuresSettingsConfig.chats) {
-            chatService.setChatListenerRequired(true);
+            chatListenerState.setChatListenerRequired(true);
 
             ChatsConfig chatsConfig = injector.getInstance(ChatsConfig.class);
             chatsConfig.reload(plugin.getDataFolder().toPath().resolve("chats.yml"));
@@ -64,7 +63,7 @@ public class FeatureLoader {
         }
 
         if (featuresSettingsConfig.swapper) {
-            chatService.setChatListenerRequired(true);
+            chatListenerState.setChatListenerRequired(true);
             tabCompleteService.setTabCompleteListenerRequired(true);
 
             swapperManager.registerSwappers();
