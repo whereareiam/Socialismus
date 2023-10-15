@@ -55,6 +55,9 @@ public class InfoPrinterUtil {
 
         int chatCount = featureLoader.getChatCount();
         loggerUtil.info("  Registered " + chatCount + " " + (chatCount == 1 ? "chat" : "chats"));
+
+        int swapperCount = featureLoader.getSwapperCount();
+        loggerUtil.info("  Registered " + swapperCount + " " + (swapperCount == 1 ? "swapper" : "swappers"));
         loggerUtil.info("");
     }
 }

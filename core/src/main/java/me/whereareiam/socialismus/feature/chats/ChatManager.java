@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.feature.chats;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.cache.Cacheable;
-import me.whereareiam.socialismus.chat.Chat;
+import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.feature.Feature;
 import me.whereareiam.socialismus.util.LoggerUtil;
 

@@ -2,32 +2,39 @@ package me.whereareiam.socialismus.event;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.chat.ChatService;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
-import me.whereareiam.socialismus.chat.message.ChatMessageDistributor;
 import me.whereareiam.socialismus.chat.message.ChatMessageFactory;
-import me.whereareiam.socialismus.util.LoggerUtil;
+import me.whereareiam.socialismus.config.setting.SettingsConfig;
+import me.whereareiam.socialismus.feature.swapper.SwapperService;
 import org.bukkit.entity.Player;
 
 @Singleton
 public class ChatEventHandler {
-    private final LoggerUtil loggerUtil;
-    private final ChatMessageDistributor chatMessageDistributor;
     private final ChatMessageFactory chatMessageFactory;
+    private final SettingsConfig settingsConfig;
+
+    private final SwapperService swapperService;
+    private final ChatService chatService;
 
     @Inject
-    public ChatEventHandler(LoggerUtil loggerUtil, ChatMessageDistributor chatMessageDistributor, ChatMessageFactory chatMessageFactory) {
-        this.loggerUtil = loggerUtil;
-        this.chatMessageDistributor = chatMessageDistributor;
+    public ChatEventHandler(ChatMessageFactory chatMessageFactory, SettingsConfig settingsConfig, ChatService chatService, SwapperService swapperService) {
         this.chatMessageFactory = chatMessageFactory;
+        this.settingsConfig = settingsConfig;
+
+        this.chatService = chatService;
+        this.swapperService = swapperService;
     }
 
     public void handleChatEvent(Player player, String message) {
-        loggerUtil.debug("Handling chat event for " + player.getName());
         ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message);
 
-        if (chatMessage.chat() != null) {
-            loggerUtil.trace("Found chat for message: " + chatMessage.chat().id);
-            chatMessageDistributor.distributeMessage(chatMessage);
+        if (settingsConfig.features.swapper) {
+            chatMessage = swapperService.swapPlaceholders(chatMessage);
+        }
+
+        if (settingsConfig.features.chats && chatMessage.getChat() != null) {
+            chatService.distributeMessage(chatMessage);
         }
     }
 }

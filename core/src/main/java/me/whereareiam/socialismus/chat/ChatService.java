@@ -1,8 +1,10 @@
-package me.whereareiam.socialismus.chat.message;
+package me.whereareiam.socialismus.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.chat.Chat;
+import me.whereareiam.socialismus.chat.message.ChatMessage;
+import me.whereareiam.socialismus.chat.message.ChatMessageBroadcaster;
+import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.chat.requirement.validator.RecipientRequirementValidator;
 import me.whereareiam.socialismus.chat.requirement.validator.SenderRequirementValidator;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
@@ -16,7 +18,7 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 
 @Singleton
-public class ChatMessageDistributor {
+public class ChatService {
     private final LoggerUtil loggerUtil;
     private final FormatterUtil formatterUtil;
     private final MessagesConfig messages;
@@ -27,10 +29,10 @@ public class ChatMessageDistributor {
     private final SenderRequirementValidator senderRequirementValidator;
 
     @Inject
-    public ChatMessageDistributor(LoggerUtil loggerUtil, FormatterUtil formatterUtil, MessagesConfig messages,
-                                  ChatMessageBroadcaster chatMessageBroadcaster,
-                                  RecipientRequirementValidator recipientRequirementValidator,
-                                  SenderRequirementValidator senderRequirementValidator
+    public ChatService(LoggerUtil loggerUtil, FormatterUtil formatterUtil, MessagesConfig messages,
+                       ChatMessageBroadcaster chatMessageBroadcaster,
+                       RecipientRequirementValidator recipientRequirementValidator,
+                       SenderRequirementValidator senderRequirementValidator
     ) {
         this.loggerUtil = loggerUtil;
         this.formatterUtil = formatterUtil;
@@ -45,12 +47,12 @@ public class ChatMessageDistributor {
     }
 
     public void distributeMessage(ChatMessage chatMessage) {
-        loggerUtil.debug("Distributing message: " + chatMessage.content());
+        loggerUtil.debug("Distributing message: " + chatMessage.getContent());
 
-        Player sender = chatMessage.sender();
+        Player sender = chatMessage.getSender();
         Audience senderAudience = (Audience) sender;
 
-        Chat chat = chatMessage.chat();
+        Chat chat = chatMessage.getChat();
 
         if (!senderRequirementValidator.checkRequirements(sender, chat)) {
             senderAudience.sendMessage(formatterUtil.formatMessage(sender, messages.chat.lackOfRequirements));

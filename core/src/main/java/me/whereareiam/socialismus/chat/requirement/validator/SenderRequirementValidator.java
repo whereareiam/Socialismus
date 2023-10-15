@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.chat.requirement.validator;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.chat.Chat;
+import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.chat.requirement.ChatRequirement;
 import me.whereareiam.socialismus.chat.requirement.WorldRequirement;
 import me.whereareiam.socialismus.chat.requirement.WritePermissionRequirement;

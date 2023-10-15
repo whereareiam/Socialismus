@@ -1,21 +1,21 @@
-package me.whereareiam.socialismus.listener;
+package me.whereareiam.socialismus.listener.player;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.papermc.paper.event.player.AsyncChatEvent;
 import me.whereareiam.socialismus.event.ChatEventHandler;
+import me.whereareiam.socialismus.listener.PlayerChatListener;
 import me.whereareiam.socialismus.util.LoggerUtil;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 @Singleton
-public class AsyncChatListener implements PlayerChatListener {
+public class PlayerAsyncChatListener implements PlayerChatListener {
     private final LoggerUtil loggerUtil;
     private final ChatEventHandler chatEventHandler;
 
     @Inject
-    public AsyncChatListener(LoggerUtil loggerUtil, ChatEventHandler chatEventHandler) {
+    public PlayerAsyncChatListener(LoggerUtil loggerUtil, ChatEventHandler chatEventHandler) {
         this.loggerUtil = loggerUtil;
         this.chatEventHandler = chatEventHandler;
 
@@ -23,11 +23,11 @@ public class AsyncChatListener implements PlayerChatListener {
     }
 
     @EventHandler
-    public void onEvent(AsyncChatEvent event) {
+    public void onEvent(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
+        String message = event.getMessage();
 
-        loggerUtil.debug("AsyncChatEvent: " + player.getName() + " " + message);
+        loggerUtil.debug("AsyncPlayerChatEvent: " + player.getName() + " " + message);
 
         onPlayerChatEvent(player, message);
         event.setCancelled(true);
