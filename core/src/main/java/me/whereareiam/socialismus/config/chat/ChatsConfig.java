@@ -49,7 +49,7 @@ public class ChatsConfig extends YamlSerializable {
                     @CommentValue("                     **It is not necessary to specify**"),
                     @CommentValue(type = CommentValue.Type.TEXT),
                     @CommentValue(" message-format -    The symbol that you need to put in front of the message to send it to the desired chat."),
-                    @CommentValue("                     **It is not necessary to specify**"),
+                    @CommentValue("                     **It should be specified, you can use placeholders, formatting codes, letters and numbers**"),
                     @CommentValue(type = CommentValue.Type.TEXT),
                     @CommentValue(" hover-format -      Message that will be displayed when you hover over a message from the chat."),
                     @CommentValue("                     **It is not necessary to specify**"),
