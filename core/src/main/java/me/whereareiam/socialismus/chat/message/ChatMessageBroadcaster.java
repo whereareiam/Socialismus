@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.chat.message;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.cache.Cacheable;
-import me.whereareiam.socialismus.chat.Chat;
+import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
@@ -27,7 +27,7 @@ public class ChatMessageBroadcaster {
     }
 
     public void broadcastMessage(ChatMessage chatMessage, Player recipient) {
-        if (shouldSendMessage(chatMessage.sender(), recipient, chatMessage.chat().radius)) {
+        if (shouldSendMessage(chatMessage.getSender(), recipient, chatMessage.getChat().radius)) {
             Audience recipientAudience = (Audience) recipient;
             Component finalMessage = createFinalMessage(chatMessage);
             recipientAudience.sendMessage(finalMessage);
@@ -44,14 +44,14 @@ public class ChatMessageBroadcaster {
 
     @Cacheable
     private Component createFinalMessage(ChatMessage chatMessage) {
-        Chat chat = chatMessage.chat();
+        Chat chat = chatMessage.getChat();
 
-        Component messageFormat = formatterUtil.formatMessage(chatMessage.sender(), chat.messageFormat);
-        Component hoverFormat = createHoverFormat(chat.hoverFormat, chatMessage.sender());
+        Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), chat.messageFormat);
+        Component hoverFormat = createHoverFormat(chat.hoverFormat, chatMessage.getSender());
 
         TextReplacementConfig config = TextReplacementConfig.builder()
                 .matchLiteral("{message}")
-                .replacement(chatMessage.content())
+                .replacement(chatMessage.getContent())
                 .build();
 
         Component finalMessage = messageFormat.replaceText(config);

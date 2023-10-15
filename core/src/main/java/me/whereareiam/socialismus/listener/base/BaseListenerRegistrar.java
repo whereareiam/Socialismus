@@ -13,13 +13,16 @@ public abstract class BaseListenerRegistrar implements ListenerRegistrar {
     protected final Injector injector;
     protected final LoggerUtil loggerUtil;
     protected final Plugin plugin;
+
     protected final ChatService chatService;
 
     @Inject
-    public BaseListenerRegistrar(Injector injector, LoggerUtil loggerUtil, Plugin plugin, ChatService chatService) {
+    public BaseListenerRegistrar(Injector injector, LoggerUtil loggerUtil, Plugin plugin,
+                                 ChatService chatService) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
         this.plugin = plugin;
+
         this.chatService = chatService;
 
         loggerUtil.trace("Initializing class: " + this);
