@@ -1,13 +1,16 @@
 package me.whereareiam.socialismus.command.management;
 
 import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.RootCommand;
 import co.aikar.locales.MessageKey;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 
+import java.util.Collection;
 import java.util.Locale;
 
 @Singleton
@@ -53,8 +56,13 @@ public class CommandManager {
         bukkitCommandManager.getLocales().addMessage(Locale.ENGLISH, MessageKey.of(acfKey), message);
     }
 
+    @Cacheable
     public int getCommandCount() {
         return commandCount;
     }
-}
 
+    @Cacheable
+    public Collection<RootCommand> getAllCommands() {
+        return bukkitCommandManager.getRegisteredRootCommands();
+    }
+}

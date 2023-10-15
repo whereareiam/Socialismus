@@ -9,11 +9,13 @@ import me.whereareiam.socialismus.config.setting.FeaturesSettingsConfig;
 import me.whereareiam.socialismus.feature.chats.ChatManager;
 import me.whereareiam.socialismus.service.ChatService;
 import me.whereareiam.socialismus.util.LoggerUtil;
+import org.bukkit.plugin.Plugin;
 
 @Singleton
 public class FeatureLoader {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
+    private final Plugin plugin;
     private final FeaturesSettingsConfig featuresSettingsConfig;
     private final ChatManager chatManager;
 
@@ -21,11 +23,12 @@ public class FeatureLoader {
 
     @Inject
     public FeatureLoader(Injector injector, LoggerUtil loggerUtil,
-                         FeaturesSettingsConfig featuresSettingsConfig,
+                         Plugin plugin, FeaturesSettingsConfig featuresSettingsConfig,
                          ChatManager chatManager, ChatService chatService
     ) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
+        this.plugin = plugin;
         this.featuresSettingsConfig = featuresSettingsConfig;
         this.chatManager = chatManager;
 
@@ -41,6 +44,8 @@ public class FeatureLoader {
             chatService.setChatListenerRequired(true);
 
             ChatsConfig chatsConfig = injector.getInstance(ChatsConfig.class);
+            chatsConfig.reload(plugin.getDataFolder().toPath().resolve("chats.yml"));
+
             for (Chat chat : chatsConfig.chats) {
                 chatManager.registerChat(chat);
             }

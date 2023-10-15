@@ -10,13 +10,13 @@ public class ChatMessagesConfig {
             },
             at = Comment.At.PREPEND
     )
-    public String noOnlinePlayers = "Nobody received your message because there are no players on the server.";
+    public String noOnlinePlayers = "<gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>Nobody received your message because there are no players on the server.";
     @Comment(
             value = {
                     @CommentValue(" Set 'noNearbyPlayers: null' to disable the message"),
             },
             at = Comment.At.PREPEND
     )
-    public String noNearbyPlayers = "No one has heard you.";
-    public String lackOfRequirements = "You do not have the necessary requirements to write in this chat.";
+    public String noNearbyPlayers = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>No one has heard you.";
+    public String lackOfRequirements = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>You <red>do not have the necessary requirements <white>to write in this chat.";
 }

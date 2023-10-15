@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.command.commands;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.command.base.CommandBase;
@@ -36,6 +37,7 @@ public class ReloadCommand extends CommandBase {
 
     @Subcommand("%command.reload")
     @CommandPermission("%permission.reload")
+    @Description("%description.reload")
     public void onCommand(CommandIssuer issuer) {
         String message = messages.commands.reloadCommand.reloadedSuccessfully;
         if (issuer.getIssuer() instanceof Player) {
@@ -62,5 +64,6 @@ public class ReloadCommand extends CommandBase {
     public void addReplacements() {
         commandHelper.addReplacement(commands.reloadCommand.subCommand, "command.reload");
         commandHelper.addReplacement(commands.reloadCommand.permission, "permission.reload");
+        commandHelper.addReplacement(messages.commands.reloadCommand.description, "description.reload");
     }
 }
