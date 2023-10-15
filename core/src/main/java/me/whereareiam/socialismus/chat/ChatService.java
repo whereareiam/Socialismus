@@ -71,9 +71,9 @@ public class ChatService {
         }
 
         boolean isPlayerNearby;
-        if (chat.radius != -1) {
+        if (chat.requirements.radius != -1) {
             isPlayerNearby = onlinePlayers.stream()
-                    .anyMatch(player -> !sender.equals(player) && DistanceCalculatorUtil.calculateDistance(sender, player) <= chat.radius);
+                    .anyMatch(player -> !sender.equals(player) && DistanceCalculatorUtil.calculateDistance(sender, player) <= chat.requirements.radius);
 
             if (!isPlayerNearby) {
                 String noNearbyPlayers = messages.chat.noNearbyPlayers;
@@ -86,7 +86,7 @@ public class ChatService {
 
         onlinePlayers.stream()
                 .filter(recipient -> recipientRequirementValidator.checkRequirements(recipient, chat))
-                .filter(recipient -> chat.radius == -1 || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= chat.radius)
+                .filter(recipient -> chat.requirements.radius == -1 || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= chat.requirements.radius)
                 .forEach(recipient -> chatMessageBroadcaster.broadcastMessage(chatMessage, recipient));
     }
 }

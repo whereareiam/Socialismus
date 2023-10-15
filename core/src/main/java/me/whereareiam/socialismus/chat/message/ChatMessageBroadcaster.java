@@ -27,7 +27,7 @@ public class ChatMessageBroadcaster {
     }
 
     public void broadcastMessage(ChatMessage chatMessage, Player recipient) {
-        if (shouldSendMessage(chatMessage.getSender(), recipient, chatMessage.getChat().radius)) {
+        if (shouldSendMessage(chatMessage.getSender(), recipient, chatMessage.getChat().requirements.radius)) {
             Audience recipientAudience = (Audience) recipient;
             Component finalMessage = createFinalMessage(chatMessage);
             recipientAudience.sendMessage(finalMessage);
