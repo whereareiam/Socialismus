@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.listener.player;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.listener.PlayerChatListener;
+import me.whereareiam.socialismus.listener.ChatListener;
 import me.whereareiam.socialismus.listener.handler.ChatHandler;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
@@ -10,12 +10,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 @Singleton
-public class PlayerAsyncChatListener implements PlayerChatListener {
+public class AsyncChatListener implements ChatListener {
     private final LoggerUtil loggerUtil;
     private final ChatHandler chatHandler;
 
     @Inject
-    public PlayerAsyncChatListener(LoggerUtil loggerUtil, ChatHandler chatHandler) {
+    public AsyncChatListener(LoggerUtil loggerUtil, ChatHandler chatHandler) {
         this.loggerUtil = loggerUtil;
         this.chatHandler = chatHandler;
 

@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.listener.base.BaseListenerRegistrar;
 import me.whereareiam.socialismus.listener.player.AsyncChatListener;
 import me.whereareiam.socialismus.listener.state.ChatListenerState;
+import me.whereareiam.socialismus.listener.state.JoinListenerState;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
@@ -13,12 +14,12 @@ import org.bukkit.plugin.Plugin;
 public class PaperListenerRegistrar extends BaseListenerRegistrar {
     @Inject
     public PaperListenerRegistrar(Injector injector, LoggerUtil loggerUtil, Plugin plugin,
-                                  ChatListenerState chatListenerState) {
-        super(injector, loggerUtil, plugin, chatListenerState);
+                                  ChatListenerState chatListenerState, JoinListenerState joinListenerState) {
+        super(injector, loggerUtil, plugin, chatListenerState, joinListenerState);
     }
 
     @Override
-    protected PlayerChatListener createPlayerChatListener() {
+    protected ChatListener createChatListener() {
         return injector.getInstance(AsyncChatListener.class);
     }
 }

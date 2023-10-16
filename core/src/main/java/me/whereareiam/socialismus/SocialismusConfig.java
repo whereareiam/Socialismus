@@ -1,6 +1,8 @@
 package me.whereareiam.socialismus;
 
 import co.aikar.commands.BukkitCommandManager;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 import me.whereareiam.socialismus.cache.CacheInterceptor;
@@ -17,6 +19,7 @@ public class SocialismusConfig extends AbstractModule {
     @Override
     protected void configure() {
         bind(Plugin.class).toInstance(plugin);
+        bind(ProtocolManager.class).toInstance(ProtocolLibrary.getProtocolManager());
         bind(BukkitCommandManager.class).toInstance(new BukkitCommandManager(plugin));
 
         bindInterceptor(Matchers.any(),

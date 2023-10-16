@@ -37,5 +37,6 @@ public class ChatHandler {
             chatService.distributeMessage(chatMessage);
         }
     }
+
 }
 

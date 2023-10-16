@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.config.setting.FeaturesSettingsConfig;
 import me.whereareiam.socialismus.feature.chats.ChatManager;
 import me.whereareiam.socialismus.feature.swapper.SwapperManager;
 import me.whereareiam.socialismus.listener.state.ChatListenerState;
+import me.whereareiam.socialismus.listener.state.JoinListenerState;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
@@ -24,6 +25,7 @@ public class FeatureLoader {
     private final SwapperManager swapperManager;
 
     private final ChatListenerState chatListenerState;
+    private final JoinListenerState joinListenerState;
 
     @Inject
     public FeatureLoader(Injector injector, LoggerUtil loggerUtil,
@@ -31,7 +33,8 @@ public class FeatureLoader {
 
                          ChatManager chatManager, SwapperManager swapperManager,
 
-                         ChatListenerState chatListenerState
+                         ChatListenerState chatListenerState,
+                         JoinListenerState joinListenerState
     ) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
@@ -42,6 +45,7 @@ public class FeatureLoader {
         this.swapperManager = swapperManager;
 
         this.chatListenerState = chatListenerState;
+        this.joinListenerState = joinListenerState;
 
         loggerUtil.trace("Initializing class: " + this);
     }
@@ -62,6 +66,9 @@ public class FeatureLoader {
 
         if (featuresSettingsConfig.swapper.enabled) {
             chatListenerState.setChatListenerRequired(true);
+            if (featuresSettingsConfig.swapper.suggest) {
+                joinListenerState.setJoinListenerRequired(true);
+            }
 
             swapperManager.registerSwappers();
         }
