@@ -94,13 +94,6 @@ public class SwapperManager implements Feature {
         return swappers;
     }
 
-    public int getEnabledSwappersCount() {
-        loggerUtil.debug("Calculating swappers count");
-        return (int) swappers.stream()
-                .filter(swapper -> swapper.enabled)
-                .count();
-    }
-
     private SwapperConfig createExampleSwapperConfig() {
         SwapperConfig swapperConfig = injector.getInstance(SwapperConfig.class);
         Swapper exampleSwapper = injector.getInstance(Swapper.class);

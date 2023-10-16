@@ -6,7 +6,6 @@ import co.aikar.locales.MessageKey;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 
@@ -18,6 +17,7 @@ public class CommandManager {
     private final Injector injector;
     private final BukkitCommandManager bukkitCommandManager;
     private final MessagesConfig messagesConfig;
+
     private int commandCount = 0;
 
     @Inject
@@ -30,17 +30,13 @@ public class CommandManager {
     }
 
     public void registerCommand(Class<? extends CommandBase> commandClass) {
-        try {
-            CommandBase commandInstance = injector.getInstance(commandClass);
-            if (commandInstance.isEnabled()) {
-                commandInstance.addReplacements();
-                commandInstance.addTranslations();
-                bukkitCommandManager.registerCommand(commandInstance);
-            }
-            commandCount++;
-        } catch (Exception e) {
-            e.printStackTrace();
+        CommandBase commandInstance = injector.getInstance(commandClass);
+        if (commandInstance.isEnabled()) {
+            commandInstance.addReplacements();
+            commandInstance.addTranslations();
+            bukkitCommandManager.registerCommand(commandInstance);
         }
+        commandCount++;
     }
 
     public void addTranslations() {
@@ -56,12 +52,10 @@ public class CommandManager {
         bukkitCommandManager.getLocales().addMessage(Locale.ENGLISH, MessageKey.of(acfKey), message);
     }
 
-    @Cacheable
     public int getCommandCount() {
         return commandCount;
     }
 
-    @Cacheable
     public Collection<RootCommand> getAllCommands() {
         return bukkitCommandManager.getRegisteredRootCommands();
     }

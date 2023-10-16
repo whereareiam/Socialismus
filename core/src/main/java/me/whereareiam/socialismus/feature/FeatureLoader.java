@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.feature;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.config.chat.ChatsConfig;
 import me.whereareiam.socialismus.config.setting.FeaturesSettingsConfig;
@@ -91,13 +90,11 @@ public class FeatureLoader {
         }
     }
 
-    @Cacheable
     public int getChatCount() {
         return chatManager.getChatCount();
     }
 
-    @Cacheable
     public int getSwapperCount() {
-        return swapperManager.getEnabledSwappersCount();
+        return swapperManager.getSwappers().size();
     }
 }
