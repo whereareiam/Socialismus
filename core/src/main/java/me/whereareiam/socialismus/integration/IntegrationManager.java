@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.integration;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.integration.bstats.bStats;
 import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPI;
 import me.whereareiam.socialismus.integration.protocollib.ProtocolLib;
@@ -17,6 +16,8 @@ import java.util.List;
 public class IntegrationManager {
     private final LoggerUtil loggerUtil;
     private final List<Integration> integrations = new ArrayList<>();
+    private final List<Integration> enabledIntegrations = new ArrayList<>();
+    private int enabledIntegrationCount = 0;
 
     @Inject
     public IntegrationManager(Injector injector, LoggerUtil loggerUtil) {
@@ -38,9 +39,16 @@ public class IntegrationManager {
 
                 if (integration.isEnabled()) {
                     registerIntegration(integration);
+                    this.enabledIntegrations.add(integration);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+
+        for (Integration integration : integrations) {
+            if (integration.isEnabled()) {
+                this.enabledIntegrationCount++;
             }
         }
     }
@@ -50,31 +58,11 @@ public class IntegrationManager {
         integrations.add(integration);
     }
 
-    @Cacheable
     public int getEnabledIntegrationCount() {
-        int enabledIntegrationCount = 0;
-
-        for (Integration integration : integrations) {
-            if (integration.isEnabled()) {
-                enabledIntegrationCount++;
-            }
-        }
-
-        loggerUtil.debug("getEnabledIntegrationCount: " + enabledIntegrationCount);
         return enabledIntegrationCount;
     }
 
-    @Cacheable
     public List<Integration> getEnabledIntegrations() {
-        List<Integration> enabledIntegrations = new ArrayList<>();
-
-        for (Integration integration : integrations) {
-            if (integration.isEnabled()) {
-                enabledIntegrations.add(integration);
-            }
-        }
-
-        loggerUtil.debug("getEnabledIntegrations: " + enabledIntegrations);
         return enabledIntegrations;
     }
 }
