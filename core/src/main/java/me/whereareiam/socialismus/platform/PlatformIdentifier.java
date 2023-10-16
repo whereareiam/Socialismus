@@ -1,33 +1,34 @@
 package me.whereareiam.socialismus.platform;
 
+import com.google.inject.Singleton;
+
+@Singleton
 public class PlatformIdentifier {
-    public static boolean isFolia() {
+
+    static boolean isFolia() {
         try {
             Class.forName("io.papermc.paper.threadedregions.ThreadedRegionizer");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
 
         return true;
     }
 
-    public static boolean isPaper() {
+    static boolean isPaper() {
         try {
             Class.forName("com.destroystokyo.paper.PaperConfig");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
 
         return true;
     }
 
-    public static boolean isSpigot() {
+    static boolean isSpigot() {
         try {
             Class.forName("org.spigotmc.SpigotConfig");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
 

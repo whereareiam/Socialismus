@@ -7,11 +7,11 @@ public enum PlatformType {
     UNKNOWN;
 
     public static PlatformType getCurrentPlatform() {
-        if (Platform.isFolia)
+        if (PlatformIdentifier.isFolia())
             return FOLIA;
-        if (Platform.isPaper)
+        if (PlatformIdentifier.isPaper())
             return PAPER;
-        if (Platform.isSpigot)
+        if (PlatformIdentifier.isSpigot())
             return SPIGOT;
 
         return UNKNOWN;

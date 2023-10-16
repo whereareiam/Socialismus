@@ -61,15 +61,7 @@ public class ChatService {
         }
 
         Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
-
-        if (onlinePlayers.isEmpty() || (onlinePlayers.size() == 1 && onlinePlayers.contains(sender))) {
-            String noOnlinePlayers = messages.chat.noOnlinePlayers;
-            if (noOnlinePlayers != null) {
-                senderAudience.sendMessage(formatterUtil.formatMessage(sender, noOnlinePlayers));
-                return;
-            }
-        }
-
+        
         boolean isPlayerNearby;
         if (chat.requirements.radius != -1) {
             isPlayerNearby = onlinePlayers.stream()
@@ -81,6 +73,14 @@ public class ChatService {
                     senderAudience.sendMessage(formatterUtil.formatMessage(sender, noNearbyPlayers));
                     return;
                 }
+            }
+        }
+
+        if (onlinePlayers.size() == 1) {
+            String noOnlinePlayers = messages.chat.noOnlinePlayers;
+            if (noOnlinePlayers != null) {
+                senderAudience.sendMessage(formatterUtil.formatMessage(sender, noOnlinePlayers));
+                return;
             }
         }
 
