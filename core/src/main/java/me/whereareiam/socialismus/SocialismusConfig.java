@@ -7,6 +7,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 import me.whereareiam.socialismus.cache.CacheInterceptor;
 import me.whereareiam.socialismus.cache.Cacheable;
+import me.whereareiam.socialismus.config.setting.SettingsConfig;
+import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
 public class SocialismusConfig extends AbstractModule {
@@ -22,9 +24,16 @@ public class SocialismusConfig extends AbstractModule {
         bind(ProtocolManager.class).toInstance(ProtocolLibrary.getProtocolManager());
         bind(BukkitCommandManager.class).toInstance(new BukkitCommandManager(plugin));
 
+        SettingsConfig settingsConfig = new SettingsConfig();
+        bind(SettingsConfig.class).toInstance(settingsConfig);
+
+        LoggerUtil loggerUtil = new LoggerUtil(settingsConfig);
+        loggerUtil.setBukkitLogger(plugin.getLogger());
+        bind(LoggerUtil.class).toInstance(loggerUtil);
+
         bindInterceptor(Matchers.any(),
                 Matchers.annotatedWith(Cacheable.class),
-                new CacheInterceptor()
+                new CacheInterceptor(settingsConfig, loggerUtil)
         );
     }
 }

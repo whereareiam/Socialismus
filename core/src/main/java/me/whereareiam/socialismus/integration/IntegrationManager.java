@@ -42,7 +42,7 @@ public class IntegrationManager {
                     this.enabledIntegrations.add(integration);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                loggerUtil.severe(e.getMessage());
             }
         }
 
