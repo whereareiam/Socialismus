@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.integration.bStats.chart;
+package me.whereareiam.socialismus.integration.bstats.chart;
 
 import me.whereareiam.socialismus.platform.PlatformType;
 import org.bstats.bukkit.Metrics;

@@ -1,11 +1,11 @@
-package me.whereareiam.socialismus.integration.bStats;
+package me.whereareiam.socialismus.integration.bstats;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.IntegrationType;
-import me.whereareiam.socialismus.integration.bStats.chart.HookCountChart;
-import me.whereareiam.socialismus.integration.bStats.chart.PlatformTypeChart;
+import me.whereareiam.socialismus.integration.bstats.chart.HookCountChart;
+import me.whereareiam.socialismus.integration.bstats.chart.PlatformTypeChart;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -32,7 +32,7 @@ public class bStats implements Integration {
         metrics = new Metrics((JavaPlugin) plugin, 19855);
 
         try {
-            File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats/config.yml");
+            File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bstats/config.yml");
             if (!bStatsFolder.exists()) {
                 isEnabled = false;
             } else {
@@ -58,7 +58,7 @@ public class bStats implements Integration {
 
     @Override
     public IntegrationType getType() {
-        return IntegrationType.FUNCTIONAL;
+        return IntegrationType.INTERNAL;
     }
 
     private void registerCharts() {

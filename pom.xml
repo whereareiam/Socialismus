@@ -36,7 +36,9 @@
         <adventure.version>4.3.0</adventure.version>
         <serializer-plain.version>4.14.0</serializer-plain.version>
         <serializer-minimessage.version>4.14.0</serializer-minimessage.version>
+
         <placeholderapi.version>2.11.4</placeholderapi.version>
+        <protocollib.version>5.1.0</protocollib.version>
     </properties>
 
     <modules>
@@ -61,10 +63,15 @@
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
-        <!-- PlaceholderAPI -->
+        <!-- placeholderapi -->
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <!-- ProtocolLib -->
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
     </repositories>
 </project>

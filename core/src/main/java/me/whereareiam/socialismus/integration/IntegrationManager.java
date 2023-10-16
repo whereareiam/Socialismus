@@ -4,8 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.cache.Cacheable;
-import me.whereareiam.socialismus.integration.PlaceholderAPI.PlaceholderAPI;
-import me.whereareiam.socialismus.integration.bStats.bStats;
+import me.whereareiam.socialismus.integration.bstats.bStats;
+import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPI;
+import me.whereareiam.socialismus.integration.protocollib.ProtocolLib;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ public class IntegrationManager {
 
         List<Class<? extends Integration>> possibleIntegrations = Arrays.asList(
                 bStats.class,
-                PlaceholderAPI.class
+                PlaceholderAPI.class,
+                ProtocolLib.class
         );
 
         for (Class<? extends Integration> integrationClass : possibleIntegrations) {

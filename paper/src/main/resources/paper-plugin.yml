@@ -6,5 +6,9 @@ dependencies:
   server:
     PlaceholderAPI:
       load: BEFORE
-      required: true
+      required: false
+      join-classpath: true
+    ProtocolLib:
+      load: BEFORE
+      required: false
       join-classpath: true

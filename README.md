@@ -24,21 +24,23 @@ you want with this plugin, as it offers many different features and great custom
 - **Chats:** Allows the user to communicate with other people in the neighbourhood with messages that are formatted in
   an unusual way and when you move the mouse over a message, a miracle happens. You can restrict the use of the chat by
   setting many different requirements, such as permissions and the current world.
+- **Swapper:** Allows you to create many placeholders for chat. For example, you can make emojis or shortcuts.
 
 ## Information
 
-- Integrates with the PlaceholderAPI, allowing you to use placeholders from that plugin directly in messages.
+- Integrates with PlaceholderAPI, allowing you to use placeholders from that plugin directly in messages.
 - Displays statistics from your own server and from other servers if you have enabled bStats on your server.
 
 # TODO List:
 
 - [ ] Ability to Display Items in Chat
+- [ ] API
 - [x] Chats <sup>From 0.0.1
 - [ ] Colorization
 - [ ] Bubble Chat
 - [ ] Automatic Moderation
 - [ ] Placeholders
 - [ ] Role-play Commands
-- [ ] Swapper
+- [x] Swapper <sup>From 0.1.0
 - [ ] User Click Action
 - [ ] User Mention

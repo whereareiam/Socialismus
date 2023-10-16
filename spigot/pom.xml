@@ -93,7 +93,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>me.whereareiam.socialismus.integration.bStats</shadedPattern>
+                            <shadedPattern>me.whereareiam.socialismus.integration.bstats</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.integration.bStats.chart;
+package me.whereareiam.socialismus.integration.bstats.chart;
 
 public interface Chart {
     void addChart();
