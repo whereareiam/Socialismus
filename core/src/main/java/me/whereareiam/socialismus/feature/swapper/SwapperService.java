@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.util.LoggerUtil;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -74,6 +75,17 @@ public class SwapperService implements ChatMessageProcessor {
                     content = formatterUtil.formatMessage(player, swapper.contents.get(0));
                 }
 
+                if (!swapper.hoverContent.isEmpty()) {
+                    StringBuilder hoverText = new StringBuilder();
+                    for (int s = 0; s < swapper.hoverContent.size(); s++) {
+                        hoverText.append(swapper.hoverContent.get(s));
+                        if (s != swapper.hoverContent.size() - 1) {
+                            hoverText.append("\n");
+                        }
+                    }
+                    content = content.hoverEvent(HoverEvent.showText(formatterUtil.formatMessage(player, hoverText.toString())));
+                }
+
                 TextReplacementConfig config = TextReplacementConfig.builder()
                         .matchLiteral(placeholder)
                         .replacement(content)
@@ -86,4 +98,5 @@ public class SwapperService implements ChatMessageProcessor {
         }
         return chatMessage;
     }
+
 }

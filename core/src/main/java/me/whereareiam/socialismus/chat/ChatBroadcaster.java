@@ -51,7 +51,6 @@ public class ChatBroadcaster {
                 || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= radius;
     }
 
-    @Cacheable
     private Component createFinalMessage(ChatMessage chatMessage) {
         for (ChatMessageProcessor processor : chatMessageProcessors) {
             chatMessage = processor.process(chatMessage);
