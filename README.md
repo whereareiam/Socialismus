@@ -9,7 +9,9 @@
 
 # Dependencies
 
-- Java 17 or newer
+- Java 17+*
+- ProtocolLib
+- PlaceholderAPI
 
 > Required dependencies are marked with ```*``` symbol.
 
@@ -35,6 +37,7 @@ you want with this plugin, as it offers many different features and great custom
 
 - [ ] Ability to Display Items in Chat
 - [ ] API
+- [ ] Chatbot
 - [x] Chats <sup>From 0.0.1
 - [ ] Colorization
 - [ ] Bubble Chat
@@ -42,5 +45,6 @@ you want with this plugin, as it offers many different features and great custom
 - [ ] Placeholders
 - [ ] Role-play Commands
 - [x] Swapper <sup>From 0.1.0
+- [ ] Swapper placeholder list command
 - [ ] User Click Action
 - [ ] User Mention
