@@ -35,7 +35,7 @@ public class InfoPrinterUtil {
         if (enabledIntegrationCount > 0) {
             loggerUtil.info("  Hooked with:");
 
-            List<Integration> enabledIntegrations = integrationManager.getEnabledIntegrations();
+            List<Integration> enabledIntegrations = integrationManager.getIntegrations();
             for (Integration integration : enabledIntegrations) {
                 loggerUtil.info("    - " + integration.getName());
             }
@@ -46,7 +46,7 @@ public class InfoPrinterUtil {
         int commandCount = commandManager.getCommandCount();
         loggerUtil.info("  Registered " + commandCount + " " + (commandCount == 1 ? "command" : "commands"));
 
-        integrationManager.getEnabledIntegrations().forEach(i -> {
+        integrationManager.getIntegrations().forEach(i -> {
             if (i.getName().equals("placeholderapi")) {
                 int placeholdersCount = PlaceholderAPI.getPlaceholdersCount();
                 loggerUtil.info("  Registered " + placeholdersCount + " " + (placeholdersCount == 1 ? "placeholder" : "placeholders"));

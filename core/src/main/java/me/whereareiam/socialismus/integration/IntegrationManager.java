@@ -16,8 +16,7 @@ import java.util.List;
 public class IntegrationManager {
     private final LoggerUtil loggerUtil;
     private final List<Integration> integrations = new ArrayList<>();
-    private final List<Integration> enabledIntegrations = new ArrayList<>();
-    private int enabledIntegrationCount = 0;
+    private int integrationCount = 0;
 
     @Inject
     public IntegrationManager(Injector injector, LoggerUtil loggerUtil) {
@@ -39,16 +38,10 @@ public class IntegrationManager {
 
                 if (integration.isEnabled()) {
                     registerIntegration(integration);
-                    this.enabledIntegrations.add(integration);
+                    integrationCount++;
                 }
             } catch (Exception e) {
                 loggerUtil.severe(e.getMessage());
-            }
-        }
-
-        for (Integration integration : integrations) {
-            if (integration.isEnabled()) {
-                this.enabledIntegrationCount++;
             }
         }
     }
@@ -59,10 +52,10 @@ public class IntegrationManager {
     }
 
     public int getEnabledIntegrationCount() {
-        return enabledIntegrationCount;
+        return integrationCount;
     }
 
-    public List<Integration> getEnabledIntegrations() {
-        return enabledIntegrations;
+    public List<Integration> getIntegrations() {
+        return integrations;
     }
 }

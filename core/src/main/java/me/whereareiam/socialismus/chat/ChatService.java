@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.chat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
-import me.whereareiam.socialismus.chat.message.ChatMessageBroadcaster;
 import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.chat.requirement.validator.RecipientRequirementValidator;
 import me.whereareiam.socialismus.chat.requirement.validator.SenderRequirementValidator;
@@ -23,14 +22,14 @@ public class ChatService {
     private final FormatterUtil formatterUtil;
     private final MessagesConfig messages;
 
-    private final ChatMessageBroadcaster chatMessageBroadcaster;
+    private final ChatBroadcaster chatBroadcaster;
 
     private final RecipientRequirementValidator recipientRequirementValidator;
     private final SenderRequirementValidator senderRequirementValidator;
 
     @Inject
     public ChatService(LoggerUtil loggerUtil, FormatterUtil formatterUtil, MessagesConfig messages,
-                       ChatMessageBroadcaster chatMessageBroadcaster,
+                       ChatBroadcaster chatBroadcaster,
                        RecipientRequirementValidator recipientRequirementValidator,
                        SenderRequirementValidator senderRequirementValidator
     ) {
@@ -38,7 +37,7 @@ public class ChatService {
         this.formatterUtil = formatterUtil;
         this.messages = messages;
 
-        this.chatMessageBroadcaster = chatMessageBroadcaster;
+        this.chatBroadcaster = chatBroadcaster;
 
         this.recipientRequirementValidator = recipientRequirementValidator;
         this.senderRequirementValidator = senderRequirementValidator;
@@ -61,7 +60,7 @@ public class ChatService {
         }
 
         Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
-        
+
         boolean isPlayerNearby;
         if (chat.requirements.radius != -1) {
             isPlayerNearby = onlinePlayers.stream()
@@ -87,6 +86,6 @@ public class ChatService {
         onlinePlayers.stream()
                 .filter(recipient -> recipientRequirementValidator.checkRequirements(recipient, chat))
                 .filter(recipient -> chat.requirements.radius == -1 || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= chat.requirements.radius)
-                .forEach(recipient -> chatMessageBroadcaster.broadcastMessage(chatMessage, recipient));
+                .forEach(recipient -> chatBroadcaster.broadcastMessage(chatMessage, recipient));
     }
 }

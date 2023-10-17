@@ -4,34 +4,28 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class PlatformIdentifier {
+    private static final boolean isFolia = isClassPresent("io.papermc.paper.threadedregions.ThreadedRegionizer");
+    private static final boolean isPaper = isClassPresent("com.destroystokyo.paper.PaperConfig");
+    private static final boolean isSpigot = isClassPresent("org.spigotmc.SpigotConfig");
 
-    static boolean isFolia() {
+    private static boolean isClassPresent(String className) {
         try {
-            Class.forName("io.papermc.paper.threadedregions.ThreadedRegionizer");
-        } catch (Exception e) {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e) {
             return false;
         }
-
-        return true;
     }
 
-    static boolean isPaper() {
-        try {
-            Class.forName("com.destroystokyo.paper.PaperConfig");
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
+    public static boolean isFolia() {
+        return isFolia;
     }
 
-    static boolean isSpigot() {
-        try {
-            Class.forName("org.spigotmc.SpigotConfig");
-        } catch (Exception e) {
-            return false;
-        }
+    public static boolean isPaper() {
+        return isPaper;
+    }
 
-        return true;
+    public static boolean isSpigot() {
+        return isSpigot;
     }
 }

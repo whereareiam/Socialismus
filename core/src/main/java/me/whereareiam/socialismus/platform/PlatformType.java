@@ -5,7 +5,7 @@ public enum PlatformType {
     PAPER,
     FOLIA,
     UNKNOWN;
-
+    
     public static PlatformType getCurrentPlatform() {
         if (PlatformIdentifier.isFolia())
             return FOLIA;

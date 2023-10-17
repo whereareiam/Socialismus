@@ -1,8 +1,10 @@
-package me.whereareiam.socialismus.chat.message;
+package me.whereareiam.socialismus.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.cache.Cacheable;
+import me.whereareiam.socialismus.chat.message.ChatMessage;
+import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
 import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
@@ -13,17 +15,24 @@ import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Singleton
-public class ChatMessageBroadcaster {
+public class ChatBroadcaster {
     private final LoggerUtil loggerUtil;
     private final FormatterUtil formatterUtil;
 
+    private final Set<ChatMessageProcessor> chatMessageProcessors;
+
     @Inject
-    public ChatMessageBroadcaster(LoggerUtil loggerUtil, FormatterUtil formatterUtil) {
+    public ChatBroadcaster(LoggerUtil loggerUtil, FormatterUtil formatterUtil,
+                           Set<ChatMessageProcessor> chatMessageProcessors) {
         this.loggerUtil = loggerUtil;
         this.formatterUtil = formatterUtil;
+
+        this.chatMessageProcessors = new HashSet<>(chatMessageProcessors);
     }
 
     public void broadcastMessage(ChatMessage chatMessage, Player recipient) {
@@ -32,7 +41,7 @@ public class ChatMessageBroadcaster {
             Component finalMessage = createFinalMessage(chatMessage);
             recipientAudience.sendMessage(finalMessage);
 
-            loggerUtil.trace("Sent message to player: " + recipient.getName());
+            loggerUtil.trace("Sent message: " + finalMessage + " to: " + recipient.getName());
         }
     }
 
@@ -44,8 +53,11 @@ public class ChatMessageBroadcaster {
 
     @Cacheable
     private Component createFinalMessage(ChatMessage chatMessage) {
-        Chat chat = chatMessage.getChat();
+        for (ChatMessageProcessor processor : chatMessageProcessors) {
+            chatMessage = processor.process(chatMessage);
+        }
 
+        Chat chat = chatMessage.getChat();
         Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), chat.messageFormat);
         Component hoverFormat = createHoverFormat(chat.hoverFormat, chatMessage.getSender());
 

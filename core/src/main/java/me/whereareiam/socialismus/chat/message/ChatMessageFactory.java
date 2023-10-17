@@ -3,6 +3,8 @@ package me.whereareiam.socialismus.chat.message;
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.feature.chats.ChatManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 public class ChatMessageFactory {
@@ -26,7 +28,14 @@ public class ChatMessageFactory {
 
         Chat chat = chatManager.getChatBySymbol(symbol);
 
-        return new ChatMessage(sender, message.trim(), chat);
-    }
+        if (chat == null && !symbol.isEmpty()) {
+            message = symbol + message;
+            symbol = "";
+            chat = chatManager.getChatBySymbol(symbol);
+        }
 
+        Component content = PlainTextComponentSerializer.plainText().deserialize(message.trim());
+
+        return new ChatMessage(sender, content, chat);
+    }
 }

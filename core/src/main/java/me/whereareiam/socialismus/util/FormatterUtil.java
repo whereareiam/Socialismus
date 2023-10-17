@@ -39,16 +39,17 @@ public class FormatterUtil {
     }
 
     public Component formatMessage(Player player, String message) {
-        loggerUtil.debug("formatMessage: " + player.getName() + " " + message);
+        loggerUtil.debug("formatMessage:" + message);
         final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-        message = hookIntegration(player, message);
+        if (player != null)
+            message = hookIntegration(player, message);
 
         return miniMessage.deserialize(message);
     }
 
     public String hookIntegration(Player player, String message) {
-        for (Integration integration : integrationManager.getEnabledIntegrations()) {
+        for (Integration integration : integrationManager.getIntegrations()) {
             if (integration.getType() == IntegrationType.MESSAGING) {
                 MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
                 message = formatterIntegration.formatMessage(player, message);

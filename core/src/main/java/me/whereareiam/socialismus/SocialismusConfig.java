@@ -5,9 +5,12 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
+import com.google.inject.multibindings.Multibinder;
 import me.whereareiam.socialismus.cache.CacheInterceptor;
 import me.whereareiam.socialismus.cache.Cacheable;
+import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
+import me.whereareiam.socialismus.feature.swapper.SwapperService;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
@@ -30,6 +33,9 @@ public class SocialismusConfig extends AbstractModule {
         LoggerUtil loggerUtil = new LoggerUtil(settingsConfig);
         loggerUtil.setBukkitLogger(plugin.getLogger());
         bind(LoggerUtil.class).toInstance(loggerUtil);
+        
+        Multibinder<ChatMessageProcessor> chatMessageProcessorMultibinder = Multibinder.newSetBinder(binder(), ChatMessageProcessor.class);
+        chatMessageProcessorMultibinder.addBinding().to(SwapperService.class);
 
         bindInterceptor(Matchers.any(),
                 Matchers.annotatedWith(Cacheable.class),
