@@ -6,7 +6,8 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.swapper.SwapperConfig;
 import me.whereareiam.socialismus.feature.Feature;
 import me.whereareiam.socialismus.feature.swapper.model.Swapper;
-import me.whereareiam.socialismus.integration.protocollib.packet.player.PacketPlayer;
+import me.whereareiam.socialismus.integration.protocollib.PacketSender;
+import me.whereareiam.socialismus.integration.protocollib.entity.PacketPlayer;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -20,15 +21,17 @@ import java.util.List;
 public class SwapperManager implements Feature {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
+    private final PacketSender packetSender;
     private final PacketPlayer packetPlayer;
 
     private final Path swapperDir;
     private final List<Swapper> swappers = new ArrayList<>();
 
     @Inject
-    public SwapperManager(Injector injector, LoggerUtil loggerUtil, PacketPlayer packetPlayer, Plugin plugin) {
+    public SwapperManager(Injector injector, LoggerUtil loggerUtil, PacketSender packetSender, PacketPlayer packetPlayer, Plugin plugin) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
+        this.packetSender = packetSender;
         this.packetPlayer = packetPlayer;
         this.swapperDir = plugin.getDataFolder().toPath().resolve("swapper");
 
@@ -84,7 +87,10 @@ public class SwapperManager implements Feature {
             if (player.hasPermission(swapper.settings.permission)) {
                 loggerUtil.trace("Player " + player.getName() + " will receive these swappers: " + swapper.placeholders);
                 for (String placeholder : swapper.placeholders) {
-                    packetPlayer.sendPacketPlayer(player, placeholder);
+                    packetSender.sendPacket(
+                            player,
+                            packetPlayer.createPacketPlayerInfo(placeholder)
+                    );
                 }
             }
         }
