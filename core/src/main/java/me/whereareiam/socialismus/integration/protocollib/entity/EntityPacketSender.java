@@ -7,12 +7,14 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.integration.protocollib.entity.model.PacketEntity;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 @Singleton
-public class PacketEntitySender {
+public class EntityPacketSender {
     private final me.whereareiam.socialismus.integration.protocollib.PacketSender packetSender;
 
     @Inject
-    public PacketEntitySender(me.whereareiam.socialismus.integration.protocollib.PacketSender packetSender) {
+    public EntityPacketSender(me.whereareiam.socialismus.integration.protocollib.PacketSender packetSender) {
         this.packetSender = packetSender;
     }
 
@@ -44,16 +46,16 @@ public class PacketEntitySender {
         packetSender.broadcastPacket(mountPacket);
     }
 
-    public void removeEntityFromPlayer(Player player, PacketEntity packetEntity) {
+    public void removeEntitiesFromPlayer(Player player, List<PacketEntity> packetEntity) {
         PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
-        destroyPacket.getIntegerArrays().write(0, new int[]{packetEntity.getId()});
+        destroyPacket.getIntLists().write(0, packetEntity.stream().map(PacketEntity::getId).toList());
 
         packetSender.sendPacket(player, destroyPacket);
     }
 
-    public void removeEntityGlobally(PacketEntity packetEntity) {
+    public void removeEntitiesGlobally(List<PacketEntity> packetEntity) {
         PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
-        destroyPacket.getIntegerArrays().write(0, new int[]{packetEntity.getId()});
+        destroyPacket.getIntLists().write(0, packetEntity.stream().map(PacketEntity::getId).toList());
 
         packetSender.broadcastPacket(destroyPacket);
     }

@@ -13,8 +13,8 @@ import java.util.EnumSet;
 import java.util.UUID;
 
 @Singleton
-public class PacketPlayer {
-    public PacketContainer createPacketPlayerInfo(String username) {
+public class PlayerPacket {
+    public PacketContainer createPlayerInfoPacket(String username) {
         return new PacketContainer(PacketType.Play.Server.PLAYER_INFO) {{
             getPlayerInfoActions().write(0, EnumSet.of(EnumWrappers.PlayerInfoAction.ADD_PLAYER));
             getPlayerInfoDataLists().write(1, Collections.singletonList(new PlayerInfoData(

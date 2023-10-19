@@ -2,11 +2,11 @@ package me.whereareiam.socialismus.integration.protocollib.entity.metadata.displ
 
 import com.comphenix.protocol.wrappers.Vector3F;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import me.whereareiam.socialismus.integration.protocollib.entity.metadata.EntityMetadata;
+import me.whereareiam.socialismus.integration.protocollib.entity.metadata.EntityMetadataPacket;
 import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.type.DisplayType;
 import org.joml.Vector3f;
 
-public class DisplayMetadata extends EntityMetadata {
+public class DisplayMetadataPacketPacket extends EntityMetadataPacket {
     private Vector3F scale;
     private DisplayType displayType;
 

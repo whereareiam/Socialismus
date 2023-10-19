@@ -6,7 +6,7 @@ import me.whereareiam.socialismus.integration.protocollib.entity.metadata.displa
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-public class TextDisplayMetadata extends DisplayMetadata {
+public class TextDisplayMetadataPacketPacketPacket extends DisplayMetadataPacketPacket {
     private Component message;
     private int lineWidth = -1;
     private int background = -1;

@@ -7,7 +7,7 @@ import me.whereareiam.socialismus.config.swapper.SwapperConfig;
 import me.whereareiam.socialismus.feature.Feature;
 import me.whereareiam.socialismus.feature.swapper.model.Swapper;
 import me.whereareiam.socialismus.integration.protocollib.PacketSender;
-import me.whereareiam.socialismus.integration.protocollib.entity.PacketPlayer;
+import me.whereareiam.socialismus.integration.protocollib.entity.PlayerPacket;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -86,7 +86,7 @@ public class SwapperManager implements Feature {
         }
 
         if (packetSender != null) {
-            final PacketPlayer packetPlayer = injector.getInstance(PacketPlayer.class);
+            final PlayerPacket playerPacket = injector.getInstance(PlayerPacket.class);
             loggerUtil.debug("Sending swappers to " + player.getName());
             for (Swapper swapper : swappers) {
                 if (player.hasPermission(swapper.settings.permission)) {
@@ -94,7 +94,7 @@ public class SwapperManager implements Feature {
                     for (String placeholder : swapper.placeholders) {
                         packetSender.sendPacket(
                                 player,
-                                packetPlayer.createPacketPlayerInfo(placeholder)
+                                playerPacket.createPlayerInfoPacket(placeholder)
                         );
                     }
                 }
