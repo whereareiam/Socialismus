@@ -33,10 +33,10 @@ public class IntegrationManager {
         for (Class<? extends Integration> integrationClass : possibleIntegrations) {
             try {
                 Integration integration = injector.getInstance(integrationClass);
-                loggerUtil.debug("Initializing integration: " + integration.getName());
                 integration.initialize();
 
                 if (integration.isEnabled()) {
+                    loggerUtil.debug("Registering integration: " + integration.getName());
                     registerIntegration(integration);
                     integrationCount++;
                 }
