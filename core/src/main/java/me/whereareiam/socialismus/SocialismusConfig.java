@@ -1,8 +1,6 @@
 package me.whereareiam.socialismus;
 
 import co.aikar.commands.BukkitCommandManager;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
@@ -24,7 +22,6 @@ public class SocialismusConfig extends AbstractModule {
     @Override
     protected void configure() {
         bind(Plugin.class).toInstance(plugin);
-        bind(ProtocolManager.class).toInstance(ProtocolLibrary.getProtocolManager());
         bind(BukkitCommandManager.class).toInstance(new BukkitCommandManager(plugin));
 
         SettingsConfig settingsConfig = new SettingsConfig();
@@ -33,7 +30,7 @@ public class SocialismusConfig extends AbstractModule {
         LoggerUtil loggerUtil = new LoggerUtil(settingsConfig);
         loggerUtil.setBukkitLogger(plugin.getLogger());
         bind(LoggerUtil.class).toInstance(loggerUtil);
-        
+
         Multibinder<ChatMessageProcessor> chatMessageProcessorMultibinder = Multibinder.newSetBinder(binder(), ChatMessageProcessor.class);
         chatMessageProcessorMultibinder.addBinding().to(SwapperService.class);
 

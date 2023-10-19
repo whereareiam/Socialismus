@@ -21,18 +21,14 @@ import java.util.List;
 public class SwapperManager implements Feature {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
-    private final PacketSender packetSender;
-    private final PacketPlayer packetPlayer;
 
     private final Path swapperDir;
     private final List<Swapper> swappers = new ArrayList<>();
 
     @Inject
-    public SwapperManager(Injector injector, LoggerUtil loggerUtil, PacketSender packetSender, PacketPlayer packetPlayer, Plugin plugin) {
+    public SwapperManager(Injector injector, LoggerUtil loggerUtil, Plugin plugin) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
-        this.packetSender = packetSender;
-        this.packetPlayer = packetPlayer;
         this.swapperDir = plugin.getDataFolder().toPath().resolve("swapper");
 
         loggerUtil.trace("Initializing class: " + this);
@@ -82,15 +78,25 @@ public class SwapperManager implements Feature {
     }
 
     public void suggestSwappers(Player player) {
-        loggerUtil.debug("Sending swappers to " + player.getName());
-        for (Swapper swapper : swappers) {
-            if (player.hasPermission(swapper.settings.permission)) {
-                loggerUtil.trace("Player " + player.getName() + " will receive these swappers: " + swapper.placeholders);
-                for (String placeholder : swapper.placeholders) {
-                    packetSender.sendPacket(
-                            player,
-                            packetPlayer.createPacketPlayerInfo(placeholder)
-                    );
+        PacketSender packetSender = null;
+        try {
+            packetSender = injector.getInstance(PacketSender.class);
+        } catch (NoClassDefFoundError e) {
+            loggerUtil.warning("You can't use swapper suggestion without ProtocolLib!");
+        }
+
+        if (packetSender != null) {
+            final PacketPlayer packetPlayer = injector.getInstance(PacketPlayer.class);
+            loggerUtil.debug("Sending swappers to " + player.getName());
+            for (Swapper swapper : swappers) {
+                if (player.hasPermission(swapper.settings.permission)) {
+                    loggerUtil.trace("Player " + player.getName() + " will receive these swappers: " + swapper.placeholders);
+                    for (String placeholder : swapper.placeholders) {
+                        packetSender.sendPacket(
+                                player,
+                                packetPlayer.createPacketPlayerInfo(placeholder)
+                        );
+                    }
                 }
             }
         }
