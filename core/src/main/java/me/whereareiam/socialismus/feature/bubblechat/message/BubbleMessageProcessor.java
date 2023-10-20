@@ -36,9 +36,12 @@ public class BubbleMessageProcessor {
         this.maxLineLength = calculateMaxLineLength(bubbleChatConfig.settings.lineWidth);
 
         this.chatMessageProcessors = new HashSet<>(chatMessageProcessors);
+
+        loggerUtil.trace("Initializing class: " + this);
     }
 
     public Queue<BubbleMessage> processMessage(ChatMessage chatMessage, Collection<Player> receivers) {
+        loggerUtil.debug("Processing chat message");
         chatMessage = processChatMessage(chatMessage);
 
         Player player = chatMessage.getSender();
@@ -48,6 +51,7 @@ public class BubbleMessageProcessor {
         List<Component> lines = splitIntoLines(message);
         boolean isFirstMessage = true;
         while (!lines.isEmpty()) {
+            loggerUtil.debug("Processing lines of the message");
             List<Component> messageLines = extractLines(lines);
 
             Component messageComponent = joinLinesIntoComponent(messageLines);
@@ -67,6 +71,7 @@ public class BubbleMessageProcessor {
     }
 
     private ChatMessage processChatMessage(ChatMessage chatMessage) {
+        loggerUtil.debug("Processing chat message");
         for (ChatMessageProcessor processor : chatMessageProcessors) {
             chatMessage = processor.process(chatMessage);
         }
@@ -74,6 +79,7 @@ public class BubbleMessageProcessor {
     }
 
     private List<Component> extractLines(List<Component> lines) {
+        loggerUtil.debug("Extracting lines from the message");
         List<Component> messageLines = new ArrayList<>();
         for (int i = 0; i < maxLines && !lines.isEmpty(); i++) {
             messageLines.add(lines.remove(0));
@@ -82,11 +88,13 @@ public class BubbleMessageProcessor {
     }
 
     private Component joinLinesIntoComponent(List<Component> messageLines) {
+        loggerUtil.debug("Joining lines into a component");
         JoinConfiguration joinConfig = JoinConfiguration.separator(Component.newline());
         return Component.join(joinConfig, messageLines);
     }
 
     private Component getFormat(boolean isFirstMessage, Player player) {
+        loggerUtil.debug("Getting format for the message");
         String format;
         if (isFirstMessage) {
             format = bubbleChatConfig.format.startMessageFormat;
@@ -97,6 +105,7 @@ public class BubbleMessageProcessor {
     }
 
     private Component replacePlaceholderWithMessage(Component format, Component bubbleMessageComponent) {
+        loggerUtil.debug("Replacing placeholder with the message");
         TextReplacementConfig config = TextReplacementConfig.builder()
                 .matchLiteral("{message}")
                 .replacement(bubbleMessageComponent)
@@ -105,6 +114,7 @@ public class BubbleMessageProcessor {
     }
 
     private Component appendEndOrCutFormat(Component format, boolean isLastLine, Player player) {
+        loggerUtil.debug("Appending end or cutting format");
         if (!isLastLine) {
             format = format.append(formatterUtil.formatMessage(player, bubbleChatConfig.format.cutMessageFormat));
         } else {
@@ -114,6 +124,7 @@ public class BubbleMessageProcessor {
     }
 
     private List<Component> splitIntoLines(Component message) {
+        loggerUtil.debug("Splitting message into lines");
         List<Component> lines = new ArrayList<>();
         String[] words = PlainTextComponentSerializer.plainText().serialize(message).split(" ");
         StringBuilder line = new StringBuilder();
@@ -140,14 +151,15 @@ public class BubbleMessageProcessor {
     }
 
     private int calculateMaxLineLength(int lineWidth) {
+        loggerUtil.debug("Calculating maximum line length");
         return (int) Math.round(lineWidth * 16.0 / 100);
     }
 
     private double calculateDisplayTime(Component message) {
+        loggerUtil.debug("Calculating display time");
         int symbolCount = PlainTextComponentSerializer.plainText().serialize(message).length();
         double displayTime = (symbolCount * bubbleChatConfig.settings.timePerSymbol);
 
-        // Get the minimum time from your config
         double minimumTime = bubbleChatConfig.settings.minimumTime;
 
         if (displayTime <= minimumTime) {
@@ -156,5 +168,4 @@ public class BubbleMessageProcessor {
 
         return displayTime;
     }
-
 }

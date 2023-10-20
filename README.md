@@ -37,7 +37,6 @@ you want with this plugin, as it offers many different features and great custom
 
 - [ ] API
 - [ ] Automatic Moderation
-- [x] Bubble Chat <sup> From 0.2.0
 - [ ] Chat Bot
 - [ ] Colorization
 - [ ] Item/Inventory Display Chat
@@ -48,5 +47,6 @@ you want with this plugin, as it offers many different features and great custom
 - [ ] Swapper placeholder list command
 - [ ] User Click Action
 - [ ] User Mention
+- [x] Bubble Chat <sup> From 0.2.0
 - [x] Chats <sup>From 0.0.1
 - [x] Swapper <sup>From 0.1.0

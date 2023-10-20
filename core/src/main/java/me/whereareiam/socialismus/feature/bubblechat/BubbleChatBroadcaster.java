@@ -32,14 +32,13 @@ public class BubbleChatBroadcaster {
     }
 
     public void broadcastBubble(BubbleMessage bubbleMessage) {
+        loggerUtil.debug("Broadcasting bubble");
         Player player = bubbleMessage.sender();
         int entityId;
         if (!playerEntityIds.containsKey(player)) {
-            System.out.println("contains");
             entityId = random.nextInt();
             playerEntityIds.put(player, entityId);
         } else {
-            System.out.println("!contains");
             entityId = playerEntityIds.get(player);
         }
 
@@ -51,11 +50,10 @@ public class BubbleChatBroadcaster {
 
     public void broadcastBubbleRemove(Player player) {
         if (playerEntityIds.containsKey(player)) {
-            System.out.println("removed");
             playerEntityIds.remove(player);
             entityPacketSender.removeEntitiesGlobally(List.of(packetEntity));
         } else {
-            System.out.println("No bubble to remove for " + player.getName());
+            loggerUtil.severe("No bubble to remove for " + player.getName());
         }
     }
 }
