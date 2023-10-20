@@ -1,8 +1,10 @@
 package me.whereareiam.socialismus.config.feature.bubblechat;
 
+import com.google.inject.Singleton;
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.language.object.YamlSerializable;
 
+@Singleton
 public class BubbleChatConfig extends YamlSerializable {
     private static final SerializerConfig BUBBLECHAT = new SerializerConfig.Builder().build();
 

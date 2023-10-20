@@ -27,4 +27,9 @@ public abstract class SocialismusBase extends JavaPlugin {
 
         injector.getInstance(InfoPrinterUtil.class).printStartMessage();
     }
+
+    @Override
+    public void onDisable() {
+        injector.getInstance(Scheduler.class).shutdown();
+    }
 }

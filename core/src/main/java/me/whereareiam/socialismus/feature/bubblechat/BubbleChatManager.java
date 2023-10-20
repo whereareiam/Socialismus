@@ -11,15 +11,10 @@ import java.nio.file.Path;
 
 @Singleton
 public class BubbleChatManager implements Feature {
-    private final LoggerUtil loggerUtil;
-    private final Path featureFolder;
-    private final BubbleChatConfig bubbleChatConfig;
 
     @Inject
     public BubbleChatManager(LoggerUtil loggerUtil, Plugin plugin, BubbleChatConfig bubbleChatConfig) {
-        this.loggerUtil = loggerUtil;
-        this.featureFolder = plugin.getDataFolder().toPath().resolve("features");
-        this.bubbleChatConfig = bubbleChatConfig;
+        Path featureFolder = plugin.getDataFolder().toPath().resolve("features");
 
         loggerUtil.trace("Initializing class: " + this);
 

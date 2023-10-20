@@ -8,7 +8,7 @@ import org.bukkit.entity.EntityType;
 import java.util.UUID;
 
 public class TextDisplayPacket {
-    public PacketContainer createTextDisplayEntityPacket(int id, Location location) {
+    public PacketContainer createEntityPacket(int id, Location location) {
         return new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY) {{
             getModifier().writeDefaults();
             getIntegers().write(0, id);

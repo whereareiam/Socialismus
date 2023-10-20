@@ -51,16 +51,16 @@ public class CacheInterceptor implements MethodInterceptor {
         long end = System.nanoTime();
 
         if (value == null) {
-            loggerUtil.trace("Cache miss for key: " + key);
+            loggerUtil.trace("Cache miss");
             value = invocation.proceed();
             if (value != null) {
                 long putStart = System.nanoTime();
                 cache.put(key, value);
                 long putEnd = System.nanoTime();
-                loggerUtil.trace("Added value to cache for key: " + key + ". Time taken: " + (putEnd - putStart) + " ns");
+                loggerUtil.trace("Added value to cache. Time taken: " + (putEnd - putStart) + " ns");
             }
         } else {
-            loggerUtil.trace("Cache hit for key: " + key + ". Time taken to retrieve: " + (end - start) + " ns");
+            loggerUtil.trace("Cache hit. Time taken to retrieve: " + (end - start) + " ns");
         }
 
         loggerUtil.debug("Retrieved value from cache: " + value);

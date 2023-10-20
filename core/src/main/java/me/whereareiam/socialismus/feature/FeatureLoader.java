@@ -75,6 +75,10 @@ public class FeatureLoader {
 
             swapperManager.registerSwappers();
         }
+
+        if (featuresSettingsConfig.bubblechat) {
+            chatListenerState.setChatListenerRequired(true);
+        }
     }
 
     public void reloadFeatures() {
