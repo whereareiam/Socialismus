@@ -1,11 +1,9 @@
 package me.whereareiam.socialismus.feature;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.chat.model.Chat;
-import me.whereareiam.socialismus.config.chat.ChatsConfig;
 import me.whereareiam.socialismus.config.setting.FeaturesSettingsConfig;
+import me.whereareiam.socialismus.feature.bubblechat.BubbleChatManager;
 import me.whereareiam.socialismus.feature.chats.ChatManager;
 import me.whereareiam.socialismus.feature.swapper.SwapperManager;
 import me.whereareiam.socialismus.listener.state.ChatListenerState;
@@ -13,35 +11,38 @@ import me.whereareiam.socialismus.listener.state.JoinListenerState;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+
 @Singleton
 public class FeatureLoader {
-    private final Injector injector;
     private final LoggerUtil loggerUtil;
     private final FeaturesSettingsConfig featuresSettingsConfig;
-    private final Plugin plugin;
+    private final File dataFolder;
 
     private final ChatManager chatManager;
     private final SwapperManager swapperManager;
+    private final BubbleChatManager bubbleChatManager;
 
     private final ChatListenerState chatListenerState;
     private final JoinListenerState joinListenerState;
 
     @Inject
-    public FeatureLoader(Injector injector, LoggerUtil loggerUtil,
+    public FeatureLoader(LoggerUtil loggerUtil,
                          Plugin plugin, FeaturesSettingsConfig featuresSettingsConfig,
 
                          ChatManager chatManager, SwapperManager swapperManager,
+                         BubbleChatManager bubbleChatManager,
 
                          ChatListenerState chatListenerState,
                          JoinListenerState joinListenerState
     ) {
-        this.injector = injector;
         this.loggerUtil = loggerUtil;
         this.featuresSettingsConfig = featuresSettingsConfig;
-        this.plugin = plugin;
+        this.dataFolder = plugin.getDataFolder();
 
         this.chatManager = chatManager;
         this.swapperManager = swapperManager;
+        this.bubbleChatManager = bubbleChatManager;
 
         this.chatListenerState = chatListenerState;
         this.joinListenerState = joinListenerState;
@@ -51,16 +52,19 @@ public class FeatureLoader {
 
     public void loadFeatures() {
         loggerUtil.debug("Loading features");
+        File featureFolder = dataFolder.toPath().resolve("features").toFile();
+
+        if (!featureFolder.exists()) {
+            boolean isCreated = featureFolder.mkdir();
+            loggerUtil.debug("Creating feature dir");
+            if (!isCreated) {
+                loggerUtil.severe("Failed to create directory: " + featureFolder);
+            }
+        }
 
         if (featuresSettingsConfig.chats) {
             chatListenerState.setChatListenerRequired(true);
-
-            ChatsConfig chatsConfig = injector.getInstance(ChatsConfig.class);
-            chatsConfig.reload(plugin.getDataFolder().toPath().resolve("chats.yml"));
-
-            for (Chat chat : chatsConfig.chats) {
-                chatManager.registerChat(chat);
-            }
+            chatManager.registerChats();
         }
 
         if (featuresSettingsConfig.swapper.enabled) {
@@ -74,14 +78,11 @@ public class FeatureLoader {
     }
 
     public void reloadFeatures() {
-        chatManager.cleanChats();
-
         loggerUtil.debug("Reloading features");
+
         if (featuresSettingsConfig.chats) {
-            ChatsConfig chatsConfig = injector.getInstance(ChatsConfig.class);
-            for (Chat chat : chatsConfig.chats) {
-                chatManager.registerChat(chat);
-            }
+            chatManager.cleanChats();
+            chatManager.registerChats();
         }
 
         if (featuresSettingsConfig.swapper.enabled) {

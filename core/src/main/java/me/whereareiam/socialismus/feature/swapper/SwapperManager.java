@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.feature.swapper;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.config.swapper.SwapperConfig;
+import me.whereareiam.socialismus.config.feature.swapper.SwapperConfig;
 import me.whereareiam.socialismus.feature.Feature;
 import me.whereareiam.socialismus.feature.swapper.model.Swapper;
 import me.whereareiam.socialismus.integration.protocollib.PacketSender;
@@ -29,7 +29,9 @@ public class SwapperManager implements Feature {
     public SwapperManager(Injector injector, LoggerUtil loggerUtil, Plugin plugin) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
-        this.swapperDir = plugin.getDataFolder().toPath().resolve("swapper");
+
+        Path featureFolder = plugin.getDataFolder().toPath().resolve("features");
+        this.swapperDir = featureFolder.resolve("swapper");
 
         loggerUtil.trace("Initializing class: " + this);
 
@@ -120,7 +122,12 @@ public class SwapperManager implements Feature {
     }
 
     @Override
-    public boolean requiresPlayerAsyncChatListener() {
+    public boolean requiresChatListener() {
+        return true;
+    }
+
+    @Override
+    public boolean requiresJoinListener() {
         return true;
     }
 }

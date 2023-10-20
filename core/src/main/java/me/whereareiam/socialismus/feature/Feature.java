@@ -1,5 +1,7 @@
 package me.whereareiam.socialismus.feature;
 
 public interface Feature {
-    boolean requiresPlayerAsyncChatListener();
+    boolean requiresChatListener();
+
+    boolean requiresJoinListener();
 }

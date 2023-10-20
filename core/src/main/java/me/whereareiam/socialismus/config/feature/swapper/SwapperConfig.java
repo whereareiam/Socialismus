@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.config.swapper;
+package me.whereareiam.socialismus.config.feature.swapper;
 
 import me.whereareiam.socialismus.feature.swapper.model.Swapper;
 import net.elytrium.serializer.SerializerConfig;

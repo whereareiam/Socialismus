@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.config.chat;
+package me.whereareiam.socialismus.config.feature.chat;
 
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.chat.model.Chat;

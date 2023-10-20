@@ -9,16 +9,9 @@ import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.integration.protocollib.entity.EntityPacketSender;
 import me.whereareiam.socialismus.integration.protocollib.entity.TextDisplayPacket;
 import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.TextDisplayMetadataPacketPacketPacket;
-import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.type.AlignmentType;
-import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.type.DisplayType;
-import me.whereareiam.socialismus.integration.protocollib.entity.model.PacketEntity;
 import me.whereareiam.socialismus.util.FormatterUtil;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.List;
 
 @Singleton
 public class ChatHandler {
@@ -46,7 +39,7 @@ public class ChatHandler {
     }
 
     public void handleChatEvent(Player player, String message) {
-        int id = 1;
+        /*int id = 1;
         TextDisplayMetadataPacketPacketPacket textDisplayMeta = textDisplayMetadataPacket;
         textDisplayMeta.setAlignmentType(AlignmentType.CENTER);
         textDisplayMeta.setBackground("#FFFF00", 0);
@@ -78,9 +71,8 @@ public class ChatHandler {
             public void run() {
                 entityPacketSender.removeEntitiesFromPlayer(player, List.of(textDisplay));
             }
-        }.runTaskLater(plugin, 100L);
-
-        //////////////////////
+        }.runTaskLater(plugin, 100L);*/
+        
         ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message);
         if (settingsConfig.features.chats && chatMessage.getChat() != null) {
             chatService.distributeMessage(chatMessage);

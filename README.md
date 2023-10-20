@@ -35,16 +35,18 @@ you want with this plugin, as it offers many different features and great custom
 
 # TODO List:
 
-- [ ] Ability to Display Items in Chat
 - [ ] API
-- [ ] Chatbot
-- [x] Chats <sup>From 0.0.1
-- [ ] Colorization
-- [ ] Bubble Chat
 - [ ] Automatic Moderation
+- [x] Bubble Chat <sup> From 0.2.0
+- [ ] Chat Bot
+- [ ] Colorization
+- [ ] Item/Inventory Display Chat
+- [ ] Message Announcer
 - [ ] Placeholders
+- [ ] Private Messages
 - [ ] Role-play Commands
-- [x] Swapper <sup>From 0.1.0
 - [ ] Swapper placeholder list command
 - [ ] User Click Action
 - [ ] User Mention
+- [x] Chats <sup>From 0.0.1
+- [x] Swapper <sup>From 0.1.0
