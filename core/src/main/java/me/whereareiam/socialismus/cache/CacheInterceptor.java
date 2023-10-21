@@ -51,7 +51,6 @@ public class CacheInterceptor implements MethodInterceptor {
         long end = System.nanoTime();
 
         if (value == null) {
-            loggerUtil.trace("Cache miss");
             value = invocation.proceed();
             if (value != null) {
                 long putStart = System.nanoTime();
