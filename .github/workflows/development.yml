@@ -40,5 +40,5 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Socialismus-${{ github.run_number }}
+          name: Socialismus-b${{ github.run_number }}
           path: ${{ github.workspace }}/*.jar

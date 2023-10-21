@@ -1,0 +1,60 @@
+name: Release build
+
+on:
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          server-id: github
+          settings-path: ${{ github.workspace }}
+
+      - name: Extract project details
+        id: project_details
+        run: |
+          echo "PROJECT_NAME=$(mvn -q -Dexec.executable=echo -Dexec.args='${name}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
+          echo "PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
+
+      - name: Build with Maven
+        run: |
+          mvn -B -P release --file pom.xml
+
+      - name: Move Artifacts to Common Directory
+        run: |
+          mv spigot/target/${{ steps.project_details.outputs.PROJECT_NAME }}-SPIGOT-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar ${{ github.workspace }}/
+          mv paper/target/${{ steps.project_details.outputs.PROJECT_NAME }}-PAPER-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar ${{ github.workspace }}/
+
+      - name: Upload Artifacts to Release
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ github.workspace }}/${{ steps.project_details.outputs.PROJECT_NAME }}-SPIGOT-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar
+          asset_name: ${{ steps.project_details.outputs.PROJECT_NAME }}-SPIGOT-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar
+          asset_content_type: application/java-archive
+
+      - name: Upload Artifacts to Release
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ github.workspace }}/${{ steps.project_details.outputs.PROJECT_NAME }}-PAPER-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar
+          asset_name: ${{ steps.project_details.outputs.PROJECT_NAME }}-PAPER-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar
+          asset_content_type: application/java-archive
+
