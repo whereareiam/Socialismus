@@ -29,12 +29,12 @@ public class AsyncChatListener implements ChatListener {
 
         loggerUtil.debug("AsyncPlayerChatEvent: " + player.getName() + " " + message);
 
-        onPlayerChatEvent(player, message);
-        event.setCancelled(true);
+        boolean cancelEvent = onPlayerChatEvent(player, message);
+        event.setCancelled(cancelEvent);
     }
 
     @Override
-    public void onPlayerChatEvent(Player player, String message) {
-        chatHandler.handleChatEvent(player, message);
+    public boolean onPlayerChatEvent(Player player, String message) {
+        return chatHandler.handleChatEvent(player, message);
     }
 }

@@ -23,7 +23,8 @@ public class ChatHandler {
         this.settingsConfig = settingsConfig;
     }
 
-    public void handleChatEvent(Player player, String message) {
+    public boolean handleChatEvent(Player player, String message) {
+        boolean cancelEvent = false;
         ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message);
 
         if (settingsConfig.features.bubblechat) {
@@ -32,9 +33,13 @@ public class ChatHandler {
         }
 
         if (settingsConfig.features.chats && chatMessage.getChat() != null) {
+            cancelEvent = true;
+
             final ChatService chatService = injector.getInstance(ChatService.class);
             chatService.distributeMessage(chatMessage);
         }
+
+        return cancelEvent;
     }
 }
 

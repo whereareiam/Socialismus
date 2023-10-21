@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
+import me.whereareiam.socialismus.feature.bubblechat.BubbleChatManager;
 import me.whereareiam.socialismus.feature.chats.ChatManager;
 import me.whereareiam.socialismus.feature.swapper.SwapperManager;
 import me.whereareiam.socialismus.listener.state.ChatListenerState;
@@ -75,6 +76,8 @@ public class FeatureLoader {
 
         if (settingsConfig.features.bubblechat) {
             chatListenerState.setChatListenerRequired(true);
+            
+            injector.getInstance(BubbleChatManager.class);
         }
     }
 
