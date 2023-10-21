@@ -57,6 +57,14 @@
             </modules>
         </profile>
         <profile>
+            <id>dev</id>
+            <modules>
+                <module>core</module>
+                <module>spigot</module>
+                <module>paper</module>
+            </modules>
+        </profile>
+        <profile>
             <id>release</id>
             <modules>
                 <module>core</module>

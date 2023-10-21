@@ -58,6 +58,11 @@
             </build>
         </profile>
 
+        <!-- Dev profile -->
+        <profile>
+            <id>dev</id>
+        </profile>
+
         <!-- Release profile -->
         <profile>
             <id>release</id>

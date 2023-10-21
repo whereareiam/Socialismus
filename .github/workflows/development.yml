@@ -30,7 +30,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B -P paper-dev,spigot-dev package --file pom.xml
+          mvn -B -P dev package --file pom.xml
 
       - name: Move Artifacts to Common Directory
         run: |
