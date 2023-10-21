@@ -38,7 +38,7 @@ public class CacheInterceptor implements MethodInterceptor {
 
         Cacheable cacheable = invocation.getMethod().getAnnotation(Cacheable.class);
         int duration = cacheable.duration();
-        if (duration != -1) {
+        if (duration != -1 && cache == null) {
             cache = CacheBuilder.newBuilder()
                     .maximumSize(1000)
                     .expireAfterWrite(duration, TimeUnit.SECONDS)
