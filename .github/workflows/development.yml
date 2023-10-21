@@ -1,11 +1,9 @@
-name: Build
+name: Development build
 
 on:
   push:
     branches:
       - dev
-  release:
-    types: [ created ]
 
 jobs:
   build:
@@ -32,11 +30,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            mvn -B package --file pom.xml
-          elif [[ "${{ github.event_name }}" == "release" ]]; then
-            mvn -B -P release package --file pom.xml
-          fi
+          mvn -B -P paper-dev,spigot-dev package --file pom.xml
 
       - name: Move Artifacts to Common Directory
         run: |
@@ -46,5 +40,5 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Socialismus
+          name: Socialismus-${{ github.run_number }}
           path: ${{ github.workspace }}/*.jar

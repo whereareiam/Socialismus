@@ -41,11 +41,30 @@
         <protocollib.version>5.1.0</protocollib.version>
     </properties>
 
-    <modules>
-        <module>core</module>
-        <module>spigot</module>
-        <module>paper</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>paper-dev</id>
+            <modules>
+                <module>core</module>
+                <module>paper</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>spigot-dev</id>
+            <modules>
+                <module>core</module>
+                <module>spigot</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>release</id>
+            <modules>
+                <module>core</module>
+                <module>spigot</module>
+                <module>paper</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <repositories>
         <!-- Spigot -->
