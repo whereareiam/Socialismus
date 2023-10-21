@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.chat.requirement.validator;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.chat.requirement.ChatRequirement;
@@ -14,11 +15,13 @@ import java.util.List;
 public class SenderRequirementValidator {
     private final List<ChatRequirement> requirements;
 
-    public SenderRequirementValidator() {
+    @Inject
+    public SenderRequirementValidator(WritePermissionRequirement writePermissionRequirement,
+                                      WorldRequirement worldRequirement) {
         this.requirements = new ArrayList<>();
 
-        requirements.add(new WritePermissionRequirement());
-        requirements.add(new WorldRequirement());
+        requirements.add(writePermissionRequirement);
+        requirements.add(worldRequirement);
     }
 
     public boolean checkRequirements(Player sender, Chat chat) {

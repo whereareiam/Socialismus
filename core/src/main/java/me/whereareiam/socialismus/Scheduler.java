@@ -52,13 +52,6 @@ public class Scheduler {
     }
 
     public void shutdown() {
-        scheduler.shutdown();
-        try {
-            if (!scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
-                scheduler.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            scheduler.shutdownNow();
-        }
+        scheduler.shutdownNow();
     }
 }

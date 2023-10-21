@@ -10,6 +10,7 @@ public class MessagesConfig extends YamlSerializable {
     public String noPermission = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>You don't have enough <red>rights.";
     public ChatMessagesConfig chat = new ChatMessagesConfig();
     public SwapperMessagesConfig swapper = new SwapperMessagesConfig();
+    public BubbleChatMessagesConfig bubblechat = new BubbleChatMessagesConfig();
     public CommandsMessagesConfig commands = new CommandsMessagesConfig();
 
     public MessagesConfig() {

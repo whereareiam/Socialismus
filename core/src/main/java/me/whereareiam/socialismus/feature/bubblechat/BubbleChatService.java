@@ -3,33 +3,53 @@ package me.whereareiam.socialismus.feature.bubblechat;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
+import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.feature.bubblechat.message.BubbleMessage;
 import me.whereareiam.socialismus.feature.bubblechat.message.BubbleMessageProcessor;
+import me.whereareiam.socialismus.feature.bubblechat.requirement.validator.RecipientRequirementValidator;
+import me.whereareiam.socialismus.feature.bubblechat.requirement.validator.SenderRequirementValidator;
+import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.WorldPlayerUtil;
+import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 @Singleton
 public class BubbleChatService {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
     private final WorldPlayerUtil worldPlayerUtil;
+    private final MessagesConfig messagesConfig;
+    private final FormatterUtil formatterUtil;
+
+    private final SenderRequirementValidator senderRequirementValidator;
+    private final RecipientRequirementValidator recipientRequirementValidator;
 
     private final BubbleMessageProcessor bubbleMessageProcessor;
     private final Map<Player, BubbleQueue> playerQueuesMap = new HashMap<>();
 
     @Inject
     public BubbleChatService(Injector injector, LoggerUtil loggerUtil, WorldPlayerUtil worldPlayerUtil,
+                             MessagesConfig messagesConfig, FormatterUtil formatterUtil,
+                             SenderRequirementValidator senderRequirementValidator,
+                             RecipientRequirementValidator recipientRequirementValidator,
                              BubbleMessageProcessor bubbleMessageProcessor) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
         this.worldPlayerUtil = worldPlayerUtil;
+        this.messagesConfig = messagesConfig;
+        this.formatterUtil = formatterUtil;
+
+        this.senderRequirementValidator = senderRequirementValidator;
+        this.recipientRequirementValidator = recipientRequirementValidator;
 
         this.bubbleMessageProcessor = bubbleMessageProcessor;
 
@@ -40,8 +60,18 @@ public class BubbleChatService {
         loggerUtil.debug("Distributing bubble message");
 
         Player player = chatMessage.getSender();
-        Collection<Player> players = worldPlayerUtil.getPlayersInWorld(player.getWorld());
-        Queue<BubbleMessage> queue = bubbleMessageProcessor.processMessage(chatMessage, players);
+        if (senderRequirementValidator.checkRequirements(player)) {
+            String message = messagesConfig.bubblechat.noSendPermission;
+            if (message != null) {
+                final Audience audience = (Audience) player;
+                audience.sendMessage(formatterUtil.formatMessage(player, message));
+            }
+            return;
+        }
+
+        Collection<Player> recipients = getRecipients(player);
+
+        Queue<BubbleMessage> queue = bubbleMessageProcessor.processMessage(chatMessage, recipients);
         loggerUtil.debug("Created a queue of " + queue.size() + " bubble messages");
 
         BubbleQueue bubbleQueue = playerQueuesMap.get(player);
@@ -54,5 +84,13 @@ public class BubbleChatService {
         while (!queue.isEmpty()) {
             bubbleQueue.addMessage(queue.poll());
         }
+    }
+
+    @Cacheable(duration = 2)
+    private Collection<Player> getRecipients(Player sender) {
+        return worldPlayerUtil.getPlayersInWorld(sender.getWorld())
+                .stream()
+                .filter(recipientRequirementValidator::checkRequirements)
+                .collect(Collectors.toList());
     }
 }
