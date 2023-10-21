@@ -71,7 +71,6 @@ public class BubbleMessageProcessor {
     }
 
     private ChatMessage processChatMessage(ChatMessage chatMessage) {
-        loggerUtil.debug("Processing chat message");
         for (ChatMessageProcessor processor : chatMessageProcessors) {
             chatMessage = processor.process(chatMessage);
         }

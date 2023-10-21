@@ -27,6 +27,8 @@ public class SwapperService implements ChatMessageProcessor {
     private final SettingsConfig settingsConfig;
     private final MessagesConfig messagesConfig;
 
+    private final Random random = new Random();
+
     @Inject
     public SwapperService(LoggerUtil loggerUtil, SwapperManager swapperManager, FormatterUtil formatterUtil,
                           SettingsConfig settingsConfig, MessagesConfig messagesConfig) {
@@ -56,20 +58,23 @@ public class SwapperService implements ChatMessageProcessor {
 
         List<Swapper> swappers = swapperManager.getSwappers();
         for (Swapper swapper : swappers) {
-            if (!player.hasPermission(swapper.settings.permission)) {
-                loggerUtil.debug("Player didn't have the right permission");
-                String message = messagesConfig.swapper.noPermissionForSwapper;
-                if (message != null) {
-                    Audience audience = (Audience) player;
-                    audience.sendMessage(formatterUtil.formatMessage(player, message));
-                }
-                return chatMessage;
-            }
             for (int i = 0; i < swapper.placeholders.size(); i++) {
                 String placeholder = swapper.placeholders.get(i);
+                if (!chatMessage.getContent().toString().contains(placeholder)) {
+                    continue;
+                }
+                if (!player.hasPermission(swapper.settings.permission)) {
+                    loggerUtil.debug("Player didn't have the right permission");
+                    String message = messagesConfig.swapper.noPermissionForSwapper;
+                    if (message != null) {
+                        Audience audience = (Audience) player;
+                        audience.sendMessage(formatterUtil.formatMessage(player, message));
+                    }
+                    return chatMessage;
+                }
                 Component content;
                 if (swapper.settings.randomContent) {
-                    int randomIndex = new Random().nextInt(swapper.contents.size());
+                    int randomIndex = random.nextInt(swapper.contents.size());
                     content = formatterUtil.formatMessage(player, swapper.contents.get(randomIndex));
                 } else {
                     content = formatterUtil.formatMessage(player, swapper.contents.get(0));
@@ -98,5 +103,4 @@ public class SwapperService implements ChatMessageProcessor {
         }
         return chatMessage;
     }
-
 }
