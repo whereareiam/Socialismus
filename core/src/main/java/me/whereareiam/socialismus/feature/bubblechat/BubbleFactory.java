@@ -2,7 +2,6 @@ package me.whereareiam.socialismus.feature.bubblechat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.config.feature.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.feature.bubblechat.message.BubbleMessage;
 import me.whereareiam.socialismus.integration.protocollib.entity.TextDisplayPacket;
@@ -31,7 +30,6 @@ public class BubbleFactory {
         loggerUtil.trace("Initializing class: " + this);
     }
 
-    @Cacheable(duration = 1)
     public PacketEntity createBubble(BubbleMessage bubbleMessage, Player player, int entityId) {
         loggerUtil.debug("Creating bubble for " + player.getName());
 

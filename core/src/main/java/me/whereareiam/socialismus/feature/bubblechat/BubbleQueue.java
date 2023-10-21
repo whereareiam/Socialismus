@@ -16,6 +16,7 @@ public class BubbleQueue {
     private final BubbleChatBroadcaster bubbleChatBroadcaster;
     private final Scheduler scheduler;
     private Player player;
+    private BubbleMessage currentBubbleMessage;
 
     @Inject
     public BubbleQueue(Scheduler scheduler, BubbleChatBroadcaster bubbleChatBroadcaster) {
@@ -30,19 +31,22 @@ public class BubbleQueue {
 
     public void addMessage(BubbleMessage message) {
         messageQueue.add(message);
-        if (messageQueue.size() == 1) {
+        if (currentBubbleMessage == null) {
             processNextMessage();
         }
     }
 
     private void processNextMessage() {
-        if (!messageQueue.isEmpty()) {
-            BubbleMessage bubbleMessage = messageQueue.peek();
-            bubbleChatBroadcaster.broadcastBubble(bubbleMessage);
-            scheduler.schedule(this::processNextMessage, (long) bubbleMessage.displayTime(), TimeUnit.SECONDS);
-        } else {
+        if (currentBubbleMessage != null) {
             bubbleChatBroadcaster.broadcastBubbleRemove(player);
         }
-    }
 
+        if (!messageQueue.isEmpty()) {
+            currentBubbleMessage = messageQueue.poll();
+            bubbleChatBroadcaster.broadcastBubble(currentBubbleMessage);
+            scheduler.schedule(this::processNextMessage, (long) currentBubbleMessage.displayTime(), TimeUnit.SECONDS);
+        } else {
+            currentBubbleMessage = null;
+        }
+    }
 }
