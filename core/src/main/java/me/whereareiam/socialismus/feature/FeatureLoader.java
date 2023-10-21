@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.feature;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.feature.chats.ChatManager;
@@ -14,31 +15,28 @@ import java.io.File;
 
 @Singleton
 public class FeatureLoader {
+    private final Injector injector;
     private final LoggerUtil loggerUtil;
     private final SettingsConfig settingsConfig;
     private final File dataFolder;
 
-    private final ChatManager chatManager;
-    private final SwapperManager swapperManager;
-
     private final ChatListenerState chatListenerState;
     private final JoinListenerState joinListenerState;
 
-    @Inject
-    public FeatureLoader(LoggerUtil loggerUtil,
-                         Plugin plugin, SettingsConfig settingsConfig,
+    private ChatManager chatManager;
+    private SwapperManager swapperManager;
 
-                         ChatManager chatManager, SwapperManager swapperManager,
+    @Inject
+    public FeatureLoader(Injector injector, LoggerUtil loggerUtil,
+                         Plugin plugin, SettingsConfig settingsConfig,
 
                          ChatListenerState chatListenerState,
                          JoinListenerState joinListenerState
     ) {
+        this.injector = injector;
         this.loggerUtil = loggerUtil;
         this.settingsConfig = settingsConfig;
         this.dataFolder = plugin.getDataFolder();
-
-        this.chatManager = chatManager;
-        this.swapperManager = swapperManager;
 
         this.chatListenerState = chatListenerState;
         this.joinListenerState = joinListenerState;
@@ -60,6 +58,8 @@ public class FeatureLoader {
 
         if (settingsConfig.features.chats) {
             chatListenerState.setChatListenerRequired(true);
+
+            chatManager = injector.getInstance(ChatManager.class);
             chatManager.registerChats();
         }
 
@@ -69,6 +69,7 @@ public class FeatureLoader {
                 joinListenerState.setJoinListenerRequired(true);
             }
 
+            swapperManager = injector.getInstance(SwapperManager.class);
             swapperManager.registerSwappers();
         }
 
@@ -92,10 +93,16 @@ public class FeatureLoader {
     }
 
     public int getChatCount() {
+        if (chatManager == null)
+            return 0;
+
         return chatManager.getChatCount();
     }
 
     public int getSwapperCount() {
+        if (swapperManager == null)
+            return 0;
+
         return swapperManager.getSwappers().size();
     }
 }

@@ -58,6 +58,7 @@ public class InfoPrinterUtil {
 
         int swapperCount = featureLoader.getSwapperCount();
         loggerUtil.info("  Registered " + swapperCount + " " + (swapperCount == 1 ? "swapper" : "swappers"));
+
         loggerUtil.info("");
     }
 }

@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.listener.handler;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.feature.swapper.SwapperManager;
@@ -8,17 +9,18 @@ import org.bukkit.entity.Player;
 
 @Singleton
 public class JoinHandler {
+    private final Injector injector;
     private final SettingsConfig settingsConfig;
-    private final SwapperManager swapperManager;
 
     @Inject
-    public JoinHandler(SettingsConfig settingsConfig, SwapperManager swapperManager) {
+    public JoinHandler(Injector injector, SettingsConfig settingsConfig) {
+        this.injector = injector;
         this.settingsConfig = settingsConfig;
-        this.swapperManager = swapperManager;
     }
 
     public void handleJoinEvent(Player player) {
         if (settingsConfig.features.swapper.suggest) {
+            final SwapperManager swapperManager = injector.getInstance(SwapperManager.class);
             swapperManager.suggestSwappers(player);
         }
     }
