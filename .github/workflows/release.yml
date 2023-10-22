@@ -29,7 +29,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B -P release --file pom.xml
+          mvn -B -P release package --file pom.xml
 
       - name: Move Artifacts to Common Directory
         run: |
