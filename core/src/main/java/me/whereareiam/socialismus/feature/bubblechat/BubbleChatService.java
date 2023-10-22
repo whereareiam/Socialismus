@@ -60,7 +60,7 @@ public class BubbleChatService {
         loggerUtil.debug("Distributing bubble message");
 
         Player player = chatMessage.getSender();
-        if (senderRequirementValidator.checkRequirements(player)) {
+        if (!senderRequirementValidator.checkRequirements(player)) {
             String message = messagesConfig.bubblechat.noSendPermission;
             if (message != null) {
                 final Audience audience = (Audience) player;
