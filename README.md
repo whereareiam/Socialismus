@@ -27,6 +27,7 @@ you want with this plugin, as it offers many different features and great custom
   an unusual way and when you move the mouse over a message, a miracle happens. You can restrict the use of the chat by
   setting many different requirements, such as permissions and the current world.
 - **Swapper:** Allows you to create many placeholders for chat. For example, you can make emojis or shortcuts.
+- **BubbleChat:** Simple packet-based messages over players' heads, allowing you to chat without looking at the chat! Experience a smooth bubble transition when the player runs, it's not what you've seen in other plugins.
 
 ## Information
 
