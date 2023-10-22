@@ -1,6 +1,8 @@
 # Socialismus
 
-![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml) ![downloads](https://pluginbadges.glitch.me/api/v1/dl/downloads-limegreen.svg?spigot=113119&github=whereareiam%2FSocialismus&style=flat)
+![bStats](https://bstats.org/signatures/bukkit/socialismus.svg)
+![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml) ![Spigotmc downloads](https://pluginbadges.glitch.me/api/v1/dl/downloads-limegreen.svg?spigot=113119&github=whereareiam%2FSocialismus&style=flat) ![GitHub release](https://img.shields.io/github/v/release/whereareiam/Socialismus)
+
 
 # Compatibility
 
