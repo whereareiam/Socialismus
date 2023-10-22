@@ -30,8 +30,7 @@ public class BubbleChatFormatConfig {
             value = {
                     @CommentValue(" If a message doesn't fit into a single bubble, it will be cut off and printed in the next"),
                     @CommentValue(" bubble. Here you can adjust how the cut is displayed."),
-                    @CommentValue(" You can use PlaceholderAPI placeholders, MiniMessage formatting and internal"),
-                    @CommentValue(" {message} placeholder.")
+                    @CommentValue(" You can use PlaceholderAPI placeholders and MiniMessage formatting.")
             },
             at = Comment.At.PREPEND
     )
@@ -40,8 +39,7 @@ public class BubbleChatFormatConfig {
     @Comment(
             value = {
                     @CommentValue(" At the end of a single bubble or queue, you can add a message to the end."),
-                    @CommentValue(" You can use PlaceholderAPI placeholders, MiniMessage formatting and internal"),
-                    @CommentValue(" {message} placeholder.")
+                    @CommentValue(" You can use PlaceholderAPI placeholders and MiniMessage formatting.")
             },
             at = Comment.At.PREPEND
     )
