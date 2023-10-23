@@ -15,7 +15,8 @@ public class ChatsConfig extends YamlSerializable {
     private static final SerializerConfig CHATS = new SerializerConfig.Builder().build();
     @Comment(
             value = {
-                    @CommentValue(" Example configuration:"),
+                    @CommentValue(type = CommentValue.Type.TEXT),
+                    @CommentValue(" CHATS DOCUMENTATION:"),
                     @CommentValue(type = CommentValue.Type.TEXT),
                     @CommentValue(" chats:"),
                     @CommentValue("   - id: \"global\""),
