@@ -3,7 +3,6 @@
 ![bStats](https://bstats.org/signatures/bukkit/socialismus.svg)
 ![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml) ![Spigotmc downloads](https://pluginbadges.glitch.me/api/v1/dl/downloads-limegreen.svg?spigot=113119&github=whereareiam%2FSocialismus&style=flat) ![GitHub release](https://img.shields.io/github/v/release/whereareiam/Socialismus)
 
-
 # Compatibility
 
 - Created for version 1.20.2, but should work on versions below.
@@ -29,7 +28,8 @@ you want with this plugin, as it offers many different features and great custom
   an unusual way and when you move the mouse over a message, a miracle happens. You can restrict the use of the chat by
   setting many different requirements, such as permissions and the current world.
 - **Swapper:** Allows you to create many placeholders for chat. For example, you can make emojis or shortcuts.
-- **BubbleChat:** Simple packet-based messages over players' heads, allowing you to chat without looking at the chat! Experience a smooth bubble transition when the player runs, it's not what you've seen in other plugins.
+- **BubbleChat:** Simple packet-based messages over players' heads, allowing you to chat without looking at the chat!
+  Experience a smooth bubble transition when the player runs, it's not what you've seen in other plugins.
 
 ## Information
 
@@ -41,6 +41,7 @@ you want with this plugin, as it offers many different features and great custom
 - [ ] API
 - [ ] Automatic Moderation
 - [ ] Chat Bot
+- [ ] Chats Improvement: Symbol or command chat
 - [ ] Colorization
 - [ ] Item/Inventory Display Chat
 - [ ] Message Announcer
