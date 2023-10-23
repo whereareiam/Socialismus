@@ -26,7 +26,6 @@
         <maven.antrun.version>1.8</maven.antrun.version>
 
         <!-- Dependencies -->
-
         <!-- core -->
         <google.guice.version>7.0.0</google.guice.version>
         <java.serializer.version>1.1.1</java.serializer.version>
