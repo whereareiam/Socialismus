@@ -39,6 +39,8 @@ public abstract class SocialismusConfig extends AbstractModule {
                 new CacheInterceptor(settingsConfig, loggerUtil)
         );
 
+        bind(Updater.class).asEagerSingleton();
+
         configurePlatformSpecifics();
     }
 
