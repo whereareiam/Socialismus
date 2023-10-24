@@ -5,23 +5,33 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.feature.swapper.SwapperManager;
+import me.whereareiam.socialismus.integration.IntegrationManager;
+import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 
 @Singleton
 public class JoinHandler {
     private final Injector injector;
+    private final LoggerUtil loggerUtil;
+    private final IntegrationManager integrationManager;
     private final SettingsConfig settingsConfig;
 
     @Inject
-    public JoinHandler(Injector injector, SettingsConfig settingsConfig) {
+    public JoinHandler(Injector injector, LoggerUtil loggerUtil, IntegrationManager integrationManager,
+                       SettingsConfig settingsConfig) {
         this.injector = injector;
+        this.loggerUtil = loggerUtil;
+        this.integrationManager = integrationManager;
         this.settingsConfig = settingsConfig;
     }
 
     public void handleJoinEvent(Player player) {
-        if (settingsConfig.features.swapper.suggest) {
+        if (integrationManager.isIntegrationEnabled("ProtocolLib")) {
             final SwapperManager swapperManager = injector.getInstance(SwapperManager.class);
-            swapperManager.suggestSwappers(player);
+            if (settingsConfig.features.swapper.suggest)
+                swapperManager.suggestSwappers(player);
+        } else {
+            loggerUtil.warning("You can't use the Swapper suggestion without ProtocolLib!");
         }
     }
 

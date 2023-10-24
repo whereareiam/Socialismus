@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.feature.swapper.SwapperConfig;
 import me.whereareiam.socialismus.feature.Feature;
 import me.whereareiam.socialismus.feature.swapper.model.Swapper;
+import me.whereareiam.socialismus.integration.IntegrationManager;
 import me.whereareiam.socialismus.integration.protocollib.PacketSender;
 import me.whereareiam.socialismus.integration.protocollib.entity.PlayerPacket;
 import me.whereareiam.socialismus.util.LoggerUtil;
@@ -21,14 +22,17 @@ import java.util.List;
 public class SwapperManager implements Feature {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
+    private final IntegrationManager integrationManager;
 
     private final Path swapperDir;
     private final List<Swapper> swappers = new ArrayList<>();
 
     @Inject
-    public SwapperManager(Injector injector, LoggerUtil loggerUtil, Plugin plugin) {
+    public SwapperManager(Injector injector, LoggerUtil loggerUtil, IntegrationManager integrationManager,
+                          Plugin plugin) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
+        this.integrationManager = integrationManager;
 
         Path featureFolder = plugin.getDataFolder().toPath().resolve("features");
         this.swapperDir = featureFolder.resolve("swapper");
@@ -80,25 +84,17 @@ public class SwapperManager implements Feature {
     }
 
     public void suggestSwappers(Player player) {
-        PacketSender packetSender = null;
-        try {
-            packetSender = injector.getInstance(PacketSender.class);
-        } catch (NoClassDefFoundError e) {
-            loggerUtil.warning("You can't use swapper suggestion without ProtocolLib!");
-        }
-
-        if (packetSender != null) {
-            final PlayerPacket playerPacket = injector.getInstance(PlayerPacket.class);
-            loggerUtil.debug("Sending swappers to " + player.getName());
-            for (Swapper swapper : swappers) {
-                if (player.hasPermission(swapper.settings.permission)) {
-                    loggerUtil.trace("Player " + player.getName() + " will receive these swappers: " + swapper.placeholders);
-                    for (String placeholder : swapper.placeholders) {
-                        packetSender.sendPacket(
-                                player,
-                                playerPacket.createPlayerInfoPacket(placeholder)
-                        );
-                    }
+        final PacketSender packetSender = injector.getInstance(PacketSender.class);
+        final PlayerPacket playerPacket = injector.getInstance(PlayerPacket.class);
+        loggerUtil.debug("Sending swappers to " + player.getName());
+        for (Swapper swapper : swappers) {
+            if (player.hasPermission(swapper.settings.permission)) {
+                loggerUtil.trace("Player " + player.getName() + " will receive these swappers: " + swapper.placeholders);
+                for (String placeholder : swapper.placeholders) {
+                    packetSender.sendPacket(
+                            player,
+                            playerPacket.createPlayerInfoPacket(placeholder)
+                    );
                 }
             }
         }

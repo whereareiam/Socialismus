@@ -58,4 +58,13 @@ public class IntegrationManager {
     public List<Integration> getIntegrations() {
         return integrations;
     }
+
+    public boolean isIntegrationEnabled(String integrationName) {
+        for (Integration integration : integrations) {
+            if (integration.getName().equals(integrationName)) {
+                return integration.isEnabled();
+            }
+        }
+        return false;
+    }
 }
