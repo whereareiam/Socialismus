@@ -6,7 +6,7 @@ import java.util.List;
 public class Swapper {
     public boolean enabled = true;
     public SwapperSettings settings = new SwapperSettings();
-    public List<String> contents = new ArrayList<>();
-    public List<String> hoverContent = new ArrayList<>();
+    public List<String> content = new ArrayList<>();
+    public List<String> contentHover = new ArrayList<>();
     public List<String> placeholders = new ArrayList<>();
 }
