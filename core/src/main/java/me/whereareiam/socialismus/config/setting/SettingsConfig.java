@@ -9,6 +9,7 @@ import net.elytrium.serializer.language.object.YamlSerializable;
 @Singleton
 public class SettingsConfig extends YamlSerializable {
     private static final SerializerConfig SETTINGS = new SerializerConfig.Builder().build();
+
     @Comment(
             value = {
                     @CommentValue(" 0 - Standard information"),
@@ -18,6 +19,15 @@ public class SettingsConfig extends YamlSerializable {
             at = Comment.At.PREPEND
     )
     public int logLevel = 0;
+
+    @Comment(
+            value = {
+                    @CommentValue(" This option allows you to disable or enable the update checker, which checks"),
+                    @CommentValue(" for updates every hour."),
+            },
+            at = Comment.At.PREPEND
+    )
+    public boolean updateChecker = true;
 
     @Comment(
             value = {
