@@ -9,7 +9,7 @@ import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.feature.swapper.model.Swapper;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
-import net.kyori.adventure.audience.Audience;
+import me.whereareiam.socialismus.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -22,6 +22,7 @@ import java.util.Random;
 public class SwapperService implements ChatMessageProcessor {
     private final LoggerUtil loggerUtil;
     private final SwapperManager swapperManager;
+    private final MessageUtil messageUtil;
     private final FormatterUtil formatterUtil;
 
     private final SettingsConfig settingsConfig;
@@ -30,10 +31,12 @@ public class SwapperService implements ChatMessageProcessor {
     private final Random random = new Random();
 
     @Inject
-    public SwapperService(LoggerUtil loggerUtil, SwapperManager swapperManager, FormatterUtil formatterUtil,
+    public SwapperService(LoggerUtil loggerUtil, SwapperManager swapperManager,
+                          MessageUtil messageUtil, FormatterUtil formatterUtil,
                           SettingsConfig settingsConfig, MessagesConfig messagesConfig) {
         this.loggerUtil = loggerUtil;
         this.swapperManager = swapperManager;
+        this.messageUtil = messageUtil;
         this.formatterUtil = formatterUtil;
 
         this.settingsConfig = settingsConfig;
@@ -67,8 +70,7 @@ public class SwapperService implements ChatMessageProcessor {
                     loggerUtil.debug("Player didn't have the right permission");
                     String message = messagesConfig.swapper.noPermissionForSwapper;
                     if (message != null) {
-                        Audience audience = (Audience) player;
-                        audience.sendMessage(formatterUtil.formatMessage(player, message));
+                        messageUtil.sendMessage(player, message);
                     }
                     return chatMessage;
                 }

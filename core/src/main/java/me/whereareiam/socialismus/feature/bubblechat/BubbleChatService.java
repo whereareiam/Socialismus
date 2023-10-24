@@ -10,10 +10,9 @@ import me.whereareiam.socialismus.feature.bubblechat.message.BubbleMessage;
 import me.whereareiam.socialismus.feature.bubblechat.message.BubbleMessageProcessor;
 import me.whereareiam.socialismus.feature.bubblechat.requirement.validator.RecipientRequirementValidator;
 import me.whereareiam.socialismus.feature.bubblechat.requirement.validator.SenderRequirementValidator;
-import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
+import me.whereareiam.socialismus.util.MessageUtil;
 import me.whereareiam.socialismus.util.WorldPlayerUtil;
-import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -28,7 +27,7 @@ public class BubbleChatService {
     private final LoggerUtil loggerUtil;
     private final WorldPlayerUtil worldPlayerUtil;
     private final MessagesConfig messagesConfig;
-    private final FormatterUtil formatterUtil;
+    private final MessageUtil messageUtil;
 
     private final SenderRequirementValidator senderRequirementValidator;
     private final RecipientRequirementValidator recipientRequirementValidator;
@@ -38,7 +37,7 @@ public class BubbleChatService {
 
     @Inject
     public BubbleChatService(Injector injector, LoggerUtil loggerUtil, WorldPlayerUtil worldPlayerUtil,
-                             MessagesConfig messagesConfig, FormatterUtil formatterUtil,
+                             MessagesConfig messagesConfig, MessageUtil messageUtil,
                              SenderRequirementValidator senderRequirementValidator,
                              RecipientRequirementValidator recipientRequirementValidator,
                              BubbleMessageProcessor bubbleMessageProcessor) {
@@ -46,7 +45,7 @@ public class BubbleChatService {
         this.loggerUtil = loggerUtil;
         this.worldPlayerUtil = worldPlayerUtil;
         this.messagesConfig = messagesConfig;
-        this.formatterUtil = formatterUtil;
+        this.messageUtil = messageUtil;
 
         this.senderRequirementValidator = senderRequirementValidator;
         this.recipientRequirementValidator = recipientRequirementValidator;
@@ -63,8 +62,7 @@ public class BubbleChatService {
         if (!senderRequirementValidator.checkRequirements(player)) {
             String message = messagesConfig.bubblechat.noSendPermission;
             if (message != null) {
-                final Audience audience = (Audience) player;
-                audience.sendMessage(formatterUtil.formatMessage(player, message));
+                messageUtil.sendMessage(player, message);
             }
             return;
         }

@@ -15,7 +15,7 @@ import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
-import net.kyori.adventure.audience.Audience;
+import me.whereareiam.socialismus.util.MessageUtil;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -23,14 +23,17 @@ import java.util.*;
 public class MainCommand extends CommandBase {
     private final LoggerUtil loggerUtil;
     private final CommandManager commandManager;
+    private final MessageUtil messageUtil;
     private final FormatterUtil formatterUtil;
     private final CommandsConfig commands;
     private final MessagesConfig messages;
 
     @Inject
-    public MainCommand(LoggerUtil loggerUtil, CommandManager commandManager, FormatterUtil formatterUtil, CommandsConfig commands, MessagesConfig messages) {
+    public MainCommand(LoggerUtil loggerUtil, CommandManager commandManager, MessageUtil messageUtil,
+                       FormatterUtil formatterUtil, CommandsConfig commands, MessagesConfig messages) {
         this.loggerUtil = loggerUtil;
         this.commandManager = commandManager;
+        this.messageUtil = messageUtil;
         this.formatterUtil = formatterUtil;
         this.commands = commands;
         this.messages = messages;
@@ -128,8 +131,7 @@ public class MainCommand extends CommandBase {
 
     private void sendHelpMessage(CommandIssuer issuer, String helpMessage) {
         if (issuer.getIssuer() instanceof Player) {
-            Audience audience = issuer.getIssuer();
-            audience.sendMessage(formatterUtil.formatMessage(issuer.getIssuer(), helpMessage));
+            messageUtil.sendMessage(issuer.getIssuer(), helpMessage);
         } else {
             issuer.sendMessage(formatterUtil.cleanMessage(helpMessage));
         }

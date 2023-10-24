@@ -9,7 +9,7 @@ import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
-import net.kyori.adventure.audience.Audience;
+import me.whereareiam.socialismus.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -22,14 +22,16 @@ import java.util.Set;
 @Singleton
 public class ChatBroadcaster {
     private final LoggerUtil loggerUtil;
+    private final MessageUtil messageUtil;
     private final FormatterUtil formatterUtil;
 
     private final Set<ChatMessageProcessor> chatMessageProcessors;
 
     @Inject
-    public ChatBroadcaster(LoggerUtil loggerUtil, FormatterUtil formatterUtil,
+    public ChatBroadcaster(LoggerUtil loggerUtil, MessageUtil messageUtil, FormatterUtil formatterUtil,
                            Set<ChatMessageProcessor> chatMessageProcessors) {
         this.loggerUtil = loggerUtil;
+        this.messageUtil = messageUtil;
         this.formatterUtil = formatterUtil;
 
         this.chatMessageProcessors = new HashSet<>(chatMessageProcessors);
@@ -37,9 +39,8 @@ public class ChatBroadcaster {
 
     public void broadcastMessage(ChatMessage chatMessage, Player recipient) {
         if (shouldSendMessage(chatMessage.getSender(), recipient, chatMessage.getChat().requirements.radius)) {
-            Audience recipientAudience = (Audience) recipient;
             Component finalMessage = createFinalMessage(chatMessage);
-            recipientAudience.sendMessage(finalMessage);
+            messageUtil.sendMessage(chatMessage.getSender(), finalMessage);
 
             loggerUtil.trace("Sent message: " + finalMessage + " to: " + recipient.getName());
         }
