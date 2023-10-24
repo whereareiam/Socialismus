@@ -1,20 +1,19 @@
 # Socialismus
 
 ![bStats](https://bstats.org/signatures/bukkit/socialismus.svg)
-![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml) ![Spigotmc downloads](https://pluginbadges.glitch.me/api/v1/dl/downloads-limegreen.svg?spigot=113119&github=whereareiam%2FSocialismus&style=flat) ![GitHub release](https://img.shields.io/github/v/release/whereareiam/Socialismus)
+![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml) ![SpigotMC downloads](https://pluginbadges.glitch.me/api/v1/dl/downloads-limegreen.svg?spigot=113119&github=whereareiam%2FSocialismus&style=flat) ![GitHub release](https://img.shields.io/github/v/release/whereareiam/Socialismus)
 
 # Compatibility
 
-- Created for version 1.20.2, but should work on versions below.
-- Works on Spigot and its forks (Paper recommended).
+- Created for version 1.20.2, but should work on versions below *(If you are getting an error on Spigot 1.20.2 when a
+  player joins the server, switch your server and plugin to Paper).*
+- Works on Spigot and its forks *(Paper recommended)*.
 
 # Dependencies
 
-- Java 17+*
-- ProtocolLib
-- PlaceholderAPI
-
-> Required dependencies are marked with ```*``` symbol.
+- Java 17 or newer
+- ProtocolLib *(Optional, but BubbleChat will not work without it)*
+- PlaceholderAPI *(Optional)*
 
 # Description
 
