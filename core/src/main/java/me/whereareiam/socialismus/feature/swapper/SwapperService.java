@@ -74,17 +74,17 @@ public class SwapperService implements ChatMessageProcessor {
                 }
                 Component content;
                 if (swapper.settings.randomContent) {
-                    int randomIndex = random.nextInt(swapper.contents.size());
-                    content = formatterUtil.formatMessage(player, swapper.contents.get(randomIndex));
+                    int randomIndex = random.nextInt(swapper.content.size());
+                    content = formatterUtil.formatMessage(player, swapper.content.get(randomIndex));
                 } else {
-                    content = formatterUtil.formatMessage(player, swapper.contents.get(0));
+                    content = formatterUtil.formatMessage(player, swapper.content.get(0));
                 }
 
-                if (!swapper.hoverContent.isEmpty()) {
+                if (!swapper.contentHover.isEmpty()) {
                     StringBuilder hoverText = new StringBuilder();
-                    for (int s = 0; s < swapper.hoverContent.size(); s++) {
-                        hoverText.append(swapper.hoverContent.get(s));
-                        if (s != swapper.hoverContent.size() - 1) {
+                    for (int s = 0; s < swapper.contentHover.size(); s++) {
+                        hoverText.append(swapper.contentHover.get(s));
+                        if (s != swapper.contentHover.size() - 1) {
                             hoverText.append("\n");
                         }
                     }

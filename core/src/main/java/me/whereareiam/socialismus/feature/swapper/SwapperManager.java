@@ -112,7 +112,7 @@ public class SwapperManager implements Feature {
         SwapperConfig swapperConfig = injector.getInstance(SwapperConfig.class);
         Swapper exampleSwapper = injector.getInstance(Swapper.class);
         exampleSwapper.placeholders.add("{example}");
-        exampleSwapper.contents.add("example");
+        exampleSwapper.content.add("example");
         exampleSwapper.settings.directSearch = true;
         exampleSwapper.settings.permission = "";
         exampleSwapper.settings.randomContent = false;
