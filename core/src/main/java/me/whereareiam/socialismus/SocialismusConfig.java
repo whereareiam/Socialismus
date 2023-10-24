@@ -12,8 +12,8 @@ import me.whereareiam.socialismus.feature.swapper.SwapperService;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
-public class SocialismusConfig extends AbstractModule {
-    private final Plugin plugin;
+public abstract class SocialismusConfig extends AbstractModule {
+    protected final Plugin plugin;
 
     public SocialismusConfig(Plugin plugin) {
         this.plugin = plugin;
@@ -38,5 +38,9 @@ public class SocialismusConfig extends AbstractModule {
                 Matchers.annotatedWith(Cacheable.class),
                 new CacheInterceptor(settingsConfig, loggerUtil)
         );
+
+        configurePlatformSpecifics();
     }
+
+    protected abstract void configurePlatformSpecifics();
 }

@@ -32,11 +32,11 @@ public class SwapperService implements ChatMessageProcessor {
 
     @Inject
     public SwapperService(LoggerUtil loggerUtil, SwapperManager swapperManager,
-                          MessageUtil messageUtil, FormatterUtil formatterUtil,
+                          MessageUtil MessageUtil, FormatterUtil formatterUtil,
                           SettingsConfig settingsConfig, MessagesConfig messagesConfig) {
         this.loggerUtil = loggerUtil;
         this.swapperManager = swapperManager;
-        this.messageUtil = messageUtil;
+        this.messageUtil = MessageUtil;
         this.formatterUtil = formatterUtil;
 
         this.settingsConfig = settingsConfig;
