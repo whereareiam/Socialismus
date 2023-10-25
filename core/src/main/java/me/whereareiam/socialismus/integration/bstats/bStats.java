@@ -5,7 +5,6 @@ import com.google.inject.Injector;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.IntegrationType;
 import me.whereareiam.socialismus.integration.bstats.chart.HookCountChart;
-import me.whereareiam.socialismus.integration.bstats.chart.PlatformTypeChart;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -63,7 +62,6 @@ public class bStats implements Integration {
 
     private void registerCharts() {
         new HookCountChart(injector, metrics).addChart();
-        new PlatformTypeChart(metrics).addChart();
     }
 }
 
