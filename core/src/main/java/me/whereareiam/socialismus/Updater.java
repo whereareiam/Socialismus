@@ -32,12 +32,38 @@ public class Updater {
 
     private void checkForUpdates() {
         String latestVersion = getLatestVersion();
+        if (latestVersion == null) {
+            loggerUtil.warning("Failed to check for updates.");
+            return;
+        }
+
         final String currentVersion = plugin.getDescription().getVersion();
 
-        if (!currentVersion.equals(latestVersion)) {
+        if (compareVersions(currentVersion, latestVersion) > 0) {
+            loggerUtil.info("You are on a dev build.");
+        } else if (!currentVersion.equals(latestVersion)) {
             loggerUtil.warning("Update found! The latest version is " + latestVersion);
             loggerUtil.warning("Download here: https://www.spigotmc.org/resources/113119/updates");
         }
+    }
+
+    private int compareVersions(String currentVersion, String latestVersion) {
+        String[] currentParts = currentVersion.split("\\.");
+        String[] latestParts = latestVersion.split("\\.");
+
+        int length = Math.max(currentParts.length, latestParts.length);
+        for (int i = 0; i < length; i++) {
+            int currentPart = i < currentParts.length ?
+                    Integer.parseInt(currentParts[i]) : 0;
+            int latestPart = i < latestParts.length ?
+                    Integer.parseInt(latestParts[i]) : 0;
+
+            if (currentPart < latestPart)
+                return -1;
+            if (currentPart > latestPart)
+                return 1;
+        }
+        return 0;
     }
 
     private String getLatestVersion() {
