@@ -30,7 +30,16 @@ public class SwapperCountChart implements Chart {
 
     @Override
     public String getData() {
-        //TODO Format data
-        return String.valueOf(featureLoader.getSwapperCount());
+        int swapperCount = featureLoader.getSwapperCount();
+        return switch (swapperCount) {
+            case 0 -> "NONE";
+            case 1, 2, 3, 4 -> String.valueOf(swapperCount);
+            case 5, 6, 7, 8, 9, 10 -> "5-10";
+            case 11, 12, 13, 14, 15, 16, 17, 18, 19 -> "10-20";
+            case 20, 21, 22, 23, 24, 25, 26, 27, 28,
+                    29, 30, 31, 32, 33, 34, 35, 36,
+                    37, 38, 39, 40 -> "20-40";
+            default -> "40+";
+        };
     }
 }

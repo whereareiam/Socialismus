@@ -3,9 +3,12 @@ package me.whereareiam.socialismus.integration.bstats.chart;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.IntegrationManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+
+import java.util.stream.Collectors;
 
 @Singleton
 public class HookCountChart implements Chart {
@@ -32,7 +35,9 @@ public class HookCountChart implements Chart {
     @Override
     public String getData() {
         final IntegrationManager integrationManager = injector.getInstance(IntegrationManager.class);
-        //TODO Format data
-        return String.valueOf(integrationManager.getEnabledIntegrationCount());
+        return integrationManager.getIntegrations().stream()
+                .filter(Integration::isEnabled)
+                .map(integration -> integration.getName().toUpperCase())
+                .collect(Collectors.joining(", "));
     }
 }

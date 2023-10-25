@@ -30,7 +30,14 @@ public class ChatCountChart implements Chart {
 
     @Override
     public String getData() {
-        //TODO Format data
-        return String.valueOf(featureLoader.getChatCount());
+        int chatCount = featureLoader.getChatCount();
+        return switch (chatCount) {
+            case 0 -> "NONE";
+            case 1, 2, 3, 4 -> String.valueOf(chatCount);
+            case 5, 6, 7, 8, 9, 10 -> "5-10";
+            case 11, 12, 13, 14, 15 -> "10-15";
+            case 16, 17, 18, 19, 20 -> "15-20";
+            default -> "20+";
+        };
     }
 }
