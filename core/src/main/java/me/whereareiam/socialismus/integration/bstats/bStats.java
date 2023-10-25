@@ -4,7 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.IntegrationType;
+import me.whereareiam.socialismus.integration.bstats.chart.ChatCountChart;
 import me.whereareiam.socialismus.integration.bstats.chart.HookCountChart;
+import me.whereareiam.socialismus.integration.bstats.chart.SwapperCountChart;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -61,9 +63,17 @@ public class bStats implements Integration {
     }
 
     private void registerCharts() {
+        ChatCountChart chatCountChart = injector.getInstance(ChatCountChart.class);
+        chatCountChart.setMetrics(metrics);
+        chatCountChart.addChart();
+        
         HookCountChart hookCountChart = injector.getInstance(HookCountChart.class);
         hookCountChart.setMetrics(metrics);
         hookCountChart.addChart();
+
+        SwapperCountChart swapperCountChart = injector.getInstance(SwapperCountChart.class);
+        swapperCountChart.setMetrics(metrics);
+        swapperCountChart.addChart();
     }
 }
 
