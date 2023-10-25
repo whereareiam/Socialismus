@@ -2,24 +2,27 @@ package me.whereareiam.socialismus.feature.bubblechat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.config.feature.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.feature.bubblechat.message.BubbleMessage;
 import me.whereareiam.socialismus.integration.protocollib.entity.EntityPacketSender;
 import me.whereareiam.socialismus.integration.protocollib.entity.model.PacketEntity;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Singleton
 public class BubbleChatBroadcaster {
     private final LoggerUtil loggerUtil;
     private final BubbleFactory bubbleFactory;
     private final EntityPacketSender entityPacketSender;
-    private final Map<Player, Integer> playerEntityIds = new HashMap<>();
     private final Random random = new Random();
+
+    private final Map<Player, Integer> playerEntityIds = new HashMap<>();
+    private final Map<Player, List<PacketEntity>> playerEntities = new HashMap<>();
+
+    @Inject
+    private BubbleChatConfig bubbleChatConfig;
 
     private PacketEntity packetEntity;
 
@@ -42,16 +45,33 @@ public class BubbleChatBroadcaster {
             entityId = playerEntityIds.get(player);
         }
 
+        List<PacketEntity> entities = new ArrayList<>();
+        int previousEntityId = player.getEntityId();
+        for (int i = 0; i < bubbleChatConfig.settings.headDistance; i++) {
+            PacketEntity invisibleEntity = bubbleFactory.createBubbleDistance(player, random.nextInt());
+            entityPacketSender.sendEntityMountPacket(player, invisibleEntity, previousEntityId);
+            entities.add(invisibleEntity);
+            previousEntityId = invisibleEntity.getId();
+        }
+        playerEntities.put(player, entities);
+
+        // Create the bubble and mount it to the last invisible entity
         packetEntity = bubbleFactory.createBubble(bubbleMessage, player, entityId);
         for (Player onlinePlayer : bubbleMessage.receivers()) {
-            entityPacketSender.sendEntityMountPacket(onlinePlayer, packetEntity, player.getEntityId());
+            entityPacketSender.sendEntityMountPacket(onlinePlayer, packetEntity, previousEntityId);
         }
     }
 
     public void broadcastBubbleRemove(Player player) {
-        if (playerEntityIds.containsKey(player)) {
-            playerEntityIds.remove(player);
+        if (playerEntities.containsKey(player)) {
+            // Remove the bubble first
             entityPacketSender.removeEntitiesGlobally(List.of(packetEntity));
+            // Then remove the invisible entities
+            List<PacketEntity> entities = playerEntities.get(player);
+            for (PacketEntity entity : entities) {
+                entityPacketSender.removeEntitiesGlobally(List.of(entity));
+            }
+            playerEntities.remove(player);
         } else {
             loggerUtil.severe("No bubble to remove for " + player.getName());
         }

@@ -32,6 +32,7 @@ public class HookCountChart implements Chart {
     @Override
     public String getData() {
         final IntegrationManager integrationManager = injector.getInstance(IntegrationManager.class);
+        //TODO Format data
         return String.valueOf(integrationManager.getEnabledIntegrationCount());
     }
 }

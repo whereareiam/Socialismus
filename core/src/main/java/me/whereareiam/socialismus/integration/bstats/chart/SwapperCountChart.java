@@ -30,6 +30,7 @@ public class SwapperCountChart implements Chart {
 
     @Override
     public String getData() {
+        //TODO Format data
         return String.valueOf(featureLoader.getSwapperCount());
     }
 }
