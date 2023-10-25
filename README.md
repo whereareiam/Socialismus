@@ -47,6 +47,7 @@ you want with this plugin, as it offers many different features and great custom
 - [ ] Placeholders
 - [ ] Private Messages
 - [ ] Role-play Commands
+- [ ] Statistics
 - [ ] Swapper placeholder list command
 - [ ] User Click Action
 - [ ] User Mention
