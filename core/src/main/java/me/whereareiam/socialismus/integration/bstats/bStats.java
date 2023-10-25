@@ -61,7 +61,9 @@ public class bStats implements Integration {
     }
 
     private void registerCharts() {
-        new HookCountChart(injector, metrics).addChart();
+        HookCountChart hookCountChart = injector.getInstance(HookCountChart.class);
+        hookCountChart.setMetrics(metrics);
+        hookCountChart.addChart();
     }
 }
 

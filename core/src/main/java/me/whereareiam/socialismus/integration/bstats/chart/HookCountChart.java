@@ -1,16 +1,23 @@
 package me.whereareiam.socialismus.integration.bstats.chart;
 
-import com.google.inject.Injector;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.integration.IntegrationManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 
+@Singleton
 public class HookCountChart implements Chart {
-    private final Metrics metrics;
-    private final Injector injector;
+    private final IntegrationManager integrationManager;
+    private Metrics metrics;
 
-    public HookCountChart(Injector injector, Metrics metrics) {
-        this.injector = injector;
+    @Inject
+    public HookCountChart(IntegrationManager integrationManager) {
+        this.integrationManager = integrationManager;
+    }
+
+    @Override
+    public void setMetrics(Metrics metrics) {
         this.metrics = metrics;
     }
 
@@ -23,6 +30,6 @@ public class HookCountChart implements Chart {
 
     @Override
     public String getData() {
-        return String.valueOf(injector.getInstance(IntegrationManager.class).getEnabledIntegrationCount());
+        return String.valueOf(integrationManager.getEnabledIntegrationCount());
     }
 }
