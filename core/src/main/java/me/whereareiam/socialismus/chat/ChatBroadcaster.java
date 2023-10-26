@@ -40,7 +40,7 @@ public class ChatBroadcaster {
     public void broadcastMessage(ChatMessage chatMessage, Player recipient) {
         if (shouldSendMessage(chatMessage.getSender(), recipient, chatMessage.getChat().requirements.radius)) {
             Component finalMessage = createFinalMessage(chatMessage);
-            messageUtil.sendMessage(chatMessage.getSender(), finalMessage);
+            messageUtil.sendMessage(recipient, finalMessage);
 
             loggerUtil.trace("Sent message: " + finalMessage + " to: " + recipient.getName());
         }
