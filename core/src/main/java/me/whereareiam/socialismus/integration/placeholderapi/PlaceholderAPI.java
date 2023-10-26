@@ -1,5 +1,7 @@
 package me.whereareiam.socialismus.integration.placeholderapi;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.integration.IntegrationType;
 import me.whereareiam.socialismus.integration.MessagingIntegration;
@@ -11,8 +13,14 @@ import org.bukkit.plugin.Plugin;
 @Singleton
 public class PlaceholderAPI implements MessagingIntegration {
     private static int placeholdersCount;
+    private final Injector injector;
     private final Plugin plugin = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
     private boolean isEnabled;
+
+    @Inject
+    public PlaceholderAPI(Injector injector) {
+        this.injector = injector;
+    }
 
     public static int getPlaceholdersCount() {
         return placeholdersCount;
@@ -24,7 +32,7 @@ public class PlaceholderAPI implements MessagingIntegration {
             return;
 
         isEnabled = plugin.isEnabled();
-        Placeholders placeholders = new Placeholders();
+        Placeholders placeholders = injector.getInstance(Placeholders.class);
 
         if (placeholders.register()) {
             placeholdersCount = placeholders.getPlaceholdersCount();

@@ -2,7 +2,6 @@ package me.whereareiam.socialismus.feature.statistics;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
@@ -14,14 +13,13 @@ public class ChatMessageStatistic extends Statistic<Integer> {
         super(loggerUtil, plugin, "chats.stat");
     }
 
-    public void incrementStatistic(Chat chat) {
-        String chatId = chat.id;
+    public void incrementStatistic(String chatId) {
         int count = statistics.getOrDefault(chatId, 0);
         statistics.put(chatId, count + 1);
     }
 
-    public int getMessageCount(Chat chat) {
-        return statistics.getOrDefault(chat.id, 0);
+    public int getMessageCount(String chatId) {
+        return statistics.getOrDefault(chatId, 0);
     }
 
     @Override

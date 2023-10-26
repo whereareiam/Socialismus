@@ -47,7 +47,7 @@ public class InfoPrinterUtil {
         loggerUtil.info("  Registered " + commandCount + " " + (commandCount == 1 ? "command" : "commands"));
 
         integrationManager.getIntegrations().forEach(i -> {
-            if (i.getName().equals("placeholderapi")) {
+            if (i.getName().equals("PlaceholderAPI")) {
                 int placeholdersCount = PlaceholderAPI.getPlaceholdersCount();
                 loggerUtil.info("  Registered " + placeholdersCount + " " + (placeholdersCount == 1 ? "placeholder" : "placeholders"));
             }

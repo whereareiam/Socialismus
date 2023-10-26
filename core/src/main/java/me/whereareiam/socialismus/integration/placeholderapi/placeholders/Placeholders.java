@@ -1,7 +1,10 @@
 package me.whereareiam.socialismus.integration.placeholderapi.placeholders;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.whereareiam.socialismus.SocialismusBase;
+import me.whereareiam.socialismus.feature.statistics.ChatMessageStatistic;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,13 +13,19 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Singleton
 public class Placeholders extends PlaceholderExpansion {
+    private final ChatMessageStatistic chatMessageStatistic;
+
     private final Map<String, Supplier<String>> basicPlaceholders = new HashMap<>();
     private final Map<String, Function<String, String>> advancedPlaceholders = new HashMap<>();
 
-    public Placeholders() {
+    @Inject
+    public Placeholders(ChatMessageStatistic chatMessageStatistic) {
+        this.chatMessageStatistic = chatMessageStatistic;
+
         //basicPlaceholders.put("test", this::test);
-        //advancedPlaceholders.put("test_", this::test);
+        advancedPlaceholders.put("statistics_chat_", this::getChatMessageCount);
     }
 
     @Override
@@ -50,5 +59,10 @@ public class Placeholders extends PlaceholderExpansion {
 
     public int getPlaceholdersCount() {
         return basicPlaceholders.size() + advancedPlaceholders.size();
+    }
+
+    private String getChatMessageCount(String chatId) {
+        int count = chatMessageStatistic.getMessageCount(chatId);
+        return String.valueOf(count);
     }
 }

@@ -84,7 +84,7 @@ public class ChatService {
             }
         }
 
-        chatMessageStatistic.incrementStatistic(chat);
+        chatMessageStatistic.incrementStatistic(chat.id);
         onlinePlayers.stream()
                 .filter(recipient -> recipientRequirementValidator.checkRequirements(recipient, chat))
                 .filter(recipient -> chat.requirements.radius == -1 || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= chat.requirements.radius)
