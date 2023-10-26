@@ -34,4 +34,6 @@ public class FeaturesSettingsConfig {
             at = Comment.At.PREPEND
     )
     public boolean bubblechat = true;
+
+    public boolean statistics = true;
 }
