@@ -16,6 +16,8 @@ public class SeePermissionRequirement implements BubbleRequirement {
 
     @Override
     public boolean checkRequirement(Player player) {
-        return bubbleChatConfig.requirements.seePermission == null || player.hasPermission(bubbleChatConfig.requirements.seePermission);
+        return bubbleChatConfig.requirements.seePermission == null
+                || bubbleChatConfig.requirements.seePermission.isEmpty()
+                || player.hasPermission(bubbleChatConfig.requirements.seePermission);
     }
 }

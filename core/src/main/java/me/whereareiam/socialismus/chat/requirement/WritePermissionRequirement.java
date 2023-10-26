@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 public class WritePermissionRequirement implements ChatRequirement {
     @Override
     public boolean checkRequirement(Player player, Chat chat) {
-        return chat.requirements.writePermission == null || player.hasPermission(chat.requirements.writePermission);
+        return chat.requirements.writePermission == null
+                || chat.requirements.writePermission.isEmpty()
+                || player.hasPermission(chat.requirements.writePermission);
     }
 }

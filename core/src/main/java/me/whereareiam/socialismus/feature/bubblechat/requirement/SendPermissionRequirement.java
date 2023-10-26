@@ -16,6 +16,8 @@ public class SendPermissionRequirement implements BubbleRequirement {
 
     @Override
     public boolean checkRequirement(Player player) {
-        return bubbleChatConfig.requirements.sendPermission == null || player.hasPermission(bubbleChatConfig.requirements.sendPermission);
+        return bubbleChatConfig.requirements.sendPermission == null
+                || bubbleChatConfig.requirements.seePermission.isEmpty()
+                || player.hasPermission(bubbleChatConfig.requirements.sendPermission);
     }
 }
