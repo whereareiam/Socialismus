@@ -29,7 +29,7 @@ public class ChatsConfig extends YamlSerializable {
                     @CommentValue("     Message Format allows you to specify the design of the final message that will be shown"),
                     @CommentValue("     to the players. You can use PlaceholderAPI placeholders, MiniMessage formatting and"),
                     @CommentValue("     internal {playerName}/{message} placeholders."),
-                    @CommentValue("     message-format: \"%luckperms_prefix%%player_name%: {message}\""),
+                    @CommentValue("     message-format: \"%luckperms_prefix%{playerName}: {message}\""),
                     @CommentValue("     In this list, you can specify what and how to show players when they hover their mouse"),
                     @CommentValue("     over the message format. You can use PlaceholderAPI placeholders and MiniMessage formatting"),
                     @CommentValue("     hover-format: "),
