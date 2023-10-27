@@ -65,7 +65,7 @@ public class BubbleMessageProcessor {
             Component formatMessageComponent = getFormat(isFirstMessage, player);
             isFirstMessage = false;
 
-            formatMessageComponent = replacePlaceholderWithMessage(formatMessageComponent, messageComponent);
+            formatMessageComponent = replaceInternalPlaceholders(player, formatMessageComponent, messageComponent);
 
             formatMessageComponent = appendEndOrCutFormat(formatMessageComponent, lines.isEmpty(), player);
 
@@ -108,13 +108,20 @@ public class BubbleMessageProcessor {
         return formatterUtil.formatMessage(player, format);
     }
 
-    private Component replacePlaceholderWithMessage(Component format, Component bubbleMessageComponent) {
-        loggerUtil.debug("Replacing placeholder with the message");
-        TextReplacementConfig config = TextReplacementConfig.builder()
+    private Component replaceInternalPlaceholders(Player player, Component format, Component bubbleMessageComponent) {
+        loggerUtil.debug("Replacing internal placeholders");
+
+        TextReplacementConfig playerNameConfig = TextReplacementConfig.builder()
+                .matchLiteral("{playerName}")
+                .replacement(player.getName())
+                .build();
+        
+        TextReplacementConfig messageConfig = TextReplacementConfig.builder()
                 .matchLiteral("{message}")
                 .replacement(bubbleMessageComponent)
                 .build();
-        return format.replaceText(config);
+
+        return format.replaceText(playerNameConfig).replaceText(messageConfig);
     }
 
     private Component appendEndOrCutFormat(Component format, boolean isLastLine, Player player) {

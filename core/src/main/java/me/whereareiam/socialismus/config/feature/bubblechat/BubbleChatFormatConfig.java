@@ -10,17 +10,17 @@ public class BubbleChatFormatConfig {
                     @CommentValue(type = CommentValue.Type.NEW_LINE),
                     @CommentValue(" The Start Message Format allows you to customise how the start message is displayed."),
                     @CommentValue(" You can use PlaceholderAPI placeholders, MiniMessage formatting and internal"),
-                    @CommentValue(" {message} placeholder.")
+                    @CommentValue(" {playerName}/{message} placeholders.")
             },
             at = Comment.At.PREPEND
     )
-    public String startMessageFormat = "%player_name%: {message}";
+    public String startMessageFormat = "{playerName}: {message}";
 
     @Comment(
             value = {
                     @CommentValue(" This option is similar to the previous one, but is used for starting messages in the queue."),
                     @CommentValue(" You can use PlaceholderAPI placeholders, MiniMessage formatting and internal"),
-                    @CommentValue(" {message} placeholder.")
+                    @CommentValue(" {playerName}/{message} placeholders.")
             },
             at = Comment.At.PREPEND
     )
