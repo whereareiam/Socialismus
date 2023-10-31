@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.config.setting;
 
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.config.setting.database.DatabaseSettingsConfig;
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
@@ -28,6 +29,8 @@ public class SettingsConfig extends YamlSerializable {
             at = Comment.At.PREPEND
     )
     public boolean updateChecker = true;
+
+    public DatabaseSettingsConfig database = new DatabaseSettingsConfig();
 
     @Comment(
             value = {

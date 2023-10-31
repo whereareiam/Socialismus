@@ -21,17 +21,16 @@ public class BubbleChatBroadcaster {
     private final Map<Player, Integer> playerEntityIds = new HashMap<>();
     private final Map<Player, List<PacketEntity>> playerEntities = new HashMap<>();
 
-    @Inject
-    private BubbleChatConfig bubbleChatConfig;
-
+    private final BubbleChatConfig bubbleChatConfig;
     private PacketEntity packetEntity;
 
     @Inject
     public BubbleChatBroadcaster(LoggerUtil loggerUtil, BubbleFactory bubbleFactory,
-                                 EntityPacketSender entityPacketSender) {
+                                 EntityPacketSender entityPacketSender, BubbleChatConfig bubbleChatConfig) {
         this.loggerUtil = loggerUtil;
         this.bubbleFactory = bubbleFactory;
         this.entityPacketSender = entityPacketSender;
+        this.bubbleChatConfig = bubbleChatConfig;
     }
 
     public void broadcastBubble(BubbleMessage bubbleMessage) {
@@ -55,7 +54,6 @@ public class BubbleChatBroadcaster {
         }
         playerEntities.put(player, entities);
 
-        // Create the bubble and mount it to the last invisible entity
         packetEntity = bubbleFactory.createBubble(bubbleMessage, player, entityId);
         for (Player onlinePlayer : bubbleMessage.receivers()) {
             entityPacketSender.sendEntityMountPacket(onlinePlayer, packetEntity, previousEntityId);
@@ -64,9 +62,7 @@ public class BubbleChatBroadcaster {
 
     public void broadcastBubbleRemove(Player player) {
         if (playerEntities.containsKey(player)) {
-            // Remove the bubble first
             entityPacketSender.removeEntitiesGlobally(List.of(packetEntity));
-            // Then remove the invisible entities
             List<PacketEntity> entities = playerEntities.get(player);
             for (PacketEntity entity : entities) {
                 entityPacketSender.removeEntitiesGlobally(List.of(entity));

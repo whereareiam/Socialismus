@@ -4,8 +4,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
-import java.io.*;
-import java.nio.file.Path;
+import java.sql.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,54 +12,48 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class Statistic<T> {
     protected final LoggerUtil loggerUtil;
     protected final Map<String, T> statistics = new ConcurrentHashMap<>();
-    protected final File statFile;
+    protected final String url;
 
-    public Statistic(LoggerUtil loggerUtil, Plugin plugin, String fileName) {
+    public Statistic(LoggerUtil loggerUtil, Plugin plugin, String tableName) {
         this.loggerUtil = loggerUtil;
 
-        Path featureFolder = plugin.getDataFolder().toPath().resolve("features");
-        this.statFile = featureFolder.resolve("statistics").resolve(fileName).toFile();
+        String dbPath = plugin.getDataFolder().toPath().resolve("features").resolve("statistics").resolve("stats.db").toString();
+        this.url = "jdbc:sqlite:" + dbPath;
 
         loadStatistics();
     }
 
     public void loadStatistics() {
-        if (statFile.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(statFile))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(" ");
-                    if (parts.length == 2) {
-                        try {
-                            statistics.put(parts[0], parseValue(parts[1]));
-                        } catch (NumberFormatException e) {
-                            loggerUtil.severe("Error parsing count for chat " + parts[0] + ": " + e.getMessage());
-                        }
-                    }
+        String sql = "SELECT chat_id, count FROM statistics";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                try {
+                    statistics.put(rs.getString("chat_id"), parseValue(rs.getString("count")));
+                } catch (NumberFormatException e) {
+                    loggerUtil.severe("Error parsing count for chat " + rs.getString("chat_id") + ": " + e.getMessage());
                 }
-            } catch (IOException e) {
-                loggerUtil.severe("Error loading statistics: " + e.getMessage());
             }
+        } catch (SQLException e) {
+            loggerUtil.severe("Error loading statistics: " + e.getMessage());
         }
     }
 
     public void saveStatistics() {
-        if (!statFile.exists()) {
-            try {
-                boolean isCreated = statFile.createNewFile();
-                if (!isCreated) {
-                    loggerUtil.severe("File already exists or an error occurred while creating the file.");
-                }
-            } catch (IOException e) {
-                loggerUtil.severe("Error creating statistics file: " + e.getMessage());
-            }
-        }
+        String sql = "INSERT INTO statistics(chat_id,count) VALUES(?,?)";
 
-        try (PrintWriter out = new PrintWriter(new FileWriter(statFile))) {
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             for (Map.Entry<String, T> entry : statistics.entrySet()) {
-                out.println(entry.getKey() + " " + formatValue(entry.getValue()));
+                pstmt.setString(1, entry.getKey());
+                pstmt.setString(2, formatValue(entry.getValue()));
+                pstmt.executeUpdate();
             }
-        } catch (IOException e) {
+        } catch (SQLException e) {
             loggerUtil.severe("Error saving statistics: " + e.getMessage());
         }
     }
