@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.feature.swapper.SwapperManager;
 import me.whereareiam.socialismus.integration.IntegrationManager;
+import me.whereareiam.socialismus.module.swapper.SwapperManager;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 
@@ -28,7 +28,7 @@ public class JoinHandler {
     public void handleJoinEvent(Player player) {
         if (integrationManager.isIntegrationEnabled("ProtocolLib")) {
             final SwapperManager swapperManager = injector.getInstance(SwapperManager.class);
-            if (settingsConfig.features.swapper.suggest)
+            if (settingsConfig.modules.swapper.suggest)
                 swapperManager.suggestSwappers(player);
         } else {
             loggerUtil.warning("You can't use the Swapper suggestion without ProtocolLib!");

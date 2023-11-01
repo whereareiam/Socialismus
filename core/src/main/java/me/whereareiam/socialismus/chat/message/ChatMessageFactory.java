@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.chat.message;
 
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.chat.model.Chat;
-import me.whereareiam.socialismus.feature.chats.ChatManager;
+import me.whereareiam.socialismus.module.chats.ChatManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;

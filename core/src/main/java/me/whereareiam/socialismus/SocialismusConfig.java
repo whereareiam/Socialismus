@@ -8,7 +8,7 @@ import me.whereareiam.socialismus.cache.CacheInterceptor;
 import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.feature.swapper.SwapperService;
+import me.whereareiam.socialismus.module.swapper.SwapperService;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 

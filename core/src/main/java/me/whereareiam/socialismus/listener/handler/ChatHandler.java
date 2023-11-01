@@ -7,8 +7,8 @@ import me.whereareiam.socialismus.chat.ChatService;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.chat.message.ChatMessageFactory;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.feature.bubblechat.BubbleChatService;
 import me.whereareiam.socialismus.integration.IntegrationManager;
+import me.whereareiam.socialismus.module.bubblechat.BubbleChatService;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 
@@ -38,13 +38,13 @@ public class ChatHandler {
 
         if (integrationManager.isIntegrationEnabled("ProtocolLib")) {
             final BubbleChatService bubbleChatService = injector.getInstance(BubbleChatService.class);
-            if (settingsConfig.features.bubblechat)
+            if (settingsConfig.modules.bubblechat)
                 bubbleChatService.distributeBubbleMessage(chatMessage);
         } else {
-            loggerUtil.warning("You can't use the BubbleChat feature without ProtocolLib!");
+            loggerUtil.warning("You can't use the BubbleChat module without ProtocolLib!");
         }
 
-        if (settingsConfig.features.chats && chatMessage.getChat() != null) {
+        if (settingsConfig.modules.chats && chatMessage.getChat() != null) {
             cancelEvent = true;
 
             final ChatService chatService = injector.getInstance(ChatService.class);

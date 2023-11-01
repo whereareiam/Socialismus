@@ -35,13 +35,13 @@ public class SettingsConfig extends YamlSerializable {
     @Comment(
             value = {
                     @CommentValue(type = CommentValue.Type.NEW_LINE),
-                    @CommentValue(" In this section you can disable or enable the desired features."),
+                    @CommentValue(" In this section you can disable or enable the desired module."),
                     @CommentValue("  true - enabled"),
                     @CommentValue("  false - disabled"),
             },
             at = Comment.At.PREPEND
     )
-    public FeaturesSettingsConfig features = new FeaturesSettingsConfig();
+    public ModulesSettingsConfig modules = new ModulesSettingsConfig();
 
     @Comment(
             value = {

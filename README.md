@@ -19,9 +19,9 @@
 
 A plugin made **by players for players**, designed to make communicating more convenient and modern. You can do exactly
 what
-you want with this plugin, as it offers many different features and great customization of all settings and messages!
+you want with this plugin, as it offers many different modules and great customization of all settings and messages!
 
-## Features
+## Modules
 
 - **Chats:** Allows the user to communicate with other people in the neighbourhood with messages that are formatted in
   an unusual way and when you move the mouse over a message, a miracle happens. You can restrict the use of the chat by

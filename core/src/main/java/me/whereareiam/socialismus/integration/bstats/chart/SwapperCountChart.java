@@ -2,18 +2,18 @@ package me.whereareiam.socialismus.integration.bstats.chart;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.feature.FeatureLoader;
+import me.whereareiam.socialismus.module.ModuleLoader;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 
 @Singleton
 public class SwapperCountChart implements Chart {
-    private final FeatureLoader featureLoader;
+    private final ModuleLoader moduleLoader;
     private Metrics metrics;
 
     @Inject
-    public SwapperCountChart(FeatureLoader featureLoader) {
-        this.featureLoader = featureLoader;
+    public SwapperCountChart(ModuleLoader moduleLoader) {
+        this.moduleLoader = moduleLoader;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SwapperCountChart implements Chart {
 
     @Override
     public String getData() {
-        int swapperCount = featureLoader.getSwapperCount();
+        int swapperCount = moduleLoader.getSwapperCount();
         return switch (swapperCount) {
             case 0 -> "NONE";
             case 1, 2, 3, 4 -> String.valueOf(swapperCount);
