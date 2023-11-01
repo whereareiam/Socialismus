@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.feature.bubblechat.BubbleChatManager;
 import me.whereareiam.socialismus.feature.chats.ChatManager;
-import me.whereareiam.socialismus.feature.statistics.StatisticsManager;
 import me.whereareiam.socialismus.feature.swapper.SwapperManager;
 import me.whereareiam.socialismus.listener.state.ChatListenerState;
 import me.whereareiam.socialismus.listener.state.JoinListenerState;
@@ -80,9 +79,6 @@ public class FeatureLoader {
 
             injector.getInstance(BubbleChatManager.class);
         }
-
-        if (settingsConfig.features.statistics)
-            injector.getInstance(StatisticsManager.class);
     }
 
     public void reloadFeatures() {

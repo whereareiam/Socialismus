@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.whereareiam.socialismus.SocialismusBase;
-import me.whereareiam.socialismus.feature.statistics.ChatMessageStatistic;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,15 +14,12 @@ import java.util.function.Supplier;
 
 @Singleton
 public class Placeholders extends PlaceholderExpansion {
-    private final ChatMessageStatistic chatMessageStatistic;
 
     private final Map<String, Supplier<String>> basicPlaceholders = new HashMap<>();
     private final Map<String, Function<String, String>> advancedPlaceholders = new HashMap<>();
 
     @Inject
-    public Placeholders(ChatMessageStatistic chatMessageStatistic) {
-        this.chatMessageStatistic = chatMessageStatistic;
-
+    public Placeholders() {
         //basicPlaceholders.put("test", this::test);
         advancedPlaceholders.put("statistics_chat_", this::getChatMessageCount);
     }
@@ -62,7 +58,7 @@ public class Placeholders extends PlaceholderExpansion {
     }
 
     private String getChatMessageCount(String chatId) {
-        int count = chatMessageStatistic.getMessageCount(chatId);
+        int count = 0; //chatMessageStatistic.getMessageCount(chatId);
         return String.valueOf(count);
     }
 }
