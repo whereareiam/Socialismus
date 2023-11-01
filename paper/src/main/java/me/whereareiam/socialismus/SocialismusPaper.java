@@ -3,7 +3,6 @@ package me.whereareiam.socialismus;
 import com.google.inject.Guice;
 import me.whereareiam.socialismus.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.config.ConfigManager;
-import me.whereareiam.socialismus.database.DatabaseManager;
 import me.whereareiam.socialismus.feature.FeatureLoader;
 import me.whereareiam.socialismus.listener.PaperListenerRegistrar;
 import me.whereareiam.socialismus.util.InfoPrinterUtil;
@@ -26,6 +25,5 @@ public final class SocialismusPaper extends SocialismusBase {
         injector.getInstance(InfoPrinterUtil.class).printStartMessage();
 
         injector.getInstance(PaperListenerRegistrar.class).registerListeners();
-        injector.getInstance(DatabaseManager.class);
     }
 }

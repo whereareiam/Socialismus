@@ -1,5 +1,7 @@
 package me.whereareiam.socialismus.database;
 
 public enum DatabaseType {
-    SQLITE
+    SQLITE,
+    MYSQL,
+    MARIADB
 }
