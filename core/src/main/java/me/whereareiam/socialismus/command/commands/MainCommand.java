@@ -48,30 +48,39 @@ public class MainCommand extends CommandBase {
             return;
         }
 
-        RootCommand command = allCommands.get(0);
-        String commandsBuilder = buildCommands(issuer, command);
+        String mainCommand = commands.mainCommand.command.split("\\|")[0];
+        String privateMessageCommand = commands.privateMessageCommand.command.split("\\|")[0];
 
-        String helpMessage = formatHelpMessage(commandsBuilder);
+        List<String> commandsList = new ArrayList<>();
+        for (RootCommand command : allCommands) {
+            if (command.getCommandName().equals(mainCommand) || command.getCommandName().equals(privateMessageCommand)) {
+                String commandHelp = buildCommands(issuer, command);
+                commandsList.add(commandHelp);
+            }
+        }
+
+        String commandsString = String.join("\n", commandsList);
+        String helpMessage = formatHelpMessage(commandsString);
         sendHelpMessage(issuer, helpMessage);
     }
 
     @Cacheable
     private String buildCommands(CommandIssuer issuer, RootCommand command) {
-        StringJoiner commandsJoiner = new StringJoiner("\n");
+        List<String> commands = new ArrayList<>();
 
         String mainCommandHelp = formatMainCommandHelp(command);
-        commandsJoiner.add(mainCommandHelp);
+        commands.add(mainCommandHelp);
 
         Map<String, List<String>> descriptionToSubcommands = getDescriptionToSubcommands(issuer, command);
 
         for (Map.Entry<String, List<String>> descEntry : descriptionToSubcommands.entrySet()) {
             if (!descEntry.getValue().isEmpty()) {
                 String commandHelp = formatSubCommandHelp(command, descEntry);
-                commandsJoiner.add(commandHelp);
+                commands.add(commandHelp);
             }
         }
 
-        return commandsJoiner.toString();
+        return String.join("\n", commands);
     }
 
     @Cacheable
@@ -117,10 +126,17 @@ public class MainCommand extends CommandBase {
 
     @Cacheable
     private String formatSubCommandHelp(RootCommand command, Map.Entry<String, List<String>> descEntry) {
-        return messages.commands.mainCommand.commandHelpFormat
-                .replace("{command}", command.getCommandName())
-                .replace("{subCommand}", " " + descEntry.getValue().get(0))
-                .replace("{description}", descEntry.getKey());
+        List<String> subcommands = new ArrayList<>();
+
+        for (String subcommand : descEntry.getValue()) {
+            String formattedSubcommand = messages.commands.mainCommand.commandHelpFormat
+                    .replace("{command}", command.getCommandName())
+                    .replace("{subCommand}", " " + subcommand)
+                    .replace("{description}", descEntry.getKey());
+            subcommands.add(formattedSubcommand);
+        }
+
+        return String.join("\n", subcommands);
     }
 
     @Cacheable

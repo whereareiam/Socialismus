@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.command.management;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.command.commands.MainCommand;
+import me.whereareiam.socialismus.command.commands.PrivateMessageCommand;
 import me.whereareiam.socialismus.command.commands.ReloadCommand;
 
 @Singleton
@@ -17,5 +18,6 @@ public class CommandRegistrar {
     public void registerCommands() {
         commandManager.registerCommand(MainCommand.class);
         commandManager.registerCommand(ReloadCommand.class);
+        commandManager.registerCommand(PrivateMessageCommand.class);
     }
 }
