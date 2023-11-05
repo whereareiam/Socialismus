@@ -20,7 +20,8 @@ public class PrivateMessageCommand extends CommandBase {
     private final MessagesConfig messages;
 
     @Inject
-    public PrivateMessageCommand(FormatterUtil formatterUtil, MessageUtil messageUtil, CommandsConfig commands, MessagesConfig messages) {
+    public PrivateMessageCommand(FormatterUtil formatterUtil, MessageUtil messageUtil, CommandsConfig commands,
+                                 MessagesConfig messages) {
         this.formatterUtil = formatterUtil;
         this.messageUtil = messageUtil;
         this.commands = commands;

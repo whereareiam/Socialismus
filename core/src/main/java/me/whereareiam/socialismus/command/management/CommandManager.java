@@ -33,7 +33,6 @@ public class CommandManager {
         CommandBase commandInstance = injector.getInstance(commandClass);
         if (commandInstance.isEnabled()) {
             commandInstance.addReplacements();
-            commandInstance.addTranslations();
             bukkitCommandManager.registerCommand(commandInstance);
         }
         commandCount++;
