@@ -61,7 +61,7 @@ public class PrivateMessageCommand extends CommandBase {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return commands.privateMessageCommand.enabled;
     }
 
     @Override
