@@ -30,6 +30,13 @@ public class SettingsConfig extends YamlSerializable {
     )
     public boolean updateChecker = true;
 
+    @Comment(
+            value = {
+                    @CommentValue(type = CommentValue.Type.NEW_LINE),
+                    @CommentValue(" In this section you will be able to configure your database."),
+            },
+            at = Comment.At.PREPEND
+    )
     public DatabaseSettingsConfig database = new DatabaseSettingsConfig();
 
     @Comment(
