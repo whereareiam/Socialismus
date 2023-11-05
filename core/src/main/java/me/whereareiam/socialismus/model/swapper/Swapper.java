@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.module.swapper.model;
+package me.whereareiam.socialismus.model.swapper;
 
 import java.util.ArrayList;
 import java.util.List;

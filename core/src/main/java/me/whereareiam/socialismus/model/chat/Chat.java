@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.chat.model;
+package me.whereareiam.socialismus.model.chat;
 
 import java.util.ArrayList;
 import java.util.List;

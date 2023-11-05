@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
-import me.whereareiam.socialismus.chat.model.Chat;
+import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;

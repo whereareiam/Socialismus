@@ -2,8 +2,8 @@ package me.whereareiam.socialismus.chat.requirement.validator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.chat.model.Chat;
 import me.whereareiam.socialismus.chat.requirement.ChatRequirement;
+import me.whereareiam.socialismus.model.chat.Chat;
 import org.bukkit.entity.Player;
 
 import java.util.List;

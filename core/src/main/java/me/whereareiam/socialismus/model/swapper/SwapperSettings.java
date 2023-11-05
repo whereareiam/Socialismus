@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.module.swapper.model;
+package me.whereareiam.socialismus.model.swapper;
 
 public class SwapperSettings {
     public String permission;

@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.config.module.swapper;
 
-import me.whereareiam.socialismus.module.swapper.model.Swapper;
+import me.whereareiam.socialismus.model.swapper.Swapper;
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;

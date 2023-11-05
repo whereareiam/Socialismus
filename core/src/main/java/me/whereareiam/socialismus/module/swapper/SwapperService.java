@@ -6,7 +6,7 @@ import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.module.swapper.model.Swapper;
+import me.whereareiam.socialismus.model.swapper.Swapper;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;

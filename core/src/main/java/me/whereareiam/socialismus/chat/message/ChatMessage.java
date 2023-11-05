@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.chat.message;
 
-import me.whereareiam.socialismus.chat.model.Chat;
+import me.whereareiam.socialismus.model.chat.Chat;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
