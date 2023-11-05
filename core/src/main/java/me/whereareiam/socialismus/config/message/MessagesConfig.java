@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.config.message;
 
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.config.message.command.CommandsMessagesConfig;
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.language.object.YamlSerializable;
 

@@ -9,6 +9,7 @@ public class CommandsConfig extends YamlSerializable {
     private static final SerializerConfig COMMANDS = new SerializerConfig.Builder().build();
     public MainCommandConfig mainCommand = new MainCommandConfig();
     public ReloadCommandConfig reloadCommand = new ReloadCommandConfig();
+    public PrivateMessageCommandConfig privateMessageCommand = new PrivateMessageCommandConfig();
 
     public CommandsConfig() {
         super(CommandsConfig.COMMANDS);

@@ -28,7 +28,7 @@ public class HookCountChart implements Chart {
     @Override
     public void addChart() {
         metrics.addCustomChart(
-                new SimplePie("hookCount", this::getData)
+                new SimplePie("mostUsedHooks", this::getData)
         );
     }
 

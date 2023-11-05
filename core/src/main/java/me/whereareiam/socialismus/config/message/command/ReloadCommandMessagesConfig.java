@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.config.message;
+package me.whereareiam.socialismus.config.message.command;
 
 public class ReloadCommandMessagesConfig {
     public String description = "Reloads plugin configuration";
