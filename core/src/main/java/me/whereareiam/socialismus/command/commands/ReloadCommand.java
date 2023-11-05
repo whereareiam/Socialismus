@@ -54,10 +54,6 @@ public class ReloadCommand extends CommandBase {
     }
 
     @Override
-    public void addTranslations() {
-    }
-
-    @Override
     public void addReplacements() {
         commandHelper.addReplacement(commands.reloadCommand.subCommand, "command.reload");
         commandHelper.addReplacement(commands.reloadCommand.permission, "permission.reload");

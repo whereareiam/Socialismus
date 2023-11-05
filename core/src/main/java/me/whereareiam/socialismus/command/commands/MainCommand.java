@@ -143,10 +143,6 @@ public class MainCommand extends CommandBase {
     }
 
     @Override
-    public void addTranslations() {
-    }
-
-    @Override
     public void addReplacements() {
         commandHelper.addReplacement(commands.mainCommand.command, "command.main");
         commandHelper.addReplacement(commands.mainCommand.permission, "permission.main");

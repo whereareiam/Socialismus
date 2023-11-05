@@ -11,7 +11,5 @@ public abstract class CommandBase extends BaseCommand {
 
     public abstract boolean isEnabled();
 
-    public abstract void addTranslations();
-
     public abstract void addReplacements();
 }

@@ -1,9 +1,7 @@
 package me.whereareiam.socialismus.command.commands;
 
 import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.*;
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
@@ -29,9 +27,11 @@ public class PrivateMessageCommand extends CommandBase {
         this.messages = messages;
     }
 
-    @CommandAlias("%command.pm")
-    @CommandPermission("%permission.pm")
-    @Description("%description.pm")
+    @CommandAlias("%command.privateMessage")
+    @CommandCompletion("@players @nothing")
+    @CommandPermission("%permission.privateMessage")
+    @Description("%description.privateMessage")
+    @Syntax("%syntax.privateMessage")
     public void onCommand(CommandIssuer issuer, String targetPlayerName, String message) {
         Player player = issuer.getIssuer();
         Player recipient = Bukkit.getPlayer(targetPlayerName);
@@ -64,14 +64,11 @@ public class PrivateMessageCommand extends CommandBase {
     }
 
     @Override
-    public void addTranslations() {
-    }
-
-    @Override
     public void addReplacements() {
-        commandHelper.addReplacement(commands.privateMessageCommand.command, "command.pm");
-        commandHelper.addReplacement(commands.privateMessageCommand.permission, "permission.pm");
-        commandHelper.addReplacement(messages.commands.privateMessageCommand.description, "description.pm");
+        commandHelper.addReplacement(commands.privateMessageCommand.command, "command.privateMessage");
+        commandHelper.addReplacement(commands.privateMessageCommand.permission, "permission.privateMessage");
+        commandHelper.addReplacement(commands.privateMessageCommand.syntax, "syntax.privateMessage");
+        commandHelper.addReplacement(messages.commands.privateMessageCommand.description, "description.privateMessage");
     }
 }
 
