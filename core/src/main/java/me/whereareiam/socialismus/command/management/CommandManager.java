@@ -29,11 +29,10 @@ public class CommandManager {
         addTranslations();
     }
 
-    public void registerCommand(Class<? extends CommandBase> commandClass) {
-        CommandBase commandInstance = injector.getInstance(commandClass);
-        if (commandInstance.isEnabled()) {
-            commandInstance.addReplacements();
-            bukkitCommandManager.registerCommand(commandInstance);
+    public void registerCommand(CommandBase command) {
+        if (command.isEnabled()) {
+            command.addReplacements();
+            bukkitCommandManager.registerCommand(command);
         }
         commandCount++;
     }
