@@ -18,7 +18,6 @@ import java.util.Collection;
 @Singleton
 public class ChatService {
     private final LoggerUtil loggerUtil;
-    private final MessageUtil messageUtil;
     private final MessagesConfig messages;
 
     private final ChatBroadcaster chatBroadcaster;
@@ -27,12 +26,11 @@ public class ChatService {
     private final SenderRequirementValidator senderRequirementValidator;
 
     @Inject
-    public ChatService(LoggerUtil loggerUtil, MessageUtil messageUtil, MessagesConfig messages,
+    public ChatService(LoggerUtil loggerUtil, MessagesConfig messages,
                        ChatBroadcaster chatBroadcaster,
                        RecipientRequirementValidator recipientRequirementValidator,
                        SenderRequirementValidator senderRequirementValidator) {
         this.loggerUtil = loggerUtil;
-        this.messageUtil = messageUtil;
         this.messages = messages;
 
         this.chatBroadcaster = chatBroadcaster;
@@ -50,7 +48,7 @@ public class ChatService {
         Chat chat = chatMessage.getChat();
 
         if (!senderRequirementValidator.checkRequirements(sender, chat)) {
-            messageUtil.sendMessage(sender, messages.chat.lackOfRequirements);
+            MessageUtil.sendMessage(sender, messages.chat.lackOfRequirements);
             loggerUtil.debug(sender.getName() + " didn't met requirements");
             return;
         }
@@ -65,7 +63,7 @@ public class ChatService {
             if (!isPlayerNearby) {
                 String noNearbyPlayers = messages.chat.noNearbyPlayers;
                 if (noNearbyPlayers != null) {
-                    messageUtil.sendMessage(sender, noNearbyPlayers);
+                    MessageUtil.sendMessage(sender, noNearbyPlayers);
                     return;
                 }
             }
@@ -74,7 +72,7 @@ public class ChatService {
         if (onlinePlayers.size() == 1) {
             String noOnlinePlayers = messages.chat.noOnlinePlayers;
             if (noOnlinePlayers != null) {
-                messageUtil.sendMessage(sender, noOnlinePlayers);
+                MessageUtil.sendMessage(sender, noOnlinePlayers);
                 return;
             }
         }

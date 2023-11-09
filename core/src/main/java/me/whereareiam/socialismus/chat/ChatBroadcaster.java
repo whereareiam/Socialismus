@@ -22,16 +22,14 @@ import java.util.Set;
 @Singleton
 public class ChatBroadcaster {
     private final LoggerUtil loggerUtil;
-    private final MessageUtil messageUtil;
     private final FormatterUtil formatterUtil;
 
     private final Set<ChatMessageProcessor> chatMessageProcessors;
 
     @Inject
-    public ChatBroadcaster(LoggerUtil loggerUtil, MessageUtil messageUtil, FormatterUtil formatterUtil,
+    public ChatBroadcaster(LoggerUtil loggerUtil, FormatterUtil formatterUtil,
                            Set<ChatMessageProcessor> chatMessageProcessors) {
         this.loggerUtil = loggerUtil;
-        this.messageUtil = messageUtil;
         this.formatterUtil = formatterUtil;
 
         this.chatMessageProcessors = new HashSet<>(chatMessageProcessors);
@@ -40,7 +38,7 @@ public class ChatBroadcaster {
     public void broadcastMessage(ChatMessage chatMessage, Player recipient) {
         if (shouldSendMessage(chatMessage.getSender(), recipient, chatMessage.getChat().requirements.radius)) {
             Component finalMessage = createFinalMessage(chatMessage);
-            messageUtil.sendMessage(recipient, finalMessage);
+            MessageUtil.sendMessage(recipient, finalMessage);
 
             loggerUtil.trace("Sent message: " + finalMessage + " to: " + recipient.getName());
         }

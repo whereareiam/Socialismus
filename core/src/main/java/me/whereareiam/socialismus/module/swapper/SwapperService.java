@@ -22,7 +22,6 @@ import java.util.Random;
 public class SwapperService implements ChatMessageProcessor {
     private final LoggerUtil loggerUtil;
     private final SwapperManager swapperManager;
-    private final MessageUtil messageUtil;
     private final FormatterUtil formatterUtil;
 
     private final SettingsConfig settingsConfig;
@@ -32,11 +31,10 @@ public class SwapperService implements ChatMessageProcessor {
 
     @Inject
     public SwapperService(LoggerUtil loggerUtil, SwapperManager swapperManager,
-                          MessageUtil MessageUtil, FormatterUtil formatterUtil,
-                          SettingsConfig settingsConfig, MessagesConfig messagesConfig) {
+                          FormatterUtil formatterUtil, SettingsConfig settingsConfig,
+                          MessagesConfig messagesConfig) {
         this.loggerUtil = loggerUtil;
         this.swapperManager = swapperManager;
-        this.messageUtil = MessageUtil;
         this.formatterUtil = formatterUtil;
 
         this.settingsConfig = settingsConfig;
@@ -70,7 +68,7 @@ public class SwapperService implements ChatMessageProcessor {
                     loggerUtil.debug("Player didn't have the right permission");
                     String message = messagesConfig.swapper.noPermissionForSwapper;
                     if (message != null) {
-                        messageUtil.sendMessage(player, message);
+                        MessageUtil.sendMessage(player, message);
                     }
                     return chatMessage;
                 }

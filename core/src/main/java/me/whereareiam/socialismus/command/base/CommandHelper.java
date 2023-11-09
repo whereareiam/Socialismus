@@ -14,7 +14,9 @@ public class CommandHelper {
     }
 
     public void addReplacement(String message, String replacementId) {
+        if (message == null)
+            message = "";
+
         bukkitCommandManager.getCommandReplacements().addReplacement(replacementId, message);
     }
 }
-
