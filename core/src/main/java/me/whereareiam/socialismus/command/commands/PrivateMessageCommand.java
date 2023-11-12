@@ -42,16 +42,25 @@ public class PrivateMessageCommand extends CommandBase {
 
         Component format = formatterUtil.formatMessage(player, commands.privateMessageCommand.format);
 
-        TextReplacementConfig internalPlaceholders = TextReplacementConfig.builder()
+        TextReplacementConfig senderNamePlaceholder = TextReplacementConfig.builder()
                 .matchLiteral("{senderName}")
                 .replacement(player.getName())
+                .build();
+
+        TextReplacementConfig recipientNamePlaceholder = TextReplacementConfig.builder()
                 .matchLiteral("{recipientName}")
                 .replacement(recipient.getName())
+                .build();
+
+        TextReplacementConfig messagePlaceholder = TextReplacementConfig.builder()
                 .matchLiteral("{message}")
                 .replacement(message)
                 .build();
 
-        format = format.replaceText(internalPlaceholders);
+        format = format
+                .replaceText(senderNamePlaceholder)
+                .replaceText(recipientNamePlaceholder)
+                .replaceText(messagePlaceholder);
 
         MessageUtil.sendMessage(player, format);
         MessageUtil.sendMessage(recipient, format);

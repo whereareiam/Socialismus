@@ -59,14 +59,20 @@ public class ChatBroadcaster {
         Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), chat.messageFormat);
         Component hoverFormat = createHoverFormat(chat.hoverFormat, chatMessage.getSender());
 
-        TextReplacementConfig internalPlaceholders = TextReplacementConfig.builder()
+        TextReplacementConfig playerNamePlaceholder = TextReplacementConfig.builder()
                 .matchLiteral("{playerName}")
                 .replacement(chatMessage.getSender().getName())
+                .build();
+
+        TextReplacementConfig messagePlaceholder = TextReplacementConfig.builder()
                 .matchLiteral("{message}")
                 .replacement(chatMessage.getContent())
                 .build();
 
-        Component finalMessage = messageFormat.replaceText(internalPlaceholders);
+        Component finalMessage = messageFormat
+                .replaceText(playerNamePlaceholder)
+                .replaceText(messagePlaceholder);
+
         if (hoverFormat != null) {
             finalMessage = finalMessage.hoverEvent(HoverEvent.showText(hoverFormat));
         }

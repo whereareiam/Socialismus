@@ -40,14 +40,19 @@ public class CommandMessagingTemplate extends CommandBase {
             Collection<Player> onlinePlayers = WorldPlayerUtil.getPlayersInWorld(player.getWorld());
             Component formatComponent = formatterUtil.formatMessage(player, commandMessaging.format);
 
-            TextReplacementConfig internalPlaceholders = TextReplacementConfig.builder()
+            TextReplacementConfig playerNamePlaceholder = TextReplacementConfig.builder()
                     .matchLiteral("{playerName}")
                     .replacement(player.getName())
+                    .build();
+
+            TextReplacementConfig messagePlaceholder = TextReplacementConfig.builder()
                     .matchLiteral("{message}")
                     .replacement(message)
                     .build();
 
-            formatComponent = formatComponent.replaceText(internalPlaceholders);
+            formatComponent = formatComponent
+                    .replaceText(playerNamePlaceholder)
+                    .replaceText(messagePlaceholder);
             Component finalFormatComponent = formatComponent;
 
             onlinePlayers.stream()

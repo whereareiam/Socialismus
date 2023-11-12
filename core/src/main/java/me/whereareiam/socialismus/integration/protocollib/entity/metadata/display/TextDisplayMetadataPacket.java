@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.integration.protocollib.entity.metadata.displ
 
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import me.whereareiam.socialismus.Version;
 import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.type.AlignmentType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -48,7 +49,7 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
 
         if (message != null) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    23,
+                    getMessageIndex(),
                     WrappedDataWatcher.Registry.getChatComponentSerializer(false)
             ), WrappedChatComponent.fromJson(
                     GsonComponentSerializer.gson().serialize(message)
@@ -57,14 +58,14 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
 
         if (lineWidth != -1) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    24,
+                    getLineWidthIndex(),
                     WrappedDataWatcher.Registry.get(Integer.class)
             ), lineWidth);
         }
 
         if (background != -1) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    25,
+                    getBackgroundIndex(),
                     WrappedDataWatcher.Registry.get(Integer.class)
             ), background);
         }
@@ -84,11 +85,51 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
             }
 
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    27,
+                    getOptionsIndex(),
                     WrappedDataWatcher.Registry.get(Byte.class)
             ), properties);
         }
 
         return metadata;
+    }
+
+    private int getMessageIndex() {
+        if (Version.isVersionBetween(Version.V1_19_4, Version.V1_20_1))
+            return 22;
+
+        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3))
+            return 23;
+
+        throw new UnsupportedOperationException("Version " + Version.getVersion() + " isn't supported");
+    }
+
+    private int getLineWidthIndex() {
+        if (Version.isVersionBetween(Version.V1_19_4, Version.V1_20_1))
+            return 23;
+
+        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3))
+            return 24;
+
+        throw new UnsupportedOperationException("Version " + Version.getVersion() + " isn't supported");
+    }
+
+    private int getBackgroundIndex() {
+        if (Version.isVersionBetween(Version.V1_19_4, Version.V1_20_1))
+            return 24;
+
+        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3))
+            return 25;
+
+        throw new UnsupportedOperationException("Version " + Version.getVersion() + " isn't supported");
+    }
+
+    private int getOptionsIndex() {
+        if (Version.isVersionBetween(Version.V1_19_4, Version.V1_20_1))
+            return 26;
+
+        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3))
+            return 27;
+
+        throw new UnsupportedOperationException("Version " + Version.getVersion() + " isn't supported");
     }
 }

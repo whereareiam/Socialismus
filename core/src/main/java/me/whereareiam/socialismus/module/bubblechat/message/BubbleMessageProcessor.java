@@ -111,14 +111,17 @@ public class BubbleMessageProcessor {
     private Component replaceInternalPlaceholders(Player player, Component format, Component bubbleMessageComponent) {
         loggerUtil.debug("Replacing internal placeholders");
 
-        TextReplacementConfig internalPlaceholders = TextReplacementConfig.builder()
+        TextReplacementConfig playerNamePlaceholder = TextReplacementConfig.builder()
                 .matchLiteral("{playerName}")
                 .replacement(player.getName())
+                .build();
+
+        TextReplacementConfig messagePlaceholder = TextReplacementConfig.builder()
                 .matchLiteral("{message}")
                 .replacement(bubbleMessageComponent)
                 .build();
 
-        return format.replaceText(internalPlaceholders);
+        return format.replaceText(playerNamePlaceholder).replaceText(messagePlaceholder);
     }
 
     private Component appendEndOrCutFormat(Component format, boolean isLastLine, Player player) {
