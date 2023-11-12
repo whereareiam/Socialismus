@@ -15,6 +15,20 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
     private boolean canSeeThrough;
     private AlignmentType alignmentType;
 
+    private int messageIndex = 22;
+    private int lineWidthIndex = 23;
+    private int backgroundIndex = 24;
+    private int optionsIndex = 26;
+
+    public TextDisplayMetadataPacket() {
+        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3)) {
+            messageIndex++;
+            lineWidthIndex++;
+            backgroundIndex++;
+            optionsIndex++;
+        }
+    }
+
     public void setMessage(Component message) {
         this.message = message;
     }
@@ -49,7 +63,7 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
 
         if (message != null) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    getMessageIndex(),
+                    messageIndex,
                     WrappedDataWatcher.Registry.getChatComponentSerializer(false)
             ), WrappedChatComponent.fromJson(
                     GsonComponentSerializer.gson().serialize(message)
@@ -58,14 +72,14 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
 
         if (lineWidth != -1) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    getLineWidthIndex(),
+                    lineWidthIndex,
                     WrappedDataWatcher.Registry.get(Integer.class)
             ), lineWidth);
         }
 
         if (background != -1) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    getBackgroundIndex(),
+                    backgroundIndex,
                     WrappedDataWatcher.Registry.get(Integer.class)
             ), background);
         }
@@ -85,51 +99,11 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
             }
 
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    getOptionsIndex(),
+                    optionsIndex,
                     WrappedDataWatcher.Registry.get(Byte.class)
             ), properties);
         }
 
         return metadata;
-    }
-
-    private int getMessageIndex() {
-        if (Version.isVersionBetween(Version.V1_19_4, Version.V1_20_1))
-            return 22;
-
-        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3))
-            return 23;
-
-        throw new UnsupportedOperationException("Version " + Version.getVersion() + " isn't supported");
-    }
-
-    private int getLineWidthIndex() {
-        if (Version.isVersionBetween(Version.V1_19_4, Version.V1_20_1))
-            return 23;
-
-        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3))
-            return 24;
-
-        throw new UnsupportedOperationException("Version " + Version.getVersion() + " isn't supported");
-    }
-
-    private int getBackgroundIndex() {
-        if (Version.isVersionBetween(Version.V1_19_4, Version.V1_20_1))
-            return 24;
-
-        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3))
-            return 25;
-
-        throw new UnsupportedOperationException("Version " + Version.getVersion() + " isn't supported");
-    }
-
-    private int getOptionsIndex() {
-        if (Version.isVersionBetween(Version.V1_19_4, Version.V1_20_1))
-            return 26;
-
-        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3))
-            return 27;
-
-        throw new UnsupportedOperationException("Version " + Version.getVersion() + " isn't supported");
     }
 }
