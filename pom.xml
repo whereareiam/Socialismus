@@ -20,10 +20,11 @@
         <minecraft.version>1.20.2</minecraft.version>
 
         <!-- Maven version -->
-        <maven.compiler.version>3.8.1</maven.compiler.version>
+        <maven.compiler.version>3.11.0</maven.compiler.version>
         <maven.shade.version>3.5.0</maven.shade.version>
         <maven.assembly.version>3.3.0</maven.assembly.version>
-        <maven.antrun.version>1.8</maven.antrun.version>
+        <maven.antrun.version>3.1.0</maven.antrun.version>
+        <maven.resources.version>3.3.1</maven.resources.version>
 
         <!-- Dependencies -->
         <!-- core -->

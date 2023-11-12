@@ -40,7 +40,7 @@ public class Placeholders extends PlaceholderExpansion {
     }
 
     @Override
-    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
+    public String onPlaceholderRequest(Player player, String identifier) {
         Supplier<String> supplier = basicPlaceholders.get(identifier.toLowerCase());
         if (supplier != null) {
             return supplier.get();
