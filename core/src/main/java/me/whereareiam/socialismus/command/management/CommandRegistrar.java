@@ -3,10 +3,9 @@ package me.whereareiam.socialismus.command.management;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.command.commands.CommandMessagingCommand;
+import me.whereareiam.socialismus.command.commands.CommandMessagingTemplate;
 import me.whereareiam.socialismus.command.commands.MainCommand;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
-import me.whereareiam.socialismus.model.commandmessaging.CommandMessaging;
 
 @Singleton
 public class CommandRegistrar {
@@ -26,9 +25,9 @@ public class CommandRegistrar {
         commandManager.registerCommand(injector.getInstance(MainCommand.class));
         commandManager.registerCommand(injector.getInstance(MainCommand.class));
 
-        for (CommandMessaging rpCommand : commands.commandMessaging) {
+        for (me.whereareiam.socialismus.model.commandmessaging.CommandMessaging rpCommand : commands.commandMessaging) {
             if (rpCommand.enabled) {
-                CommandMessagingCommand command = injector.getInstance(CommandMessagingCommand.class);
+                CommandMessagingTemplate command = injector.getInstance(CommandMessagingTemplate.class);
                 command.setRolePlay(rpCommand);
                 commandManager.registerCommand(command);
             }

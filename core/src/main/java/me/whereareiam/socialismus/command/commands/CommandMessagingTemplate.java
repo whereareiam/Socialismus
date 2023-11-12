@@ -5,31 +5,28 @@ import co.aikar.commands.annotation.*;
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.model.commandmessaging.CommandMessaging;
-import me.whereareiam.socialismus.util.FormatterUtil;
-import me.whereareiam.socialismus.util.LoggerUtil;
-import me.whereareiam.socialismus.util.MessageUtil;
-import me.whereareiam.socialismus.util.WorldPlayerUtil;
+import me.whereareiam.socialismus.util.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
-public class CommandMessagingCommand extends CommandBase {
+public class CommandMessagingTemplate extends CommandBase {
     private final LoggerUtil loggerUtil;
     private final FormatterUtil formatterUtil;
 
     private CommandMessaging commandMessaging;
 
     @Inject
-    public CommandMessagingCommand(LoggerUtil loggerUtil, FormatterUtil formatterUtil) {
+    public CommandMessagingTemplate(LoggerUtil loggerUtil, FormatterUtil formatterUtil) {
         this.loggerUtil = loggerUtil;
         this.formatterUtil = formatterUtil;
 
         loggerUtil.trace("Initializing class: " + this);
     }
 
-    public void setRolePlay(CommandMessaging commandMessaging) {
+    public void setRolePlay(me.whereareiam.socialismus.model.commandmessaging.CommandMessaging commandMessaging) {
         this.commandMessaging = commandMessaging;
     }
 
@@ -40,7 +37,7 @@ public class CommandMessagingCommand extends CommandBase {
     @Syntax("%syntax.commandMessaging")
     public void onCommand(CommandIssuer issuer, String message) {
         if (issuer instanceof Player player) {
-            Collection<Player> players = WorldPlayerUtil.getPlayersInWorld(player.getWorld());
+            Collection<Player> onlinePlayers = WorldPlayerUtil.getPlayersInWorld(player.getWorld());
             Component formatComponent = formatterUtil.formatMessage(player, commandMessaging.format);
 
             TextReplacementConfig internalPlaceholders = TextReplacementConfig.builder()
@@ -51,10 +48,11 @@ public class CommandMessagingCommand extends CommandBase {
                     .build();
 
             formatComponent = formatComponent.replaceText(internalPlaceholders);
+            Component finalFormatComponent = formatComponent;
 
-            for (Player recipient : players) {
-                MessageUtil.sendMessage(recipient, formatComponent);
-            }
+            onlinePlayers.stream()
+                    .filter(recipient -> commandMessaging.requirements.radius == -1 || DistanceCalculatorUtil.calculateDistance(player, recipient) <= commandMessaging.requirements.radius)
+                    .forEach(recipient -> MessageUtil.sendMessage(recipient, finalFormatComponent));
         }
     }
 
