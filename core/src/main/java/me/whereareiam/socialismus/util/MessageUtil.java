@@ -8,24 +8,24 @@ import org.bukkit.entity.Player;
 
 @Singleton
 public class MessageUtil {
-    private static LoggerUtil loggerUtil;
-    private static FormatterUtil formatterUtil;
-    private static PlatformMessageSender platformMessageSender;
+    private final LoggerUtil loggerUtil;
+    private final FormatterUtil formatterUtil;
+    private final PlatformMessageSender platformMessageSender;
 
     @Inject
     public MessageUtil(LoggerUtil loggerUtil, FormatterUtil formatterUtil, PlatformMessageSender platformMessageSender) {
-        MessageUtil.loggerUtil = loggerUtil;
-        MessageUtil.formatterUtil = formatterUtil;
-        MessageUtil.platformMessageSender = platformMessageSender;
+        this.loggerUtil = loggerUtil;
+        this.formatterUtil = formatterUtil;
+        this.platformMessageSender = platformMessageSender;
 
         loggerUtil.trace("Initializing class: " + this);
     }
 
-    public static void sendMessage(Player sender, String message) {
+    public void sendMessage(Player sender, String message) {
         sendMessage(sender, formatterUtil.formatMessage(sender, message));
     }
 
-    public static void sendMessage(Player sender, Component message) {
+    public void sendMessage(Player sender, Component message) {
         loggerUtil.debug("Sending message to " + sender.getName());
         loggerUtil.trace(message.toString());
         platformMessageSender.sendMessage(sender, message);

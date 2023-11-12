@@ -15,13 +15,15 @@ import org.bukkit.entity.Player;
 
 public class PrivateMessageCommand extends CommandBase {
     private final FormatterUtil formatterUtil;
+    private final MessageUtil messageUtil;
     private final CommandsConfig commands;
     private final MessagesConfig messages;
 
     @Inject
-    public PrivateMessageCommand(FormatterUtil formatterUtil, CommandsConfig commands,
+    public PrivateMessageCommand(FormatterUtil formatterUtil, MessageUtil messageUtil, CommandsConfig commands,
                                  MessagesConfig messages) {
         this.formatterUtil = formatterUtil;
+        this.messageUtil = messageUtil;
         this.commands = commands;
         this.messages = messages;
     }
@@ -36,7 +38,7 @@ public class PrivateMessageCommand extends CommandBase {
         Player recipient = Bukkit.getPlayer(targetPlayerName);
 
         if (recipient == null) {
-            MessageUtil.sendMessage(player, messages.commands.playerNotFound);
+            messageUtil.sendMessage(player, messages.commands.playerNotFound);
             return;
         }
 
@@ -62,8 +64,8 @@ public class PrivateMessageCommand extends CommandBase {
                 .replaceText(recipientNamePlaceholder)
                 .replaceText(messagePlaceholder);
 
-        MessageUtil.sendMessage(player, format);
-        MessageUtil.sendMessage(recipient, format);
+        messageUtil.sendMessage(player, format);
+        messageUtil.sendMessage(recipient, format);
     }
 
     @Override

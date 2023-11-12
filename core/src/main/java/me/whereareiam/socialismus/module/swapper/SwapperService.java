@@ -23,6 +23,7 @@ public class SwapperService implements ChatMessageProcessor {
     private final LoggerUtil loggerUtil;
     private final SwapperManager swapperManager;
     private final FormatterUtil formatterUtil;
+    private final MessageUtil messageUtil;
 
     private final SettingsConfig settingsConfig;
     private final MessagesConfig messagesConfig;
@@ -31,11 +32,12 @@ public class SwapperService implements ChatMessageProcessor {
 
     @Inject
     public SwapperService(LoggerUtil loggerUtil, SwapperManager swapperManager,
-                          FormatterUtil formatterUtil, SettingsConfig settingsConfig,
+                          FormatterUtil formatterUtil, MessageUtil messageUtil, SettingsConfig settingsConfig,
                           MessagesConfig messagesConfig) {
         this.loggerUtil = loggerUtil;
         this.swapperManager = swapperManager;
         this.formatterUtil = formatterUtil;
+        this.messageUtil = messageUtil;
 
         this.settingsConfig = settingsConfig;
         this.messagesConfig = messagesConfig;
@@ -68,7 +70,7 @@ public class SwapperService implements ChatMessageProcessor {
                     loggerUtil.debug("Player didn't have the right permission");
                     String message = messagesConfig.swapper.noPermissionForSwapper;
                     if (message != null) {
-                        MessageUtil.sendMessage(player, message);
+                        messageUtil.sendMessage(player, message);
                     }
                     return chatMessage;
                 }

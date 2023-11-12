@@ -6,47 +6,47 @@ import me.whereareiam.socialismus.Scheduler;
 import me.whereareiam.socialismus.module.bubblechat.message.BubbleMessage;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class BubbleQueue {
-    private final Queue<BubbleMessage> messageQueue;
     private final BubbleChatBroadcaster bubbleChatBroadcaster;
     private final Scheduler scheduler;
-    private Player player;
-    private BubbleMessage currentBubbleMessage;
+    
+    private final Map<Player, Queue<BubbleMessage>> playerMessageQueues = new HashMap<>();
+    private final Map<Player, BubbleMessage> currentBubbleMessages = new HashMap<>();
 
     @Inject
     public BubbleQueue(Scheduler scheduler, BubbleChatBroadcaster bubbleChatBroadcaster) {
         this.scheduler = scheduler;
         this.bubbleChatBroadcaster = bubbleChatBroadcaster;
-        this.messageQueue = new LinkedList<>();
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public void addMessage(BubbleMessage message) {
-        messageQueue.add(message);
-        if (currentBubbleMessage == null) {
-            processNextMessage();
+    public void addMessage(Player player, BubbleMessage message) {
+        playerMessageQueues.computeIfAbsent(player, k -> new LinkedList<>()).add(message);
+        if (!currentBubbleMessages.containsKey(player)) {
+            processNextMessage(player);
         }
     }
 
-    private void processNextMessage() {
-        if (currentBubbleMessage != null) {
+    private void processNextMessage(Player player) {
+        if (currentBubbleMessages.containsKey(player)) {
             bubbleChatBroadcaster.broadcastBubbleRemove(player);
         }
 
-        if (!messageQueue.isEmpty()) {
-            currentBubbleMessage = messageQueue.poll();
-            bubbleChatBroadcaster.broadcastBubble(currentBubbleMessage);
-            scheduler.schedule(this::processNextMessage, (long) currentBubbleMessage.displayTime(), TimeUnit.SECONDS);
+        Queue<BubbleMessage> queue = playerMessageQueues.get(player);
+        if (queue != null && !queue.isEmpty()) {
+            BubbleMessage message = queue.poll();
+            currentBubbleMessages.put(player, message);
+            bubbleChatBroadcaster.broadcastBubble(message);
+            scheduler.schedule(() -> processNextMessage(player), (long) message.displayTime(), TimeUnit.SECONDS);
         } else {
-            currentBubbleMessage = null;
+            currentBubbleMessages.remove(player);
         }
     }
 }
+

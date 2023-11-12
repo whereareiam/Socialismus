@@ -73,7 +73,7 @@ public class BubbleFactory {
 
         MobMetadataPacket mobMetadata = mobMetadataPacket;
         mobMetadata.setHasAI(false);
-        mobMetadata.setVisibility(false);
+        mobMetadata.setVisibility(true);
 
         return new PacketEntity(
                 entityId,

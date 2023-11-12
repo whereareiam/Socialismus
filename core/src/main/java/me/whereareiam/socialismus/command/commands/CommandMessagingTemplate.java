@@ -14,13 +14,15 @@ import java.util.Collection;
 
 public class CommandMessagingTemplate extends CommandBase {
     private final LoggerUtil loggerUtil;
+    private final MessageUtil messageUtil;
     private final FormatterUtil formatterUtil;
 
     private CommandMessaging commandMessaging;
 
     @Inject
-    public CommandMessagingTemplate(LoggerUtil loggerUtil, FormatterUtil formatterUtil) {
+    public CommandMessagingTemplate(LoggerUtil loggerUtil, MessageUtil messageUtil, FormatterUtil formatterUtil) {
         this.loggerUtil = loggerUtil;
+        this.messageUtil = messageUtil;
         this.formatterUtil = formatterUtil;
 
         loggerUtil.trace("Initializing class: " + this);
@@ -57,7 +59,7 @@ public class CommandMessagingTemplate extends CommandBase {
 
             onlinePlayers.stream()
                     .filter(recipient -> commandMessaging.requirements.radius == -1 || DistanceCalculatorUtil.calculateDistance(player, recipient) <= commandMessaging.requirements.radius)
-                    .forEach(recipient -> MessageUtil.sendMessage(recipient, finalFormatComponent));
+                    .forEach(recipient -> messageUtil.sendMessage(recipient, finalFormatComponent));
         }
     }
 

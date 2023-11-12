@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class BubbleChatService {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
+    private final MessageUtil messageUtil;
     private final MessagesConfig messagesConfig;
 
     private final SenderRequirementValidator senderRequirementValidator;
@@ -35,12 +36,13 @@ public class BubbleChatService {
 
     @Inject
     public BubbleChatService(Injector injector, LoggerUtil loggerUtil,
-                             MessagesConfig messagesConfig,
+                             MessageUtil messageUtil, MessagesConfig messagesConfig,
                              SenderRequirementValidator senderRequirementValidator,
                              RecipientRequirementValidator recipientRequirementValidator,
                              BubbleMessageProcessor bubbleMessageProcessor) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
+        this.messageUtil = messageUtil;
         this.messagesConfig = messagesConfig;
 
         this.senderRequirementValidator = senderRequirementValidator;
@@ -58,7 +60,7 @@ public class BubbleChatService {
         if (!senderRequirementValidator.checkRequirements(player)) {
             String message = messagesConfig.bubblechat.noSendPermission;
             if (message != null) {
-                MessageUtil.sendMessage(player, message);
+                messageUtil.sendMessage(player, message);
             }
             return;
         }
@@ -71,12 +73,11 @@ public class BubbleChatService {
         BubbleQueue bubbleQueue = playerQueuesMap.get(player);
         if (bubbleQueue == null) {
             bubbleQueue = injector.getInstance(BubbleQueue.class);
-            bubbleQueue.setPlayer(player);
             playerQueuesMap.put(player, bubbleQueue);
         }
 
         while (!queue.isEmpty()) {
-            bubbleQueue.addMessage(queue.poll());
+            bubbleQueue.addMessage(player, queue.poll());
         }
     }
 

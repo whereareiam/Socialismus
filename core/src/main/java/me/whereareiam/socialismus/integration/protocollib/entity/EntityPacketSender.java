@@ -53,7 +53,7 @@ public class EntityPacketSender {
         packetSender.sendPacket(player, destroyPacket);
     }
 
-    public void removeEntitiesGlobally(List<PacketEntity> packetEntity) {
+    public void removeEntitysGlobally(List<PacketEntity> packetEntity) {
         PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         destroyPacket.getIntLists().write(0, packetEntity.stream().map(PacketEntity::getId).toList());
 

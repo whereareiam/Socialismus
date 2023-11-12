@@ -18,11 +18,9 @@ public class BubbleChatBroadcaster {
     private final EntityPacketSender entityPacketSender;
     private final Random random = new Random();
 
-    private final Map<Player, Integer> playerEntityIds = new HashMap<>();
     private final Map<Player, List<PacketEntity>> playerEntities = new HashMap<>();
 
     private final BubbleChatConfig bubbleChatConfig;
-    private PacketEntity packetEntity;
 
     @Inject
     public BubbleChatBroadcaster(LoggerUtil loggerUtil, BubbleFactory bubbleFactory,
@@ -36,37 +34,31 @@ public class BubbleChatBroadcaster {
     public void broadcastBubble(BubbleMessage bubbleMessage) {
         loggerUtil.debug("Broadcasting bubble");
         Player player = bubbleMessage.sender();
-        int entityId;
-        if (!playerEntityIds.containsKey(player)) {
-            entityId = random.nextInt();
-            playerEntityIds.put(player, entityId);
-        } else {
-            entityId = playerEntityIds.get(player);
-        }
 
         List<PacketEntity> entities = new ArrayList<>();
-        int previousEntityId = player.getEntityId();
+        entities.add(bubbleFactory.createBubble(bubbleMessage, player, random.nextInt()));
         for (int i = 0; i < bubbleChatConfig.settings.headDistance; i++) {
             PacketEntity invisibleEntity = bubbleFactory.createBubbleDistance(player, random.nextInt());
-            entityPacketSender.sendEntityMountPacket(player, invisibleEntity, previousEntityId);
             entities.add(invisibleEntity);
-            previousEntityId = invisibleEntity.getId();
         }
         playerEntities.put(player, entities);
 
-        packetEntity = bubbleFactory.createBubble(bubbleMessage, player, entityId);
         for (Player onlinePlayer : bubbleMessage.receivers()) {
-            entityPacketSender.sendEntityMountPacket(onlinePlayer, packetEntity, previousEntityId);
+            int previousEntityId = player.getEntityId();
+            for (int i = 1; i < entities.size(); i++) {
+                PacketEntity entity = entities.get(i);
+                entityPacketSender.sendEntityMountPacket(onlinePlayer, entity, previousEntityId);
+                previousEntityId = entity.getId();
+            }
+
+            entityPacketSender.sendEntityMountPacket(onlinePlayer, entities.get(0), previousEntityId);
         }
     }
 
     public void broadcastBubbleRemove(Player player) {
         if (playerEntities.containsKey(player)) {
-            entityPacketSender.removeEntitiesGlobally(List.of(packetEntity));
-            List<PacketEntity> entities = playerEntities.get(player);
-            for (PacketEntity entity : entities) {
-                entityPacketSender.removeEntitiesGlobally(List.of(entity));
-            }
+            List<PacketEntity> entities = playerEntities.get(player).stream().toList();
+            entityPacketSender.removeEntitysGlobally(entities);
             playerEntities.remove(player);
         } else {
             loggerUtil.severe("No bubble to remove for " + player.getName());
