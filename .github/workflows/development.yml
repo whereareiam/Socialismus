@@ -38,7 +38,7 @@ jobs:
           mv paper/target/${{ steps.project_details.outputs.PROJECT_NAME }}-PAPER-${{ steps.project_details.outputs.PROJECT_VERSION }}.jar ${{ github.workspace }}/
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Socialismus-b${{ github.run_number }}
           path: ${{ github.workspace }}/*.jar
