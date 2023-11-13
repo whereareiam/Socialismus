@@ -1,9 +1,9 @@
 name: ${name}
 version: '${version}'
 main: me.whereareiam.socialismus.SocialismusSpigot
-api-version: '1.20'
+api-version: '1.19'
 softdepend: [
-  placeholderapi,
+  PlaceholderAPI,
   ProtocolLib
 ]
 authors: [ whereareiam ]

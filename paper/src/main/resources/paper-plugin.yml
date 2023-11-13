@@ -1,7 +1,7 @@
 name: ${name}
 version: '${version}'
 main: me.whereareiam.socialismus.SocialismusPaper
-api-version: '1.20'
+api-version: '1.19'
 dependencies:
   server:
     PlaceholderAPI:
