@@ -7,9 +7,9 @@ import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
 import me.whereareiam.socialismus.config.module.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
+import me.whereareiam.socialismus.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
@@ -19,6 +19,7 @@ import java.util.*;
 public class BubbleMessageProcessor {
     private final LoggerUtil loggerUtil;
     private final FormatterUtil formatterUtil;
+    private final MessageUtil messageUtil;
     private final BubbleChatConfig bubbleChatConfig;
     private final int maxLines;
     private final int maxLineLength;
@@ -27,10 +28,11 @@ public class BubbleMessageProcessor {
 
     @Inject
     public BubbleMessageProcessor(LoggerUtil loggerUtil, FormatterUtil formatterUtil,
-                                  BubbleChatConfig bubbleChatConfig,
+                                  MessageUtil messageUtil, BubbleChatConfig bubbleChatConfig,
                                   Set<ChatMessageProcessor> chatMessageProcessors) {
         this.loggerUtil = loggerUtil;
         this.formatterUtil = formatterUtil;
+        this.messageUtil = messageUtil;
         this.bubbleChatConfig = bubbleChatConfig;
         this.maxLines = bubbleChatConfig.settings.lineCount + 1;
         this.maxLineLength = calculateMaxLineLength(bubbleChatConfig.settings.lineWidth);
@@ -42,7 +44,9 @@ public class BubbleMessageProcessor {
 
     public Queue<BubbleMessage> processMessage(ChatMessage chatMessage, Collection<Player> receivers) {
         loggerUtil.debug("Processing chat message");
-        chatMessage = processChatMessage(chatMessage);
+        for (ChatMessageProcessor processor : chatMessageProcessors) {
+            chatMessage = processor.process(chatMessage);
+        }
 
         Player player = chatMessage.getSender();
         Component message = chatMessage.getContent();
@@ -65,7 +69,8 @@ public class BubbleMessageProcessor {
             Component formatMessageComponent = getFormat(isFirstMessage, player);
             isFirstMessage = false;
 
-            formatMessageComponent = replaceInternalPlaceholders(player, formatMessageComponent, messageComponent);
+            formatMessageComponent = messageUtil.replacePlaceholder(formatMessageComponent, "{playerName}", player.getName());
+            formatMessageComponent = messageUtil.replacePlaceholder(formatMessageComponent, "{message}", messageComponent);
 
             formatMessageComponent = appendEndOrCutFormat(formatMessageComponent, lines.isEmpty(), player);
 
@@ -73,13 +78,6 @@ public class BubbleMessageProcessor {
             messages.add(bubbleMessage);
         }
         return messages;
-    }
-
-    private ChatMessage processChatMessage(ChatMessage chatMessage) {
-        for (ChatMessageProcessor processor : chatMessageProcessors) {
-            chatMessage = processor.process(chatMessage);
-        }
-        return chatMessage;
     }
 
     private List<Component> extractLines(List<Component> lines) {
@@ -106,22 +104,6 @@ public class BubbleMessageProcessor {
             format = bubbleChatConfig.format.queueMessageFormat;
         }
         return formatterUtil.formatMessage(player, format);
-    }
-
-    private Component replaceInternalPlaceholders(Player player, Component format, Component bubbleMessageComponent) {
-        loggerUtil.debug("Replacing internal placeholders");
-
-        TextReplacementConfig playerNamePlaceholder = TextReplacementConfig.builder()
-                .matchLiteral("{playerName}")
-                .replacement(player.getName())
-                .build();
-
-        TextReplacementConfig messagePlaceholder = TextReplacementConfig.builder()
-                .matchLiteral("{message}")
-                .replacement(bubbleMessageComponent)
-                .build();
-
-        return format.replaceText(playerNamePlaceholder).replaceText(messagePlaceholder);
     }
 
     private Component appendEndOrCutFormat(Component format, boolean isLastLine, Player player) {

@@ -11,7 +11,6 @@ import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
 
@@ -61,25 +60,15 @@ public class ChatBroadcaster {
         Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), chat.messageFormat);
         Component hoverFormat = createHoverFormat(chat.hoverFormat, chatMessage.getSender());
 
-        TextReplacementConfig playerNamePlaceholder = TextReplacementConfig.builder()
-                .matchLiteral("{playerName}")
-                .replacement(chatMessage.getSender().getName())
-                .build();
+        messageFormat = messageUtil.replacePlaceholder(messageFormat, "{playerName}", chatMessage.getSender().getName());
+        messageFormat = messageUtil.replacePlaceholder(messageFormat, "{message}", chatMessage.getContent());
 
-        TextReplacementConfig messagePlaceholder = TextReplacementConfig.builder()
-                .matchLiteral("{message}")
-                .replacement(chatMessage.getContent())
-                .build();
-
-        Component finalMessage = messageFormat
-                .replaceText(playerNamePlaceholder)
-                .replaceText(messagePlaceholder);
 
         if (hoverFormat != null) {
-            finalMessage = finalMessage.hoverEvent(HoverEvent.showText(hoverFormat));
+            messageFormat = messageFormat.hoverEvent(HoverEvent.showText(hoverFormat));
         }
 
-        return finalMessage;
+        return messageFormat;
     }
 
     @Cacheable

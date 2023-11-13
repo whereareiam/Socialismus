@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.platform.PlatformMessageSender;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.entity.Player;
 
 @Singleton
@@ -29,5 +30,22 @@ public class MessageUtil {
         loggerUtil.debug("Sending message to " + sender.getName());
         loggerUtil.trace(message.toString());
         platformMessageSender.sendMessage(sender, message);
+    }
+
+    public Component replacePlaceholder(Component component, String placeholder, Object content) {
+        TextReplacementConfig textReplacementConfig;
+        if (content instanceof String) {
+            textReplacementConfig = TextReplacementConfig.builder()
+                    .matchLiteral(placeholder)
+                    .replacement((String) content)
+                    .build();
+        } else {
+            textReplacementConfig = TextReplacementConfig.builder()
+                    .matchLiteral(placeholder)
+                    .replacement((Component) content)
+                    .build();
+        }
+
+        return component.replaceText(textReplacementConfig);
     }
 }

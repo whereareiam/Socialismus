@@ -9,7 +9,6 @@ import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -49,25 +48,9 @@ public class PrivateMessageCommand extends CommandBase {
 
         Component format = formatterUtil.formatMessage(player, commands.privateMessageCommand.format);
 
-        TextReplacementConfig senderNamePlaceholder = TextReplacementConfig.builder()
-                .matchLiteral("{senderName}")
-                .replacement(player.getName())
-                .build();
-
-        TextReplacementConfig recipientNamePlaceholder = TextReplacementConfig.builder()
-                .matchLiteral("{recipientName}")
-                .replacement(recipient.getName())
-                .build();
-
-        TextReplacementConfig messagePlaceholder = TextReplacementConfig.builder()
-                .matchLiteral("{message}")
-                .replacement(message)
-                .build();
-
-        format = format
-                .replaceText(senderNamePlaceholder)
-                .replaceText(recipientNamePlaceholder)
-                .replaceText(messagePlaceholder);
+        format = messageUtil.replacePlaceholder(format, "{senderName}", player.getName());
+        format = messageUtil.replacePlaceholder(format, "{recipientName}", recipient.getName());
+        format = messageUtil.replacePlaceholder(format, "{message}", message);
 
         messageUtil.sendMessage(player, format);
         messageUtil.sendMessage(recipient, format);

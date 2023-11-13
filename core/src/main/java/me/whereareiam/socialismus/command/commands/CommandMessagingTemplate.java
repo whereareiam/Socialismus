@@ -7,7 +7,6 @@ import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.model.commandmessaging.CommandMessaging;
 import me.whereareiam.socialismus.util.*;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -42,21 +41,10 @@ public class CommandMessagingTemplate extends CommandBase {
             Collection<Player> onlinePlayers = WorldPlayerUtil.getPlayersInWorld(player.getWorld());
             Component formatComponent = formatterUtil.formatMessage(player, commandMessaging.format);
 
-            TextReplacementConfig playerNamePlaceholder = TextReplacementConfig.builder()
-                    .matchLiteral("{playerName}")
-                    .replacement(player.getName())
-                    .build();
+            formatComponent = messageUtil.replacePlaceholder(formatComponent, "{playerName}", player.getName());
+            formatComponent = messageUtil.replacePlaceholder(formatComponent, "{message}", message);
 
-            TextReplacementConfig messagePlaceholder = TextReplacementConfig.builder()
-                    .matchLiteral("{message}")
-                    .replacement(message)
-                    .build();
-
-            formatComponent = formatComponent
-                    .replaceText(playerNamePlaceholder)
-                    .replaceText(messagePlaceholder);
             Component finalFormatComponent = formatComponent;
-
             onlinePlayers.stream()
                     .filter(recipient -> commandMessaging.requirements.radius == -1 || DistanceCalculatorUtil.calculateDistance(player, recipient) <= commandMessaging.requirements.radius)
                     .forEach(recipient -> messageUtil.sendMessage(recipient, finalFormatComponent));

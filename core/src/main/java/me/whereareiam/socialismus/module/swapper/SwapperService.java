@@ -11,7 +11,6 @@ import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
 
@@ -93,14 +92,9 @@ public class SwapperService implements ChatMessageProcessor {
                     content = content.hoverEvent(HoverEvent.showText(formatterUtil.formatMessage(player, hoverText.toString())));
                 }
 
-                TextReplacementConfig config = TextReplacementConfig.builder()
-                        .matchLiteral(placeholder)
-                        .replacement(content)
-                        .build();
+                content = messageUtil.replacePlaceholder(chatMessage.getContent(), placeholder, content);
 
-                Component newContent = chatMessage.getContent().replaceText(config);
-
-                chatMessage.setContent(newContent);
+                chatMessage.setContent(content);
             }
         }
         return chatMessage;
