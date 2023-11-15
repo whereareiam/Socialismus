@@ -2,32 +2,21 @@ package me.whereareiam.socialismus.integration.protocollib.entity.metadata.displ
 
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import me.whereareiam.socialismus.Version;
+import com.google.inject.Inject;
+import me.whereareiam.socialismus.integration.protocollib.ProtocolVersion;
 import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.type.AlignmentType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
+public class TextDisplayMetadataPacket extends DisplayMetadataPacket {
+    @Inject
+    private ProtocolVersion protocolVersion;
     private Component message;
     private int lineWidth = -1;
     private int background = -1;
     private boolean hasShadow;
     private boolean canSeeThrough;
     private AlignmentType alignmentType;
-
-    private int messageIndex = 22;
-    private int lineWidthIndex = 23;
-    private int backgroundIndex = 24;
-    private int optionsIndex = 26;
-
-    public TextDisplayMetadataPacket() {
-        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3)) {
-            messageIndex++;
-            lineWidthIndex++;
-            backgroundIndex++;
-            optionsIndex++;
-        }
-    }
 
     public void setMessage(Component message) {
         this.message = message;
@@ -63,7 +52,7 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
 
         if (message != null) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    messageIndex,
+                    protocolVersion.getMetaMessage(),
                     WrappedDataWatcher.Registry.getChatComponentSerializer(false)
             ), WrappedChatComponent.fromJson(
                     GsonComponentSerializer.gson().serialize(message)
@@ -72,14 +61,14 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
 
         if (lineWidth != -1) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    lineWidthIndex,
+                    protocolVersion.getMetaLineWidth(),
                     WrappedDataWatcher.Registry.get(Integer.class)
             ), lineWidth);
         }
 
         if (background != -1) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    backgroundIndex,
+                    protocolVersion.getMetaBackground(),
                     WrappedDataWatcher.Registry.get(Integer.class)
             ), background);
         }
@@ -99,7 +88,7 @@ public class TextDisplayMetadataPacket extends DisplayMetadataPacketPacket {
             }
 
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    optionsIndex,
+                    protocolVersion.getMetaOptions(),
                     WrappedDataWatcher.Registry.get(Byte.class)
             ), properties);
         }

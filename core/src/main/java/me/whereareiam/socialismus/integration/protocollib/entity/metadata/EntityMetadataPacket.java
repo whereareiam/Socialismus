@@ -5,11 +5,15 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
+import com.google.inject.Inject;
+import me.whereareiam.socialismus.integration.protocollib.ProtocolVersion;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EntityMetadataPacket extends Metadata {
+    @Inject
+    private ProtocolVersion protocolVersion;
     private Boolean isVisible = true;
 
     public void setVisibility(boolean isVisible) {
@@ -21,7 +25,7 @@ public class EntityMetadataPacket extends Metadata {
         if (isVisible != null) {
             byte visibilityByte = (byte) (isVisible ? 0 : 0x20);
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    0,
+                    protocolVersion.getMetaVisibility(),
                     WrappedDataWatcher.Registry.get(Byte.class)
             ), visibilityByte);
         }

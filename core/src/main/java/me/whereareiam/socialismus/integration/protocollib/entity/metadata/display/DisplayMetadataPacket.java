@@ -1,24 +1,17 @@
 package me.whereareiam.socialismus.integration.protocollib.entity.metadata.display;
 
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import me.whereareiam.socialismus.Version;
+import com.google.inject.Inject;
+import me.whereareiam.socialismus.integration.protocollib.ProtocolVersion;
 import me.whereareiam.socialismus.integration.protocollib.entity.metadata.EntityMetadataPacket;
 import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.type.DisplayType;
 import org.joml.Vector3f;
 
-public class DisplayMetadataPacketPacket extends EntityMetadataPacket {
+public class DisplayMetadataPacket extends EntityMetadataPacket {
+    @Inject
+    private ProtocolVersion protocolVersion;
     private Vector3f scale;
     private DisplayType displayType;
-    
-    private int scaleIndex = 11;
-    private int displayTypeIndex = 14;
-
-    public DisplayMetadataPacketPacket() {
-        if (Version.isVersionBetween(Version.V1_20_2, Version.V1_20_3)) {
-            scaleIndex++;
-            displayTypeIndex++;
-        }
-    }
 
     public void setScale(Vector3f scale) {
         this.scale = scale;
@@ -34,14 +27,14 @@ public class DisplayMetadataPacketPacket extends EntityMetadataPacket {
 
         if (scale != null) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    scaleIndex,
+                    protocolVersion.getMetaScale(),
                     WrappedDataWatcher.Registry.get(Vector3f.class)
             ), scale);
         }
 
         if (displayType != null) {
             metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(
-                    displayTypeIndex,
+                    protocolVersion.getMetaDisplayType(),
                     WrappedDataWatcher.Registry.get(Byte.class)
             ), displayType.getValue());
         }
