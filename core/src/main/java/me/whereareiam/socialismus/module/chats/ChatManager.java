@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.config.module.chat.ChatsConfig;
-import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.model.Chat;
 import me.whereareiam.socialismus.module.Module;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;

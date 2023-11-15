@@ -18,7 +18,8 @@ public class InfoPrinterUtil {
     private final ModuleLoader moduleLoader;
 
     @Inject
-    public InfoPrinterUtil(LoggerUtil loggerUtil, CommandManager commandManager, IntegrationManager integrationManager, ModuleLoader moduleLoader) {
+    public InfoPrinterUtil(LoggerUtil loggerUtil, CommandManager commandManager, IntegrationManager integrationManager,
+                           ModuleLoader moduleLoader) {
         this.loggerUtil = loggerUtil;
         this.commandManager = commandManager;
         this.integrationManager = integrationManager;

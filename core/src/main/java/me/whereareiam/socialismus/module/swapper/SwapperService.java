@@ -54,6 +54,7 @@ public class SwapperService implements ChatMessageProcessor {
         return settingsConfig.modules.swapper.enabled;
     }
 
+    // TODO Allow swapping without chat module enabled
     private ChatMessage swapPlaceholders(ChatMessage chatMessage) {
         loggerUtil.debug("Swapping message: " + chatMessage.getContent());
         Player player = chatMessage.getSender();
@@ -65,6 +66,7 @@ public class SwapperService implements ChatMessageProcessor {
                 if (!chatMessage.getContent().toString().contains(placeholder)) {
                     continue;
                 }
+                // TODO Implement requirements system
                 if (!player.hasPermission(swapper.settings.permission)) {
                     loggerUtil.debug("Player didn't have the right permission");
                     String message = messagesConfig.swapper.noPermissionForSwapper;

@@ -3,10 +3,8 @@ package me.whereareiam.socialismus.chat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
-import me.whereareiam.socialismus.chat.requirement.validator.RecipientRequirementValidator;
-import me.whereareiam.socialismus.chat.requirement.validator.SenderRequirementValidator;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
-import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.model.Chat;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
@@ -23,22 +21,14 @@ public class ChatService {
 
     private final ChatBroadcaster chatBroadcaster;
 
-    private final RecipientRequirementValidator recipientRequirementValidator;
-    private final SenderRequirementValidator senderRequirementValidator;
-
     @Inject
     public ChatService(LoggerUtil loggerUtil, MessageUtil messageUtil, MessagesConfig messages,
-                       ChatBroadcaster chatBroadcaster,
-                       RecipientRequirementValidator recipientRequirementValidator,
-                       SenderRequirementValidator senderRequirementValidator) {
+                       ChatBroadcaster chatBroadcaster) {
         this.loggerUtil = loggerUtil;
         this.messageUtil = messageUtil;
         this.messages = messages;
 
         this.chatBroadcaster = chatBroadcaster;
-
-        this.recipientRequirementValidator = recipientRequirementValidator;
-        this.senderRequirementValidator = senderRequirementValidator;
 
         loggerUtil.trace("Initializing class: " + this);
     }

@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.config.module.bubblechat;
 
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.model.Requirement;
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
@@ -30,12 +31,12 @@ public class BubbleChatConfig extends YamlSerializable {
     @Comment(
             value = {
                     @CommentValue(type = CommentValue.Type.NEW_LINE),
-                    @CommentValue(" In the Requirements section, you can specify what your players need in order"),
+                    @CommentValue(" In the Requirement section, you can specify what your players need in order"),
                     @CommentValue(" to be able to send or receive a bubble message."),
             },
             at = Comment.At.PREPEND
     )
-    public BubbleChatRequirementConfig requirements = new BubbleChatRequirementConfig();
+    public Requirement requirement = new Requirement();
 
     public BubbleChatConfig() {
         super(BubbleChatConfig.BUBBLECHAT);
