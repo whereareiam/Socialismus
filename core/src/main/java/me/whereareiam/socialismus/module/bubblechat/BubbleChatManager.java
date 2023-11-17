@@ -3,14 +3,14 @@ package me.whereareiam.socialismus.module.bubblechat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.module.bubblechat.BubbleChatConfig;
-import me.whereareiam.socialismus.module.Module;
+import me.whereareiam.socialismus.module.IModule;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 
 @Singleton
-public class BubbleChatManager implements Module {
+public class BubbleChatManager implements IModule {
 
     @Inject
     public BubbleChatManager(LoggerUtil loggerUtil, Plugin plugin, BubbleChatConfig bubbleChatConfig) {

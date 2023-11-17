@@ -5,6 +5,8 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.model.Chat;
+import me.whereareiam.socialismus.module.Module;
+import me.whereareiam.socialismus.requirement.RequirementValidator;
 import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
@@ -20,15 +22,17 @@ public class ChatService {
     private final MessagesConfig messages;
 
     private final ChatBroadcaster chatBroadcaster;
+    private final RequirementValidator requirementValidator;
 
     @Inject
     public ChatService(LoggerUtil loggerUtil, MessageUtil messageUtil, MessagesConfig messages,
-                       ChatBroadcaster chatBroadcaster) {
+                       ChatBroadcaster chatBroadcaster, RequirementValidator requirementValidator) {
         this.loggerUtil = loggerUtil;
         this.messageUtil = messageUtil;
         this.messages = messages;
 
         this.chatBroadcaster = chatBroadcaster;
+        this.requirementValidator = requirementValidator;
 
         loggerUtil.trace("Initializing class: " + this);
     }
@@ -39,18 +43,27 @@ public class ChatService {
         Player sender = chatMessage.getSender();
         Chat chat = chatMessage.getChat();
 
-        if (!senderRequirementValidator.checkRequirements(sender, chat)) {
+        if (!requirementValidator.validatePlayer(Module.CHAT, sender)) {
             messageUtil.sendMessage(sender, messages.chat.lackOfRequirements);
             loggerUtil.debug(sender.getName() + " didn't met requirements");
             return;
         }
 
-        Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
+        Collection<? extends Player> recipients = Bukkit.getServer().getOnlinePlayers();
+        recipients = requirementValidator.validatePlayers(Module.CHAT, sender, recipients);
+
+        if (recipients.size() == 1) {
+            String noOnlinePlayers = messages.chat.noOnlinePlayers;
+            if (noOnlinePlayers != null) {
+                messageUtil.sendMessage(sender, noOnlinePlayers);
+                return;
+            }
+        }
 
         boolean isPlayerNearby;
-        if (chat.requirements.radius != -1) {
-            isPlayerNearby = onlinePlayers.stream()
-                    .anyMatch(player -> !sender.equals(player) && DistanceCalculatorUtil.calculateDistance(sender, player) <= chat.requirements.radius);
+        if (chat.radius != -1) {
+            isPlayerNearby = recipients.stream()
+                    .anyMatch(player -> !sender.equals(player) && DistanceCalculatorUtil.calculateDistance(sender, player) <= chat.radius);
 
             if (!isPlayerNearby) {
                 String noNearbyPlayers = messages.chat.noNearbyPlayers;
@@ -61,17 +74,6 @@ public class ChatService {
             }
         }
 
-        if (onlinePlayers.size() == 1) {
-            String noOnlinePlayers = messages.chat.noOnlinePlayers;
-            if (noOnlinePlayers != null) {
-                messageUtil.sendMessage(sender, noOnlinePlayers);
-                return;
-            }
-        }
-
-        onlinePlayers.stream()
-                .filter(recipient -> recipientRequirementValidator.checkRequirements(recipient, chat))
-                .filter(recipient -> chat.requirements.radius == -1 || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= chat.requirements.radius)
-                .forEach(recipient -> chatBroadcaster.broadcastMessage(chatMessage, recipient));
+        chatBroadcaster.broadcastMessage(chatMessage, recipients);
     }
 }

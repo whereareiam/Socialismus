@@ -7,7 +7,9 @@ import me.whereareiam.socialismus.config.module.swapper.SwapperConfig;
 import me.whereareiam.socialismus.integration.protocollib.PacketSender;
 import me.whereareiam.socialismus.integration.protocollib.entity.PlayerPacket;
 import me.whereareiam.socialismus.model.swapper.Swapper;
+import me.whereareiam.socialismus.module.IModule;
 import me.whereareiam.socialismus.module.Module;
+import me.whereareiam.socialismus.requirement.RequirementValidator;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -18,18 +20,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
-public class SwapperManager implements Module {
+public class SwapperManager implements IModule {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
+
+    private final RequirementValidator requirementValidator;
 
     private final Path swapperPath;
     private final List<Swapper> swappers = new ArrayList<>();
 
     @Inject
     public SwapperManager(Injector injector, LoggerUtil loggerUtil,
-                          Plugin plugin) {
+                          Plugin plugin, RequirementValidator requirementValidator) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
+        this.requirementValidator = requirementValidator;
 
         Path modulePath = plugin.getDataFolder().toPath().resolve("modules");
         this.swapperPath = modulePath.resolve("swapper");
@@ -85,7 +90,7 @@ public class SwapperManager implements Module {
         final PlayerPacket playerPacket = injector.getInstance(PlayerPacket.class);
         loggerUtil.debug("Sending swappers to " + player.getName());
         for (Swapper swapper : swappers) {
-            if (player.hasPermission(swapper.settings.permission)) {
+            if (requirementValidator.validatePlayer(Module.SWAPPER, player)) {
                 loggerUtil.trace("Player " + player.getName() + " will receive these swappers: " + swapper.placeholders);
                 for (String placeholder : swapper.placeholders) {
                     packetSender.sendPacket(
@@ -107,7 +112,6 @@ public class SwapperManager implements Module {
         exampleSwapper.placeholders.add("{example}");
         exampleSwapper.content.add("example");
         exampleSwapper.settings.directSearch = true;
-        exampleSwapper.settings.permission = "";
         exampleSwapper.settings.randomContent = false;
 
         swapperConfig.swappers.add(exampleSwapper);

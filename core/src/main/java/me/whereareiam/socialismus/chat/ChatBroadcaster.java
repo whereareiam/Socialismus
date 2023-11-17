@@ -6,7 +6,6 @@ import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
 import me.whereareiam.socialismus.model.Chat;
-import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
@@ -14,6 +13,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,19 +36,9 @@ public class ChatBroadcaster {
         this.chatMessageProcessors = new HashSet<>(chatMessageProcessors);
     }
 
-    public void broadcastMessage(ChatMessage chatMessage, Player recipient) {
-        if (shouldSendMessage(chatMessage.getSender(), recipient, chatMessage.getChat().requirements.radius)) {
-            Component finalMessage = createFinalMessage(chatMessage);
-            messageUtil.sendMessage(recipient, finalMessage);
-
-            loggerUtil.trace("Sent message: " + finalMessage + " to: " + recipient.getName());
-        }
-    }
-
-    private boolean shouldSendMessage(Player sender, Player recipient, int radius) {
-        return sender.equals(recipient)
-                || radius == -1
-                || DistanceCalculatorUtil.calculateDistance(sender, recipient) <= radius;
+    public void broadcastMessage(ChatMessage chatMessage, Collection<? extends Player> recipients) {
+        Component finalMessage = createFinalMessage(chatMessage);
+        recipients.forEach(recipient -> messageUtil.sendMessage(recipient, finalMessage));
     }
 
     private Component createFinalMessage(ChatMessage chatMessage) {

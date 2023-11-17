@@ -51,11 +51,6 @@ public class BubbleMessageProcessor {
         Player player = chatMessage.getSender();
         Component message = chatMessage.getContent();
 
-        if (PlainTextComponentSerializer.plainText().serialize(message).length() <= bubbleChatConfig.requirements.symbolCountThreshold) {
-            loggerUtil.debug("The message is too short, not creating a bubble message");
-            return new LinkedList<>();
-        }
-
         Queue<BubbleMessage> messages = new LinkedList<>();
         List<Component> lines = splitIntoLines(message);
         boolean isFirstMessage = true;

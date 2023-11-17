@@ -7,6 +7,8 @@ import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.model.swapper.Swapper;
+import me.whereareiam.socialismus.module.Module;
+import me.whereareiam.socialismus.requirement.RequirementValidator;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
@@ -24,6 +26,8 @@ public class SwapperService implements ChatMessageProcessor {
     private final FormatterUtil formatterUtil;
     private final MessageUtil messageUtil;
 
+    private final RequirementValidator requirementValidator;
+
     private final SettingsConfig settingsConfig;
     private final MessagesConfig messagesConfig;
 
@@ -31,12 +35,14 @@ public class SwapperService implements ChatMessageProcessor {
 
     @Inject
     public SwapperService(LoggerUtil loggerUtil, SwapperManager swapperManager,
-                          FormatterUtil formatterUtil, MessageUtil messageUtil, SettingsConfig settingsConfig,
-                          MessagesConfig messagesConfig) {
+                          FormatterUtil formatterUtil, MessageUtil messageUtil,
+                          RequirementValidator requirementValidator,
+                          SettingsConfig settingsConfig, MessagesConfig messagesConfig) {
         this.loggerUtil = loggerUtil;
         this.swapperManager = swapperManager;
         this.formatterUtil = formatterUtil;
         this.messageUtil = messageUtil;
+        this.requirementValidator = requirementValidator;
 
         this.settingsConfig = settingsConfig;
         this.messagesConfig = messagesConfig;
@@ -66,15 +72,16 @@ public class SwapperService implements ChatMessageProcessor {
                 if (!chatMessage.getContent().toString().contains(placeholder)) {
                     continue;
                 }
-                // TODO Implement requirements system
-                if (!player.hasPermission(swapper.settings.permission)) {
-                    loggerUtil.debug("Player didn't have the right permission");
-                    String message = messagesConfig.swapper.noPermissionForSwapper;
+
+                if (!requirementValidator.validatePlayer(Module.SWAPPER, player)) {
+                    loggerUtil.debug("Player didn't met all requirements");
+                    String message = messagesConfig.swapper.didntMetRequirements;
                     if (message != null) {
                         messageUtil.sendMessage(player, message);
                     }
                     return chatMessage;
                 }
+
                 Component content;
                 if (swapper.settings.randomContent) {
                     int randomIndex = random.nextInt(swapper.content.size());

@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.config.module.chat.ChatsConfig;
 import me.whereareiam.socialismus.model.Chat;
-import me.whereareiam.socialismus.module.Module;
+import me.whereareiam.socialismus.module.IModule;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-public class ChatManager implements Module {
+public class ChatManager implements IModule {
     private final LoggerUtil loggerUtil;
     private final ChatsConfig chatsConfig;
     private final Path modulePath;
