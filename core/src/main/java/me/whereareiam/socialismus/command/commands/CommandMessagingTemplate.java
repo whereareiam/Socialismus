@@ -5,7 +5,12 @@ import co.aikar.commands.annotation.*;
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.model.commandmessaging.CommandMessaging;
-import me.whereareiam.socialismus.util.*;
+import me.whereareiam.socialismus.module.Module;
+import me.whereareiam.socialismus.requirement.RequirementValidator;
+import me.whereareiam.socialismus.util.FormatterUtil;
+import me.whereareiam.socialismus.util.LoggerUtil;
+import me.whereareiam.socialismus.util.MessageUtil;
+import me.whereareiam.socialismus.util.WorldPlayerUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -16,18 +21,22 @@ public class CommandMessagingTemplate extends CommandBase {
     private final MessageUtil messageUtil;
     private final FormatterUtil formatterUtil;
 
+    private final RequirementValidator requirementValidator;
+
     private CommandMessaging commandMessaging;
 
     @Inject
-    public CommandMessagingTemplate(LoggerUtil loggerUtil, MessageUtil messageUtil, FormatterUtil formatterUtil) {
+    public CommandMessagingTemplate(LoggerUtil loggerUtil, MessageUtil messageUtil, FormatterUtil formatterUtil,
+                                    RequirementValidator requirementValidator) {
         this.loggerUtil = loggerUtil;
         this.messageUtil = messageUtil;
         this.formatterUtil = formatterUtil;
+        this.requirementValidator = requirementValidator;
 
         loggerUtil.trace("Initializing class: " + this);
     }
 
-    public void setRolePlay(me.whereareiam.socialismus.model.commandmessaging.CommandMessaging commandMessaging) {
+    public void setRolePlay(CommandMessaging commandMessaging) {
         this.commandMessaging = commandMessaging;
     }
 
@@ -37,17 +46,17 @@ public class CommandMessagingTemplate extends CommandBase {
     @Description("description.commandMessaging")
     @Syntax("%syntax.commandMessaging")
     public void onCommand(CommandIssuer issuer, String message) {
-        if (issuer instanceof Player player) {
-            Collection<Player> onlinePlayers = WorldPlayerUtil.getPlayersInWorld(player.getWorld());
-            Component formatComponent = formatterUtil.formatMessage(player, commandMessaging.format);
+        if (issuer instanceof Player sender) {
+            Collection<Player> recipients = WorldPlayerUtil.getPlayersInWorld(sender.getWorld());
+            recipients = requirementValidator.validatePlayers(Module.COMMAND, sender, recipients);
 
-            formatComponent = messageUtil.replacePlaceholder(formatComponent, "{playerName}", player.getName());
+            Component formatComponent = formatterUtil.formatMessage(sender, commandMessaging.format);
+
+            formatComponent = messageUtil.replacePlaceholder(formatComponent, "{playerName}", sender.getName());
             formatComponent = messageUtil.replacePlaceholder(formatComponent, "{message}", message);
 
             Component finalFormatComponent = formatComponent;
-            onlinePlayers.stream()
-                    .filter(recipient -> commandMessaging.requirements.radius == -1 || DistanceCalculatorUtil.calculateDistance(player, recipient) <= commandMessaging.requirements.radius)
-                    .forEach(recipient -> messageUtil.sendMessage(recipient, finalFormatComponent));
+            recipients.forEach(recipient -> messageUtil.sendMessage(recipient, finalFormatComponent));
         }
     }
 
