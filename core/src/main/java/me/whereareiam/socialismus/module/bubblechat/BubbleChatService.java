@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
+import me.whereareiam.socialismus.config.module.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.module.Module;
 import me.whereareiam.socialismus.module.bubblechat.message.BubbleMessage;
 import me.whereareiam.socialismus.module.bubblechat.message.BubbleMessageProcessor;
@@ -12,6 +13,7 @@ import me.whereareiam.socialismus.requirement.RequirementValidator;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
 import me.whereareiam.socialismus.util.WorldPlayerUtil;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -25,6 +27,7 @@ public class BubbleChatService {
     private final LoggerUtil loggerUtil;
     private final MessageUtil messageUtil;
     private final MessagesConfig messagesConfig;
+    private final BubbleChatConfig bubbleChatConfig;
 
     private final RequirementValidator requirementValidator;
 
@@ -34,12 +37,15 @@ public class BubbleChatService {
     @Inject
     public BubbleChatService(Injector injector, LoggerUtil loggerUtil,
                              MessageUtil messageUtil, MessagesConfig messagesConfig,
+                             BubbleChatConfig bubbleChatConfig,
+
                              RequirementValidator requirementValidator,
                              BubbleMessageProcessor bubbleMessageProcessor) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
         this.messageUtil = messageUtil;
         this.messagesConfig = messagesConfig;
+        this.bubbleChatConfig = bubbleChatConfig;
         this.requirementValidator = requirementValidator;
 
         this.bubbleMessageProcessor = bubbleMessageProcessor;
@@ -50,6 +56,11 @@ public class BubbleChatService {
     public void distributeBubbleMessage(ChatMessage chatMessage) {
         loggerUtil.debug("Distributing bubble message");
 
+        if (PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent()).length()
+                <= bubbleChatConfig.settings.symbolCountThreshold) {
+            return;
+        }
+
         Player sender = chatMessage.getSender();
         if (!requirementValidator.validatePlayer(Module.BUBBLECHAT, sender)) {
             String message = messagesConfig.bubblechat.noSendPermission;
@@ -59,10 +70,10 @@ public class BubbleChatService {
             return;
         }
 
-        Collection<Player> recipients = WorldPlayerUtil.getPlayersInWorld(sender.getWorld());
-        recipients = requirementValidator.validatePlayers(Module.BUBBLECHAT, sender, recipients);
+        Collection<Player> onlinePlayers = WorldPlayerUtil.getPlayersInWorld(sender.getWorld());
+        onlinePlayers = requirementValidator.validatePlayers(Module.BUBBLECHAT, sender, onlinePlayers);
 
-        Queue<BubbleMessage> queue = bubbleMessageProcessor.processMessage(chatMessage, recipients);
+        Queue<BubbleMessage> queue = bubbleMessageProcessor.processMessage(chatMessage, onlinePlayers);
         loggerUtil.debug("Created a queue of " + queue.size() + " bubble messages");
 
         BubbleQueue bubbleQueue = playerQueuesMap.get(sender);

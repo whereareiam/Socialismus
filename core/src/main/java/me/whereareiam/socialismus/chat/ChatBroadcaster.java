@@ -2,7 +2,6 @@ package me.whereareiam.socialismus.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
 import me.whereareiam.socialismus.model.Chat;
@@ -61,7 +60,6 @@ public class ChatBroadcaster {
         return messageFormat;
     }
 
-    @Cacheable
     private Component createHoverFormat(List<String> hoverFormatList, Player sender) {
         if (hoverFormatList == null || hoverFormatList.isEmpty()) {
             return null;

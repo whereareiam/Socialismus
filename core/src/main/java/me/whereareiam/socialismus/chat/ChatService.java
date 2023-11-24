@@ -7,7 +7,6 @@ import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.model.Chat;
 import me.whereareiam.socialismus.module.Module;
 import me.whereareiam.socialismus.requirement.RequirementValidator;
-import me.whereareiam.socialismus.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -49,31 +48,23 @@ public class ChatService {
             return;
         }
 
-        Collection<? extends Player> recipients = Bukkit.getServer().getOnlinePlayers();
-        recipients = requirementValidator.validatePlayers(Module.CHAT, sender, recipients);
+        Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
+        onlinePlayers = requirementValidator.validatePlayers(Module.CHAT, sender, onlinePlayers);
 
-        if (recipients.size() == 1) {
+        if (chat.radius != -1 && onlinePlayers.size() == 1) {
             String noOnlinePlayers = messages.chat.noOnlinePlayers;
             if (noOnlinePlayers != null) {
                 messageUtil.sendMessage(sender, noOnlinePlayers);
                 return;
             }
-        }
 
-        boolean isPlayerNearby;
-        if (chat.radius != -1) {
-            isPlayerNearby = recipients.stream()
-                    .anyMatch(player -> !sender.equals(player) && DistanceCalculatorUtil.calculateDistance(sender, player) <= chat.radius);
-
-            if (!isPlayerNearby) {
-                String noNearbyPlayers = messages.chat.noNearbyPlayers;
-                if (noNearbyPlayers != null) {
-                    messageUtil.sendMessage(sender, noNearbyPlayers);
-                    return;
-                }
+            String noNearbyPlayers = messages.chat.noNearbyPlayers;
+            if (noNearbyPlayers != null) {
+                messageUtil.sendMessage(sender, noNearbyPlayers);
+                return;
             }
         }
 
-        chatBroadcaster.broadcastMessage(chatMessage, recipients);
+        chatBroadcaster.broadcastMessage(chatMessage, onlinePlayers);
     }
 }

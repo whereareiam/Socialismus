@@ -48,11 +48,12 @@ public class BubbleMessageProcessor {
             chatMessage = processor.process(chatMessage);
         }
 
-        Player player = chatMessage.getSender();
+        Player sender = chatMessage.getSender();
         Component message = chatMessage.getContent();
 
         Queue<BubbleMessage> messages = new LinkedList<>();
         List<Component> lines = splitIntoLines(message);
+
         boolean isFirstMessage = true;
         while (!lines.isEmpty()) {
             loggerUtil.debug("Processing lines of the message");
@@ -61,13 +62,13 @@ public class BubbleMessageProcessor {
             Component messageComponent = joinLinesIntoComponent(messageLines);
             double displayTime = calculateDisplayTime(messageComponent);
 
-            Component formatMessageComponent = getFormat(isFirstMessage, player);
+            Component formatMessageComponent = getFormat(isFirstMessage, sender);
             isFirstMessage = false;
 
-            formatMessageComponent = messageUtil.replacePlaceholder(formatMessageComponent, "{playerName}", player.getName());
+            formatMessageComponent = messageUtil.replacePlaceholder(formatMessageComponent, "{playerName}", sender.getName());
             formatMessageComponent = messageUtil.replacePlaceholder(formatMessageComponent, "{message}", messageComponent);
 
-            formatMessageComponent = appendEndOrCutFormat(formatMessageComponent, lines.isEmpty(), player);
+            formatMessageComponent = appendEndOrCutFormat(formatMessageComponent, lines.isEmpty(), sender);
 
             BubbleMessage bubbleMessage = new BubbleMessage(displayTime, formatMessageComponent, chatMessage.getSender(), receivers);
             messages.add(bubbleMessage);
