@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -37,7 +38,9 @@ public class ChatBroadcaster {
 
     public void broadcastMessage(ChatMessage chatMessage, Collection<? extends Player> recipients) {
         Component finalMessage = createFinalMessage(chatMessage);
+
         recipients.forEach(recipient -> messageUtil.sendMessage(recipient, finalMessage));
+        loggerUtil.info("[" + chatMessage.getChat().id.toUpperCase() + "] " + chatMessage.getSender().getName() + ": " + PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent()));
     }
 
     private Component createFinalMessage(ChatMessage chatMessage) {

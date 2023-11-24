@@ -65,6 +65,7 @@ public class ChatService {
             }
         }
 
+        // TODO Implement radius
         chatBroadcaster.broadcastMessage(chatMessage, onlinePlayers);
     }
 }

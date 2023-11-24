@@ -57,6 +57,8 @@ public class CommandMessagingTemplate extends CommandBase {
 
             Component finalFormatComponent = formatComponent;
             recipients.forEach(recipient -> messageUtil.sendMessage(recipient, finalFormatComponent));
+        } else {
+            loggerUtil.info("You can't use this command in console");
         }
     }
 
