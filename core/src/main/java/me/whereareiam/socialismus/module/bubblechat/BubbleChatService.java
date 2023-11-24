@@ -70,7 +70,7 @@ public class BubbleChatService {
             return;
         }
 
-        Collection<Player> onlinePlayers = WorldPlayerUtil.getPlayersInWorld(sender.getWorld());
+        Collection<? extends Player> onlinePlayers = WorldPlayerUtil.getPlayersInWorld(sender.getWorld());
         onlinePlayers = requirementValidator.validatePlayers(Module.BUBBLECHAT, sender, onlinePlayers);
 
         Queue<BubbleMessage> queue = bubbleMessageProcessor.processMessage(chatMessage, onlinePlayers);

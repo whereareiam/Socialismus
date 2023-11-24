@@ -44,13 +44,13 @@ you want with this plugin, as it offers many different modules and great customi
 - [ ] Colorization
 - [ ] Item/Inventory Display Chat
 - [ ] Message Announcer
-- [x] Placeholders <sup> From 0.3.0
-- [x] Private Messages <sup> From 0.3.0
-- [x] Role-play Commands <sup> From 0.3.0
-- [x] Statistics <sup> From 0.3.0
 - [ ] Swapper placeholder list command
 - [ ] User Click Action
 - [ ] User Mention
 - [x] Bubble Chat <sup> From 0.2.0
 - [x] Chats <sup>From 0.0.1
+- [x] Placeholders <sup> From 1.0.0
+- [x] Private Messages <sup> From 1.0.0
+- [x] Role-play Commands <sup> From 1.0.0
+- [x] Statistics <sup> From 1.0.0
 - [x] Swapper <sup>From 0.1.0

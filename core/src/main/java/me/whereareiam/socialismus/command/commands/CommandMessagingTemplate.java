@@ -47,7 +47,7 @@ public class CommandMessagingTemplate extends CommandBase {
     @Syntax("%syntax.commandMessaging")
     public void onCommand(CommandIssuer issuer, String message) {
         if (issuer instanceof Player sender) {
-            Collection<Player> recipients = WorldPlayerUtil.getPlayersInWorld(sender.getWorld());
+            Collection<? extends Player> recipients = WorldPlayerUtil.getPlayersInWorld(sender.getWorld());
             recipients = requirementValidator.validatePlayers(Module.COMMAND, sender, recipients);
 
             Component formatComponent = formatterUtil.formatMessage(sender, commandMessaging.format);

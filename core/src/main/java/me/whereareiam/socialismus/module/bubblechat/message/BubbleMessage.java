@@ -5,5 +5,6 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
-public record BubbleMessage(double displayTime, Component message, Player sender, Collection<Player> receivers) {
+public record BubbleMessage(double displayTime, Component message, Player sender,
+                            Collection<? extends Player> receivers) {
 }

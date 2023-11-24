@@ -42,7 +42,7 @@ public class BubbleMessageProcessor {
         loggerUtil.trace("Initializing class: " + this);
     }
 
-    public Queue<BubbleMessage> processMessage(ChatMessage chatMessage, Collection<Player> receivers) {
+    public Queue<BubbleMessage> processMessage(ChatMessage chatMessage, Collection<? extends Player> receivers) {
         loggerUtil.debug("Processing chat message");
         for (ChatMessageProcessor processor : chatMessageProcessors) {
             chatMessage = processor.process(chatMessage);
