@@ -66,15 +66,17 @@ public class SwapperManager implements IModule {
             swappers.addAll(swapperConfig.swappers);
         } else {
             for (File file : files) {
-                loggerUtil.trace("Trying to register swappers in config: " + file.getName());
-                SwapperConfig swapperConfig = injector.getInstance(SwapperConfig.class);
-                swapperConfig.reload(file.toPath());
-                List<Swapper> enabledSwappers = swapperConfig.swappers.stream()
-                        .filter(swapper -> swapper.enabled)
-                        .toList();
-                if (!enabledSwappers.isEmpty()) {
-                    loggerUtil.trace("Adding new swappers (" + enabledSwappers.size() + ")");
-                    swappers.addAll(enabledSwappers);
+                if (file.getName().endsWith(".yml")) {
+                    loggerUtil.trace("Trying to register swappers in config: " + file.getName());
+                    SwapperConfig swapperConfig = injector.getInstance(SwapperConfig.class);
+                    swapperConfig.reload(file.toPath());
+                    List<Swapper> enabledSwappers = swapperConfig.swappers.stream()
+                            .filter(swapper -> swapper.enabled)
+                            .toList();
+                    if (!enabledSwappers.isEmpty()) {
+                        loggerUtil.trace("Adding new swappers (" + enabledSwappers.size() + ")");
+                        swappers.addAll(enabledSwappers);
+                    }
                 }
             }
         }
