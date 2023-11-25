@@ -58,6 +58,7 @@ public class SQLiteDatabase implements Database {
         }
     }
 
+    @Override
     public void setUrl(String url) {
         this.url = url;
     }

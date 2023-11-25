@@ -7,6 +7,8 @@ public interface Database {
 
     void disconnect();
 
+    void setUrl(String url);
+
     ResultSet executeQuery(String sql);
 
     int executeUpdate(String sql);
