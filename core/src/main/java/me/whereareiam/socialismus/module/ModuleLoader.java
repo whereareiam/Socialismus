@@ -3,50 +3,34 @@ package me.whereareiam.socialismus.module;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.listener.state.ChatListenerState;
-import me.whereareiam.socialismus.listener.state.JoinListenerState;
-import me.whereareiam.socialismus.module.bubblechat.BubbleChatManager;
-import me.whereareiam.socialismus.module.chats.ChatManager;
-import me.whereareiam.socialismus.module.swapper.SwapperManager;
+import me.whereareiam.socialismus.module.bubblechat.BubbleChatModule;
+import me.whereareiam.socialismus.module.chats.ChatModule;
+import me.whereareiam.socialismus.module.swapper.SwapperModule;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Singleton
 public class ModuleLoader {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
-    private final SettingsConfig settingsConfig;
-    private final File dataFolder;
 
-    private final ChatListenerState chatListenerState;
-    private final JoinListenerState joinListenerState;
-
-    private ChatManager chatManager;
-    private SwapperManager swapperManager;
+    private final List<Module> modules = new ArrayList<>();
 
     @Inject
     public ModuleLoader(Injector injector, LoggerUtil loggerUtil,
-                        Plugin plugin, SettingsConfig settingsConfig,
-
-                        ChatListenerState chatListenerState,
-                        JoinListenerState joinListenerState
+                        Plugin plugin
     ) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
-        this.settingsConfig = settingsConfig;
-        this.dataFolder = plugin.getDataFolder();
-
-        this.chatListenerState = chatListenerState;
-        this.joinListenerState = joinListenerState;
+        File dataFolder = plugin.getDataFolder();
 
         loggerUtil.trace("Initializing class: " + this);
-    }
 
-    public void loadModules() {
-        loggerUtil.debug("Loading modules");
         File moduleFile = dataFolder.toPath().resolve("modules").toFile();
 
         if (!moduleFile.exists()) {
@@ -56,56 +40,60 @@ public class ModuleLoader {
                 loggerUtil.severe("Failed to create directory: " + moduleFile);
             }
         }
+    }
 
-        if (settingsConfig.modules.chats) {
-            chatListenerState.setChatListenerRequired(true);
+    public void loadModules() {
+        List<Class<? extends Module>> modules = Arrays.asList(
+                ChatModule.class,
+                BubbleChatModule.class,
+                SwapperModule.class
+        );
 
-            chatManager = injector.getInstance(ChatManager.class);
-            chatManager.registerChats();
-        }
+        for (Class<? extends Module> moduleClass : modules) {
+            try {
+                Module module = injector.getInstance(moduleClass);
+                module.initialize();
 
-        if (settingsConfig.modules.swapper.enabled) {
-            chatListenerState.setChatListenerRequired(true);
-            if (settingsConfig.modules.swapper.suggest) {
-                joinListenerState.setJoinListenerRequired(true);
+                if (module.isEnabled()) {
+                    this.modules.add(module);
+                }
+            } catch (Exception e) {
+                loggerUtil.severe(e.getMessage());
             }
-
-            swapperManager = injector.getInstance(SwapperManager.class);
-            swapperManager.registerSwappers();
-        }
-
-        if (settingsConfig.modules.bubblechat) {
-            chatListenerState.setChatListenerRequired(true);
-
-            injector.getInstance(BubbleChatManager.class);
         }
     }
 
     public void reloadModules() {
         loggerUtil.debug("Reloading modules");
 
-        if (settingsConfig.modules.chats) {
-            chatManager.cleanChats();
-            chatManager.registerChats();
-        }
-
-        if (settingsConfig.modules.swapper.enabled) {
-            swapperManager.cleanSwappers();
-            swapperManager.registerSwappers();
+        for (Module module : modules) {
+            module.reload();
         }
     }
 
     public int getChatCount() {
-        if (chatManager == null)
-            return 0;
+        Module chatModule = modules.stream()
+                .filter(module -> module instanceof ChatModule)
+                .findFirst()
+                .orElse(null);
 
-        return chatManager.getChatCount();
+        if (chatModule == null) {
+            return 0;
+        }
+
+        return ((ChatModule) chatModule).getChatCount();
     }
 
     public int getSwapperCount() {
-        if (swapperManager == null)
-            return 0;
+        Module swapperModule = modules.stream()
+                .filter(module -> module instanceof SwapperModule)
+                .findFirst()
+                .orElse(null);
 
-        return swapperManager.getSwappers().size();
+        if (swapperModule == null) {
+            return 0;
+        }
+
+        return ((SwapperModule) swapperModule).getSwappers().size();
     }
 }

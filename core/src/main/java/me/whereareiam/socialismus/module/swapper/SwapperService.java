@@ -19,7 +19,7 @@ import java.util.Random;
 @Singleton
 public class SwapperService implements ChatMessageProcessor {
     private final LoggerUtil loggerUtil;
-    private final SwapperManager swapperManager;
+    private final SwapperModule swapperModule;
     private final FormatterUtil formatterUtil;
     private final MessageUtil messageUtil;
 
@@ -30,12 +30,12 @@ public class SwapperService implements ChatMessageProcessor {
     private final Random random = new Random();
 
     @Inject
-    public SwapperService(LoggerUtil loggerUtil, SwapperManager swapperManager,
+    public SwapperService(LoggerUtil loggerUtil, SwapperModule swapperModule,
                           FormatterUtil formatterUtil, MessageUtil messageUtil,
                           SwapperRequirementValidator swapperRequirementValidator,
                           SettingsConfig settingsConfig) {
         this.loggerUtil = loggerUtil;
-        this.swapperManager = swapperManager;
+        this.swapperModule = swapperModule;
         this.formatterUtil = formatterUtil;
         this.messageUtil = messageUtil;
 
@@ -60,7 +60,7 @@ public class SwapperService implements ChatMessageProcessor {
         loggerUtil.debug("Swapping message: " + chatMessage.getContent());
         Player player = chatMessage.getSender();
 
-        List<Swapper> swappers = swapperManager.getSwappers();
+        List<Swapper> swappers = swapperModule.getSwappers();
         for (Swapper swapper : swappers) {
             for (int i = 0; i < swapper.placeholders.size(); i++) {
                 String placeholder = swapper.placeholders.get(i);

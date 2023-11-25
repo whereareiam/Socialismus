@@ -5,24 +5,19 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
 @Singleton
-public class JoinListenerState {
-    private final LoggerUtil loggerUtil;
-    private boolean joinListenerRequired = false;
+public class JoinListenerState implements State {
+    private static boolean isRequired = false;
 
     @Inject
     public JoinListenerState(LoggerUtil loggerUtil) {
-        this.loggerUtil = loggerUtil;
-
         loggerUtil.trace("Initializing class: " + this);
     }
 
-    public boolean isJoinListenerRequired() {
-        loggerUtil.debug("isJoinListenerRequired: " + joinListenerRequired);
-        return joinListenerRequired;
+    public static boolean isRequired() {
+        return isRequired;
     }
 
-    public void setJoinListenerRequired(boolean state) {
-        loggerUtil.debug("setJoinListenerRequired: " + state);
-        this.joinListenerRequired = state;
+    public static void setRequired(boolean state) {
+        isRequired = state;
     }
 }

@@ -37,8 +37,8 @@ public abstract class BaseListenerRegistrar implements ListenerRegistrar {
     public void registerListeners() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
 
-        boolean chatListenerRequired = chatListenerState.isChatListenerRequired();
-        boolean joinListenerRequired = joinListenerState.isJoinListenerRequired();
+        boolean chatListenerRequired = ChatListenerState.isRequired();
+        boolean joinListenerRequired = JoinListenerState.isRequired();
 
         if (chatListenerRequired) {
             loggerUtil.debug("Registering chat listener");

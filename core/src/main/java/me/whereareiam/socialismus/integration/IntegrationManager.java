@@ -24,13 +24,13 @@ public class IntegrationManager {
 
         loggerUtil.trace("Initializing class: " + this);
 
-        List<Class<? extends Integration>> possibleIntegrations = Arrays.asList(
+        List<Class<? extends Integration>> integrations = Arrays.asList(
                 bStats.class,
                 PlaceholderAPI.class,
                 ProtocolLib.class
         );
 
-        for (Class<? extends Integration> integrationClass : possibleIntegrations) {
+        for (Class<? extends Integration> integrationClass : integrations) {
             try {
                 Integration integration = injector.getInstance(integrationClass);
                 integration.initialize();

@@ -6,8 +6,10 @@ import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.chat.ChatUseType;
 import me.whereareiam.socialismus.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.config.module.chat.ChatsConfig;
+import me.whereareiam.socialismus.config.setting.SettingsConfig;
+import me.whereareiam.socialismus.listener.state.ChatListenerState;
 import me.whereareiam.socialismus.model.chat.Chat;
-import me.whereareiam.socialismus.module.IModule;
+import me.whereareiam.socialismus.module.Module;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
@@ -16,18 +18,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-public class ChatManager implements IModule {
+public class ChatModule implements Module {
     private final LoggerUtil loggerUtil;
+    private final SettingsConfig settingsConfig;
     private final ChatsConfig chatsConfig;
     private final CommandRegistrar commandRegistrar;
     private final Path modulePath;
-
     private final Map<String, Chat> chats = new HashMap<>();
+    private boolean moduleStatus = false;
 
     @Inject
-    public ChatManager(LoggerUtil loggerUtil, Plugin plugin, ChatsConfig chatsConfig,
-                       CommandRegistrar commandRegistrar) {
+    public ChatModule(LoggerUtil loggerUtil, SettingsConfig settingsConfig, Plugin plugin, ChatsConfig chatsConfig,
+                      CommandRegistrar commandRegistrar) {
         this.loggerUtil = loggerUtil;
+        this.settingsConfig = settingsConfig;
         this.chatsConfig = chatsConfig;
         this.modulePath = plugin.getDataFolder().toPath().resolve("modules");
         this.commandRegistrar = commandRegistrar;
@@ -80,12 +84,21 @@ public class ChatManager implements IModule {
     }
 
     @Override
-    public boolean requiresChatListener() {
-        return true;
+    public void initialize() {
+        ChatListenerState.setRequired(true);
+        registerChats();
+
+        moduleStatus = true;
     }
 
     @Override
-    public boolean requiresJoinListener() {
-        return false;
+    public boolean isEnabled() {
+        return moduleStatus == settingsConfig.modules.chats;
+    }
+
+    @Override
+    public void reload() {
+        cleanChats();
+        registerChats();
     }
 }

@@ -5,24 +5,19 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
 @Singleton
-public class ChatListenerState {
-    private final LoggerUtil loggerUtil;
-    private boolean chatListenerRequired = false;
+public class ChatListenerState implements State {
+    private static boolean isRequired = false;
 
     @Inject
     public ChatListenerState(LoggerUtil loggerUtil) {
-        this.loggerUtil = loggerUtil;
-
         loggerUtil.trace("Initializing class: " + this);
     }
 
-    public boolean isChatListenerRequired() {
-        loggerUtil.debug("isChatListenerRequired: " + chatListenerRequired);
-        return chatListenerRequired;
+    public static boolean isRequired() {
+        return isRequired;
     }
 
-    public void setChatListenerRequired(boolean state) {
-        loggerUtil.debug("setChatListenerRequired: " + state);
-        this.chatListenerRequired = state;
+    public static void setRequired(boolean state) {
+        isRequired = state;
     }
 }

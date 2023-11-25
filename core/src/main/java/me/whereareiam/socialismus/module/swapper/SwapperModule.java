@@ -4,10 +4,12 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.module.swapper.SwapperConfig;
+import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.integration.protocollib.PacketSender;
 import me.whereareiam.socialismus.integration.protocollib.entity.PlayerPacket;
+import me.whereareiam.socialismus.listener.state.ChatListenerState;
 import me.whereareiam.socialismus.model.swapper.Swapper;
-import me.whereareiam.socialismus.module.IModule;
+import me.whereareiam.socialismus.module.Module;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -20,20 +22,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Singleton
-public class SwapperManager implements IModule {
+public class SwapperModule implements Module {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
-
+    private final SettingsConfig settingsConfig;
     private final SwapperRequirementValidator swapperRequirementValidator;
-
     private final Path swapperPath;
     private final List<Swapper> swappers = new ArrayList<>();
+    private boolean moduleStatus;
 
     @Inject
-    public SwapperManager(Injector injector, LoggerUtil loggerUtil,
-                          Plugin plugin, SwapperRequirementValidator swapperRequirementValidator) {
+    public SwapperModule(Injector injector, LoggerUtil loggerUtil,
+                         Plugin plugin, SettingsConfig settingsConfig,
+                         SwapperRequirementValidator swapperRequirementValidator) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
+        this.settingsConfig = settingsConfig;
 
         this.swapperRequirementValidator = swapperRequirementValidator;
 
@@ -82,6 +86,9 @@ public class SwapperManager implements IModule {
     }
 
     public void suggestSwappers(Player player) {
+        if (!settingsConfig.modules.swapper.suggest)
+            return;
+
         final PacketSender packetSender = injector.getInstance(PacketSender.class);
         final PlayerPacket playerPacket = injector.getInstance(PlayerPacket.class);
         loggerUtil.debug("Sending swappers to " + player.getName());
@@ -117,12 +124,20 @@ public class SwapperManager implements IModule {
     }
 
     @Override
-    public boolean requiresChatListener() {
-        return true;
+    public void initialize() {
+        ChatListenerState.setRequired(true);
+
+        moduleStatus = true;
     }
 
     @Override
-    public boolean requiresJoinListener() {
-        return true;
+    public boolean isEnabled() {
+        return moduleStatus == settingsConfig.modules.swapper.enabled;
+    }
+
+    @Override
+    public void reload() {
+        cleanSwappers();
+        registerSwappers();
     }
 }

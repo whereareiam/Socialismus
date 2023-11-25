@@ -1,8 +1,9 @@
 package me.whereareiam.socialismus.module;
 
-public enum Module {
-    CHAT,
-    SWAPPER,
-    BUBBLECHAT,
-    COMMAND
+public interface Module {
+    void initialize();
+
+    boolean isEnabled();
+
+    void reload();
 }
