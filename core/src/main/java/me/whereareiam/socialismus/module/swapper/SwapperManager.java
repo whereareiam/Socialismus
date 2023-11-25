@@ -109,6 +109,8 @@ public class SwapperManager implements IModule {
         exampleSwapper.content.add("example");
         exampleSwapper.settings.directSearch = true;
         exampleSwapper.settings.randomContent = false;
+        exampleSwapper.requirements.enabled = false;
+        exampleSwapper.requirements.usePermission = "";
 
         swapperConfig.swappers.add(exampleSwapper);
         return swapperConfig;

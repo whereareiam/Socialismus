@@ -33,10 +33,11 @@ public class ChatMessageFactory {
             if (!Character.isLetterOrDigit(chatSymbol)) {
                 symbol = String.valueOf(chatSymbol);
                 message = message.substring(1);
-            } else {
-                symbol = "";
+                chat = chatManager.getChatBySymbol(symbol);
             }
-            chat = chatManager.getChatBySymbol(symbol);
+
+            if (chat == null)
+                chat = chatManager.getChatBySymbol("");
         }
 
         Component content = PlainTextComponentSerializer.plainText().deserialize(message.trim());
