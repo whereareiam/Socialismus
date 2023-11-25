@@ -15,7 +15,9 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class SwapperManager implements IModule {
@@ -52,25 +54,23 @@ public class SwapperManager implements IModule {
 
     public void registerSwappers() {
         loggerUtil.debug("Registering swappers");
-        File[] files = swapperPath.toFile().listFiles();
-        if (files == null || files.length == 0) {
+        List<File> files = Arrays.stream(swapperPath.toFile().listFiles()).filter(file -> file.getName().endsWith(".yml")).collect(Collectors.toList());
+        if (files.isEmpty()) {
             loggerUtil.debug("Creating an example swapper, because dir is empty");
             SwapperConfig swapperConfig = createExampleSwapperConfig();
             swapperConfig.reload(swapperPath.resolve("example.yml"));
             swappers.addAll(swapperConfig.swappers);
         } else {
             for (File file : files) {
-                if (file.getName().endsWith(".yml")) {
-                    loggerUtil.trace("Trying to register swappers in config: " + file.getName());
-                    SwapperConfig swapperConfig = injector.getInstance(SwapperConfig.class);
-                    swapperConfig.reload(file.toPath());
-                    List<Swapper> enabledSwappers = swapperConfig.swappers.stream()
-                            .filter(swapper -> swapper.enabled)
-                            .toList();
-                    if (!enabledSwappers.isEmpty()) {
-                        loggerUtil.trace("Adding new swappers (" + enabledSwappers.size() + ")");
-                        swappers.addAll(enabledSwappers);
-                    }
+                loggerUtil.trace("Trying to register swappers in config: " + file.getName());
+                SwapperConfig swapperConfig = injector.getInstance(SwapperConfig.class);
+                swapperConfig.reload(file.toPath());
+                List<Swapper> enabledSwappers = swapperConfig.swappers.stream()
+                        .filter(swapper -> swapper.enabled)
+                        .toList();
+                if (!enabledSwappers.isEmpty()) {
+                    loggerUtil.trace("Adding new swappers (" + enabledSwappers.size() + ")");
+                    swappers.addAll(enabledSwappers);
                 }
             }
         }
