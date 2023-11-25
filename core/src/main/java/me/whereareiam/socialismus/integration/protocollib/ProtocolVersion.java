@@ -10,8 +10,8 @@ public class ProtocolVersion {
 
     // Entity Meta
     private final List<Integer> metaVisibility = List.of(0);
-    // Mob Meta
-    private final List<Integer> metaHasAI = List.of(15);
+    // AreaEffectCloud Meta
+    private final List<Integer> metaRadius = List.of(8);
     // Display Meta
     private final List<Integer> metaScale = List.of(11, 12);
     private final List<Integer> metaDisplayType = List.of(14, 15);
@@ -25,8 +25,8 @@ public class ProtocolVersion {
         return getIndex(metaVisibility, Version.getVersion());
     }
 
-    public Integer getMetaHasAI() {
-        return getIndex(metaHasAI, Version.getVersion());
+    public int getMetaRadius() {
+        return getIndex(metaRadius, Version.getVersion());
     }
 
     public Integer getMetaScale() {

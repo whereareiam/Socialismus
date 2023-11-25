@@ -3,9 +3,9 @@ package me.whereareiam.socialismus.module.bubblechat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.module.bubblechat.BubbleChatConfig;
-import me.whereareiam.socialismus.integration.protocollib.entity.SilverfishPacket;
+import me.whereareiam.socialismus.integration.protocollib.entity.AreaEffectCloudPacket;
 import me.whereareiam.socialismus.integration.protocollib.entity.TextDisplayPacket;
-import me.whereareiam.socialismus.integration.protocollib.entity.metadata.MobMetadataPacket;
+import me.whereareiam.socialismus.integration.protocollib.entity.metadata.AreaEffectCloudMetadataPacket;
 import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.TextDisplayMetadataPacket;
 import me.whereareiam.socialismus.integration.protocollib.entity.model.PacketEntity;
 import me.whereareiam.socialismus.module.bubblechat.message.BubbleMessage;
@@ -20,23 +20,23 @@ public class BubbleFactory {
     private final TextDisplayPacket textDisplayPacket;
     private final TextDisplayMetadataPacket textDisplayMetadataPacket;
 
-    private final SilverfishPacket silverfishPacket;
-    private final MobMetadataPacket mobMetadataPacket;
+    private final AreaEffectCloudPacket areaEffectCloudPacket;
+    private final AreaEffectCloudMetadataPacket areaEffectCloudMetadataPacket;
 
     @Inject
     public BubbleFactory(LoggerUtil loggerUtil, BubbleChatConfig bubbleChatConfig,
                          TextDisplayPacket textDisplayPacket,
                          TextDisplayMetadataPacket textDisplayMetadataPacket,
-                         SilverfishPacket silverfishPacket,
-                         MobMetadataPacket mobMetadataPacket) {
+                         AreaEffectCloudPacket areaEffectCloudPacket,
+                         AreaEffectCloudMetadataPacket areaEffectCloudMetadataPacket) {
         this.loggerUtil = loggerUtil;
         this.bubbleChatConfig = bubbleChatConfig;
 
         this.textDisplayPacket = textDisplayPacket;
         this.textDisplayMetadataPacket = textDisplayMetadataPacket;
 
-        this.silverfishPacket = silverfishPacket;
-        this.mobMetadataPacket = mobMetadataPacket;
+        this.areaEffectCloudPacket = areaEffectCloudPacket;
+        this.areaEffectCloudMetadataPacket = areaEffectCloudMetadataPacket;
 
         loggerUtil.trace("Initializing class: " + this);
     }
@@ -71,19 +71,18 @@ public class BubbleFactory {
     public PacketEntity createBubbleDistance(Player player, int entityId) {
         loggerUtil.debug("Creating bubble distance entity for " + player.getName());
 
-        MobMetadataPacket mobMetadata = mobMetadataPacket;
-        mobMetadata.setHasAI(false);
-        mobMetadata.setVisibility(false);
+        AreaEffectCloudMetadataPacket areaEffectCloudMetadata = areaEffectCloudMetadataPacket;
+        areaEffectCloudMetadata.setRadius(0.0f);
 
         return new PacketEntity(
                 entityId,
-                silverfishPacket.createEntityPacket(
+                areaEffectCloudPacket.createEntityPacket(
                         entityId,
                         player.getLocation()
                 ),
-                mobMetadataPacket.createMetadataPacket(
+                areaEffectCloudMetadata.createMetadataPacket(
                         entityId,
-                        mobMetadata.getMetadata()
+                        areaEffectCloudMetadata.getMetadata()
                 )
         );
     }
