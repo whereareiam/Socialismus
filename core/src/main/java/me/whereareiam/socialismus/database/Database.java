@@ -5,9 +5,7 @@ import java.sql.ResultSet;
 public interface Database {
     boolean connect();
 
-    boolean disconnect();
-
-    void setUrl(String url);
+    void disconnect();
 
     ResultSet executeQuery(String sql);
 

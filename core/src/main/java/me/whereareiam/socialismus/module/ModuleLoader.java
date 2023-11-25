@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.module.bubblechat.BubbleChatModule;
-import me.whereareiam.socialismus.module.chats.ChatModule;
+import me.whereareiam.socialismus.module.chat.ChatModule;
 import me.whereareiam.socialismus.module.swapper.SwapperModule;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
@@ -53,6 +53,7 @@ public class ModuleLoader {
             try {
                 Module module = injector.getInstance(moduleClass);
                 module.initialize();
+
 
                 if (module.isEnabled()) {
                     this.modules.add(module);

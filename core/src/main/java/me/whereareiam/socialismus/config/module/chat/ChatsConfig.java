@@ -19,7 +19,7 @@ public class ChatsConfig extends YamlSerializable {
                     @CommentValue(" CHATS DOCUMENTATION:"),
                     @CommentValue(type = CommentValue.Type.TEXT),
                     @CommentValue(" Here you can create as many Swappers as you like."),
-                    @CommentValue(" chats:"),
+                    @CommentValue(" chat:"),
                     @CommentValue("   Here you can specify a chat id, it should be unique and not used in any other chat."),
                     @CommentValue("   - id: \"global\""),
                     @CommentValue("     This field allows you to specify a symbol (§, $, &, etc.) that will be used to write"),

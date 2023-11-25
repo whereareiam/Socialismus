@@ -22,6 +22,7 @@ public abstract class SocialismusBase extends JavaPlugin {
 
         injector.getInstance(CommandRegistrar.class).registerCommands();
         injector.getInstance(ModuleLoader.class).loadModules();
+        injector.getInstance(DatabaseManager.class);
 
         injector.getInstance(InfoPrinterUtil.class).printStartMessage();
     }

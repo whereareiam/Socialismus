@@ -126,6 +126,7 @@ public class SwapperModule implements Module {
     @Override
     public void initialize() {
         ChatListenerState.setRequired(true);
+        registerSwappers();
 
         moduleStatus = true;
     }

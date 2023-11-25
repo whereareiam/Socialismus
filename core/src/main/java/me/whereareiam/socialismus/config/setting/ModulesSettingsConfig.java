@@ -9,7 +9,7 @@ public class ModulesSettingsConfig {
                     @CommentValue(type = CommentValue.Type.NEW_LINE),
                     @CommentValue(" The chat module changes the behaviour of the vanilla Minecraft chat and adds"),
                     @CommentValue(" more formatting and customization, allowing you to create several different"),
-                    @CommentValue(" chats with different requirements and styles."),
+                    @CommentValue(" chat with different requirements and styles."),
             },
             at = Comment.At.PREPEND
     )
@@ -35,5 +35,5 @@ public class ModulesSettingsConfig {
     )
     public boolean bubblechat = true;
 
-    public boolean statistics = true;
+    public boolean statistic = true;
 }

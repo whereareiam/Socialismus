@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.module.chats;
+package me.whereareiam.socialismus.module.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -56,7 +56,7 @@ public class ChatModule implements Module {
 
     public void cleanChats() {
         chats.clear();
-        loggerUtil.trace("All chats have been cleaned");
+        loggerUtil.trace("All chat have been cleaned");
     }
 
     @Cacheable(duration = 5)

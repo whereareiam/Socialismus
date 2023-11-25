@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.chat.message;
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.chat.ChatUseType;
 import me.whereareiam.socialismus.model.chat.Chat;
-import me.whereareiam.socialismus.module.chats.ChatModule;
+import me.whereareiam.socialismus.module.chat.ChatModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;

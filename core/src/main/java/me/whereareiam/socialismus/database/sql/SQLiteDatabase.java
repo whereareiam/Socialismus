@@ -28,21 +28,14 @@ public class SQLiteDatabase implements Database {
     }
 
     @Override
-    public boolean disconnect() {
+    public void disconnect() {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                return true;
             }
         } catch (SQLException e) {
             loggerUtil.severe(e.getMessage());
         }
-        return false;
-    }
-
-    @Override
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     @Override
@@ -63,5 +56,9 @@ public class SQLiteDatabase implements Database {
             loggerUtil.severe(e.getMessage());
             return -1;
         }
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

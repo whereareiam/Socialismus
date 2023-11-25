@@ -18,11 +18,11 @@ import java.util.Map;
 
 @Singleton
 public class DatabaseManager {
+    private static final Map<String, Database> databases = new HashMap<>();
     private final Injector injector;
     private final LoggerUtil loggerUtil;
     private final Plugin plugin;
     private final SettingsConfig settingsConfig;
-    private final Map<String, Database> databases = new HashMap<>();
 
     @Inject
     public DatabaseManager(Injector injector, LoggerUtil loggerUtil, Plugin plugin, SettingsConfig settingsConfig) {
@@ -30,6 +30,8 @@ public class DatabaseManager {
         this.loggerUtil = loggerUtil;
         this.plugin = plugin;
         this.settingsConfig = settingsConfig;
+
+        loggerUtil.trace("Initializing class: " + this);
 
         setupDatabase();
     }
@@ -39,33 +41,29 @@ public class DatabaseManager {
         DatabaseType databaseType = settingsConfig.database.databaseType;
         switch (databaseType) {
             case SQLITE:
-                initializeSQLite(databaseConfig);
+                SQLiteDatabaseConfig sqLiteDatabaseConfig = databaseConfig.sqlite;
+                Path storagePath = plugin.getDataFolder().toPath().resolve(sqLiteDatabaseConfig.storageDir);
+
+                if (!Files.exists(storagePath)) {
+                    try {
+                        Files.createDirectory(storagePath);
+                    } catch (Exception e) {
+                        loggerUtil.severe(e.getMessage());
+                    }
+                }
+
+                String url = "jdbc:sqlite:" + storagePath.toFile() + "/";
+
+                for (String file : sqLiteDatabaseConfig.files) {
+                    SQLiteDatabase database = injector.getInstance(SQLiteDatabase.class);
+                    database.setUrl(url + file + ".db");
+                    databases.put(file, database);
+                }
                 break;
             case MYSQL, MARIADB:
                 throw new IllegalArgumentException("MySQL/MariaDB is currently not supported");
             default:
                 throw new IllegalArgumentException("Unsupported database type: " + databaseType);
-        }
-    }
-
-    private void initializeSQLite(DatabaseSettingsConfig databaseConfig) {
-        SQLiteDatabaseConfig sqLiteDatabaseConfig = databaseConfig.sqlite;
-        Path storagePath = plugin.getDataFolder().toPath().resolve(sqLiteDatabaseConfig.storageDir);
-
-        String url = "jdbc:sqlite:" + storagePath.toFile() + "/";
-
-        for (String file : sqLiteDatabaseConfig.files) {
-            SQLiteDatabase database = injector.getInstance(SQLiteDatabase.class);
-            database.setUrl(url + file + ".db");
-            databases.put(file, database);
-        }
-
-        if (!Files.exists(storagePath)) {
-            try {
-                Files.createDirectory(storagePath);
-            } catch (Exception e) {
-                loggerUtil.severe(e.getMessage());
-            }
         }
 
         for (Database database : databases.values()) {

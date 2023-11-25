@@ -55,7 +55,7 @@ public class InfoPrinterUtil {
         });
 
         int chatCount = moduleLoader.getChatCount();
-        loggerUtil.info("  Registered " + chatCount + " " + (chatCount == 1 ? "chat" : "chats"));
+        loggerUtil.info("  Registered " + chatCount + " " + (chatCount == 1 ? "chat" : "chat"));
 
         int swapperCount = moduleLoader.getSwapperCount();
         loggerUtil.info("  Registered " + swapperCount + " " + (swapperCount == 1 ? "swapper" : "swappers"));

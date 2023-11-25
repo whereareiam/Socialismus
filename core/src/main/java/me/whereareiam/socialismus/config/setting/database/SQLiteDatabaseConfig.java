@@ -22,5 +22,5 @@ public class SQLiteDatabaseConfig {
             },
             at = Comment.At.PREPEND
     )
-    public List<String> files = List.of("statistics");
+    public List<String> files = List.of("core", "statistic");
 }
