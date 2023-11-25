@@ -16,6 +16,8 @@ public class SpigotListenerRegistrar extends BaseListenerRegistrar {
     public SpigotListenerRegistrar(Injector injector, LoggerUtil loggerUtil, Plugin plugin,
                                    ChatListenerState chatListenerState, JoinListenerState joinListenerState) {
         super(injector, loggerUtil, plugin, chatListenerState, joinListenerState);
+        
+        loggerUtil.trace("Initializing class: " + this);
     }
 
     @Override

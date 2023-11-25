@@ -8,8 +8,8 @@ public final class SocialismusPaper extends SocialismusBase {
     @Override
     public void onEnable() {
         injector = Guice.createInjector(new SocialismusPaperConfig(this));
-        injector.getInstance(PaperListenerRegistrar.class).registerListeners();
-
         super.onEnable();
+
+        injector.getInstance(PaperListenerRegistrar.class).registerListeners();
     }
 }

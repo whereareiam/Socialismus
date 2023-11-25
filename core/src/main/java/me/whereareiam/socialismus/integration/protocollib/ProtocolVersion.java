@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.integration.protocollib;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.version.Version;
 
@@ -8,7 +7,6 @@ import java.util.List;
 
 @Singleton
 public class ProtocolVersion {
-    private final Version version;
 
     // Entity Meta
     private final List<Integer> metaVisibility = List.of(0);
@@ -23,41 +21,36 @@ public class ProtocolVersion {
     private final List<Integer> metaBackground = List.of(24, 25);
     private final List<Integer> metaOptions = List.of(26, 27);
 
-    @Inject
-    public ProtocolVersion(Version version) {
-        this.version = version;
-    }
-
     public Integer getMetaVisibility() {
-        return getIndex(metaVisibility, version.getVersion());
+        return getIndex(metaVisibility, Version.getVersion());
     }
 
     public Integer getMetaHasAI() {
-        return getIndex(metaHasAI, version.getVersion());
+        return getIndex(metaHasAI, Version.getVersion());
     }
 
     public Integer getMetaScale() {
-        return getIndex(metaScale, version.getVersion());
+        return getIndex(metaScale, Version.getVersion());
     }
 
     public Integer getMetaDisplayType() {
-        return getIndex(metaDisplayType, version.getVersion());
+        return getIndex(metaDisplayType, Version.getVersion());
     }
 
     public Integer getMetaMessage() {
-        return getIndex(metaMessage, version.getVersion());
+        return getIndex(metaMessage, Version.getVersion());
     }
 
     public Integer getMetaLineWidth() {
-        return getIndex(metaLineWidth, version.getVersion());
+        return getIndex(metaLineWidth, Version.getVersion());
     }
 
     public Integer getMetaBackground() {
-        return getIndex(metaBackground, version.getVersion());
+        return getIndex(metaBackground, Version.getVersion());
     }
 
     public Integer getMetaOptions() {
-        return getIndex(metaOptions, version.getVersion());
+        return getIndex(metaOptions, Version.getVersion());
     }
 
     private Integer getIndex(List<Integer> list, Version version) {

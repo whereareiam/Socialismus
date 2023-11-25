@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.config.module.bubblechat;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.model.Requirement;
+import me.whereareiam.socialismus.config.module.bubblechat.requirements.BubbleChatRequirementConfig;
 import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
@@ -36,7 +36,7 @@ public class BubbleChatConfig extends YamlSerializable {
             },
             at = Comment.At.PREPEND
     )
-    public Requirement requirement = new Requirement();
+    public BubbleChatRequirementConfig requirements = new BubbleChatRequirementConfig();
 
     public BubbleChatConfig() {
         super(BubbleChatConfig.BUBBLECHAT);

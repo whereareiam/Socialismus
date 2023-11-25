@@ -98,14 +98,4 @@ public class BubbleChatSettingsConfig {
             at = Comment.At.PREPEND
     )
     public Vector3f displayScale = new Vector3f((float) 1.0, (float) 1.0, (float) 1.0);
-
-    @Comment(
-            value = {
-                    @CommentValue(" This requirement allows you to specify how many symbols are required to"),
-                    @CommentValue(" display a bubble message. If the condition is not met, the bubble message"),
-                    @CommentValue(" will not be displayed.")
-            },
-            at = Comment.At.PREPEND
-    )
-    public int symbolCountThreshold = 5;
 }

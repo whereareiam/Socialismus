@@ -4,9 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
-import me.whereareiam.socialismus.model.Chat;
-import me.whereareiam.socialismus.module.Module;
-import me.whereareiam.socialismus.requirement.RequirementValidator;
+import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -20,18 +18,18 @@ public class ChatService {
     private final MessageUtil messageUtil;
     private final MessagesConfig messages;
 
+    private final ChatRequirementsValidator chatRequirementsValidator;
     private final ChatBroadcaster chatBroadcaster;
-    private final RequirementValidator requirementValidator;
 
     @Inject
     public ChatService(LoggerUtil loggerUtil, MessageUtil messageUtil, MessagesConfig messages,
-                       ChatBroadcaster chatBroadcaster, RequirementValidator requirementValidator) {
+                       ChatRequirementsValidator chatRequirementsValidator, ChatBroadcaster chatBroadcaster) {
         this.loggerUtil = loggerUtil;
         this.messageUtil = messageUtil;
         this.messages = messages;
 
+        this.chatRequirementsValidator = chatRequirementsValidator;
         this.chatBroadcaster = chatBroadcaster;
-        this.requirementValidator = requirementValidator;
 
         loggerUtil.trace("Initializing class: " + this);
     }
@@ -42,16 +40,15 @@ public class ChatService {
         Player sender = chatMessage.getSender();
         Chat chat = chatMessage.getChat();
 
-        if (!requirementValidator.validatePlayer(Module.CHAT, sender)) {
-            messageUtil.sendMessage(sender, messages.chat.lackOfRequirements);
+        if (!chatRequirementsValidator.validatePlayer(chatMessage)) {
             loggerUtil.debug(sender.getName() + " didn't met requirements");
             return;
         }
 
-        Collection<? extends Player> onlinePlayers = Bukkit.getServer().getOnlinePlayers();
-        onlinePlayers = requirementValidator.validatePlayers(Module.CHAT, sender, onlinePlayers);
+        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+        onlinePlayers = chatRequirementsValidator.validatePlayers(chatMessage, onlinePlayers);
 
-        if (chat.radius != -1 && onlinePlayers.size() == 1) {
+        if (chat.requirements.recipient.radius != -1 && onlinePlayers.size() == 1) {
             String noOnlinePlayers = messages.chat.noOnlinePlayers;
             if (noOnlinePlayers != null) {
                 messageUtil.sendMessage(sender, noOnlinePlayers);
@@ -65,7 +62,6 @@ public class ChatService {
             }
         }
 
-        // TODO Implement radius
         chatBroadcaster.broadcastMessage(chatMessage, onlinePlayers);
     }
 }

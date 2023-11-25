@@ -12,6 +12,8 @@ import me.whereareiam.socialismus.module.bubblechat.BubbleChatService;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 
+import java.util.Optional;
+
 @Singleton
 public class ChatHandler {
     private final Injector injector;
@@ -34,7 +36,7 @@ public class ChatHandler {
 
     public boolean handleChatEvent(Player player, String message) {
         boolean cancelEvent = false;
-        ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message);
+        ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message, Optional.empty());
 
         if (integrationManager.isIntegrationEnabled("ProtocolLib")) {
             final BubbleChatService bubbleChatService = injector.getInstance(BubbleChatService.class);

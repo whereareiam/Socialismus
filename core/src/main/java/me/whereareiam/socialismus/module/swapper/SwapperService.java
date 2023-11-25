@@ -4,11 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
-import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.model.swapper.Swapper;
-import me.whereareiam.socialismus.module.Module;
-import me.whereareiam.socialismus.requirement.RequirementValidator;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
@@ -26,26 +23,25 @@ public class SwapperService implements ChatMessageProcessor {
     private final FormatterUtil formatterUtil;
     private final MessageUtil messageUtil;
 
-    private final RequirementValidator requirementValidator;
+    private final SwapperRequirementValidator swapperRequirementValidator;
 
     private final SettingsConfig settingsConfig;
-    private final MessagesConfig messagesConfig;
 
     private final Random random = new Random();
 
     @Inject
     public SwapperService(LoggerUtil loggerUtil, SwapperManager swapperManager,
                           FormatterUtil formatterUtil, MessageUtil messageUtil,
-                          RequirementValidator requirementValidator,
-                          SettingsConfig settingsConfig, MessagesConfig messagesConfig) {
+                          SwapperRequirementValidator swapperRequirementValidator,
+                          SettingsConfig settingsConfig) {
         this.loggerUtil = loggerUtil;
         this.swapperManager = swapperManager;
         this.formatterUtil = formatterUtil;
         this.messageUtil = messageUtil;
-        this.requirementValidator = requirementValidator;
+
+        this.swapperRequirementValidator = swapperRequirementValidator;
 
         this.settingsConfig = settingsConfig;
-        this.messagesConfig = messagesConfig;
 
         loggerUtil.trace("Initializing class: " + this);
     }
@@ -60,7 +56,6 @@ public class SwapperService implements ChatMessageProcessor {
         return settingsConfig.modules.swapper.enabled;
     }
 
-    // TODO Allow swapping without chat module enabled
     private ChatMessage swapPlaceholders(ChatMessage chatMessage) {
         loggerUtil.debug("Swapping message: " + chatMessage.getContent());
         Player player = chatMessage.getSender();
@@ -73,12 +68,7 @@ public class SwapperService implements ChatMessageProcessor {
                     continue;
                 }
 
-                if (!requirementValidator.validatePlayer(Module.SWAPPER, player)) {
-                    loggerUtil.debug("Player didn't met all requirements");
-                    String message = messagesConfig.swapper.didntMetRequirements;
-                    if (message != null) {
-                        messageUtil.sendMessage(player, message);
-                    }
+                if (!swapperRequirementValidator.validatePlayer(swapper, player, true)) {
                     return chatMessage;
                 }
 

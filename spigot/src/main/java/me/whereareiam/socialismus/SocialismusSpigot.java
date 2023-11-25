@@ -8,8 +8,8 @@ public final class SocialismusSpigot extends SocialismusBase {
     @Override
     public void onEnable() {
         injector = Guice.createInjector(new SocialismusSpigotConfig(this));
-        injector.getInstance(SpigotListenerRegistrar.class).registerListeners();
-
         super.onEnable();
+
+        injector.getInstance(SpigotListenerRegistrar.class).registerListeners();
     }
 }

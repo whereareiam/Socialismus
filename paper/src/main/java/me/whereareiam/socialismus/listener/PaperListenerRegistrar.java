@@ -16,6 +16,8 @@ public class PaperListenerRegistrar extends BaseListenerRegistrar {
     public PaperListenerRegistrar(Injector injector, LoggerUtil loggerUtil, Plugin plugin,
                                   ChatListenerState chatListenerState, JoinListenerState joinListenerState) {
         super(injector, loggerUtil, plugin, chatListenerState, joinListenerState);
+
+        loggerUtil.trace("Initializing class: " + this);
     }
 
     @Override

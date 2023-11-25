@@ -8,8 +8,6 @@ import me.whereareiam.socialismus.integration.protocollib.PacketSender;
 import me.whereareiam.socialismus.integration.protocollib.entity.PlayerPacket;
 import me.whereareiam.socialismus.model.swapper.Swapper;
 import me.whereareiam.socialismus.module.IModule;
-import me.whereareiam.socialismus.module.Module;
-import me.whereareiam.socialismus.requirement.RequirementValidator;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -24,17 +22,18 @@ public class SwapperManager implements IModule {
     private final Injector injector;
     private final LoggerUtil loggerUtil;
 
-    private final RequirementValidator requirementValidator;
+    private final SwapperRequirementValidator swapperRequirementValidator;
 
     private final Path swapperPath;
     private final List<Swapper> swappers = new ArrayList<>();
 
     @Inject
     public SwapperManager(Injector injector, LoggerUtil loggerUtil,
-                          Plugin plugin, RequirementValidator requirementValidator) {
+                          Plugin plugin, SwapperRequirementValidator swapperRequirementValidator) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
-        this.requirementValidator = requirementValidator;
+
+        this.swapperRequirementValidator = swapperRequirementValidator;
 
         Path modulePath = plugin.getDataFolder().toPath().resolve("modules");
         this.swapperPath = modulePath.resolve("swapper");
@@ -49,11 +48,6 @@ public class SwapperManager implements IModule {
                 loggerUtil.severe("Failed to create directory: " + swapperPath);
             }
         }
-    }
-
-    public void registerSwapper(Swapper swapper) {
-        loggerUtil.debug("Adding new swapper: " + swapper);
-        swappers.add(swapper);
     }
 
     public void registerSwappers() {
@@ -92,7 +86,7 @@ public class SwapperManager implements IModule {
         final PlayerPacket playerPacket = injector.getInstance(PlayerPacket.class);
         loggerUtil.debug("Sending swappers to " + player.getName());
         for (Swapper swapper : swappers) {
-            if (requirementValidator.validatePlayer(Module.SWAPPER, player)) {
+            if (swapperRequirementValidator.validatePlayer(swapper, player, false)) {
                 loggerUtil.trace("Player " + player.getName() + " will receive these swappers: " + swapper.placeholders);
                 for (String placeholder : swapper.placeholders) {
                     packetSender.sendPacket(

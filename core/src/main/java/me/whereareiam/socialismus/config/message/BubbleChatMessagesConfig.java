@@ -10,5 +10,7 @@ public class BubbleChatMessagesConfig {
             },
             at = Comment.At.PREPEND
     )
-    public String noSendPermission = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>You've no permission to <red>send<white> a bubble message";
+    public String noUsePermission = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>You've no permission to <red>send<white> a bubble message";
+    public String tooSmallMessage = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>Your message is too short to be sent.";
+    public String forbiddenWorld = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>You can't bubble in this world.";
 }

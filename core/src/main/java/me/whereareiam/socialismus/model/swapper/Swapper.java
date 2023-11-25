@@ -5,8 +5,9 @@ import java.util.List;
 
 public class Swapper {
     public boolean enabled = true;
-    public SwapperSettings settings = new SwapperSettings();
     public List<String> content = new ArrayList<>();
     public List<String> contentHover = new ArrayList<>();
     public List<String> placeholders = new ArrayList<>();
+    public SwapperSettings settings = new SwapperSettings();
+    public SwapperRequirements requirements = new SwapperRequirements();
 }
