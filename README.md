@@ -40,17 +40,16 @@ you want with this plugin, as it offers many different modules and great customi
 - [ ] API
 - [ ] Automatic Moderation
 - [ ] Chat Bot
-- [ ] Chats Improvement: Symbol or command chat
 - [ ] Colorization
 - [ ] Item/Inventory Display Chat
 - [ ] Message Announcer
 - [ ] Swapper placeholder list command
 - [ ] User Click Action
 - [ ] User Mention
-- [x] Bubble Chat <sup> From 0.2.0
 - [x] Chats <sup>From 0.0.1
+- [x] Swapper <sup>From 0.1.0
+- [x] Bubble Chat <sup> From 0.2.0
+- [x] Chats Improvement: Symbol or command chat <sup> From 1.0.0
 - [x] Placeholders <sup> From 1.0.0
 - [x] Private Messages <sup> From 1.0.0
-- [x] Role-play Commands <sup> From 1.0.0
 - [x] Statistics <sup> From 1.0.0
-- [x] Swapper <sup>From 0.1.0
