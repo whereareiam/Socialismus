@@ -16,12 +16,12 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Singleton
-public class ChatRequirementsValidator {
+public class ChatRequirementValidator {
     private final MessageUtil messageUtil;
     private final MessagesConfig messagesConfig;
 
     @Inject
-    public ChatRequirementsValidator(MessageUtil messageUtil, MessagesConfig messagesConfig) {
+    public ChatRequirementValidator(MessageUtil messageUtil, MessagesConfig messagesConfig) {
         this.messageUtil = messageUtil;
         this.messagesConfig = messagesConfig;
     }
@@ -70,7 +70,7 @@ public class ChatRequirementsValidator {
             return false;
         }
 
-        if (!sender.hasPermission(senderRequirements.usePermission)) {
+        if (!senderRequirements.usePermission.isBlank() || !sender.hasPermission(senderRequirements.usePermission)) {
             messageUtil.sendMessage(sender, messagesConfig.chat.noUsePermission);
             return false;
         }
@@ -80,7 +80,7 @@ public class ChatRequirementsValidator {
             return false;
         }
 
-        if (!senderRequirements.worlds.contains(sender.getWorld().getName())) {
+        if (!senderRequirements.worlds.isEmpty() && !senderRequirements.worlds.contains(sender.getWorld().getName())) {
             messageUtil.sendMessage(sender, messagesConfig.chat.forbiddenWorld);
             return false;
         }

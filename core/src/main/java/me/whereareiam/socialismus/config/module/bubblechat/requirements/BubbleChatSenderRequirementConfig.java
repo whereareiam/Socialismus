@@ -4,6 +4,7 @@ import com.google.inject.Singleton;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -20,5 +21,5 @@ public class BubbleChatSenderRequirementConfig {
     )
     public int symbolCountThreshold = 5;
 
-    public List<String> worlds = List.of("world", "world_the_end", "world_nether");
+    public List<String> worlds = new ArrayList<>();
 }

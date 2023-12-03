@@ -18,17 +18,17 @@ public class ChatService {
     private final MessageUtil messageUtil;
     private final MessagesConfig messages;
 
-    private final ChatRequirementsValidator chatRequirementsValidator;
+    private final ChatRequirementValidator chatRequirementValidator;
     private final ChatBroadcaster chatBroadcaster;
 
     @Inject
     public ChatService(LoggerUtil loggerUtil, MessageUtil messageUtil, MessagesConfig messages,
-                       ChatRequirementsValidator chatRequirementsValidator, ChatBroadcaster chatBroadcaster) {
+                       ChatRequirementValidator chatRequirementValidator, ChatBroadcaster chatBroadcaster) {
         this.loggerUtil = loggerUtil;
         this.messageUtil = messageUtil;
         this.messages = messages;
 
-        this.chatRequirementsValidator = chatRequirementsValidator;
+        this.chatRequirementValidator = chatRequirementValidator;
         this.chatBroadcaster = chatBroadcaster;
 
         loggerUtil.trace("Initializing class: " + this);
@@ -40,13 +40,13 @@ public class ChatService {
         Player sender = chatMessage.getSender();
         Chat chat = chatMessage.getChat();
 
-        if (!chatRequirementsValidator.validatePlayer(chatMessage)) {
+        if (!chatRequirementValidator.validatePlayer(chatMessage)) {
             loggerUtil.debug(sender.getName() + " didn't met requirements");
             return;
         }
 
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-        onlinePlayers = chatRequirementsValidator.validatePlayers(chatMessage, onlinePlayers);
+        onlinePlayers = chatRequirementValidator.validatePlayers(chatMessage, onlinePlayers);
 
         if (chat.requirements.recipient.radius != -1 && onlinePlayers.size() == 1) {
             String noOnlinePlayers = messages.chat.noOnlinePlayers;

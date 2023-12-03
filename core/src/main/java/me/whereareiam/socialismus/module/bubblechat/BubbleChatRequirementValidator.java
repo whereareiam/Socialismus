@@ -50,7 +50,7 @@ public class BubbleChatRequirementValidator {
         Player sender = chatMessage.getSender();
         String message = PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent());
 
-        if (!sender.hasPermission(senderRequirements.usePermission)) {
+        if (!senderRequirements.usePermission.isBlank() && !sender.hasPermission(senderRequirements.usePermission)) {
             messageUtil.sendMessage(sender, messagesConfig.bubblechat.noUsePermission);
             return false;
         }
@@ -60,7 +60,7 @@ public class BubbleChatRequirementValidator {
             return false;
         }
 
-        if (!senderRequirements.worlds.contains(sender.getWorld().getName())) {
+        if (!senderRequirements.worlds.isEmpty() && !senderRequirements.worlds.contains(sender.getWorld().getName())) {
             messageUtil.sendMessage(sender, messagesConfig.bubblechat.forbiddenWorld);
             return false;
         }
