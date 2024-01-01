@@ -17,7 +17,7 @@
 
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <minecraft.version>1.20.2</minecraft.version>
+        <minecraft.version>1.20.4</minecraft.version>
 
         <!-- Maven version -->
         <maven.compiler.version>3.11.0</maven.compiler.version>

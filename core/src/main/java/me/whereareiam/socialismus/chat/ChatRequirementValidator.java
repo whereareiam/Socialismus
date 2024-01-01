@@ -35,7 +35,7 @@ public class ChatRequirementValidator {
         if (!recipientRequirements.seeOwnMessage)
             onlinePlayers.remove(sender);
 
-        if (!recipientRequirements.seePermission.isEmpty() && !recipientRequirements.seePermission.isBlank())
+        if (recipientRequirements.seePermission != null && !recipientRequirements.seePermission.isEmpty())
             onlinePlayers = onlinePlayers
                     .stream()
                     .filter(player -> player.hasPermission(recipientRequirements.seePermission))

@@ -1,14 +1,12 @@
 package me.whereareiam.socialismus.config.setting;
 
 import com.google.inject.Singleton;
-import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 import net.elytrium.serializer.language.object.YamlSerializable;
 
 @Singleton
 public class SettingsConfig extends YamlSerializable {
-    private static final SerializerConfig SETTINGS = new SerializerConfig.Builder().build();
 
     @Comment(
             value = {
@@ -60,8 +58,4 @@ public class SettingsConfig extends YamlSerializable {
             at = Comment.At.PREPEND
     )
     public PerformanceSettingsConfig performance = new PerformanceSettingsConfig();
-
-    public SettingsConfig() {
-        super(SettingsConfig.SETTINGS);
-    }
 }

@@ -36,7 +36,7 @@ public class BubbleChatRequirementValidator {
         if (!recipientRequirements.seeOwnBubble)
             onlinePlayers.remove(sender);
 
-        if (!recipientRequirements.seePermission.isEmpty() && !recipientRequirements.seePermission.isBlank())
+        if (recipientRequirements.seePermission != null && !recipientRequirements.seePermission.isEmpty())
             onlinePlayers = onlinePlayers.stream().filter(player -> player.hasPermission(recipientRequirements.seePermission)).collect(Collectors.toList());
 
         return onlinePlayers;
@@ -50,7 +50,7 @@ public class BubbleChatRequirementValidator {
         Player sender = chatMessage.getSender();
         String message = PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent());
 
-        if (!senderRequirements.usePermission.isBlank() && !sender.hasPermission(senderRequirements.usePermission)) {
+        if (senderRequirements.usePermission != null && !sender.hasPermission(senderRequirements.usePermission)) {
             messageUtil.sendMessage(sender, messagesConfig.bubblechat.noUsePermission);
             return false;
         }

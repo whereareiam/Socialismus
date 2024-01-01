@@ -32,7 +32,6 @@ public class BubbleChatBroadcaster {
     }
 
     public void broadcastBubble(BubbleMessage bubbleMessage) {
-        loggerUtil.debug("Broadcasting bubble");
         Player player = bubbleMessage.sender();
 
         List<PacketEntity> entities = new ArrayList<>();
@@ -43,6 +42,7 @@ public class BubbleChatBroadcaster {
         }
         playerEntities.put(player, entities);
 
+        loggerUtil.debug("Broadcasting bubble");
         for (Player onlinePlayer : bubbleMessage.receivers()) {
             int previousEntityId = player.getEntityId();
             for (int i = 1; i < entities.size(); i++) {

@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -49,8 +50,14 @@ public class ChatModule implements Module {
     public void registerChats() {
         chatsConfig.reload(modulePath.resolve("chats.yml"));
 
-        for (Chat chat : chatsConfig.chats) {
-            registerChat(chat);
+        if (chatsConfig.chats.isEmpty()) {
+            loggerUtil.debug("Creating an example chat, because chats.yml is empty");
+            createExampleChat();
+            chatsConfig.save(modulePath.resolve("chats.yml"));
+        } else {
+            for (Chat chat : chatsConfig.chats) {
+                registerChat(chat);
+            }
         }
     }
 
@@ -100,5 +107,32 @@ public class ChatModule implements Module {
     public void reload() {
         cleanChats();
         registerChats();
+    }
+
+    private void createExampleChat() {
+        Chat chat = new Chat();
+
+        chat.id = "example";
+        chat.usage.command = "example";
+        chat.usage.symbol = "";
+        chat.usage.type = ChatUseType.SYMBOL_COMMAND;
+
+        chat.messageFormat = "<red>{playerName}: <white>{message}";
+        chat.hoverFormat.add("<blue>Some text1");
+        chat.hoverFormat.add("<blue>Some text2");
+
+        chat.requirements.enabled = true;
+        chat.requirements.recipient.radius = -1;
+        chat.requirements.recipient.seePermission = "";
+        chat.requirements.recipient.seeOwnMessage = true;
+        chat.requirements.recipient.worlds = List.of("world", "world_nether", "world_the_end");
+
+        chat.requirements.sender.minOnline = 0;
+        chat.requirements.sender.usePermission = "";
+        chat.requirements.sender.worlds = List.of("world", "world_nether", "world_the_end");
+        chat.requirements.sender.symbolCountThreshold = 0;
+
+        chatsConfig.chats.add(chat);
+        registerChat(chat);
     }
 }
