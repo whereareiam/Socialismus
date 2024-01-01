@@ -5,7 +5,7 @@
 
 # Compatibility
 
-- Created for version 1.20.2, but should work on versions below *(If you are getting an error on Spigot 1.20.2 when a
+- Created for version 1.20.3, but should work on versions below *(If you are getting an error on Spigot 1.20.2 when a
   player joins the server, switch your server and plugin to Paper).*
 - Works on Spigot and its forks *(Paper recommended)*.
 
@@ -43,6 +43,7 @@ you want with this plugin, as it offers many different modules and great customi
 - [ ] Colorization
 - [ ] Item/Inventory Display Chat
 - [ ] Message Announcer
+- [ ] Statistics
 - [ ] Swapper placeholder list command
 - [ ] User Click Action
 - [ ] User Mention
@@ -52,4 +53,3 @@ you want with this plugin, as it offers many different modules and great customi
 - [x] Chats Improvement: Symbol or command chat <sup> From 1.0.0
 - [x] Placeholders <sup> From 1.0.0
 - [x] Private Messages <sup> From 1.0.0
-- [x] Statistics <sup> From 1.0.0

@@ -25,7 +25,8 @@ public class StatisticModule implements Module {
 
     @Override
     public boolean isEnabled() {
-        return moduleStatus == settingsConfig.modules.statistic.enabled;
+        return false;
+        /*return moduleStatus == settingsConfig.modules.statistic.enabled;*/
     }
 
     @Override

@@ -12,7 +12,9 @@ public enum Version {
     V1_20_0(0),
     V1_20_1(0),
     V1_20_2(1),
-    V1_20_3(1);
+    V1_20_3(1),
+    V1_20_4(1),
+    V1_20_5(1);
 
     private static final Map<String, Version> VERSION_MAP = new HashMap<>();
 
@@ -27,9 +29,11 @@ public enum Version {
         String detailedVersion = Bukkit.getBukkitVersion();
         String version = detailedVersion.split("-")[0];
         Version result = VERSION_MAP.get(version);
+
         if (result == null) {
             throw new UnsupportedOperationException("Unsupported server version: " + detailedVersion);
         }
+
         return result;
     }
 
@@ -39,5 +43,7 @@ public enum Version {
         VERSION_MAP.put("1.20.1", V1_20_1);
         VERSION_MAP.put("1.20.2", V1_20_2);
         VERSION_MAP.put("1.20.3", V1_20_3);
+        VERSION_MAP.put("1.20.4", V1_20_4);
+        VERSION_MAP.put("1.20.5", V1_20_5);
     }
 }

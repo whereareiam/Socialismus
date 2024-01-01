@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.config.setting;
 
-import me.whereareiam.socialismus.config.setting.statistic.StatisticSettingsConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 
@@ -36,5 +35,5 @@ public class ModulesSettingsConfig {
     )
     public boolean bubblechat = true;
 
-    public StatisticSettingsConfig statistic = new StatisticSettingsConfig();
+    /*public StatisticSettingsConfig statistic = new StatisticSettingsConfig();*/
 }

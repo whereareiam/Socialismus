@@ -4,14 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.config.setting.database.DatabaseSettingsConfig;
-import me.whereareiam.socialismus.config.setting.database.SQLiteDatabaseConfig;
-import me.whereareiam.socialismus.database.sql.SQLiteDatabase;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +28,10 @@ public class DatabaseManager {
 
         loggerUtil.trace("Initializing class: " + this);
 
-        setupDatabase();
+        /*setupDatabase();*/
     }
 
-    private void setupDatabase() {
+    /*private void setupDatabase() {
         DatabaseSettingsConfig databaseConfig = settingsConfig.database;
         DatabaseType databaseType = settingsConfig.database.databaseType;
         switch (databaseType) {
@@ -70,7 +65,7 @@ public class DatabaseManager {
             if (database.connect())
                 loggerUtil.info("Established database connection");
         }
-    }
+    }*/
 
     public Collection<Database> getDatabases() {
         return databases.values();
