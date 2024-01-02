@@ -41,13 +41,15 @@ public class ChatModule implements Module {
     }
 
     public void registerChat(Chat chat) {
-        loggerUtil.trace("Registering chat: " + chat.id);
+        loggerUtil.debug("Registering chat: " + chat.id);
+        loggerUtil.trace("Putting chat: " + chat);
 
         chats.put(chat.id, chat);
         commandRegistrar.registerChatCommand(chat);
     }
 
     public void registerChats() {
+        loggerUtil.debug("Reloading chats.yml");
         chatsConfig.reload(modulePath.resolve("chats.yml"));
 
         if (chatsConfig.chats.isEmpty()) {
@@ -63,7 +65,7 @@ public class ChatModule implements Module {
 
     public void cleanChats() {
         chats.clear();
-        loggerUtil.trace("All chat have been cleaned");
+        loggerUtil.trace("All chats have been cleaned");
     }
 
     @Cacheable(duration = 5)
@@ -105,8 +107,11 @@ public class ChatModule implements Module {
 
     @Override
     public void reload() {
+        loggerUtil.trace("Before reload chats: " + chats.values());
         cleanChats();
+
         registerChats();
+        loggerUtil.trace("After reload chats: " + chats.values());
     }
 
     private void createExampleChat() {
