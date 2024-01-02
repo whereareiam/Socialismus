@@ -13,19 +13,22 @@ import java.nio.file.Path;
 @Singleton
 public class BubbleChatModule implements Module {
     private final SettingsConfig settingsConfig;
+    private final BubbleChatConfig bubbleChatConfig;
+    private final Path modulePath;
     private boolean moduleStatus;
 
     @Inject
     public BubbleChatModule(LoggerUtil loggerUtil, @Named("modulePath") Path modulePath, SettingsConfig settingsConfig, BubbleChatConfig bubbleChatConfig) {
         this.settingsConfig = settingsConfig;
+        this.bubbleChatConfig = bubbleChatConfig;
+        this.modulePath = modulePath;
 
         loggerUtil.trace("Initializing class: " + this);
-
-        bubbleChatConfig.reload(modulePath.resolve("bubblechat.yml"));
     }
 
     @Override
     public void initialize() {
+        bubbleChatConfig.reload(modulePath.resolve("bubblechat.yml"));
         moduleStatus = true;
     }
 
@@ -36,5 +39,6 @@ public class BubbleChatModule implements Module {
 
     @Override
     public void reload() {
+        bubbleChatConfig.reload(modulePath.resolve("bubblechat.yml"));
     }
 }

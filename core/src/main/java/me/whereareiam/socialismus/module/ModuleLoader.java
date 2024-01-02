@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import me.whereareiam.socialismus.module.announcer.AnnouncerModule;
 import me.whereareiam.socialismus.module.bubblechat.BubbleChatModule;
 import me.whereareiam.socialismus.module.chat.ChatModule;
 import me.whereareiam.socialismus.module.swapper.SwapperModule;
@@ -45,7 +46,8 @@ public class ModuleLoader {
         List<Class<? extends Module>> modules = Arrays.asList(
                 ChatModule.class,
                 BubbleChatModule.class,
-                SwapperModule.class
+                SwapperModule.class,
+                AnnouncerModule.class
         );
 
         for (Class<? extends Module> moduleClass : modules) {

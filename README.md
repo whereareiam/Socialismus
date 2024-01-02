@@ -5,7 +5,7 @@
 
 # Compatibility
 
-- Created for version 1.20.3, but should work on versions below *(If you are getting an error on Spigot 1.20.2 when a
+- Created for version 1.20.4, but should work on versions below *(If you are getting an error on Spigot 1.20.2 when a
   player joins the server, switch your server and plugin to Paper).*
 - Works on Spigot and its forks *(Paper recommended)*.
 
