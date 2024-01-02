@@ -44,6 +44,13 @@ public class ChatModule implements Module {
         loggerUtil.debug("Registering chat: " + chat.id);
         loggerUtil.trace("Putting chat: " + chat);
 
+        loggerUtil.trace("Chat information");
+        loggerUtil.trace("Chat id: " + chat.id);
+        loggerUtil.trace("Chat usage: " + chat.usage.type + " " + chat.usage.symbol + " " + chat.usage.command);
+        loggerUtil.trace("Chat message format: " + chat.messageFormat);
+        loggerUtil.trace("Chat hover format: " + chat.hoverFormat.stream().toString());
+        loggerUtil.trace("Chat requirements: " + chat.requirements);
+
         chats.put(chat.id, chat);
         commandRegistrar.registerChatCommand(chat);
     }
