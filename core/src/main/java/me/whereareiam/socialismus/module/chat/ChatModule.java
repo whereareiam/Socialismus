@@ -2,7 +2,6 @@ package me.whereareiam.socialismus.module.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.chat.ChatUseType;
 import me.whereareiam.socialismus.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.config.module.chat.ChatsConfig;
@@ -75,7 +74,6 @@ public class ChatModule implements Module {
         loggerUtil.trace("All chats have been cleaned");
     }
 
-    @Cacheable(duration = 5)
     public Chat getChatBySymbol(String symbol) {
         for (Chat chat : chats.values()) {
             if (chat.usage.symbol.equals(symbol) && !chat.usage.type.equals(ChatUseType.COMMAND)) {
@@ -85,7 +83,6 @@ public class ChatModule implements Module {
         return null;
     }
 
-    @Cacheable(duration = 5)
     public Chat getChatByCommand(String command) {
         for (Chat chat : chats.values()) {
             if (chat.usage.command.contains(command)) {
