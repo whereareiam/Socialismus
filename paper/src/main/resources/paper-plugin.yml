@@ -1,6 +1,7 @@
 name: ${project.parent.artifactId}
 version: '${project.parent.version}'
 main: me.whereareiam.socialismus.SocialismusPaper
+loader: me.whereareiam.socialismus.SocialismusLoader
 api-version: '1.19'
 dependencies:
   server:

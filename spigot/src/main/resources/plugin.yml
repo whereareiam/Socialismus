@@ -6,3 +6,7 @@ softdepend: [
   PlaceholderAPI,
   ProtocolLib
 ]
+
+libraries:
+  - com.google.inject:guice:7.0.0
+  - net.elytrium:serializer:1.1.1
