@@ -6,13 +6,13 @@
 
     <groupId>me.whereareiam</groupId>
     <artifactId>Socialismus</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
 
     <properties>
         <!-- Project config -->
         <name>Socialismus</name>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
         <testDir>/Users/whereareiam/Projects/Test/plugins</testDir>
 
         <java.version>17</java.version>

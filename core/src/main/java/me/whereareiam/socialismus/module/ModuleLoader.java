@@ -54,7 +54,6 @@ public class ModuleLoader {
                 Module module = injector.getInstance(moduleClass);
                 module.initialize();
 
-
                 if (module.isEnabled()) {
                     this.modules.add(module);
                 }
@@ -73,7 +72,7 @@ public class ModuleLoader {
     }
 
     public int getChatCount() {
-        Module chatModule = modules.stream()
+        ChatModule chatModule = (ChatModule) modules.stream()
                 .filter(module -> module instanceof ChatModule)
                 .findFirst()
                 .orElse(null);
@@ -82,11 +81,11 @@ public class ModuleLoader {
             return 0;
         }
 
-        return ((ChatModule) chatModule).getChatCount();
+        return chatModule.getChatCount();
     }
 
     public int getSwapperCount() {
-        Module swapperModule = modules.stream()
+        SwapperModule swapperModule = (SwapperModule) modules.stream()
                 .filter(module -> module instanceof SwapperModule)
                 .findFirst()
                 .orElse(null);
@@ -95,6 +94,6 @@ public class ModuleLoader {
             return 0;
         }
 
-        return ((SwapperModule) swapperModule).getSwappers().size();
+        return swapperModule.getSwappers().size();
     }
 }
