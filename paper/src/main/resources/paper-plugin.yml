@@ -1,5 +1,5 @@
-name: ${name}
-version: '${version}'
+name: ${project.artifactId}
+version: '${project.version}'
 main: me.whereareiam.socialismus.SocialismusPaper
 api-version: '1.19'
 dependencies:
