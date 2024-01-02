@@ -1,2 +1,5 @@
 /.idea/
 /.vscode/
+/core/target/
+/paper/target/
+/spigot/target/
