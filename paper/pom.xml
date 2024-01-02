@@ -38,7 +38,7 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <target>
-                                        <copy file="${project.build.directory}/${name}-PAPER-${version}.jar"
+                                        <copy file="${project.build.directory}/${project.artifactId}-PAPER-${project.version}.jar"
                                               todir="${testDir}"/>
                                     </target>
                                 </configuration>
@@ -109,6 +109,6 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <finalName>${name}-PAPER-${version}</finalName>
+        <finalName>${project.artifactId}-PAPER-${project.version}</finalName>
     </build>
 </project>
