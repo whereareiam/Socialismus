@@ -43,15 +43,6 @@ public class SwapperModule implements Module {
         this.swapperPath = modulePath.resolve("swapper");
 
         loggerUtil.trace("Initializing class: " + this);
-
-        File dir = swapperPath.toFile();
-        if (!dir.exists()) {
-            boolean isCreated = dir.mkdir();
-            loggerUtil.debug("Creating swapper dir");
-            if (!isCreated) {
-                loggerUtil.severe("Failed to create directory: " + swapperPath);
-            }
-        }
     }
 
     public void registerSwappers() {
@@ -123,9 +114,17 @@ public class SwapperModule implements Module {
 
     @Override
     public void initialize() {
+        File swapperDir = swapperPath.toFile();
+        if (!swapperDir.exists()) {
+            boolean isCreated = swapperDir.mkdir();
+            loggerUtil.debug("Creating swapper dir");
+            if (!isCreated) {
+                loggerUtil.severe("Failed to create directory: " + swapperPath);
+            }
+        }
+
         ChatListenerState.setRequired(true);
         registerSwappers();
-
         moduleStatus = true;
     }
 

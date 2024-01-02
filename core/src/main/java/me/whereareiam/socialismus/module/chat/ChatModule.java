@@ -96,28 +96,6 @@ public class ChatModule implements Module {
         return chats.size();
     }
 
-    @Override
-    public void initialize() {
-        ChatListenerState.setRequired(true);
-        registerChats();
-
-        moduleStatus = true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return moduleStatus == settingsConfig.modules.chats;
-    }
-
-    @Override
-    public void reload() {
-        loggerUtil.trace("Before reload chats: " + chats.values());
-        cleanChats();
-
-        registerChats();
-        loggerUtil.trace("After reload chats: " + chats.values());
-    }
-
     private void createExampleChat() {
         Chat chat = new Chat();
 
@@ -143,5 +121,27 @@ public class ChatModule implements Module {
 
         chatsConfig.chats.add(chat);
         registerChat(chat);
+    }
+
+    @Override
+    public void initialize() {
+        ChatListenerState.setRequired(true);
+        registerChats();
+
+        moduleStatus = true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return moduleStatus == settingsConfig.modules.chats;
+    }
+
+    @Override
+    public void reload() {
+        loggerUtil.trace("Before reload chats: " + chats.values());
+        cleanChats();
+
+        registerChats();
+        loggerUtil.trace("After reload chats: " + chats.values());
     }
 }
