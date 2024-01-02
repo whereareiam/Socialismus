@@ -39,6 +39,7 @@ public class MainCommand extends CommandBase {
         this.messages = messages;
     }
 
+    @Cacheable(duration = 1)
     @CommandAlias("%command.main")
     @CommandPermission("%permission.main")
     @Description("%description.main")
@@ -64,7 +65,6 @@ public class MainCommand extends CommandBase {
         sendHelpMessage(issuer, helpMessage);
     }
 
-    @Cacheable
     private String buildCommands(CommandIssuer issuer, RootCommand command) {
         List<String> commands = new ArrayList<>();
 
@@ -83,7 +83,6 @@ public class MainCommand extends CommandBase {
         return String.join("\n", commands);
     }
 
-    @Cacheable
     private String formatMainCommandHelp(RootCommand command) {
         return messages.commands.mainCommand.commandHelpFormat
                 .replace("{command}", command.getCommandName())
@@ -91,7 +90,6 @@ public class MainCommand extends CommandBase {
                 .replace("{description}", command.getDescription());
     }
 
-    @Cacheable
     private Map<String, List<String>> getDescriptionToSubcommands(CommandIssuer issuer, RootCommand command) {
         Map<String, List<String>> descriptionToSubcommands = new HashMap<>();
         SetMultimap<String, RegisteredCommand> subCommands = command.getSubCommands();
@@ -124,7 +122,6 @@ public class MainCommand extends CommandBase {
         return false;
     }
 
-    @Cacheable
     private String formatSubCommandHelp(RootCommand command, Map.Entry<String, List<String>> descEntry) {
         List<String> subcommands = new ArrayList<>();
 
@@ -139,7 +136,6 @@ public class MainCommand extends CommandBase {
         return String.join("\n", subcommands);
     }
 
-    @Cacheable
     private String formatHelpMessage(String commands) {
         return String.join("\n", messages.commands.mainCommand.helpFormat)
                 .replace("{commands}", commands);

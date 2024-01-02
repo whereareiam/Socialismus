@@ -42,7 +42,6 @@ you want with this plugin, as it offers many different modules and great customi
 - [ ] Chat Bot
 - [ ] Colorization
 - [ ] Item/Inventory Display Chat
-- [ ] Message Announcer
 - [ ] Placeholders
 - [ ] Statistics
 - [ ] Swapper placeholder list command
@@ -53,3 +52,4 @@ you want with this plugin, as it offers many different modules and great customi
 - [x] Bubble Chat <sup> From 0.2.0
 - [x] Chats Improvement: Symbol or command chat <sup> From 1.0.0
 - [x] Private Messages <sup> From 1.0.0
+- [x] Message Announcer <sup> From 1.1.0
