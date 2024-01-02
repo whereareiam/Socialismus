@@ -35,5 +35,8 @@ public class ModulesSettingsConfig {
     )
     public boolean bubblechat = true;
 
+
+    public boolean announcer;
+
     /*public StatisticSettingsConfig statistic = new StatisticSettingsConfig();*/
 }

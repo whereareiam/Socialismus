@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 import me.whereareiam.socialismus.cache.CacheInterceptor;
 import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.chat.message.ChatMessageProcessor;
@@ -11,6 +12,8 @@ import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.module.swapper.SwapperService;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
+
+import java.nio.file.Path;
 
 public abstract class SocialismusConfig extends AbstractModule {
     protected final Plugin plugin;
@@ -22,6 +25,9 @@ public abstract class SocialismusConfig extends AbstractModule {
     @Override
     protected void configure() {
         bind(Plugin.class).toInstance(plugin);
+        bind(Path.class).annotatedWith(Names.named("pluginPath")).toInstance(plugin.getDataFolder().toPath());
+        bind(Path.class).annotatedWith(Names.named("modulePath")).toInstance(plugin.getDataFolder().toPath().resolve("modules"));
+
         bind(BukkitCommandManager.class).toInstance(new BukkitCommandManager(plugin));
 
         SettingsConfig settingsConfig = new SettingsConfig();

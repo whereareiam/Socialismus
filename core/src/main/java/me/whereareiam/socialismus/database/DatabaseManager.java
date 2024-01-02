@@ -3,10 +3,11 @@ package me.whereareiam.socialismus.database;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.util.LoggerUtil;
-import org.bukkit.plugin.Plugin;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +17,14 @@ public class DatabaseManager {
     private static final Map<String, Database> databases = new HashMap<>();
     private final Injector injector;
     private final LoggerUtil loggerUtil;
-    private final Plugin plugin;
+    private final Path pluginPath;
     private final SettingsConfig settingsConfig;
 
     @Inject
-    public DatabaseManager(Injector injector, LoggerUtil loggerUtil, Plugin plugin, SettingsConfig settingsConfig) {
+    public DatabaseManager(Injector injector, LoggerUtil loggerUtil, @Named("pluginPath") Path pluginPath, SettingsConfig settingsConfig) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
-        this.plugin = plugin;
+        this.pluginPath = pluginPath;
         this.settingsConfig = settingsConfig;
 
         loggerUtil.trace("Initializing class: " + this);
@@ -37,7 +38,7 @@ public class DatabaseManager {
         switch (databaseType) {
             case SQLITE:
                 SQLiteDatabaseConfig sqLiteDatabaseConfig = databaseConfig.sqlite;
-                Path storagePath = plugin.getDataFolder().toPath().resolve(sqLiteDatabaseConfig.storageDir);
+                Path storagePath = pluginPath.resolve(sqLiteDatabaseConfig.storageDir);
 
                 if (!Files.exists(storagePath)) {
                     try {

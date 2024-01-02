@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.config;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
@@ -13,22 +14,19 @@ public class ConfigManager {
     private final SettingsConfig settings;
     private final MessagesConfig messages;
     private final CommandsConfig commands;
-    private Path dataFolder;
+    private final Path pluginPath;
 
     @Inject
-    public ConfigManager(SettingsConfig settings, MessagesConfig messages, CommandsConfig commands) {
+    public ConfigManager(@Named("pluginPath") Path pluginPath, SettingsConfig settings, MessagesConfig messages, CommandsConfig commands) {
         this.settings = settings;
         this.messages = messages;
         this.commands = commands;
-    }
-
-    public void setDataFolder(Path dataFolder) {
-        this.dataFolder = dataFolder;
+        this.pluginPath = pluginPath;
     }
 
     public void reloadConfigs() {
-        settings.reload(dataFolder.resolve("settings.yml"));
-        messages.reload(dataFolder.resolve("messages.yml"));
-        commands.reload(dataFolder.resolve("commands.yml"));
+        settings.reload(pluginPath.resolve("settings.yml"));
+        messages.reload(pluginPath.resolve("messages.yml"));
+        commands.reload(pluginPath.resolve("commands.yml"));
     }
 }

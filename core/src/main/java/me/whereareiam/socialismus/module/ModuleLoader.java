@@ -3,13 +3,14 @@ package me.whereareiam.socialismus.module;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import me.whereareiam.socialismus.module.bubblechat.BubbleChatModule;
 import me.whereareiam.socialismus.module.chat.ChatModule;
 import me.whereareiam.socialismus.module.swapper.SwapperModule;
 import me.whereareiam.socialismus.util.LoggerUtil;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,16 +24,14 @@ public class ModuleLoader {
 
     @Inject
     public ModuleLoader(Injector injector, LoggerUtil loggerUtil,
-                        Plugin plugin
+                        @Named("modulePath") Path modulePath
     ) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
-        File dataFolder = plugin.getDataFolder();
 
         loggerUtil.trace("Initializing class: " + this);
 
-        File moduleFile = dataFolder.toPath().resolve("modules").toFile();
-
+        File moduleFile = modulePath.toFile();
         if (!moduleFile.exists()) {
             boolean isCreated = moduleFile.mkdir();
             loggerUtil.debug("Creating module dir");

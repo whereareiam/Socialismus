@@ -16,7 +16,6 @@ public abstract class SocialismusBase extends JavaPlugin {
         version = getDescription().getVersion();
 
         ConfigManager configManager = injector.getInstance(ConfigManager.class);
-        configManager.setDataFolder(getDataFolder().toPath());
         configManager.reloadConfigs();
 
         injector.getInstance(CommandRegistrar.class).registerCommands();

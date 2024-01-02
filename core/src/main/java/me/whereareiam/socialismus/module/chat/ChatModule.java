@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.module.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import me.whereareiam.socialismus.chat.ChatUseType;
 import me.whereareiam.socialismus.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.config.module.chat.ChatsConfig;
@@ -10,7 +11,6 @@ import me.whereareiam.socialismus.listener.state.ChatListenerState;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.module.Module;
 import me.whereareiam.socialismus.util.LoggerUtil;
-import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -28,12 +28,12 @@ public class ChatModule implements Module {
     private boolean moduleStatus = false;
 
     @Inject
-    public ChatModule(LoggerUtil loggerUtil, SettingsConfig settingsConfig, Plugin plugin, ChatsConfig chatsConfig,
+    public ChatModule(LoggerUtil loggerUtil, SettingsConfig settingsConfig, @Named("modulePath") Path modulePath, ChatsConfig chatsConfig,
                       CommandRegistrar commandRegistrar) {
         this.loggerUtil = loggerUtil;
         this.settingsConfig = settingsConfig;
         this.chatsConfig = chatsConfig;
-        this.modulePath = plugin.getDataFolder().toPath().resolve("modules");
+        this.modulePath = modulePath;
         this.commandRegistrar = commandRegistrar;
 
         loggerUtil.trace("Initializing class: " + this);
@@ -54,7 +54,7 @@ public class ChatModule implements Module {
         commandRegistrar.registerChatCommand(chat);
     }
 
-    public void registerChats() {
+    private void registerChats() {
         loggerUtil.debug("Reloading chats.yml");
         chatsConfig.reload(modulePath.resolve("chats.yml"));
 

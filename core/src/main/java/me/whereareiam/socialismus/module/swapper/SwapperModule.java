@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.module.swapper;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import me.whereareiam.socialismus.config.module.swapper.SwapperConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.integration.protocollib.PacketSender;
@@ -12,7 +13,6 @@ import me.whereareiam.socialismus.model.swapper.Swapper;
 import me.whereareiam.socialismus.module.Module;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -33,15 +33,13 @@ public class SwapperModule implements Module {
 
     @Inject
     public SwapperModule(Injector injector, LoggerUtil loggerUtil,
-                         Plugin plugin, SettingsConfig settingsConfig,
+                         @Named("modulePath") Path modulePath, SettingsConfig settingsConfig,
                          SwapperRequirementValidator swapperRequirementValidator) {
         this.injector = injector;
         this.loggerUtil = loggerUtil;
         this.settingsConfig = settingsConfig;
 
         this.swapperRequirementValidator = swapperRequirementValidator;
-
-        Path modulePath = plugin.getDataFolder().toPath().resolve("modules");
         this.swapperPath = modulePath.resolve("swapper");
 
         loggerUtil.trace("Initializing class: " + this);
