@@ -11,7 +11,7 @@
         <dependency>
             <groupId>me.whereareiam</groupId>
             <artifactId>core</artifactId>
-            <version>${project.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
@@ -44,7 +44,7 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <target>
-                                        <copy file="${project.build.directory}/${project.artifactId}-SPIGOT-${project.version}.jar"
+                                        <copy file="${project.build.directory}/${project.parent.artifactId}-SPIGOT-${project.parent.version}.jar"
                                               todir="${testDir}"/>
                                     </target>
                                 </configuration>
@@ -115,6 +115,6 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <finalName>${project.artifactId}-SPIGOT-${project.version}</finalName>
+        <finalName>${project.parent.artifactId}-SPIGOT-${project.parent.version}</finalName>
     </build>
 </project>
