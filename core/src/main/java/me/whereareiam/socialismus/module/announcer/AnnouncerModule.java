@@ -7,11 +7,13 @@ import com.google.inject.name.Named;
 import me.whereareiam.socialismus.config.module.announcer.AnnouncerConfig;
 import me.whereareiam.socialismus.config.module.announcer.AnnouncerSettingsConfig;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
+import me.whereareiam.socialismus.model.announcement.Announcement;
 import me.whereareiam.socialismus.module.Module;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +24,8 @@ public class AnnouncerModule implements Module {
     private final SettingsConfig settingsConfig;
     private final AnnouncerSettingsConfig announcerSettingsConfig;
     private final Path announcerPath;
-    
+    private final List<Announcement> announcements = new ArrayList<>();
+
     private boolean moduleStatus = false;
 
     @Inject
@@ -52,7 +55,7 @@ public class AnnouncerModule implements Module {
             loggerUtil.debug("Creating an example announcement, because dir is empty");
             AnnouncerConfig announcerConfig = createExampleAnnouncerConfig();
             announcerConfig.reload(announcerPath.resolve("example.yml"));
-            // TODO register example announcement
+            announcements.addAll(announcerConfig.announcements);
         } else {
             for (File file : files) {
                 loggerUtil.trace("Trying to register announcements in config: " + file.getName());
@@ -67,6 +70,10 @@ public class AnnouncerModule implements Module {
         // TODO create example announcement
 
         return announcerConfig;
+    }
+
+    public List<Announcement> getAnnouncements() {
+        return announcements;
     }
 
     @Override

@@ -97,4 +97,17 @@ public class ModuleLoader {
 
         return swapperModule.getSwappers().size();
     }
+
+    public int getAnnouncementsCount() {
+        AnnouncerModule announcerModule = (AnnouncerModule) modules.stream()
+                .filter(module -> module instanceof AnnouncerModule)
+                .findFirst()
+                .orElse(null);
+
+        if (announcerModule == null) {
+            return 0;
+        }
+
+        return announcerModule.getAnnouncements().size();
+    }
 }

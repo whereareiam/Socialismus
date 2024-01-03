@@ -60,6 +60,9 @@ public class InfoPrinterUtil {
         int swapperCount = moduleLoader.getSwapperCount();
         loggerUtil.info("  Registered " + swapperCount + " " + (swapperCount == 1 ? "swapper" : "swappers"));
 
+        int announcementCount = moduleLoader.getAnnouncementsCount();
+        loggerUtil.info("  Registered " + announcementCount + " " + (announcementCount == 1 ? "announcement" : "announcements"));
+
         loggerUtil.info("");
     }
 }
