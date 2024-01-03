@@ -20,13 +20,13 @@
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
-            <version>${acf.version}-SNAPSHOT</version>
+            <version>${acf-paper.version}-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>${adventure.version}</version>
+            <version>${adventure-platform-bukkit.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

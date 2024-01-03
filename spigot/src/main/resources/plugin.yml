@@ -8,5 +8,5 @@ softdepend: [
 ]
 
 libraries:
-  - com.google.inject:guice:${google.guice.version}
-  - net.elytrium:serializer:${java.serializer.version}
+  - com.google.inject:guice:${guice.version}
+  - net.elytrium:serializer:${serializer.version}

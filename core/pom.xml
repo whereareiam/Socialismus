@@ -16,13 +16,13 @@
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
-            <version>${acf.version}-SNAPSHOT</version>
+            <version>${acf-paper.version}-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>${sqlite.version}</version>
+            <version>${sqlite-jdbc.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>${bstats.version}</version>
+            <version>${bstats-bukkit.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
