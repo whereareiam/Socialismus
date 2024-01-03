@@ -34,13 +34,13 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>${serializer-plain.version}</version>
+            <version>${adventure-text-serializer-plain.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
-            <version>${serializer-minimessage.version}</version>
+            <version>${adventure-text-minimessage.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
