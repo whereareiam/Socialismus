@@ -20,7 +20,7 @@ public class SocialismusPaperLoader implements PluginLoader {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
 
         Properties prop = new Properties();
-        try (InputStream input = new FileInputStream("version.properties")) {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("version.properties")) {
             prop.load(input);
         } catch (IOException e) {
             e.printStackTrace();
