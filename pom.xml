@@ -34,7 +34,7 @@
         <bstats.version>3.0.2</bstats.version>
         <adventure.version>4.3.0</adventure.version>
         <adventure-text-serializer-plain.version>4.14.0</adventure-text-serializer-plain.version>
-        <adventure-text-minimessage.version>4.14.0</adventure-text-minimessage.version>
+        <adventure-text-minimessage.version>4.15.0</adventure-text-minimessage.version>
 
         <placeholderapi.version>2.11.4</placeholderapi.version>
         <protocollib.version>5.1.0</protocollib.version>
