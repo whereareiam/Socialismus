@@ -32,7 +32,7 @@
         <sqlite.version>3.44.1.0</sqlite.version>
 
         <bstats.version>3.0.2</bstats.version>
-        <adventure.version>4.3.0</adventure.version>
+        <adventure.version>4.3.2</adventure.version>
         <adventure-text-serializer-plain.version>4.14.0</adventure-text-serializer-plain.version>
         <adventure-text-minimessage.version>4.15.0</adventure-text-minimessage.version>
 
