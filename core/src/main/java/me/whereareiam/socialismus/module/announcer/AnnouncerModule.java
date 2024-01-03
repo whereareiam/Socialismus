@@ -22,6 +22,7 @@ public class AnnouncerModule implements Module {
     private final SettingsConfig settingsConfig;
     private final AnnouncerSettingsConfig announcerSettingsConfig;
     private final Path announcerPath;
+    
     private boolean moduleStatus = false;
 
     @Inject

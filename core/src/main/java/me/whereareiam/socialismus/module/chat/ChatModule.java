@@ -13,9 +13,8 @@ import me.whereareiam.socialismus.module.Module;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class ChatModule implements Module {
@@ -24,7 +23,8 @@ public class ChatModule implements Module {
     private final ChatsConfig chatsConfig;
     private final CommandRegistrar commandRegistrar;
     private final Path modulePath;
-    private final Map<String, Chat> chats = new HashMap<>();
+    private final List<Chat> chats = new ArrayList<>();
+
     private boolean moduleStatus = false;
 
     @Inject
@@ -50,7 +50,7 @@ public class ChatModule implements Module {
         loggerUtil.trace("Chat hover format: " + chat.hoverFormat.stream().toString());
         loggerUtil.trace("Chat requirements: " + chat.requirements);
 
-        chats.put(chat.id, chat);
+        chats.add(chat);
         commandRegistrar.registerChatCommand(chat);
     }
 
@@ -75,7 +75,7 @@ public class ChatModule implements Module {
     }
 
     public Chat getChatBySymbol(String symbol) {
-        for (Chat chat : chats.values()) {
+        for (Chat chat : chats) {
             if (chat.usage.symbol.equals(symbol) && !chat.usage.type.equals(ChatUseType.COMMAND)) {
                 return chat;
             }
@@ -84,7 +84,7 @@ public class ChatModule implements Module {
     }
 
     public Chat getChatByCommand(String command) {
-        for (Chat chat : chats.values()) {
+        for (Chat chat : chats) {
             if (chat.usage.command.contains(command)) {
                 return chat;
             }
@@ -138,10 +138,10 @@ public class ChatModule implements Module {
 
     @Override
     public void reload() {
-        loggerUtil.trace("Before reload chats: " + chats.values());
+        loggerUtil.trace("Before reload chats: " + chats);
         cleanChats();
 
         registerChats();
-        loggerUtil.trace("After reload chats: " + chats.values());
+        loggerUtil.trace("After reload chats: " + chats);
     }
 }

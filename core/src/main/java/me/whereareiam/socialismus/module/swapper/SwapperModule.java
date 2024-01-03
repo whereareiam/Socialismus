@@ -28,6 +28,7 @@ public class SwapperModule implements Module {
     private final SwapperRequirementValidator swapperRequirementValidator;
     private final Path swapperPath;
     private final List<Swapper> swappers = new ArrayList<>();
+
     private boolean moduleStatus;
 
     @Inject
