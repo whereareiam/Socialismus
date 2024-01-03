@@ -25,18 +25,6 @@
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>${serializer-plain.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-text-minimessage</artifactId>
-            <version>${serializer-minimessage.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
             <version>${adventure.version}</version>
             <scope>compile</scope>

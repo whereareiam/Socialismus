@@ -19,24 +19,6 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>co.aikar</groupId>
-            <artifactId>acf-paper</artifactId>
-            <version>${acf.version}-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>${serializer-plain.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-text-minimessage</artifactId>
-            <version>${serializer-minimessage.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
             <version>${minecraft.version}-R0.1-SNAPSHOT</version>

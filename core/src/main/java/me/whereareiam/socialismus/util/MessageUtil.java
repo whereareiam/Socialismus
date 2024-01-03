@@ -28,7 +28,6 @@ public class MessageUtil {
 
     public void sendMessage(Player sender, Component message) {
         loggerUtil.debug("Sending message to " + sender.getName());
-        loggerUtil.trace(message.toString());
         platformMessageSender.sendMessage(sender, message);
     }
 
