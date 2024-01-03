@@ -55,7 +55,6 @@ public class ChatBroadcaster {
         messageFormat = messageUtil.replacePlaceholder(messageFormat, "{playerName}", chatMessage.getSender().getName());
         messageFormat = messageUtil.replacePlaceholder(messageFormat, "{message}", chatMessage.getContent());
 
-
         if (hoverFormat != null) {
             messageFormat = messageFormat.hoverEvent(HoverEvent.showText(hoverFormat));
         }

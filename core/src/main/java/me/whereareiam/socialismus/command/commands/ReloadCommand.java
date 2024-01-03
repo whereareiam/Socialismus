@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.config.ConfigManager;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
@@ -15,6 +16,7 @@ import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
 import org.bukkit.entity.Player;
 
+@Singleton
 @CommandAlias("%command.main")
 public class ReloadCommand extends CommandBase {
     private final LoggerUtil loggerUtil;
@@ -25,8 +27,8 @@ public class ReloadCommand extends CommandBase {
     private final ModuleLoader moduleLoader;
 
     @Inject
-    public ReloadCommand(LoggerUtil loggerUtil, MessageUtil messageUtil, CommandsConfig commands, MessagesConfig messages,
-                         ConfigManager configManager, ModuleLoader moduleLoader) {
+    public ReloadCommand(LoggerUtil loggerUtil, MessageUtil messageUtil, CommandsConfig commands,
+                         MessagesConfig messages, ConfigManager configManager, ModuleLoader moduleLoader) {
         this.loggerUtil = loggerUtil;
         this.messageUtil = messageUtil;
         this.commands = commands;

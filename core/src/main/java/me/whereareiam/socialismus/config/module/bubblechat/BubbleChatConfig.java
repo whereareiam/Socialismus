@@ -2,14 +2,12 @@ package me.whereareiam.socialismus.config.module.bubblechat;
 
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.config.module.bubblechat.requirements.BubbleChatRequirementConfig;
-import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 import net.elytrium.serializer.language.object.YamlSerializable;
 
 @Singleton
 public class BubbleChatConfig extends YamlSerializable {
-    private static final SerializerConfig BUBBLECHAT = new SerializerConfig.Builder().build();
 
     @Comment(
             value = {
@@ -37,8 +35,4 @@ public class BubbleChatConfig extends YamlSerializable {
             at = Comment.At.PREPEND
     )
     public BubbleChatRequirementConfig requirements = new BubbleChatRequirementConfig();
-
-    public BubbleChatConfig() {
-        super(BubbleChatConfig.BUBBLECHAT);
-    }
 }

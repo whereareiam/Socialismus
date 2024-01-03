@@ -1,7 +1,6 @@
 package me.whereareiam.socialismus.config.module.swapper;
 
 import me.whereareiam.socialismus.model.swapper.Swapper;
-import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 import net.elytrium.serializer.language.object.YamlSerializable;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SwapperConfig extends YamlSerializable {
-    private static final SerializerConfig SWAPPERS = new SerializerConfig.Builder().build();
 
     @Comment(
             value = {
@@ -88,8 +86,4 @@ public class SwapperConfig extends YamlSerializable {
             at = Comment.At.PREPEND
     )
     public List<Swapper> swappers = new ArrayList<>();
-
-    public SwapperConfig() {
-        super(SwapperConfig.SWAPPERS);
-    }
 }

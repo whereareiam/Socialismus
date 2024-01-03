@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Singleton
 public class SwapperModule implements Module {
@@ -45,9 +44,9 @@ public class SwapperModule implements Module {
         loggerUtil.trace("Initializing class: " + this);
     }
 
-    public void registerSwappers() {
+    private void registerSwappers() {
         loggerUtil.debug("Registering swappers");
-        List<File> files = Arrays.stream(swapperPath.toFile().listFiles()).filter(file -> file.getName().endsWith(".yml")).collect(Collectors.toList());
+        List<File> files = Arrays.stream(swapperPath.toFile().listFiles()).filter(file -> file.getName().endsWith(".yml")).toList();
         if (files.isEmpty()) {
             loggerUtil.debug("Creating an example swapper, because dir is empty");
             SwapperConfig swapperConfig = createExampleSwapperConfig();

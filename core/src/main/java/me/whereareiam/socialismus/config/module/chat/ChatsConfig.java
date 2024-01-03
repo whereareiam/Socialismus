@@ -2,7 +2,6 @@ package me.whereareiam.socialismus.config.module.chat;
 
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.model.chat.Chat;
-import net.elytrium.serializer.SerializerConfig;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 import net.elytrium.serializer.language.object.YamlSerializable;
@@ -12,7 +11,6 @@ import java.util.List;
 
 @Singleton
 public class ChatsConfig extends YamlSerializable {
-    private static final SerializerConfig CHATS = new SerializerConfig.Builder().build();
     @Comment(
             value = {
                     @CommentValue(type = CommentValue.Type.TEXT),
@@ -81,8 +79,4 @@ public class ChatsConfig extends YamlSerializable {
             at = Comment.At.PREPEND
     )
     public List<Chat> chats = new ArrayList<>();
-
-    public ChatsConfig() {
-        super(ChatsConfig.CHATS);
-    }
 }

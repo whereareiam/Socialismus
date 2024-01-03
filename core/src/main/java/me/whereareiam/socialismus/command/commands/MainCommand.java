@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import com.google.common.collect.SetMultimap;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.command.management.CommandManager;
@@ -20,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
+@Singleton
 public class MainCommand extends CommandBase {
     private final LoggerUtil loggerUtil;
     private final CommandManager commandManager;

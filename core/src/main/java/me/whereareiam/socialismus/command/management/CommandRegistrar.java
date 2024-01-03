@@ -4,10 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.chat.ChatUseType;
-import me.whereareiam.socialismus.command.commands.ChatCommandTemplate;
-import me.whereareiam.socialismus.command.commands.MainCommand;
-import me.whereareiam.socialismus.command.commands.PrivateMessageCommand;
-import me.whereareiam.socialismus.command.commands.ReloadCommand;
+import me.whereareiam.socialismus.command.commands.*;
 import me.whereareiam.socialismus.model.chat.Chat;
 
 @Singleton
@@ -25,6 +22,7 @@ public class CommandRegistrar {
         commandManager.registerCommand(injector.getInstance(MainCommand.class));
         commandManager.registerCommand(injector.getInstance(ReloadCommand.class));
         commandManager.registerCommand(injector.getInstance(PrivateMessageCommand.class));
+        commandManager.registerCommand(injector.getInstance(AnnounceCommand.class));
     }
 
     public void registerChatCommand(Chat chat) {

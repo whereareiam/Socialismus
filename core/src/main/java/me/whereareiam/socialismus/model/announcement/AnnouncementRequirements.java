@@ -1,9 +1,9 @@
-package me.whereareiam.socialismus.model.announcer;
+package me.whereareiam.socialismus.model.announcement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnnouncerRequirements {
+public class AnnouncementRequirements {
     public boolean enabled = false;
     public String permission = "";
     public List<String> worlds = new ArrayList<>();

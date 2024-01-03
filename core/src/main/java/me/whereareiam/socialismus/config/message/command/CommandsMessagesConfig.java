@@ -10,5 +10,6 @@ public class CommandsMessagesConfig {
 
     public MainCommandMessagesConfig mainCommand = new MainCommandMessagesConfig();
     public ReloadCommandMessagesConfig reloadCommand = new ReloadCommandMessagesConfig();
+    public AnnounceCommandMessagesConfig announceCommand = new AnnounceCommandMessagesConfig();
     public PrivateMessageCommandConfig privateMessageCommand = new PrivateMessageCommandConfig();
 }
