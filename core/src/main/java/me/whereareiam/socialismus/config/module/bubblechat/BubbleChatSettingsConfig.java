@@ -2,11 +2,22 @@ package me.whereareiam.socialismus.config.module.bubblechat;
 
 import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.type.AlignmentType;
 import me.whereareiam.socialismus.integration.protocollib.entity.metadata.display.type.DisplayType;
+import me.whereareiam.socialismus.module.bubblechat.BubbleTriggerType;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 import org.joml.Vector3f;
 
 public class BubbleChatSettingsConfig {
+
+    @Comment(
+            value = {
+                    @CommentValue(type = CommentValue.Type.NEW_LINE),
+                    @CommentValue(" Trigger type specifies the way the bubble message is triggered."),
+                    @CommentValue(" Available values: CHAT, COMMAND, CHAT_COMMAND"),
+            },
+            at = Comment.At.PREPEND
+    )
+    public BubbleTriggerType triggerType = BubbleTriggerType.CHAT;
 
     @Comment(
             value = {

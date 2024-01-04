@@ -9,7 +9,6 @@ import co.aikar.commands.annotation.Description;
 import com.google.common.collect.SetMultimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.command.management.CommandManager;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
@@ -41,7 +40,6 @@ public class MainCommand extends CommandBase {
         this.messages = messages;
     }
 
-    @Cacheable(duration = 1)
     @CommandAlias("%command.main")
     @CommandPermission("%permission.main")
     @Description("%description.main")
@@ -65,6 +63,8 @@ public class MainCommand extends CommandBase {
         String commandsString = String.join("\n", commandsList);
         String helpMessage = formatHelpMessage(commandsString);
         sendHelpMessage(issuer, helpMessage);
+
+        // TODO rewrite this
     }
 
     private String buildCommands(CommandIssuer issuer, RootCommand command) {

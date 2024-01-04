@@ -23,6 +23,7 @@ public class CommandRegistrar {
         commandManager.registerCommand(injector.getInstance(ReloadCommand.class));
         commandManager.registerCommand(injector.getInstance(PrivateMessageCommand.class));
         commandManager.registerCommand(injector.getInstance(AnnounceCommand.class));
+        commandManager.registerCommand(injector.getInstance(BubbleCommand.class));
     }
 
     public void registerChatCommand(Chat chat) {

@@ -1,10 +1,7 @@
 package me.whereareiam.socialismus.command.commands;
 
 import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.command.base.CommandBase;
@@ -31,9 +28,11 @@ public class AnnounceCommand extends CommandBase {
     }
 
     @Subcommand("%command.announce")
+    @CommandCompletion("@announcements")
     @CommandPermission("%permission.announce")
     @Description("%description.announce")
-    public void onCommand(CommandIssuer issuer) {
+    @Syntax("%syntax.announce")
+    public void onCommand(CommandIssuer issuer, String announcementId) {
 
     }
 
@@ -47,5 +46,6 @@ public class AnnounceCommand extends CommandBase {
         commandHelper.addReplacement(commands.announceCommand.subCommand, "command.announce");
         commandHelper.addReplacement(commands.announceCommand.permission, "permission.announce");
         commandHelper.addReplacement(messages.commands.announceCommand.description, "description.announce");
+        commandHelper.addReplacement(commands.announceCommand.syntax, "syntax.announce");
     }
 }

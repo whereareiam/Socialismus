@@ -9,6 +9,7 @@ import me.whereareiam.socialismus.chat.message.ChatMessageFactory;
 import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.integration.IntegrationManager;
 import me.whereareiam.socialismus.module.bubblechat.BubbleChatService;
+import me.whereareiam.socialismus.module.bubblechat.BubbleTriggerType;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import org.bukkit.entity.Player;
 
@@ -41,7 +42,7 @@ public class ChatHandler {
         if (integrationManager.isIntegrationEnabled("ProtocolLib")) {
             final BubbleChatService bubbleChatService = injector.getInstance(BubbleChatService.class);
             if (settingsConfig.modules.bubblechat)
-                bubbleChatService.distributeBubbleMessage(chatMessage);
+                bubbleChatService.distributeBubbleMessage(BubbleTriggerType.CHAT, chatMessage);
         } else {
             loggerUtil.warning("You can't use the BubbleChat module without ProtocolLib!");
         }

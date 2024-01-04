@@ -30,4 +30,5 @@ public class CommandsConfig extends YamlSerializable {
     public ReloadCommandConfig reloadCommand = new ReloadCommandConfig();
     public AnnounceCommandConfig announceCommand = new AnnounceCommandConfig();
     public PrivateMessageCommandConfig privateMessageCommand = new PrivateMessageCommandConfig();
+    public BubbleCommandConfig bubbleCommand = new BubbleCommandConfig();
 }

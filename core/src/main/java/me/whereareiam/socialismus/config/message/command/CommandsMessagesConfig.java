@@ -12,4 +12,5 @@ public class CommandsMessagesConfig {
     public ReloadCommandMessagesConfig reloadCommand = new ReloadCommandMessagesConfig();
     public AnnounceCommandMessagesConfig announceCommand = new AnnounceCommandMessagesConfig();
     public PrivateMessageCommandConfig privateMessageCommand = new PrivateMessageCommandConfig();
+    public BubbleCommandMessagesConfig bubbleCommand = new BubbleCommandMessagesConfig();
 }

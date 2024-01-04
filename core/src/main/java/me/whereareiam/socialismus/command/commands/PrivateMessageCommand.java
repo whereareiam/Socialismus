@@ -33,6 +33,9 @@ public class PrivateMessageCommand extends CommandBase {
     @Description("%description.privateMessage")
     @Syntax("%syntax.privateMessage")
     public void onCommand(CommandIssuer issuer, String targetPlayerName, String message) {
+        if (!issuer.isPlayer())
+            return;
+
         Player player = issuer.getIssuer();
         Player recipient = Bukkit.getPlayer(targetPlayerName);
 
@@ -65,8 +68,8 @@ public class PrivateMessageCommand extends CommandBase {
     public void addReplacements() {
         commandHelper.addReplacement(commands.privateMessageCommand.command, "command.privateMessage");
         commandHelper.addReplacement(commands.privateMessageCommand.permission, "permission.privateMessage");
-        commandHelper.addReplacement(commands.privateMessageCommand.syntax, "syntax.privateMessage");
         commandHelper.addReplacement(messages.commands.privateMessageCommand.description, "description.privateMessage");
+        commandHelper.addReplacement(commands.privateMessageCommand.syntax, "syntax.privateMessage");
     }
 }
 
