@@ -6,9 +6,9 @@ import co.aikar.commands.RootCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
-import com.google.common.collect.SetMultimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.command.management.CommandManager;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
@@ -16,6 +16,7 @@ import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -44,111 +45,113 @@ public class MainCommand extends CommandBase {
     @CommandPermission("%permission.main")
     @Description("%description.main")
     public void onCommand(CommandIssuer issuer) {
-        List<RootCommand> allCommands = new ArrayList<>(commandManager.getAllCommands());
-        if (allCommands.isEmpty()) {
-            return;
-        }
-
-        String mainCommand = commands.mainCommand.command.split("\\|")[0];
-        String privateMessageCommand = commands.privateMessageCommand.command.split("\\|")[0];
-
-        List<String> commandsList = new ArrayList<>();
-        for (RootCommand command : allCommands) {
-            if (command.getCommandName().equals(mainCommand) || command.getCommandName().equals(privateMessageCommand)) {
-                String commandHelp = buildCommands(issuer, command);
-                commandsList.add(commandHelp);
-            }
-        }
-
-        String commandsString = String.join("\n", commandsList);
-        String helpMessage = formatHelpMessage(commandsString);
-        sendHelpMessage(issuer, helpMessage);
-
-        // TODO rewrite this
-    }
-
-    private String buildCommands(CommandIssuer issuer, RootCommand command) {
-        List<String> commands = new ArrayList<>();
-
-        String mainCommandHelp = formatMainCommandHelp(command);
-        commands.add(mainCommandHelp);
-
-        Map<String, List<String>> descriptionToSubcommands = getDescriptionToSubcommands(issuer, command);
-
-        for (Map.Entry<String, List<String>> descEntry : descriptionToSubcommands.entrySet()) {
-            if (!descEntry.getValue().isEmpty()) {
-                String commandHelp = formatSubCommandHelp(command, descEntry);
-                commands.add(commandHelp);
-            }
-        }
-
-        return String.join("\n", commands);
-    }
-
-    private String formatMainCommandHelp(RootCommand command) {
-        return messages.commands.mainCommand.commandHelpFormat
-                .replace("{command}", command.getCommandName())
-                .replace("{subCommand}", "")
-                .replace("{description}", command.getDescription());
-    }
-
-    private Map<String, List<String>> getDescriptionToSubcommands(CommandIssuer issuer, RootCommand command) {
-        Map<String, List<String>> descriptionToSubcommands = new HashMap<>();
-        SetMultimap<String, RegisteredCommand> subCommands = command.getSubCommands();
-
-        for (Map.Entry<String, Collection<RegisteredCommand>> subEntry : subCommands.asMap().entrySet()) {
-            for (RegisteredCommand<?> subCommand : subEntry.getValue()) {
-                String description = subCommand.getHelpText();
-                if (!descriptionToSubcommands.containsKey(description)) {
-                    descriptionToSubcommands.put(description, new ArrayList<>());
-                }
-                if (!subEntry.getKey().equals("__default")) {
-                    if (issuer.getIssuer() instanceof Player && !hasRequiredPermissions(issuer.getIssuer(), subCommand)) {
-                        continue;
-                    }
-                    descriptionToSubcommands.get(description).add(subEntry.getKey());
-                }
-            }
-        }
-
-        return descriptionToSubcommands;
-    }
-
-    private boolean hasRequiredPermissions(Player player, RegisteredCommand<?> subCommand) {
-        for (String permission : subCommand.getRequiredPermissions()) {
-            loggerUtil.trace("Checking permission " + permission + " for " + player.getName());
-            if (player.hasPermission(permission)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String formatSubCommandHelp(RootCommand command, Map.Entry<String, List<String>> descEntry) {
-        List<String> subcommands = new ArrayList<>();
-
-        for (String subcommand : descEntry.getValue()) {
-            String formattedSubcommand = messages.commands.mainCommand.commandHelpFormat
-                    .replace("{command}", command.getCommandName())
-                    .replace("{subCommand}", " " + subcommand)
-                    .replace("{description}", descEntry.getKey());
-            subcommands.add(formattedSubcommand);
-        }
-
-        return String.join("\n", subcommands);
-    }
-
-    private String formatHelpMessage(String commands) {
-        return String.join("\n", messages.commands.mainCommand.helpFormat)
-                .replace("{commands}", commands);
-    }
-
-    private void sendHelpMessage(CommandIssuer issuer, String helpMessage) {
         if (issuer.getIssuer() instanceof Player) {
-            messageUtil.sendMessage(issuer.getIssuer(), helpMessage);
+            System.out.println("Player");
+            Player player = issuer.getIssuer();
+            Component message = formatterUtil.formatMessage(player, buildHelpCommand(issuer));
+            messageUtil.sendMessage(player, message);
         } else {
-            issuer.sendMessage(formatterUtil.cleanMessage(helpMessage));
+            issuer.sendMessage(formatterUtil.cleanMessage(buildHelpCommand(issuer)));
         }
+    }
+
+    @Cacheable(duration = 1)
+    private String buildHelpCommand(CommandIssuer issuer) {
+        Map<RootCommand, Set<RegisteredCommand>> commands = getAllowedCommands(getCommands(), issuer);
+
+        StringBuilder formattedCommands = new StringBuilder();
+        for (Map.Entry<RootCommand, Set<RegisteredCommand>> entry : commands.entrySet()) {
+            RootCommand rootCommand = entry.getKey();
+            Set<RegisteredCommand> registeredCommands = entry.getValue();
+
+            if (registeredCommands.isEmpty()) {
+                String commandFormat = messages.commands.mainCommand.commandFormat
+                        .replace("{command}", rootCommand.getCommandName())
+                        .replace("{subCommand}", "")
+                        .replace("{description}", rootCommand.getDescription());
+                formattedCommands.append(commandFormat).append("\n");
+            } else {
+                for (RegisteredCommand registeredCommand : registeredCommands) {
+                    String commandFormat = messages.commands.mainCommand.commandFormat
+                            .replace("{command}", rootCommand.getCommandName())
+                            .replace("{subCommand}", " " + registeredCommand.getPrefSubCommand())
+                            .replace("{description}", registeredCommand.getHelpText());
+                    formattedCommands.append(commandFormat).append("\n");
+                }
+            }
+        }
+
+        List<String> helpFormat = messages.commands.mainCommand.helpFormat;
+        for (int i = 0; i < helpFormat.size(); i++) {
+            if (helpFormat.get(i).contains("{commands}")) {
+                String formattedCommandsStr = formattedCommands.toString();
+                if (formattedCommandsStr.endsWith("\n")) {
+                    formattedCommandsStr = formattedCommandsStr.substring(0, formattedCommandsStr.length() - 1);
+                }
+
+                helpFormat.set(i, helpFormat.get(i).replace("{commands}", formattedCommandsStr));
+            }
+        }
+
+        return String.join("\n", helpFormat);
+    }
+
+    @Cacheable(duration = 20)
+    private Map<RootCommand, Set<RegisteredCommand>> getCommands() {
+        Map<RootCommand, Set<RegisteredCommand>> commands = new HashMap<>();
+
+        Collection<RootCommand> allCommands = commandManager.getAllCommands();
+        Set<String> uniqueParentClassNames = new HashSet<>();
+
+        for (RootCommand rootCommand : allCommands) {
+            String parentClassName = rootCommand.getDefCommand().getName();
+
+            if (!parentClassName.equals("chatcommandtemplate") && !uniqueParentClassNames.contains(parentClassName)) {
+                uniqueParentClassNames.add(parentClassName);
+
+                HashSet<RegisteredCommand> uniqueSubCommands = new HashSet<>();
+                rootCommand.getSubCommands().entries().forEach(entry -> {
+                    RegisteredCommand registeredCommand = entry.getValue();
+
+                    if (!uniqueSubCommands.contains(registeredCommand) && !registeredCommand.equals(rootCommand.getDefaultRegisteredCommand())) {
+                        uniqueSubCommands.add(registeredCommand);
+                    }
+                });
+
+                commands.put(rootCommand, uniqueSubCommands);
+            }
+        }
+
+        return commands;
+    }
+
+
+    public Map<RootCommand, Set<RegisteredCommand>> getAllowedCommands(Map<RootCommand, Set<RegisteredCommand>> commands,
+                                                                       CommandIssuer issuer) {
+        Map<RootCommand, Set<RegisteredCommand>> filteredCommands = new HashMap<>();
+
+        for (Map.Entry<RootCommand, Set<RegisteredCommand>> entry : commands.entrySet()) {
+            RootCommand rootCommand = entry.getKey();
+            Set<RegisteredCommand> registeredCommands = entry.getValue();
+
+            if (rootCommand.getUniquePermission() == null || issuer.hasPermission(rootCommand.getUniquePermission())) {
+                Set<RegisteredCommand> filteredRegisteredCommands = new HashSet<>();
+
+                for (RegisteredCommand registeredCommand : registeredCommands) {
+                    Set<String> requiredPermissions = registeredCommand.getRequiredPermissions();
+
+                    boolean hasAllPermissions = requiredPermissions.stream().allMatch(issuer::hasPermission);
+
+                    if (hasAllPermissions) {
+                        filteredRegisteredCommands.add(registeredCommand);
+                    }
+                }
+
+                filteredCommands.put(rootCommand, filteredRegisteredCommands);
+            }
+        }
+
+        return filteredCommands;
     }
 
     @Override

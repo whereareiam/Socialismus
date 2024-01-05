@@ -49,7 +49,7 @@ public class PrivateMessageCommand extends CommandBase {
             return;
         }
 
-        Component format = formatterUtil.formatMessage(player, commands.privateMessageCommand.format);
+        Component format = formatterUtil.formatMessage(player, messages.commands.privateMessageCommand.format);
 
         format = messageUtil.replacePlaceholder(format, "{senderName}", player.getName());
         format = messageUtil.replacePlaceholder(format, "{recipientName}", recipient.getName());
