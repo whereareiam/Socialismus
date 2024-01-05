@@ -70,7 +70,7 @@ public class ChatRequirementValidator {
             return false;
         }
 
-        if (!senderRequirements.usePermission.isBlank() || !sender.hasPermission(senderRequirements.usePermission)) {
+        if (senderRequirements.usePermission != null && (!senderRequirements.usePermission.isEmpty() || !sender.hasPermission(senderRequirements.usePermission))) {
             messageUtil.sendMessage(sender, messagesConfig.chat.noUsePermission);
             return false;
         }
