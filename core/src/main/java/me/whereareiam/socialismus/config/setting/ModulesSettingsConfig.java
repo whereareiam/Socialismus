@@ -35,8 +35,16 @@ public class ModulesSettingsConfig {
     )
     public boolean bubblechat = true;
 
-
-    public boolean announcer;
+    @Comment(
+            value = {
+                    @CommentValue(type = CommentValue.Type.NEW_LINE),
+                    @CommentValue(" The announcer module allows you to create announcements that will be displayed"),
+                    @CommentValue(" on the server. You can create as many announcements as you want and set the"),
+                    @CommentValue(" time interval between them."),
+            },
+            at = Comment.At.PREPEND
+    )
+    public boolean announcer = true;
 
     /*public StatisticSettingsConfig statistic = new StatisticSettingsConfig();*/
 }

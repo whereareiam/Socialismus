@@ -59,7 +59,15 @@ public class AnnouncerModule implements Module {
         } else {
             for (File file : files) {
                 loggerUtil.trace("Trying to register announcements in config: " + file.getName());
-                // TODO register announcements
+                AnnouncerConfig announcerConfig = injector.getInstance(AnnouncerConfig.class);
+                announcerConfig.reload(file.toPath());
+                List<Announcement> enabledAnnouncements = new ArrayList<>(announcerConfig.announcements.stream()
+                        .filter(announcement -> announcement.enabled)
+                        .toList());
+                if (!enabledAnnouncements.isEmpty()) {
+                    loggerUtil.trace("Adding new announcements (" + enabledAnnouncements.size() + ")");
+                    enabledAnnouncements.addAll(announcements);
+                }
             }
         }
     }
