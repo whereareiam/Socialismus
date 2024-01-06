@@ -66,7 +66,7 @@ public class AnnouncerModule implements Module {
                         .toList());
                 if (!enabledAnnouncements.isEmpty()) {
                     loggerUtil.trace("Adding new announcements (" + enabledAnnouncements.size() + ")");
-                    enabledAnnouncements.addAll(announcements);
+                    announcements.addAll(enabledAnnouncements);
                 }
             }
         }
@@ -106,6 +106,7 @@ public class AnnouncerModule implements Module {
 
     @Override
     public void reload() {
-
+        announcements.clear();
+        registerAnnouncers();
     }
 }
