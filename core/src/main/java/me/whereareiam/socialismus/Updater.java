@@ -42,8 +42,8 @@ public class Updater {
         if (compareVersions(currentVersion, latestVersion) > 0) {
             loggerUtil.info("You are on a dev build.");
         } else if (!currentVersion.equals(latestVersion)) {
-            loggerUtil.warning("Update found! The latest version is " + latestVersion);
-            loggerUtil.warning("Download here: https://www.spigotmc.org/resources/113119/updates");
+            loggerUtil.severe("Update found! The latest version is " + latestVersion);
+            loggerUtil.severe("Download here: https://www.spigotmc.org/resources/113119/updates");
         }
     }
 
