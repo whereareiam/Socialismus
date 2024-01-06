@@ -8,7 +8,6 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.cache.Cacheable;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.command.management.CommandManager;
 import me.whereareiam.socialismus.config.command.CommandsConfig;
@@ -22,23 +21,46 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 @Singleton
+@SuppressWarnings("rawtypes")
 public class MainCommand extends CommandBase {
-    private final LoggerUtil loggerUtil;
-    private final CommandManager commandManager;
     private final FormatterUtil formatterUtil;
     private final MessageUtil messageUtil;
     private final CommandsConfig commands;
     private final MessagesConfig messages;
 
+    private final Map<RootCommand, Set<RegisteredCommand>> commandsMap = new HashMap<>();
+
     @Inject
-    public MainCommand(LoggerUtil loggerUtil, CommandManager commandManager,
-                       FormatterUtil formatterUtil, MessageUtil messageUtil, CommandsConfig commands, MessagesConfig messages) {
-        this.loggerUtil = loggerUtil;
-        this.commandManager = commandManager;
+    public MainCommand(LoggerUtil loggerUtil, CommandManager commandManager, FormatterUtil formatterUtil,
+                       MessageUtil messageUtil, CommandsConfig commands, MessagesConfig messages) {
         this.formatterUtil = formatterUtil;
         this.messageUtil = messageUtil;
         this.commands = commands;
         this.messages = messages;
+
+        loggerUtil.trace("Initializing class: " + this);
+
+        Collection<RootCommand> allCommands = commandManager.getAllCommands();
+        Set<String> uniqueParentClassNames = new HashSet<>();
+
+        for (RootCommand rootCommand : allCommands) {
+            String parentClassName = rootCommand.getDefCommand().getName();
+
+            if (!parentClassName.equals("chatcommandtemplate") && !uniqueParentClassNames.contains(parentClassName)) {
+                uniqueParentClassNames.add(parentClassName);
+
+                HashSet<RegisteredCommand> uniqueSubCommands = new HashSet<>();
+                rootCommand.getSubCommands().entries().forEach(entry -> {
+                    RegisteredCommand registeredCommand = entry.getValue();
+
+                    if (!uniqueSubCommands.contains(registeredCommand) && !registeredCommand.equals(rootCommand.getDefaultRegisteredCommand())) {
+                        uniqueSubCommands.add(registeredCommand);
+                    }
+                });
+
+                commandsMap.put(rootCommand, uniqueSubCommands);
+            }
+        }
     }
 
     @CommandAlias("%command.main")
@@ -46,7 +68,6 @@ public class MainCommand extends CommandBase {
     @Description("%description.main")
     public void onCommand(CommandIssuer issuer) {
         if (issuer.getIssuer() instanceof Player) {
-            System.out.println("Player");
             Player player = issuer.getIssuer();
             Component message = formatterUtil.formatMessage(player, buildHelpCommand(issuer));
             messageUtil.sendMessage(player, message);
@@ -55,10 +76,26 @@ public class MainCommand extends CommandBase {
         }
     }
 
-    @Cacheable(duration = 1)
-    private String buildHelpCommand(CommandIssuer issuer) {
-        Map<RootCommand, Set<RegisteredCommand>> commands = getAllowedCommands(getCommands(), issuer);
+    public String buildHelpCommand(CommandIssuer issuer) {
+        Map<RootCommand, Set<RegisteredCommand>> commands = getAllowedCommands(commandsMap, issuer);
+        StringBuilder formattedCommands = getFormattedCommands(commands);
 
+        List<String> helpFormat = messages.commands.mainCommand.helpFormat;
+        for (int i = 0; i < helpFormat.size(); i++) {
+            if (helpFormat.get(i).contains("{commands}")) {
+                String formattedCommandsStr = formattedCommands.toString();
+                if (formattedCommandsStr.endsWith("\n")) {
+                    formattedCommandsStr = formattedCommandsStr.substring(0, formattedCommandsStr.length() - 1);
+                }
+
+                helpFormat.set(i, helpFormat.get(i).replace("{commands}", formattedCommandsStr));
+            }
+        }
+
+        return String.join("\n", helpFormat);
+    }
+
+    private StringBuilder getFormattedCommands(Map<RootCommand, Set<RegisteredCommand>> commands) {
         StringBuilder formattedCommands = new StringBuilder();
         for (Map.Entry<RootCommand, Set<RegisteredCommand>> entry : commands.entrySet()) {
             RootCommand rootCommand = entry.getKey();
@@ -80,51 +117,8 @@ public class MainCommand extends CommandBase {
                 }
             }
         }
-
-        List<String> helpFormat = messages.commands.mainCommand.helpFormat;
-        for (int i = 0; i < helpFormat.size(); i++) {
-            if (helpFormat.get(i).contains("{commands}")) {
-                String formattedCommandsStr = formattedCommands.toString();
-                if (formattedCommandsStr.endsWith("\n")) {
-                    formattedCommandsStr = formattedCommandsStr.substring(0, formattedCommandsStr.length() - 1);
-                }
-
-                helpFormat.set(i, helpFormat.get(i).replace("{commands}", formattedCommandsStr));
-            }
-        }
-
-        return String.join("\n", helpFormat);
+        return formattedCommands;
     }
-
-    @Cacheable(duration = 20)
-    private Map<RootCommand, Set<RegisteredCommand>> getCommands() {
-        Map<RootCommand, Set<RegisteredCommand>> commands = new HashMap<>();
-
-        Collection<RootCommand> allCommands = commandManager.getAllCommands();
-        Set<String> uniqueParentClassNames = new HashSet<>();
-
-        for (RootCommand rootCommand : allCommands) {
-            String parentClassName = rootCommand.getDefCommand().getName();
-
-            if (!parentClassName.equals("chatcommandtemplate") && !uniqueParentClassNames.contains(parentClassName)) {
-                uniqueParentClassNames.add(parentClassName);
-
-                HashSet<RegisteredCommand> uniqueSubCommands = new HashSet<>();
-                rootCommand.getSubCommands().entries().forEach(entry -> {
-                    RegisteredCommand registeredCommand = entry.getValue();
-
-                    if (!uniqueSubCommands.contains(registeredCommand) && !registeredCommand.equals(rootCommand.getDefaultRegisteredCommand())) {
-                        uniqueSubCommands.add(registeredCommand);
-                    }
-                });
-
-                commands.put(rootCommand, uniqueSubCommands);
-            }
-        }
-
-        return commands;
-    }
-
 
     public Map<RootCommand, Set<RegisteredCommand>> getAllowedCommands(Map<RootCommand, Set<RegisteredCommand>> commands,
                                                                        CommandIssuer issuer) {
