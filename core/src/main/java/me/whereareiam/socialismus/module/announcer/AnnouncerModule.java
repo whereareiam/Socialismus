@@ -151,6 +151,7 @@ public class AnnouncerModule implements Module {
         registerAnnouncers();
 
         moduleStatus = true;
+        injector.getInstance(AnnouncerService.class).startAnnouncers();
     }
 
     @Override
@@ -160,10 +161,12 @@ public class AnnouncerModule implements Module {
 
     @Override
     public void reload() {
+        injector.getInstance(AnnouncerService.class).stopAnnouncers();
         announcements.clear();
         announcers.clear();
 
         registerAnnouncements();
         registerAnnouncers();
+        injector.getInstance(AnnouncerService.class).startAnnouncers();
     }
 }

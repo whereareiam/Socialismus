@@ -45,6 +45,7 @@ you want with this plugin, as it offers many different modules and great customi
 - [ ] Placeholders
 - [ ] Statistics
 - [ ] Swapper placeholder list command
+- [ ] Tag Parser
 - [ ] User Click Action
 - [ ] User Mention
 - [x] Chats <sup>From 0.0.1
