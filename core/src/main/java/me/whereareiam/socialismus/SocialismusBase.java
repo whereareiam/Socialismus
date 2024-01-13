@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus;
 
 import com.google.inject.Injector;
+import me.whereareiam.socialismus.command.management.CommandManager;
 import me.whereareiam.socialismus.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.config.ConfigManager;
 import me.whereareiam.socialismus.module.ModuleLoader;
@@ -19,6 +20,7 @@ public abstract class SocialismusBase extends JavaPlugin {
         configManager.reloadConfigs();
 
         injector.getInstance(CommandRegistrar.class).registerCommands();
+        injector.getInstance(CommandManager.class).setCommands();
         injector.getInstance(ModuleLoader.class).loadModules();
 
         injector.getInstance(InfoPrinterUtil.class).printStartMessage();
