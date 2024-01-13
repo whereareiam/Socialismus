@@ -73,10 +73,12 @@ public class AnnouncerModule implements Module {
 
     private void registerAnnouncers() {
         loggerUtil.debug("Registering announcers");
-        if (!announcerConfig.announcers.isEmpty()) {
+        announcerConfig.reload(announcerPath.resolve("announcer.yml"));
+
+        if (announcerConfig.announcers.isEmpty()) {
             loggerUtil.debug("Creating an example announcer, because config is empty");
-            AnnouncerConfig announcerConfig = createExampleAnnouncerConfig();
-            announcerConfig.reload(announcerPath.resolve("announcer.yml"));
+            createExampleAnnouncerConfig();
+            announcerConfig.save(announcerPath.resolve("announcer.yml"));
         }
 
         for (Announcer announcer : announcerConfig.announcers) {
@@ -93,9 +95,8 @@ public class AnnouncerModule implements Module {
         }
     }
 
-    private AnnouncerConfig createExampleAnnouncerConfig() {
-        AnnouncerConfig announcerConfig = injector.getInstance(AnnouncerConfig.class);
-        Announcer announcer = injector.getInstance(Announcer.class);
+    private void createExampleAnnouncerConfig() {
+        Announcer announcer = new Announcer();
 
         announcer.enabled = true;
         announcer.interval = 10;
@@ -103,8 +104,6 @@ public class AnnouncerModule implements Module {
         announcer.announcements = List.of("example");
 
         announcerConfig.announcers.add(announcer);
-
-        return announcerConfig;
     }
 
     private AnnouncementConfig createExampleAnnouncementConfig() {
