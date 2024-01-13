@@ -23,44 +23,22 @@ import java.util.*;
 @Singleton
 @SuppressWarnings("rawtypes")
 public class MainCommand extends CommandBase {
+    private final CommandManager commandManager;
     private final FormatterUtil formatterUtil;
     private final MessageUtil messageUtil;
     private final CommandsConfig commands;
     private final MessagesConfig messages;
 
-    private final Map<RootCommand, Set<RegisteredCommand>> commandsMap = new HashMap<>();
-
     @Inject
     public MainCommand(LoggerUtil loggerUtil, CommandManager commandManager, FormatterUtil formatterUtil,
                        MessageUtil messageUtil, CommandsConfig commands, MessagesConfig messages) {
+        this.commandManager = commandManager;
         this.formatterUtil = formatterUtil;
         this.messageUtil = messageUtil;
         this.commands = commands;
         this.messages = messages;
 
         loggerUtil.trace("Initializing class: " + this);
-
-        Collection<RootCommand> allCommands = commandManager.getAllCommands();
-        Set<String> uniqueParentClassNames = new HashSet<>();
-
-        for (RootCommand rootCommand : allCommands) {
-            String parentClassName = rootCommand.getDefCommand().getName();
-
-            if (!parentClassName.equals("chatcommandtemplate") && !uniqueParentClassNames.contains(parentClassName)) {
-                uniqueParentClassNames.add(parentClassName);
-
-                HashSet<RegisteredCommand> uniqueSubCommands = new HashSet<>();
-                rootCommand.getSubCommands().entries().forEach(entry -> {
-                    RegisteredCommand registeredCommand = entry.getValue();
-
-                    if (!uniqueSubCommands.contains(registeredCommand) && !registeredCommand.equals(rootCommand.getDefaultRegisteredCommand())) {
-                        uniqueSubCommands.add(registeredCommand);
-                    }
-                });
-
-                commandsMap.put(rootCommand, uniqueSubCommands);
-            }
-        }
     }
 
     @CommandAlias("%command.main")
@@ -76,8 +54,8 @@ public class MainCommand extends CommandBase {
         }
     }
 
-    public String buildHelpCommand(CommandIssuer issuer) {
-        Map<RootCommand, Set<RegisteredCommand>> commands = getAllowedCommands(commandsMap, issuer);
+    private String buildHelpCommand(CommandIssuer issuer) {
+        Map<RootCommand, Set<RegisteredCommand>> commands = getAllowedCommands(commandManager.getAllCommands(), issuer);
         StringBuilder formattedCommands = getFormattedCommands(commands);
 
         List<String> helpFormat = messages.commands.mainCommand.helpFormat;

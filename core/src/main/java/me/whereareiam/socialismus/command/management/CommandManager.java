@@ -1,28 +1,28 @@
 package me.whereareiam.socialismus.command.management;
 
 import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.RegisteredCommand;
 import co.aikar.commands.RootCommand;
 import co.aikar.locales.MessageKey;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.command.base.CommandBase;
 import me.whereareiam.socialismus.config.message.MessagesConfig;
 
-import java.util.Collection;
-import java.util.Locale;
+import java.util.*;
 
 @Singleton
+@SuppressWarnings("rawtypes")
 public class CommandManager {
-    private final Injector injector;
     private final BukkitCommandManager bukkitCommandManager;
     private final MessagesConfig messagesConfig;
+
+    private final Map<RootCommand, Set<RegisteredCommand>> commandsMap = new HashMap<>();
 
     private int commandCount = 0;
 
     @Inject
-    public CommandManager(Injector injector, BukkitCommandManager bukkitCommandManager, MessagesConfig messagesConfig) {
-        this.injector = injector;
+    public CommandManager(BukkitCommandManager bukkitCommandManager, MessagesConfig messagesConfig) {
         this.bukkitCommandManager = bukkitCommandManager;
         this.messagesConfig = messagesConfig;
 
@@ -35,6 +35,30 @@ public class CommandManager {
             bukkitCommandManager.registerCommand(command);
         }
         commandCount++;
+    }
+
+    public void setCommands() {
+        Collection<RootCommand> allCommands = bukkitCommandManager.getRegisteredRootCommands();
+        Set<String> uniqueParentClassNames = new HashSet<>();
+
+        for (RootCommand rootCommand : allCommands) {
+            String parentClassName = rootCommand.getDefCommand().getName();
+
+            if (!parentClassName.equals("chatcommandtemplate") && !uniqueParentClassNames.contains(parentClassName)) {
+                uniqueParentClassNames.add(parentClassName);
+
+                HashSet<RegisteredCommand> uniqueSubCommands = new HashSet<>();
+                rootCommand.getSubCommands().entries().forEach(entry -> {
+                    RegisteredCommand registeredCommand = entry.getValue();
+
+                    if (!uniqueSubCommands.contains(registeredCommand) && !registeredCommand.equals(rootCommand.getDefaultRegisteredCommand())) {
+                        uniqueSubCommands.add(registeredCommand);
+                    }
+                });
+
+                commandsMap.put(rootCommand, uniqueSubCommands);
+            }
+        }
     }
 
     public void addTranslations() {
@@ -54,7 +78,7 @@ public class CommandManager {
         return commandCount;
     }
 
-    public Collection<RootCommand> getAllCommands() {
-        return bukkitCommandManager.getRegisteredRootCommands();
+    public Map<RootCommand, Set<RegisteredCommand>> getAllCommands() {
+        return commandsMap;
     }
 }
