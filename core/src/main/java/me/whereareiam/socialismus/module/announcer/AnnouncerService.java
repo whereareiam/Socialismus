@@ -1,9 +1,11 @@
 package me.whereareiam.socialismus.module.announcer;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Scheduler;
 import me.whereareiam.socialismus.model.announcement.Announcement;
 import me.whereareiam.socialismus.model.announcer.Announcer;
+import me.whereareiam.socialismus.module.announcer.announcement.AnnouncementBroadcaster;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
 import java.util.*;
@@ -11,8 +13,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Singleton
 public class AnnouncerService {
     private final AnnouncerModule announcerModule;
+    private final AnnouncementBroadcaster announcementBroadcaster;
     private final LoggerUtil loggerUtil;
     private final Scheduler scheduler;
 
@@ -20,13 +24,18 @@ public class AnnouncerService {
     private final Map<Announcer, Iterator<Announcement>> iterators = new HashMap<>();
 
     @Inject
-    public AnnouncerService(AnnouncerModule announcerModule, LoggerUtil loggerUtil, Scheduler scheduler) {
+    public AnnouncerService(AnnouncerModule announcerModule, AnnouncementBroadcaster announcementBroadcaster,
+                            LoggerUtil loggerUtil, Scheduler scheduler) {
         this.announcerModule = announcerModule;
+        this.announcementBroadcaster = announcementBroadcaster;
         this.loggerUtil = loggerUtil;
         this.scheduler = scheduler;
+
+        loggerUtil.trace("Initializing class: " + this);
     }
 
     public void startAnnouncers() {
+        loggerUtil.debug("Starting announcers");
         Map<Announcer, List<Announcement>> announcers = announcerModule.getAnnouncers();
         for (Map.Entry<Announcer, List<Announcement>> entry : announcers.entrySet()) {
             Announcer announcer = entry.getKey();
@@ -40,6 +49,7 @@ public class AnnouncerService {
     }
 
     public void stopAnnouncers() {
+        loggerUtil.debug("Stopping announcers");
         for (ScheduledFuture<?> future : futures.values()) {
             scheduler.cancelTask(future);
         }
@@ -49,6 +59,7 @@ public class AnnouncerService {
     }
 
     private Announcement selectAnnouncement(Announcer announcer, List<Announcement> announcements) {
+        loggerUtil.trace("Selecting announcement for announcer: " + announcer.hashCode());
         switch (announcer.selectionType) {
             case RANDOM:
                 int randomIndex = new Random().nextInt(announcements.size());
@@ -56,6 +67,8 @@ public class AnnouncerService {
                 if (!randomAnnouncement.settings.repeat) {
                     announcements.remove(randomIndex);
                 }
+
+                loggerUtil.trace("Selected announcement: " + randomAnnouncement.id);
                 return randomAnnouncement;
             case SEQUENTIAL:
             default:
@@ -69,15 +82,13 @@ public class AnnouncerService {
                     if (!sequentialAnnouncement.settings.repeat) {
                         iterator.remove();
                     }
+
+                    loggerUtil.trace("Selected announcement: " + sequentialAnnouncement.id);
                     return sequentialAnnouncement;
                 }
         }
 
         return null;
-    }
-
-    private void postAnnouncement(Announcer announcer, Announcement announcement) {
-        loggerUtil.debug("Posting announcement: " + announcement.id + " (" + announcer.hashCode() + ")");
     }
 
     private Runnable getRunnable(Announcer announcer, List<Announcement> announcements) {
@@ -86,9 +97,7 @@ public class AnnouncerService {
             Announcement announcement = selectAnnouncement(announcer, announcements);
             if (announcement != null) {
                 delay.set(announcement.settings.delay);
-                scheduler.schedule(() -> {
-                    postAnnouncement(announcer, announcement);
-                }, delay.get(), TimeUnit.SECONDS);
+                scheduler.schedule(() -> announcementBroadcaster.postAnnouncement(announcer, announcement), delay.get(), TimeUnit.SECONDS);
             }
         };
     }

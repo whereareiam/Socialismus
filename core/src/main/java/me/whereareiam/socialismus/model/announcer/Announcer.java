@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.model.announcer;
 
-import me.whereareiam.socialismus.module.announcer.AnnouncementSelectionType;
+import me.whereareiam.socialismus.module.announcer.announcement.AnnouncementSelectionType;
 
 import java.util.ArrayList;
 import java.util.List;

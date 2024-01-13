@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class WorldPlayerUtil {
+    public static Collection<Player> getPlayersInWorld(String world) {
+        return getPlayersInWorld(Bukkit.getWorld(world));
+    }
+
     @Cacheable(duration = 1)
     public static Collection<Player> getPlayersInWorld(World world) {
         return Bukkit.getOnlinePlayers().stream()

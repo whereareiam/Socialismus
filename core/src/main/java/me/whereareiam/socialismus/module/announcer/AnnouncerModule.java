@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.model.announcement.Announcement;
 import me.whereareiam.socialismus.model.announcer.Announcer;
 import me.whereareiam.socialismus.module.Module;
+import me.whereareiam.socialismus.module.announcer.announcement.AnnouncementSelectionType;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
 import java.io.File;
@@ -72,7 +73,7 @@ public class AnnouncerModule implements Module {
 
     private void registerAnnouncers() {
         loggerUtil.debug("Registering announcers");
-        if (announcerConfig.announcers.isEmpty()) {
+        if (!announcerConfig.announcers.isEmpty()) {
             loggerUtil.debug("Creating an example announcer, because config is empty");
             AnnouncerConfig announcerConfig = createExampleAnnouncerConfig();
             announcerConfig.reload(announcerPath.resolve("announcer.yml"));
