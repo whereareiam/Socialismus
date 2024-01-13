@@ -29,6 +29,8 @@ you want with this plugin, as it offers many different modules and great customi
 - **Swapper:** Allows you to create many placeholders for chat. For example, you can make emojis or shortcuts.
 - **BubbleChat:** Simple packet-based messages over players' heads, allowing you to chat without looking at the chat!
   Experience a smooth bubble transition when the player runs, it's not what you've seen in other plugins.
+- **Announcer**: Allows you to create many different messages that will be sent to the chat after a certain period of
+  time.
 
 ## Information
 
@@ -45,12 +47,12 @@ you want with this plugin, as it offers many different modules and great customi
 - [ ] Placeholders
 - [ ] Statistics
 - [ ] Swapper placeholder list command
-- [ ] Tag Parser
 - [ ] User Click Action
-- [ ] User Mention
 - [x] Chats <sup>From 0.0.1
 - [x] Swapper <sup>From 0.1.0
 - [x] Bubble Chat <sup> From 0.2.0
 - [x] Chats Improvement: Symbol or command chat <sup> From 1.0.0
 - [x] Private Messages <sup> From 1.0.0
 - [x] Message Announcer <sup> From 1.1.0
+- [x] Tag Parser <sup> From 1.2.0
+- [x] User Mention <sup> From 1.2.0
