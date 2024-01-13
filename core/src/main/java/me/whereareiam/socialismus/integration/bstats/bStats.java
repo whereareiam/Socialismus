@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.IntegrationType;
+import me.whereareiam.socialismus.integration.bstats.chart.AnnouncementCountChart;
 import me.whereareiam.socialismus.integration.bstats.chart.ChatCountChart;
 import me.whereareiam.socialismus.integration.bstats.chart.HookCountChart;
 import me.whereareiam.socialismus.integration.bstats.chart.SwapperCountChart;
@@ -66,7 +67,7 @@ public class bStats implements Integration {
         ChatCountChart chatCountChart = injector.getInstance(ChatCountChart.class);
         chatCountChart.setMetrics(metrics);
         chatCountChart.addChart();
-        
+
         HookCountChart hookCountChart = injector.getInstance(HookCountChart.class);
         hookCountChart.setMetrics(metrics);
         hookCountChart.addChart();
@@ -74,6 +75,10 @@ public class bStats implements Integration {
         SwapperCountChart swapperCountChart = injector.getInstance(SwapperCountChart.class);
         swapperCountChart.setMetrics(metrics);
         swapperCountChart.addChart();
+
+        AnnouncementCountChart announcementCountChart = injector.getInstance(AnnouncementCountChart.class);
+        announcementCountChart.setMetrics(metrics);
+        announcementCountChart.addChart();
     }
 }
 
