@@ -14,7 +14,6 @@ import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.module.ModuleLoader;
 import me.whereareiam.socialismus.util.LoggerUtil;
 import me.whereareiam.socialismus.util.MessageUtil;
-import org.bukkit.entity.Player;
 
 @Singleton
 @CommandAlias("%command.main")
@@ -41,12 +40,8 @@ public class ReloadCommand extends CommandBase {
     @CommandPermission("%permission.reload")
     @Description("%description.reload")
     public void onCommand(CommandIssuer issuer) {
-        String message = messages.commands.reloadCommand.reloadedSuccessfully;
-        if (issuer.getIssuer() instanceof Player) {
-            messageUtil.sendMessage(issuer.getIssuer(), message);
-        }
+        messageUtil.sendMessage(issuer, messages.commands.reloadCommand.reloadedSuccessfully);
 
-        loggerUtil.info(message);
         configManager.reloadConfigs();
         moduleLoader.reloadModules();
     }
