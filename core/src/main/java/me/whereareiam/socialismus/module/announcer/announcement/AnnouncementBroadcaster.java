@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.module.announcer.announcement;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.model.announcement.Announcement;
-import me.whereareiam.socialismus.model.announcer.Announcer;
 import me.whereareiam.socialismus.module.announcer.AnnouncerRequirementValidator;
 import me.whereareiam.socialismus.util.FormatterUtil;
 import me.whereareiam.socialismus.util.LoggerUtil;
@@ -32,8 +31,8 @@ public class AnnouncementBroadcaster {
         this.announcerRequirementValidator = announcerRequirementValidator;
     }
 
-    public void postAnnouncement(Announcer announcer, Announcement announcement) {
-        loggerUtil.debug("Posting announcement: " + announcement.id + " (" + announcer.hashCode() + ")");
+    public void postAnnouncement(Announcement announcement) {
+        loggerUtil.debug("Posting announcement: " + announcement.id);
         Collection<? extends Player> onlinePlayers;
 
         if (announcement.requirements.worlds.isEmpty()) {

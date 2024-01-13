@@ -97,7 +97,7 @@ public class AnnouncerService {
             Announcement announcement = selectAnnouncement(announcer, announcements);
             if (announcement != null) {
                 delay.set(announcement.settings.delay);
-                scheduler.schedule(() -> announcementBroadcaster.postAnnouncement(announcer, announcement), delay.get(), TimeUnit.SECONDS);
+                scheduler.schedule(() -> announcementBroadcaster.postAnnouncement(announcement), delay.get(), TimeUnit.SECONDS);
             }
         };
     }
