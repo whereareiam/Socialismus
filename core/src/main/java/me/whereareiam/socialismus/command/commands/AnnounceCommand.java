@@ -48,21 +48,11 @@ public class AnnounceCommand extends CommandBase {
                 .orElse(null);
 
         if (announcement == null) {
-            if (issuer.isPlayer()) {
-                messageUtil.sendMessage(issuer.getIssuer(), messages.commands.announceCommand.noAnnouncement);
-            } else {
-                issuer.sendMessage(messages.commands.announceCommand.noAnnouncement);
-            }
-
+            messageUtil.sendMessage(issuer, messages.commands.announceCommand.noAnnouncement);
             return;
         }
 
-        if (issuer.isPlayer()) {
-            messageUtil.sendMessage(issuer.getIssuer(), messages.commands.announceCommand.announce);
-        } else {
-            issuer.sendMessage(messages.commands.announceCommand.announce);
-        }
-
+        messageUtil.sendMessage(issuer, messages.commands.announceCommand.announce);
         announcementBroadcaster.postAnnouncement(announcement);
     }
 

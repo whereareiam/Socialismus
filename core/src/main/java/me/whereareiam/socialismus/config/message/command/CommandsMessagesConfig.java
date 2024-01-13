@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.config.message.command;
 
 public class CommandsMessagesConfig {
+    public String onlyForPlayer = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>This command can only be used by players.";
     public String wrongSyntax = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>You used the command <red>incorrectly.";
     public String unknownCommand = " <gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| <white>You used a command that <red>doesn't <white>exist.";
     public String errorOccurred = "An error occurred while executing the command.";

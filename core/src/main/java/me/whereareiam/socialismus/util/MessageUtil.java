@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.util;
 
+import co.aikar.commands.CommandIssuer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.platform.PlatformMessageSender;
@@ -20,6 +21,14 @@ public class MessageUtil {
         this.platformMessageSender = platformMessageSender;
 
         loggerUtil.trace("Initializing class: " + this);
+    }
+
+    public void sendMessage(CommandIssuer issuer, String message) {
+        if (issuer.isPlayer()) {
+            sendMessage(issuer.getIssuer(), formatterUtil.formatMessage(issuer.getIssuer(), message));
+        } else {
+            issuer.sendMessage(formatterUtil.cleanMessage(message));
+        }
     }
 
     public void sendMessage(Player sender, String message) {

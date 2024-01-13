@@ -9,23 +9,27 @@ import me.whereareiam.socialismus.chat.ChatService;
 import me.whereareiam.socialismus.chat.message.ChatMessage;
 import me.whereareiam.socialismus.chat.message.ChatMessageFactory;
 import me.whereareiam.socialismus.command.base.CommandBase;
+import me.whereareiam.socialismus.config.message.MessagesConfig;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.util.LoggerUtil;
+import me.whereareiam.socialismus.util.MessageUtil;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
 public class ChatCommandTemplate extends CommandBase {
-    private final LoggerUtil loggerUtil;
+    private final MessageUtil messageUtil;
+    private final MessagesConfig messages;
     private final ChatMessageFactory chatMessageFactory;
     private final ChatService chatService;
 
     private Chat chat;
 
     @Inject
-    public ChatCommandTemplate(LoggerUtil loggerUtil, ChatMessageFactory chatMessageFactory,
-                               ChatService chatService) {
-        this.loggerUtil = loggerUtil;
+    public ChatCommandTemplate(LoggerUtil loggerUtil, MessageUtil messageUtil, MessagesConfig messages,
+                               ChatMessageFactory chatMessageFactory, ChatService chatService) {
+        this.messageUtil = messageUtil;
+        this.messages = messages;
         this.chatMessageFactory = chatMessageFactory;
         this.chatService = chatService;
 
@@ -41,7 +45,7 @@ public class ChatCommandTemplate extends CommandBase {
     @CommandCompletion("@nothing")
     public void onCommand(CommandIssuer issuer, String message) {
         if (!issuer.isPlayer())
-            loggerUtil.info("You can't use this command in console");
+            messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
 
         Player player = issuer.getIssuer();
 

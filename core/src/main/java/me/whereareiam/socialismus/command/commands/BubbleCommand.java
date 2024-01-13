@@ -41,7 +41,7 @@ public class BubbleCommand extends CommandBase {
     @Syntax("%syntax.bubble")
     public void onCommand(CommandIssuer issuer, String message) {
         if (!issuer.isPlayer())
-            return;
+            messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
 
         Player player = issuer.getIssuer();
 
