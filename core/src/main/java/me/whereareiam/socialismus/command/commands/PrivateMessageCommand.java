@@ -34,7 +34,7 @@ public class PrivateMessageCommand extends CommandBase {
     @Syntax("%syntax.privateMessage")
     public void onCommand(CommandIssuer issuer, String targetPlayerName, String message) {
         if (!issuer.isPlayer())
-            return;
+            messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
 
         Player player = issuer.getIssuer();
         Player recipient = Bukkit.getPlayer(targetPlayerName);
