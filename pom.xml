@@ -6,7 +6,7 @@
 
     <groupId>me.whereareiam</groupId>
     <artifactId>Socialismus</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
     <packaging>pom</packaging>
 
     <properties>
