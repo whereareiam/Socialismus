@@ -14,8 +14,14 @@ public abstract class ChatEvent extends Event {
 	protected Collection<? extends Player> recipients;
 
 	public ChatEvent(ChatMessage chatMessage, Collection<? extends Player> recipients) {
+		super(true);
+
 		this.chatMessage = chatMessage;
 		this.recipients = recipients;
+	}
+
+	public static HandlerList getHandlerList() {
+		return HANDLER_LIST;
 	}
 
 	@Override

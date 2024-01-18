@@ -10,7 +10,13 @@ public abstract class BubbleEvent extends Event {
 	protected BubbleMessage bubbleMessage;
 
 	public BubbleEvent(BubbleMessage bubbleMessage) {
+		super(true);
+		
 		this.bubbleMessage = bubbleMessage;
+	}
+
+	public static HandlerList getHandlerList() {
+		return HANDLER_LIST;
 	}
 
 	@Override
