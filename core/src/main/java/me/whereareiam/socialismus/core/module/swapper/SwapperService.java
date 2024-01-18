@@ -79,11 +79,12 @@ public class SwapperService implements Listener {
 					return content;
 				}
 
+				Component replacement;
 				if (swapper.settings.randomContent) {
 					int randomIndex = random.nextInt(swapper.content.size());
-					content = formatterUtil.formatMessage(player, swapper.content.get(randomIndex));
+					replacement = formatterUtil.formatMessage(player, swapper.content.get(randomIndex));
 				} else {
-					content = formatterUtil.formatMessage(player, swapper.content.get(0));
+					replacement = formatterUtil.formatMessage(player, swapper.content.get(0));
 				}
 
 				if (! swapper.contentHover.isEmpty()) {
@@ -94,10 +95,10 @@ public class SwapperService implements Listener {
 							hoverText.append("\n");
 						}
 					}
-					content = content.hoverEvent(HoverEvent.showText(formatterUtil.formatMessage(player, hoverText.toString())));
+					replacement = replacement.hoverEvent(HoverEvent.showText(formatterUtil.formatMessage(player, hoverText.toString())));
 				}
 
-				content = messageUtil.replacePlaceholder(content, placeholder, content);
+				content = messageUtil.replacePlaceholder(content, placeholder, replacement);
 			}
 		}
 		return content;
