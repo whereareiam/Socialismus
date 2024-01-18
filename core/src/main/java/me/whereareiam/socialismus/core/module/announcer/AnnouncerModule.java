@@ -4,13 +4,13 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import me.whereareiam.socialismus.api.model.announcement.Announcement;
+import me.whereareiam.socialismus.api.model.announcer.Announcer;
+import me.whereareiam.socialismus.api.type.AnnouncementSelectionType;
 import me.whereareiam.socialismus.core.config.module.announcer.AnnouncementConfig;
 import me.whereareiam.socialismus.core.config.module.announcer.AnnouncerConfig;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.core.model.announcement.Announcement;
-import me.whereareiam.socialismus.core.model.announcer.Announcer;
 import me.whereareiam.socialismus.core.module.Module;
-import me.whereareiam.socialismus.core.module.announcer.announcement.AnnouncementSelectionType;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 
 import java.io.File;

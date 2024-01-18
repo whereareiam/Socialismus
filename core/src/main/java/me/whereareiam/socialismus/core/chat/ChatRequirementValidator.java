@@ -2,10 +2,10 @@ package me.whereareiam.socialismus.core.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.chat.message.ChatMessage;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.model.chat.ChatRecipientRequirements;
+import me.whereareiam.socialismus.api.model.chat.ChatSenderRequirements;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
-import me.whereareiam.socialismus.core.model.chat.ChatRecipientRequirements;
-import me.whereareiam.socialismus.core.model.chat.ChatSenderRequirements;
 import me.whereareiam.socialismus.core.util.DistanceCalculatorUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;

@@ -3,12 +3,12 @@ package me.whereareiam.socialismus.core.module.chat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import me.whereareiam.socialismus.core.chat.ChatUseType;
+import me.whereareiam.socialismus.api.model.chat.Chat;
+import me.whereareiam.socialismus.api.type.ChatUseType;
 import me.whereareiam.socialismus.core.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.core.config.module.chat.ChatsConfig;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.core.listener.state.ChatListenerState;
-import me.whereareiam.socialismus.core.model.chat.Chat;
 import me.whereareiam.socialismus.core.module.Module;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 

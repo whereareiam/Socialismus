@@ -5,7 +5,9 @@ import com.google.inject.Injector;
 import me.whereareiam.socialismus.core.listener.ChatListener;
 import me.whereareiam.socialismus.core.listener.JoinListener;
 import me.whereareiam.socialismus.core.listener.ListenerRegistrar;
-import me.whereareiam.socialismus.core.listener.player.PlayerJoinListener;
+import me.whereareiam.socialismus.core.listener.listeners.BeforeBubbleSendMessageListener;
+import me.whereareiam.socialismus.core.listener.listeners.BeforeChatSendMessageListener;
+import me.whereareiam.socialismus.core.listener.listeners.player.PlayerJoinListener;
 import me.whereareiam.socialismus.core.listener.state.ChatListenerState;
 import me.whereareiam.socialismus.core.listener.state.JoinListenerState;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
@@ -51,6 +53,9 @@ public abstract class BaseListenerRegistrar implements ListenerRegistrar {
 			JoinListener joinListener = createJoinListener();
 			pluginManager.registerEvents(joinListener, plugin);
 		}
+
+		pluginManager.registerEvents(injector.getInstance(BeforeChatSendMessageListener.class), plugin);
+		pluginManager.registerEvents(injector.getInstance(BeforeBubbleSendMessageListener.class), plugin);
 	}
 
 	protected abstract ChatListener createChatListener();

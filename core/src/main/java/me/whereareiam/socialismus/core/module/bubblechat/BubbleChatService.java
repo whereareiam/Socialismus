@@ -3,10 +3,10 @@ package me.whereareiam.socialismus.core.module.bubblechat;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.chat.message.ChatMessage;
+import me.whereareiam.socialismus.api.model.BubbleMessage;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.type.BubbleTriggerType;
 import me.whereareiam.socialismus.core.config.module.bubblechat.BubbleChatConfig;
-import me.whereareiam.socialismus.core.module.bubblechat.message.BubbleMessage;
-import me.whereareiam.socialismus.core.module.bubblechat.message.BubbleMessageProcessor;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import me.whereareiam.socialismus.core.util.WorldPlayerUtil;
 import org.bukkit.entity.Player;
@@ -67,7 +67,8 @@ public class BubbleChatService {
 		}
 
 		while (! queue.isEmpty()) {
-			bubbleQueue.addMessage(sender, queue.poll());
+
+			bubbleQueue.addMessage(queue.poll());
 		}
 	}
 }

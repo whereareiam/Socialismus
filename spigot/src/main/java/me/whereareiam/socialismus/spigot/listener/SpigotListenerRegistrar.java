@@ -8,7 +8,7 @@ import me.whereareiam.socialismus.core.listener.base.BaseListenerRegistrar;
 import me.whereareiam.socialismus.core.listener.state.ChatListenerState;
 import me.whereareiam.socialismus.core.listener.state.JoinListenerState;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
-import me.whereareiam.socialismus.spigot.listener.player.AsyncChatListener;
+import me.whereareiam.socialismus.spigot.listener.listeners.player.AsyncChatListener;
 import org.bukkit.plugin.Plugin;
 
 @Singleton

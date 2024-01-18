@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.core.config.module.chat;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.model.chat.Chat;
+import me.whereareiam.socialismus.api.model.chat.Chat;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 import net.elytrium.serializer.language.object.YamlSerializable;

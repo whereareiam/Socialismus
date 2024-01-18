@@ -3,15 +3,12 @@ package me.whereareiam.socialismus.core;
 import co.aikar.commands.BukkitCommandManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import me.whereareiam.socialismus.api.Socialismus;
 import me.whereareiam.socialismus.api.SocialismusAPI;
 import me.whereareiam.socialismus.core.cache.CacheInterceptor;
 import me.whereareiam.socialismus.core.cache.Cacheable;
-import me.whereareiam.socialismus.core.chat.message.ChatMessageProcessor;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.core.module.swapper.SwapperService;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import org.bukkit.plugin.Plugin;
 
@@ -43,9 +40,6 @@ public abstract class SocialismusConfig extends AbstractModule {
 		LoggerUtil loggerUtil = new LoggerUtil(settingsConfig);
 		loggerUtil.setBukkitLogger(plugin.getLogger());
 		bind(LoggerUtil.class).toInstance(loggerUtil);
-
-		Multibinder<ChatMessageProcessor> chatMessageProcessorMultibinder = Multibinder.newSetBinder(binder(), ChatMessageProcessor.class);
-		chatMessageProcessorMultibinder.addBinding().to(SwapperService.class);
 
 		bindInterceptor(Matchers.any(),
 				Matchers.annotatedWith(Cacheable.class),

@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.core.module.bubblechat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.chat.message.ChatMessage;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
 import me.whereareiam.socialismus.core.config.module.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.core.config.module.bubblechat.requirements.BubbleChatRecipientRequirementConfig;

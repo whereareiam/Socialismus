@@ -2,13 +2,13 @@ package me.whereareiam.socialismus.core.module.bubblechat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.model.BubbleMessage;
 import me.whereareiam.socialismus.core.config.module.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.AreaEffectCloudPacket;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.TextDisplayPacket;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.metadata.AreaEffectCloudMetadataPacket;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.metadata.display.TextDisplayMetadataPacket;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.model.PacketEntity;
-import me.whereareiam.socialismus.core.module.bubblechat.message.BubbleMessage;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import org.bukkit.entity.Player;
 
@@ -53,7 +53,7 @@ public class BubbleFactory {
 		textDisplayMeta.setCanSeeThrough(bubbleChatConfig.settings.seeThrough);
 		textDisplayMeta.setLineWidth(bubbleChatConfig.settings.lineWidth);
 
-		textDisplayMeta.setMessage(bubbleMessage.message());
+		textDisplayMeta.setMessage(bubbleMessage.getContent());
 
 		return new PacketEntity(
 				entityId,

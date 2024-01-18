@@ -3,13 +3,14 @@ package me.whereareiam.socialismus.core.module.chatmention;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import me.whereareiam.socialismus.api.model.chatmention.ChatMentionFormat;
+import me.whereareiam.socialismus.api.model.chatmention.ChatMentionNotificationFormat;
+import me.whereareiam.socialismus.api.model.chatmention.notification.SoundNotification;
+import me.whereareiam.socialismus.api.model.chatmention.notification.TitleNotification;
+import me.whereareiam.socialismus.api.type.ChatMentionNotificationType;
 import me.whereareiam.socialismus.core.config.module.chatmention.ChatMentionConfig;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.core.listener.state.ChatListenerState;
-import me.whereareiam.socialismus.core.model.chatmention.ChatMentionFormat;
-import me.whereareiam.socialismus.core.model.chatmention.ChatMentionNotificationFormat;
-import me.whereareiam.socialismus.core.model.chatmention.notification.SoundNotification;
-import me.whereareiam.socialismus.core.model.chatmention.notification.TitleNotification;
 import me.whereareiam.socialismus.core.module.Module;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 

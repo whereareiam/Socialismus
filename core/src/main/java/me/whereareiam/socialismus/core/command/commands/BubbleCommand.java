@@ -4,13 +4,13 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.*;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.chat.message.ChatMessage;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.type.BubbleTriggerType;
 import me.whereareiam.socialismus.core.chat.message.ChatMessageFactory;
 import me.whereareiam.socialismus.core.command.base.CommandBase;
 import me.whereareiam.socialismus.core.config.command.CommandsConfig;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
 import me.whereareiam.socialismus.core.module.bubblechat.BubbleChatService;
-import me.whereareiam.socialismus.core.module.bubblechat.BubbleTriggerType;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 import org.bukkit.entity.Player;
 

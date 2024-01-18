@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.core.config.module.announcer;
 
-import me.whereareiam.socialismus.core.model.announcement.Announcement;
+import me.whereareiam.socialismus.api.model.announcement.Announcement;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 import net.elytrium.serializer.language.object.YamlSerializable;

@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.core.module.announcer;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.model.announcement.Announcement;
+import me.whereareiam.socialismus.api.model.announcer.Announcer;
 import me.whereareiam.socialismus.core.Scheduler;
-import me.whereareiam.socialismus.core.model.announcement.Announcement;
-import me.whereareiam.socialismus.core.model.announcer.Announcer;
 import me.whereareiam.socialismus.core.module.announcer.announcement.AnnouncementBroadcaster;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 

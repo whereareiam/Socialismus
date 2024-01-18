@@ -1,8 +1,9 @@
 package me.whereareiam.socialismus.core.chat.message;
 
 import com.google.inject.Inject;
-import me.whereareiam.socialismus.core.chat.ChatUseType;
-import me.whereareiam.socialismus.core.model.chat.Chat;
+import me.whereareiam.socialismus.api.model.chat.Chat;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.type.ChatUseType;
 import me.whereareiam.socialismus.core.module.chat.ChatModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;

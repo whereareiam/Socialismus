@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.core.module.announcer;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.model.announcement.AnnouncementRequirements;
+import me.whereareiam.socialismus.api.model.announcement.AnnouncementRequirements;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;

@@ -2,21 +2,21 @@ package me.whereareiam.socialismus.core.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.chat.message.ChatMessage;
-import me.whereareiam.socialismus.core.chat.message.ChatMessageProcessor;
-import me.whereareiam.socialismus.core.model.chat.Chat;
+import me.whereareiam.socialismus.api.event.chat.AfterChatSendMessageEvent;
+import me.whereareiam.socialismus.api.event.chat.OnChatSendMessageEvent;
+import me.whereareiam.socialismus.api.model.chat.Chat;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.core.util.FormatterUtil;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Singleton
 public class ChatBroadcaster {
@@ -24,30 +24,35 @@ public class ChatBroadcaster {
 	private final FormatterUtil formatterUtil;
 	private final MessageUtil messageUtil;
 
-	private final Set<ChatMessageProcessor> chatMessageProcessors;
-
 	@Inject
 	public ChatBroadcaster(LoggerUtil loggerUtil, FormatterUtil formatterUtil,
-						   MessageUtil messageUtil, Set<ChatMessageProcessor> chatMessageProcessors) {
+						   MessageUtil messageUtil) {
 		this.loggerUtil = loggerUtil;
 		this.formatterUtil = formatterUtil;
 		this.messageUtil = messageUtil;
-
-		this.chatMessageProcessors = new HashSet<>(chatMessageProcessors);
 	}
 
 	public void broadcastMessage(ChatMessage chatMessage, Collection<? extends Player> recipients) {
 		Component finalMessage = createFinalMessage(chatMessage);
 
+		OnChatSendMessageEvent event = new OnChatSendMessageEvent(chatMessage, recipients);
+		Bukkit.getPluginManager().callEvent(event);
+
+		if (event.isCancelled()) {
+			return;
+		}
+		
+		chatMessage = event.getChatMessage();
+		recipients = event.getRecipients();
+
 		recipients.forEach(recipient -> messageUtil.sendMessage(recipient, finalMessage));
 		loggerUtil.info("[" + chatMessage.getChat().id.toUpperCase() + "] " + chatMessage.getSender().getName() + ": " + PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent()));
+
+		AfterChatSendMessageEvent afterEvent = new AfterChatSendMessageEvent(chatMessage, recipients);
+		Bukkit.getPluginManager().callEvent(afterEvent);
 	}
 
 	private Component createFinalMessage(ChatMessage chatMessage) {
-		for (ChatMessageProcessor processor : chatMessageProcessors) {
-			chatMessage = processor.process(chatMessage);
-		}
-
 		Chat chat = chatMessage.getChat();
 		Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), chat.messageFormat);
 		Component hoverFormat = createHoverFormat(chat.hoverFormat, chatMessage.getSender());

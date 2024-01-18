@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.core.config.module.bubblechat;
 
+import me.whereareiam.socialismus.api.type.BubbleTriggerType;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.metadata.display.type.AlignmentType;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.metadata.display.type.DisplayType;
-import me.whereareiam.socialismus.core.module.bubblechat.BubbleTriggerType;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 import org.joml.Vector3f;
@@ -38,6 +38,13 @@ public class BubbleChatSettingsConfig {
 	)
 	public DisplayType displayType = DisplayType.VERTICAL;
 
+	@Comment(
+			value = {
+					@CommentValue("  Enable swapper allows you to enable or disable the swapper."),
+			},
+			at = Comment.At.PREPEND
+	)
+	public boolean enableSwapper = true;
 
 	@Comment(
 			value = {

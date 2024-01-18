@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.core.config.module.announcer;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.model.announcer.Announcer;
+import me.whereareiam.socialismus.api.model.announcer.Announcer;
 import net.elytrium.serializer.annotations.Comment;
 import net.elytrium.serializer.annotations.CommentValue;
 import net.elytrium.serializer.language.object.YamlSerializable;

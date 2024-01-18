@@ -2,8 +2,8 @@ package me.whereareiam.socialismus.core.module.swapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.model.swapper.Swapper;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
-import me.whereareiam.socialismus.core.model.swapper.Swapper;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 import org.bukkit.entity.Player;
 

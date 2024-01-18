@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.core.config.module.chatmention;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.model.chatmention.ChatMentionFormat;
-import me.whereareiam.socialismus.core.model.chatmention.ChatMentionNotificationFormat;
+import me.whereareiam.socialismus.api.model.chatmention.ChatMentionFormat;
+import me.whereareiam.socialismus.api.model.chatmention.ChatMentionNotificationFormat;
 import net.elytrium.serializer.language.object.YamlSerializable;
 
 import java.util.ArrayList;

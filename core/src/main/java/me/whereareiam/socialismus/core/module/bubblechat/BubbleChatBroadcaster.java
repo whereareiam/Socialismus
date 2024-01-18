@@ -2,11 +2,14 @@ package me.whereareiam.socialismus.core.module.bubblechat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.event.bubblechat.AfterBubbleSendMessageEvent;
+import me.whereareiam.socialismus.api.event.bubblechat.OnBubbleSendMessageEvent;
+import me.whereareiam.socialismus.api.model.BubbleMessage;
 import me.whereareiam.socialismus.core.config.module.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.EntityPacketSender;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.model.PacketEntity;
-import me.whereareiam.socialismus.core.module.bubblechat.message.BubbleMessage;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -32,7 +35,15 @@ public class BubbleChatBroadcaster {
 	}
 
 	public void broadcastBubble(BubbleMessage bubbleMessage) {
-		Player player = bubbleMessage.sender();
+		OnBubbleSendMessageEvent event = new OnBubbleSendMessageEvent(bubbleMessage);
+		Bukkit.getPluginManager().callEvent(event);
+
+		if (event.isCancelled()) {
+			return;
+		}
+
+		Player player = event.getBubbleMessage().getSender();
+		bubbleMessage = event.getBubbleMessage();
 
 		List<PacketEntity> entities = new ArrayList<>();
 		entities.add(bubbleFactory.createBubble(bubbleMessage, player, random.nextInt()));
@@ -43,7 +54,7 @@ public class BubbleChatBroadcaster {
 		playerEntities.put(player, entities);
 
 		loggerUtil.debug("Broadcasting bubble");
-		for (Player onlinePlayer : bubbleMessage.receivers()) {
+		for (Player onlinePlayer : bubbleMessage.getReceivers()) {
 			int previousEntityId = player.getEntityId();
 			for (int i = 1 ; i < entities.size() ; i++) {
 				PacketEntity entity = entities.get(i);
@@ -53,6 +64,9 @@ public class BubbleChatBroadcaster {
 
 			entityPacketSender.sendEntityMountPacket(onlinePlayer, entities.get(0), previousEntityId);
 		}
+
+		AfterBubbleSendMessageEvent afterEvent = new AfterBubbleSendMessageEvent(bubbleMessage);
+		Bukkit.getPluginManager().callEvent(afterEvent);
 	}
 
 	public void broadcastBubbleRemove(Player player) {

@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.core.module.announcer.announcement;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.model.announcement.Announcement;
+import me.whereareiam.socialismus.api.model.announcement.Announcement;
 import me.whereareiam.socialismus.core.module.announcer.AnnouncerRequirementValidator;
 import me.whereareiam.socialismus.core.util.FormatterUtil;
 import me.whereareiam.socialismus.core.util.LoggerUtil;

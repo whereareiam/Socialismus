@@ -3,13 +3,13 @@ package me.whereareiam.socialismus.core.listener.handler;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.type.BubbleTriggerType;
 import me.whereareiam.socialismus.core.chat.ChatService;
-import me.whereareiam.socialismus.core.chat.message.ChatMessage;
 import me.whereareiam.socialismus.core.chat.message.ChatMessageFactory;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.core.integration.IntegrationManager;
 import me.whereareiam.socialismus.core.module.bubblechat.BubbleChatService;
-import me.whereareiam.socialismus.core.module.bubblechat.BubbleTriggerType;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import org.bukkit.entity.Player;
 

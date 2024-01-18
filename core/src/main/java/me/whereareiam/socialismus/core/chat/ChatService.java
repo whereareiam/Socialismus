@@ -2,9 +2,10 @@ package me.whereareiam.socialismus.core.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.chat.message.ChatMessage;
+import me.whereareiam.socialismus.api.event.chat.BeforeChatSendMessageEvent;
+import me.whereareiam.socialismus.api.model.chat.Chat;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
-import me.whereareiam.socialismus.core.model.chat.Chat;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -62,6 +63,13 @@ public class ChatService {
 			}
 		}
 
-		chatBroadcaster.broadcastMessage(chatMessage, onlinePlayers);
+		BeforeChatSendMessageEvent event = new BeforeChatSendMessageEvent(chatMessage, onlinePlayers);
+		Bukkit.getPluginManager().callEvent(event);
+
+		if (event.isCancelled()) {
+			return;
+		}
+
+		chatBroadcaster.broadcastMessage(event.getChatMessage(), event.getRecipients());
 	}
 }

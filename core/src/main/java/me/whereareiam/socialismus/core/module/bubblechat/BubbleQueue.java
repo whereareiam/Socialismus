@@ -2,8 +2,10 @@ package me.whereareiam.socialismus.core.module.bubblechat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.event.bubblechat.BeforeBubbleSendMessageEvent;
+import me.whereareiam.socialismus.api.model.BubbleMessage;
 import me.whereareiam.socialismus.core.Scheduler;
-import me.whereareiam.socialismus.core.module.bubblechat.message.BubbleMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -26,8 +28,18 @@ public class BubbleQueue {
 		this.bubbleChatBroadcaster = bubbleChatBroadcaster;
 	}
 
-	public void addMessage(Player player, BubbleMessage message) {
-		playerMessageQueues.computeIfAbsent(player, k -> new LinkedList<>()).add(message);
+	public void addMessage(BubbleMessage bubbleMessage) {
+		BeforeBubbleSendMessageEvent event = new BeforeBubbleSendMessageEvent(bubbleMessage);
+		Bukkit.getPluginManager().callEvent(event);
+
+		if (event.isCancelled()) {
+			return;
+		}
+
+		bubbleMessage = event.getBubbleMessage();
+		Player player = bubbleMessage.getSender();
+
+		playerMessageQueues.computeIfAbsent(player, k -> new LinkedList<>()).add(bubbleMessage);
 		if (! currentBubbleMessages.containsKey(player)) {
 			processNextMessage(player);
 		}
@@ -43,7 +55,7 @@ public class BubbleQueue {
 			BubbleMessage message = queue.poll();
 			currentBubbleMessages.put(player, message);
 			bubbleChatBroadcaster.broadcastBubble(message);
-			scheduler.schedule(() -> processNextMessage(player), (long)message.displayTime(), TimeUnit.SECONDS);
+			scheduler.schedule(() -> processNextMessage(player), (long)message.getDisplayTime(), TimeUnit.SECONDS);
 		} else {
 			currentBubbleMessages.remove(player);
 		}
