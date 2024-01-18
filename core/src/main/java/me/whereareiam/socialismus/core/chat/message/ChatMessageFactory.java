@@ -31,14 +31,13 @@ public class ChatMessageFactory {
 		}
 
 		if (chat == null) {
-			if (! Character.isLetterOrDigit(chatSymbol)) {
-				symbol = String.valueOf(chatSymbol);
+			symbol = String.valueOf(chatSymbol);
+			chat = chatModule.getChatBySymbol(symbol);
+			if (chat != null) {
 				message = message.substring(1);
-				chat = chatModule.getChatBySymbol(symbol);
-			}
-
-			if (chat == null)
+			} else {
 				chat = chatModule.getChatBySymbol("");
+			}
 		}
 
 		Component content = PlainTextComponentSerializer.plainText().deserialize(message.trim());
