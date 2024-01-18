@@ -31,8 +31,8 @@ public class SwapperService implements Listener {
 
 	@Inject
 	public SwapperService(LoggerUtil loggerUtil, SwapperModule swapperModule, FormatterUtil formatterUtil,
-						  MessageUtil messageUtil, BubbleChatConfig bubbleChatConfig,
-						  SwapperRequirementValidator swapperRequirementValidator) {
+	                      MessageUtil messageUtil, BubbleChatConfig bubbleChatConfig,
+	                      SwapperRequirementValidator swapperRequirementValidator) {
 		this.loggerUtil = loggerUtil;
 		this.swapperModule = swapperModule;
 		this.formatterUtil = formatterUtil;
@@ -44,38 +44,38 @@ public class SwapperService implements Listener {
 		loggerUtil.trace("Initializing class: " + this);
 	}
 
-	public BubbleMessage swapPlaceholders(BubbleMessage bubbleMessage) {
-		if (! bubbleChatConfig.settings.enableSwapper)
+	public BubbleMessage hookSwapper(BubbleMessage bubbleMessage) {
+		if (!bubbleChatConfig.settings.enableSwapper)
 			return bubbleMessage;
 
-		Component component = swapPlaceholders(bubbleMessage.getContent(), bubbleMessage.getSender());
+		Component component = hookSwapper(bubbleMessage.getContent(), bubbleMessage.getSender());
 		bubbleMessage.setContent(component);
 
 		return bubbleMessage;
 	}
 
-	public ChatMessage swapPlaceholders(ChatMessage chatMessage) {
-		if (! chatMessage.getChat().enableSwapper)
+	public ChatMessage hookSwapper(ChatMessage chatMessage) {
+		if (!chatMessage.getChat().enableSwapper)
 			return chatMessage;
 
-		Component component = swapPlaceholders(chatMessage.getContent(), chatMessage.getSender());
+		Component component = hookSwapper(chatMessage.getContent(), chatMessage.getSender());
 		chatMessage.setContent(component);
 
 		return chatMessage;
 	}
 
-	private Component swapPlaceholders(Component content, Player player) {
+	private Component hookSwapper(Component content, Player player) {
 		loggerUtil.debug("Swapping message: " + content);
 
 		List<Swapper> swappers = swapperModule.getSwappers();
 		for (Swapper swapper : swappers) {
-			for (int i = 0 ; i < swapper.placeholders.size() ; i++) {
+			for (int i = 0; i < swapper.placeholders.size(); i++) {
 				String placeholder = swapper.placeholders.get(i);
-				if (! content.toString().contains(placeholder)) {
+				if (!content.toString().contains(placeholder)) {
 					continue;
 				}
 
-				if (! swapperRequirementValidator.validatePlayer(swapper, player, true)) {
+				if (!swapperRequirementValidator.validatePlayer(swapper, player, true)) {
 					return content;
 				}
 
@@ -87,9 +87,9 @@ public class SwapperService implements Listener {
 					replacement = formatterUtil.formatMessage(player, swapper.content.get(0));
 				}
 
-				if (! swapper.contentHover.isEmpty()) {
+				if (!swapper.contentHover.isEmpty()) {
 					StringBuilder hoverText = new StringBuilder();
-					for (int s = 0 ; s < swapper.contentHover.size() ; s++) {
+					for (int s = 0; s < swapper.contentHover.size(); s++) {
 						hoverText.append(swapper.contentHover.get(s));
 						if (s != swapper.contentHover.size() - 1) {
 							hoverText.append("\n");
