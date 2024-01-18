@@ -83,7 +83,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>me.whereareiam.socialismus.integration.bstats</shadedPattern>
+                            <shadedPattern>me.whereareiam.socialismus.core.integration.bstats</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

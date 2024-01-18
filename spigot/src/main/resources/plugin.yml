@@ -1,6 +1,6 @@
 name: ${project.parent.artifactId}
 version: '${project.parent.version}'
-main: me.whereareiam.socialismus.SocialismusSpigot
+main: me.whereareiam.socialismus.spigot.SocialismusSpigot
 api-version: '1.19'
 softdepend: [
   PlaceholderAPI,

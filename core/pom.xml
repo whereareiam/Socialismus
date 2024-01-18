@@ -14,6 +14,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>me.whereareiam</groupId>
+            <artifactId>api</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
             <version>${acf-paper.version}-SNAPSHOT</version>
