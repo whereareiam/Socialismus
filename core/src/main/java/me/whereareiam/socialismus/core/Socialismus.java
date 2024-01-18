@@ -8,7 +8,7 @@ import me.whereareiam.socialismus.core.module.ModuleLoader;
 import me.whereareiam.socialismus.core.util.InfoPrinterUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public abstract class SocialismusBase extends JavaPlugin {
+public abstract class Socialismus extends JavaPlugin implements me.whereareiam.socialismus.api.Socialismus {
 	public static String version;
 	protected Injector injector;
 
@@ -30,5 +30,11 @@ public abstract class SocialismusBase extends JavaPlugin {
 	public void onDisable() {
 		/*injector.getInstance(DatabaseManager.class).shutdown();*/
 		injector.getInstance(Scheduler.class).shutdown();
+	}
+
+	@Override
+	public void reload() {
+		injector.getInstance(ConfigManager.class).reloadConfigs();
+		injector.getInstance(ModuleLoader.class).reloadModules();
 	}
 }

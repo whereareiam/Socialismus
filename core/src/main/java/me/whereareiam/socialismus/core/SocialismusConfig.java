@@ -5,6 +5,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
+import me.whereareiam.socialismus.api.Socialismus;
+import me.whereareiam.socialismus.api.SocialismusAPI;
 import me.whereareiam.socialismus.core.cache.CacheInterceptor;
 import me.whereareiam.socialismus.core.cache.Cacheable;
 import me.whereareiam.socialismus.core.chat.message.ChatMessageProcessor;
@@ -16,15 +18,20 @@ import org.bukkit.plugin.Plugin;
 import java.nio.file.Path;
 
 public abstract class SocialismusConfig extends AbstractModule {
+	protected final me.whereareiam.socialismus.core.Socialismus instance;
 	protected final Plugin plugin;
 
-	public SocialismusConfig(Plugin plugin) {
+	public SocialismusConfig(me.whereareiam.socialismus.core.Socialismus instance, Plugin plugin) {
+		this.instance = instance;
 		this.plugin = plugin;
 	}
 
 	@Override
 	protected void configure() {
+		bind(Socialismus.class).toInstance(instance);
+		bind(SocialismusAPI.class).asEagerSingleton();
 		bind(Plugin.class).toInstance(plugin);
+
 		bind(Path.class).annotatedWith(Names.named("pluginPath")).toInstance(plugin.getDataFolder().toPath());
 		bind(Path.class).annotatedWith(Names.named("modulePath")).toInstance(plugin.getDataFolder().toPath().resolve("modules"));
 

@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.core.integration.placeholderapi.placeholders;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.whereareiam.socialismus.core.SocialismusBase;
+import me.whereareiam.socialismus.core.Socialismus;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +36,7 @@ public class Placeholders extends PlaceholderExpansion {
 
 	@Override
 	public @NotNull String getVersion() {
-		return SocialismusBase.version;
+		return Socialismus.version;
 	}
 
 	@Override

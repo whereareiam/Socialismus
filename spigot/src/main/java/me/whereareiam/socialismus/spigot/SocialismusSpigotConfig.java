@@ -5,8 +5,8 @@ import me.whereareiam.socialismus.core.platform.PlatformMessageSender;
 import org.bukkit.plugin.Plugin;
 
 public class SocialismusSpigotConfig extends SocialismusConfig {
-	public SocialismusSpigotConfig(Plugin plugin) {
-		super(plugin);
+	public SocialismusSpigotConfig(SocialismusSpigot instance, Plugin plugin) {
+		super(instance, plugin);
 	}
 
 	@Override

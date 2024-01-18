@@ -5,8 +5,8 @@ import me.whereareiam.socialismus.core.platform.PlatformMessageSender;
 import org.bukkit.plugin.Plugin;
 
 public class SocialismusPaperConfig extends SocialismusConfig {
-	public SocialismusPaperConfig(Plugin plugin) {
-		super(plugin);
+	public SocialismusPaperConfig(SocialismusPaper instance, Plugin plugin) {
+		super(instance, plugin);
 	}
 
 	@Override

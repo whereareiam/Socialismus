@@ -1,14 +1,18 @@
 package me.whereareiam.socialismus.api;
 
-public class SocialismusAPI {
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-	/**
-	 * Get the instance of the {@link Socialismus plugin}
-	 *
-	 * @return the instance of the {@link Socialismus plugin}
-	 * @since 2.0.0
-	 */
+@Singleton
+public class SocialismusAPI {
+	private static Socialismus instance;
+
+	@Inject
+	public SocialismusAPI(Socialismus instance) {
+		SocialismusAPI.instance = instance;
+	}
+
 	public static Socialismus getInstance() {
-		return null;
+		return instance;
 	}
 }
