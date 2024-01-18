@@ -7,6 +7,7 @@ import com.google.inject.name.Named;
 import me.whereareiam.socialismus.module.announcer.AnnouncerModule;
 import me.whereareiam.socialismus.module.bubblechat.BubbleChatModule;
 import me.whereareiam.socialismus.module.chat.ChatModule;
+import me.whereareiam.socialismus.module.chatmention.ChatMentionModule;
 import me.whereareiam.socialismus.module.swapper.SwapperModule;
 import me.whereareiam.socialismus.util.LoggerUtil;
 
@@ -47,7 +48,8 @@ public class ModuleLoader {
                 ChatModule.class,
                 BubbleChatModule.class,
                 SwapperModule.class,
-                AnnouncerModule.class
+                AnnouncerModule.class,
+                ChatMentionModule.class
         );
 
         for (Class<? extends Module> moduleClass : modules) {

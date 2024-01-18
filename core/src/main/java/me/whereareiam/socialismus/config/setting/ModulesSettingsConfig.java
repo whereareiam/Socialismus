@@ -46,5 +46,15 @@ public class ModulesSettingsConfig {
     )
     public boolean announcer = true;
 
+    @Comment(
+            value = {
+                    @CommentValue(type = CommentValue.Type.NEW_LINE),
+                    @CommentValue(" The chatmention module allows you to mention players in chat messages."),
+                    @CommentValue(" When you mention a player, he will receive a notification"),
+            },
+            at = Comment.At.PREPEND
+    )
+    public boolean chatmention = true;
+
     /*public StatisticSettingsConfig statistic = new StatisticSettingsConfig();*/
 }
