@@ -6,5 +6,6 @@ public enum ChatMentionNotificationType {
 	TITLE,
 	BOSS_BAR,
 	SOUND,
+	COMMAND,
 	NONE
 }

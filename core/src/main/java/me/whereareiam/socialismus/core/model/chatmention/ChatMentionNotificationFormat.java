@@ -14,4 +14,5 @@ public class ChatMentionNotificationFormat {
 	public ChatNotification chat = new ChatNotification();
 	public SoundNotification sound = new SoundNotification();
 	public TitleNotification title = new TitleNotification();
+	public CommandNotification command = new CommandNotification();
 }
