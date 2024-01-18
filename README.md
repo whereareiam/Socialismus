@@ -39,7 +39,6 @@ you want with this plugin, as it offers many different modules and great customi
 
 # TODO List:
 
-- [ ] API
 - [ ] Automatic Moderation
 - [ ] Chat Bot
 - [ ] Colorization
@@ -54,5 +53,6 @@ you want with this plugin, as it offers many different modules and great customi
 - [x] Chats Improvement: Symbol or command chat <sup> From 1.0.0
 - [x] Private Messages <sup> From 1.0.0
 - [x] Message Announcer <sup> From 1.1.0
+- [x] API <sup> From 1.2.0
 - [x] Tag Parser <sup> From 1.2.0
 - [x] User Mention <sup> From 1.2.0
