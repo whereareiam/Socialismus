@@ -40,11 +40,12 @@ you want with this plugin, as it offers many different modules and great customi
 # Using the API
 
 If you need help using the API, you can PM me on Discord (whereareiam) or on [Telegram](https://whereareiam.t.me/). You
-can also read the [Javadocs](https://javadoc.jitpack.io/com/github/whereareiam/Socialismus/latest/javadoc/index.html).
+can also read
+the [Javadocs](https://javadoc.jitpack.io/com/github/whereareiam/Socialismus/api/latest/javadoc/index.html).
+
+To use the plugins API, you need to add JitPack to your repository and add the dependency to your project.
 
 ## Maven
-
-To use the plugins API, you need to add JitPack to your repository. To do this, add the following to your pom.xml file:
 
 ```xml
 
@@ -60,8 +61,8 @@ To use the plugins API, you need to add JitPack to your repository. To do this, 
 
 <dependencies>
     <dependency>
-        <groupId>com.github.whereareiam</groupId>
-        <artifactId>Socialismus</artifactId>
+        <groupId>com.github.whereareiam.Socialismus</groupId>
+        <artifactId>api</artifactId>
         <version>VERSION</version>
         <scope>provided</scope>
     </dependency>
@@ -69,9 +70,6 @@ To use the plugins API, you need to add JitPack to your repository. To do this, 
 ```
 
 ## Gradle
-
-To use the plugins API, you need to add JitPack to your repository. To do this, add the following to your build.gradle
-file:
 
 ```groovy
 repositories {
@@ -81,7 +79,7 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation 'com.github.whereareiam:Socialismus:VERSION'
+    implementation 'com.github.whereareiam.Socialismus:api:VERSION'
 }
 ```
 
