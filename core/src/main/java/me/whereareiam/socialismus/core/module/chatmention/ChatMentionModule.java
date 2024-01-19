@@ -56,8 +56,8 @@ public class ChatMentionModule implements Module {
 			chatMentionConfig.save(modulePath.resolve("chatmentions.yml"));
 		}
 
-		formats.addAll(chatMentionConfig.formats);
-		notifications.addAll(chatMentionConfig.notifications);
+		chatMentionConfig.formats.stream().filter(chatMentionFormat -> chatMentionFormat.enabled).forEach(formats::add);
+		chatMentionConfig.notifications.stream().filter(chatMentionNotificationFormat -> chatMentionNotificationFormat.enabled).forEach(notifications::add);
 	}
 
 	private void createExampleNotification() {
@@ -82,6 +82,14 @@ public class ChatMentionModule implements Module {
 		chatMentionFormat.hoverFormat = List.of("<gray>Player @{player} is mentioned in chat");
 
 		chatMentionConfig.formats.add(chatMentionFormat);
+	}
+
+	public List<ChatMentionFormat> getFormats() {
+		return formats;
+	}
+
+	public List<ChatMentionNotificationFormat> getNotifications() {
+		return notifications;
 	}
 
 	@Override
