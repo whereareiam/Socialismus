@@ -54,14 +54,17 @@ To use the plugins API, you need to add JitPack to your repository. To do this, 
         <url>https://jitpack.io/</url>
     </repository>
 </repositories>
+```
+
+```xml
 
 <dependencies>
-<dependency>
-    <groupId>com.github.whereareiam</groupId>
-    <artifactId>Socialismus</artifactId>
-    <version>VERSION</version>
-    <scope>provided</scope>
-</dependency>
+    <dependency>
+        <groupId>com.github.whereareiam</groupId>
+        <artifactId>Socialismus</artifactId>
+        <version>VERSION</version>
+        <scope>provided</scope>
+    </dependency>
 </dependencies>
 ```
 
@@ -74,7 +77,9 @@ file:
 repositories {
     maven { url 'https://jitpack.io' }
 }
+```
 
+```groovy
 dependencies {
     implementation 'com.github.whereareiam:Socialismus:VERSION'
 }
