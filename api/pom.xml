@@ -34,6 +34,28 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven.resources.version}</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.source.version}</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <excludePackageNames>
+                        me.whereareiam.socialismus.api.type:
+                        me.whereareiam.socialismus.api.type.*:
+                        me.whereareiam.socialismus.api.model:
+                        me.whereareiam.socialismus.api.model.*
+                    </excludePackageNames>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <finalName>${project.parent.artifactId}API-${project.parent.version}</finalName>
     </build>
