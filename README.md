@@ -37,6 +37,59 @@ you want with this plugin, as it offers many different modules and great customi
 - Integrates with PlaceholderAPI, allowing you to use placeholders from that plugin directly in messages.
 - Displays statistics from your own server and from other servers if you have enabled bStats on your server.
 
+# Using the API
+
+If you need help using the API, you can PM me on Discord (whereareiam) or on [Telegram](https://whereareiam.t.me/). You
+can also read the [Javadocs](https://javadoc.jitpack.io/com/github/whereareiam/Socialismus/latest/javadoc/index.html).
+
+## Maven
+
+To use the plugins API, you need to add JitPack to your repository. To do this, add the following to your pom.xml file:
+
+```xml
+
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io/</url>
+    </repository>
+</repositories>
+
+<dependencies>
+<dependency>
+    <groupId>com.github.whereareiam</groupId>
+    <artifactId>Socialismus</artifactId>
+    <version>VERSION</version>
+    <scope>provided</scope>
+</dependency>
+</dependencies>
+```
+
+## Gradle
+
+To use the plugins API, you need to add JitPack to your repository. To do this, add the following to your build.gradle
+file:
+
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.whereareiam:Socialismus:VERSION'
+}
+```
+
+**For versions, you can use the following: dev-SNAPSHOT or any version from the releases page (for example 1.2.0).**
+
+## Getting the plugin instance
+
+To get the plugin instance, you need to use the following code:
+
+```java
+SocialismusAPI api = SocialismusAPI.getInstance();
+```
+
 # TODO List:
 
 - [ ] Automatic Moderation

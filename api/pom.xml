@@ -30,19 +30,31 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven.resources.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
+                <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven.source.version}</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <docTitle>${project.parent.name}</docTitle>
+                    <excludePackageNames>
+                        me.whereareiam.socialismus.api.type:
+                        me.whereareiam.socialismus.api.type.*:
+                        me.whereareiam.socialismus.api.model:
+                        me.whereareiam.socialismus.api.model.*
+                    </excludePackageNames>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>attach-sources</id>
+                        <id>aggregate</id>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>aggregate-jar</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
             </plugin>
