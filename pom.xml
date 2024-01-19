@@ -9,6 +9,10 @@
     <version>1.2.0</version>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>api</module>
+    </modules>
+
     <properties>
         <!-- Project config -->
         <testDir>/Users/whereareiam/Projects/Test/plugins</testDir>
@@ -45,7 +49,6 @@
         <profile>
             <id>paper-dev</id>
             <modules>
-                <module>api</module>
                 <module>core</module>
                 <module>paper</module>
             </modules>
@@ -53,7 +56,6 @@
         <profile>
             <id>spigot-dev</id>
             <modules>
-                <module>api</module>
                 <module>core</module>
                 <module>spigot</module>
             </modules>
@@ -61,7 +63,6 @@
         <profile>
             <id>dev</id>
             <modules>
-                <module>api</module>
                 <module>core</module>
                 <module>spigot</module>
                 <module>paper</module>
@@ -70,7 +71,6 @@
         <profile>
             <id>release</id>
             <modules>
-                <module>api</module>
                 <module>core</module>
                 <module>spigot</module>
                 <module>paper</module>
