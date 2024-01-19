@@ -76,5 +76,6 @@
                 <version>${maven.resources.version}</version>
             </plugin>
         </plugins>
+        <finalName>${project.parent.artifactId}Core-${project.parent.version}</finalName>
     </build>
 </project>

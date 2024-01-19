@@ -33,6 +33,20 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven.resources.version}</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+        <finalName>${project.parent.artifactId}API-${project.parent.version}</finalName>
     </build>
 </project>
