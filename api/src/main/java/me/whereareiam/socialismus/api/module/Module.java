@@ -16,6 +16,7 @@ public interface Module {
 	/**
 	 * Checks if the module is enabled
 	 *
+	 * @return Module status
 	 * @since 1.2.0
 	 */
 	boolean isEnabled();

@@ -54,12 +54,6 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		}
 	}
 
-	/**
-	 * Allows to register a specific chat
-	 *
-	 * @param chat Chat
-	 * @since 1.2.0
-	 */
 	@Override
 	public void registerChat(Chat chat) {
 		loggerUtil.debug("Registering chat: " + chat.id);
