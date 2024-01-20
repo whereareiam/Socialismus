@@ -9,8 +9,6 @@ import me.whereareiam.socialismus.core.module.chatmention.mention.MentionFactory
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-
 @Singleton
 public class ChatMentionService {
 	private final ChatMentionModule chatMentionModule;
@@ -22,14 +20,14 @@ public class ChatMentionService {
 		this.mentionFactory = mentionFactory;
 	}
 
-	public ChatMessage hookChatMention(ChatMessage chatMessage, Collection<? extends Player> recipients) {
+	public ChatMessage hookChatMention(ChatMessage chatMessage) {
 		if (!chatMessage.getChat().mentions.enabled)
 			return chatMessage;
 
 		Component content = chatMessage.getContent();
 		Player player = chatMessage.getSender();
 
-		Mention mention = mentionFactory.createMention(player, recipients, content);
+		Mention mention = mentionFactory.createMention(player, chatMessage.getRecipients(), content);
 
 		Component component = applyMention(mention);
 		chatMessage.setContent(component);

@@ -15,6 +15,7 @@ import me.whereareiam.socialismus.core.util.LoggerUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ChatCommandTemplate extends CommandBase {
@@ -27,7 +28,7 @@ public class ChatCommandTemplate extends CommandBase {
 
 	@Inject
 	public ChatCommandTemplate(LoggerUtil loggerUtil, MessageUtil messageUtil, MessagesConfig messages,
-							   ChatMessageFactory chatMessageFactory, ChatService chatService) {
+	                           ChatMessageFactory chatMessageFactory, ChatService chatService) {
 		this.messageUtil = messageUtil;
 		this.messages = messages;
 		this.chatMessageFactory = chatMessageFactory;
@@ -44,12 +45,12 @@ public class ChatCommandTemplate extends CommandBase {
 	@CommandPermission("%permission.chat")
 	@CommandCompletion("@nothing")
 	public void onCommand(CommandIssuer issuer, String message) {
-		if (! issuer.isPlayer())
+		if (!issuer.isPlayer())
 			messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
 
 		Player player = issuer.getIssuer();
 
-		ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message, Optional.of(chat.usage.command));
+		ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, List.of(), message, Optional.of(chat.usage.command));
 		chatService.distributeMessage(chatMessage);
 	}
 

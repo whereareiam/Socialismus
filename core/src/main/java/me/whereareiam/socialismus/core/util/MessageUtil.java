@@ -24,6 +24,9 @@ public class MessageUtil {
 	}
 
 	public void sendMessage(CommandIssuer issuer, String message) {
+		if (message == null || message.isEmpty())
+			return;
+
 		if (issuer.isPlayer()) {
 			sendMessage(issuer.getIssuer(), formatterUtil.formatMessage(issuer.getIssuer(), message));
 		} else {
@@ -32,6 +35,9 @@ public class MessageUtil {
 	}
 
 	public void sendMessage(Player sender, String message) {
+		if (message == null || message.isEmpty())
+			return;
+
 		sendMessage(sender, formatterUtil.formatMessage(sender, message));
 	}
 
@@ -45,12 +51,12 @@ public class MessageUtil {
 		if (content instanceof String) {
 			textReplacementConfig = TextReplacementConfig.builder()
 					.matchLiteral(placeholder)
-					.replacement((String)content)
+					.replacement((String) content)
 					.build();
 		} else {
 			textReplacementConfig = TextReplacementConfig.builder()
 					.matchLiteral(placeholder)
-					.replacement((Component)content)
+					.replacement((Component) content)
 					.build();
 		}
 

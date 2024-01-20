@@ -11,8 +11,6 @@ import me.whereareiam.socialismus.core.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-
 @Singleton
 public class ChatService {
 	private final LoggerUtil loggerUtil;
@@ -24,7 +22,7 @@ public class ChatService {
 
 	@Inject
 	public ChatService(LoggerUtil loggerUtil, MessageUtil messageUtil, MessagesConfig messages,
-					   ChatRequirementValidator chatRequirementValidator, ChatBroadcaster chatBroadcaster) {
+	                   ChatRequirementValidator chatRequirementValidator, ChatBroadcaster chatBroadcaster) {
 		this.loggerUtil = loggerUtil;
 		this.messageUtil = messageUtil;
 		this.messages = messages;
@@ -41,15 +39,25 @@ public class ChatService {
 		Player sender = chatMessage.getSender();
 		Chat chat = chatMessage.getChat();
 
-		if (! chatRequirementValidator.validatePlayer(chatMessage)) {
+		if (!chatRequirementValidator.validatePlayer(chatMessage)) {
 			loggerUtil.debug(sender.getName() + " didn't met requirements");
 			return;
 		}
 
-		Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-		onlinePlayers = chatRequirementValidator.validatePlayers(chatMessage, onlinePlayers);
+		if (chatMessage.getRecipients().isEmpty())
+			chatMessage.setRecipients(Bukkit.getOnlinePlayers());
 
-		if (chat.requirements.recipient.radius != - 1 && onlinePlayers.size() == 1) {
+		BeforeChatSendMessageEvent event = new BeforeChatSendMessageEvent(chatMessage);
+		Bukkit.getPluginManager().callEvent(event);
+
+		if (event.isCancelled()) {
+			return;
+		}
+
+		chatMessage = event.getChatMessage();
+		chatMessage.setRecipients(chatRequirementValidator.validatePlayers(chatMessage));
+
+		if (chat.requirements.recipient.radius != -1 && chatMessage.getRecipients().size() == 1) {
 			String noOnlinePlayers = messages.chat.noOnlinePlayers;
 			if (noOnlinePlayers != null) {
 				messageUtil.sendMessage(sender, noOnlinePlayers);
@@ -63,13 +71,6 @@ public class ChatService {
 			}
 		}
 
-		BeforeChatSendMessageEvent event = new BeforeChatSendMessageEvent(chatMessage, onlinePlayers);
-		Bukkit.getPluginManager().callEvent(event);
-
-		if (event.isCancelled()) {
-			return;
-		}
-
-		chatBroadcaster.broadcastMessage(event.getChatMessage(), event.getRecipients());
+		chatBroadcaster.broadcastMessage(chatMessage);
 	}
 }

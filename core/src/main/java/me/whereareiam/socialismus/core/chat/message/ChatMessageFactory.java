@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Singleton
@@ -21,7 +22,7 @@ public class ChatMessageFactory {
 		this.chatModule = chatModule;
 	}
 
-	public ChatMessage createChatMessage(Player sender, String message, Optional<String> command) {
+	public ChatMessage createChatMessage(Player sender, Collection<? extends Player> recipients, String message, Optional<String> command) {
 		char chatSymbol = message.charAt(0);
 		String symbol;
 		Chat chat = null;
@@ -44,6 +45,6 @@ public class ChatMessageFactory {
 
 		Component content = PlainTextComponentSerializer.plainText().deserialize(message.trim());
 
-		return new ChatMessage(sender, content, chat);
+		return new ChatMessage(content, chat, sender, recipients);
 	}
 }

@@ -14,6 +14,8 @@ import me.whereareiam.socialismus.core.module.bubblechat.BubbleChatService;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 @Singleton
 @CommandAlias("%command.main")
 public class BubbleCommand extends CommandBase {
@@ -25,8 +27,8 @@ public class BubbleCommand extends CommandBase {
 
 	@Inject
 	public BubbleCommand(MessageUtil messageUtil, CommandsConfig commands,
-						 MessagesConfig messages, BubbleChatService bubbleChatService,
-						 ChatMessageFactory chatMessageFactory) {
+	                     MessagesConfig messages, BubbleChatService bubbleChatService,
+	                     ChatMessageFactory chatMessageFactory) {
 		this.messageUtil = messageUtil;
 		this.commands = commands;
 		this.messages = messages;
@@ -40,12 +42,12 @@ public class BubbleCommand extends CommandBase {
 	@Description("%description.bubble")
 	@Syntax("%syntax.bubble")
 	public void onCommand(CommandIssuer issuer, String message) {
-		if (! issuer.isPlayer())
+		if (!issuer.isPlayer())
 			messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
 
 		Player player = issuer.getIssuer();
 
-		ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, message, java.util.Optional.empty());
+		ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, List.of(), message, java.util.Optional.empty());
 		bubbleChatService.distributeBubbleMessage(BubbleTriggerType.COMMAND, chatMessage);
 
 		messageUtil.sendMessage(player, messages.commands.bubbleCommand.success);

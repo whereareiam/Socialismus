@@ -29,8 +29,8 @@ public class BubbleChatService {
 	@Inject
 	public BubbleChatService(Injector injector, LoggerUtil loggerUtil, BubbleChatConfig bubbleChatConfig,
 
-							 BubbleChatRequirementValidator bubbleChatRequirementValidator,
-							 BubbleMessageProcessor bubbleMessageProcessor) {
+	                         BubbleChatRequirementValidator bubbleChatRequirementValidator,
+	                         BubbleMessageProcessor bubbleMessageProcessor) {
 		this.injector = injector;
 		this.loggerUtil = loggerUtil;
 		this.bubbleChatConfig = bubbleChatConfig;
@@ -44,14 +44,15 @@ public class BubbleChatService {
 	public void distributeBubbleMessage(BubbleTriggerType triggerType, ChatMessage chatMessage) {
 		BubbleTriggerType configTriggerType = bubbleChatConfig.settings.triggerType;
 
-		if (! (configTriggerType == triggerType
-				|| (configTriggerType == BubbleTriggerType.CHAT_COMMAND && (triggerType == BubbleTriggerType.CHAT || triggerType == BubbleTriggerType.COMMAND))))
-			return;
+		if (!(configTriggerType == triggerType
+				|| (configTriggerType == BubbleTriggerType.CHAT_COMMAND &&
+				(triggerType == BubbleTriggerType.CHAT || triggerType == BubbleTriggerType.COMMAND)))
+		) return;
 
 		loggerUtil.debug("Distributing bubble message");
 
 		Player sender = chatMessage.getSender();
-		if (! bubbleChatRequirementValidator.validatePlayer(chatMessage))
+		if (!bubbleChatRequirementValidator.validatePlayer(chatMessage))
 			return;
 
 		Collection<? extends Player> onlinePlayers = WorldPlayerUtil.getPlayersInWorld(sender.getWorld());
@@ -66,8 +67,7 @@ public class BubbleChatService {
 			playerQueuesMap.put(sender, bubbleQueue);
 		}
 
-		while (! queue.isEmpty()) {
-
+		while (!queue.isEmpty()) {
 			bubbleQueue.addMessage(queue.poll());
 		}
 	}

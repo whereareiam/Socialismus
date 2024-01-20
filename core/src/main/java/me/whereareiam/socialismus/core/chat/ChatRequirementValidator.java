@@ -26,39 +26,40 @@ public class ChatRequirementValidator {
 		this.messagesConfig = messagesConfig;
 	}
 
-	public Collection<? extends Player> validatePlayers(ChatMessage chatMessage, Collection<? extends Player> onlinePlayers) {
+	public Collection<? extends Player> validatePlayers(ChatMessage chatMessage) {
+		Collection<? extends Player> recipients = chatMessage.getRecipients();
 		ChatRecipientRequirements recipientRequirements = chatMessage.getChat().requirements.recipient;
-		if (! chatMessage.getChat().requirements.enabled)
-			return onlinePlayers;
+		if (!chatMessage.getChat().requirements.enabled)
+			return recipients;
 
 		Player sender = chatMessage.getSender();
-		if (! recipientRequirements.seeOwnMessage)
-			onlinePlayers.remove(sender);
+		if (!recipientRequirements.seeOwnMessage)
+			recipients.remove(sender);
 
-		if (recipientRequirements.seePermission != null && ! recipientRequirements.seePermission.isEmpty())
-			onlinePlayers = onlinePlayers
+		if (recipientRequirements.seePermission != null && !recipientRequirements.seePermission.isEmpty())
+			recipients = recipients
 					.stream()
 					.filter(player -> player.hasPermission(recipientRequirements.seePermission))
 					.collect(Collectors.toList());
 
-		if (! recipientRequirements.worlds.isEmpty())
-			onlinePlayers = onlinePlayers
+		if (!recipientRequirements.worlds.isEmpty())
+			recipients = recipients
 					.stream()
 					.filter(player -> recipientRequirements.worlds.contains(player.getWorld().getName()))
 					.collect(Collectors.toList());
 
 		if (recipientRequirements.radius >= 0)
-			onlinePlayers = onlinePlayers
+			recipients = recipients
 					.stream()
 					.filter(player -> DistanceCalculatorUtil.calculateDistance(player, sender) <= recipientRequirements.radius)
 					.collect(Collectors.toList());
 
-		return onlinePlayers;
+		return recipients;
 	}
 
 	public boolean validatePlayer(ChatMessage chatMessage) {
 		ChatSenderRequirements senderRequirements = chatMessage.getChat().requirements.sender;
-		if (! chatMessage.getChat().requirements.enabled)
+		if (!chatMessage.getChat().requirements.enabled)
 			return true;
 
 		Player sender = chatMessage.getSender();
@@ -70,7 +71,7 @@ public class ChatRequirementValidator {
 			return false;
 		}
 
-		if (senderRequirements.usePermission != null && (! senderRequirements.usePermission.isEmpty() || ! sender.hasPermission(senderRequirements.usePermission))) {
+		if (senderRequirements.usePermission != null && (!senderRequirements.usePermission.isEmpty() || !sender.hasPermission(senderRequirements.usePermission))) {
 			messageUtil.sendMessage(sender, messagesConfig.chat.noUsePermission);
 			return false;
 		}
@@ -80,7 +81,7 @@ public class ChatRequirementValidator {
 			return false;
 		}
 
-		if (! senderRequirements.worlds.isEmpty() && ! senderRequirements.worlds.contains(sender.getWorld().getName())) {
+		if (!senderRequirements.worlds.isEmpty() && !senderRequirements.worlds.contains(sender.getWorld().getName())) {
 			messageUtil.sendMessage(sender, messagesConfig.chat.forbiddenWorld);
 			return false;
 		}

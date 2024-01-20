@@ -3,15 +3,19 @@ package me.whereareiam.socialismus.api.model.chat;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 public class ChatMessage {
-	private Player sender;
 	private Component content;
 	private Chat chat;
+	private Player sender;
+	private Collection<? extends Player> recipients;
 
-	public ChatMessage(Player sender, Component content, Chat chat) {
-		this.sender = sender;
+	public ChatMessage(Component content, Chat chat, Player sender, Collection<? extends Player> recipients) {
 		this.content = content;
 		this.chat = chat;
+		this.sender = sender;
+		this.recipients = recipients;
 	}
 
 	public Player getSender() {
@@ -36,5 +40,13 @@ public class ChatMessage {
 
 	public void setChat(Chat chat) {
 		this.chat = chat;
+	}
+
+	public Collection<? extends Player> getRecipients() {
+		return recipients;
+	}
+
+	public void setRecipients(Collection<? extends Player> recipients) {
+		this.recipients = recipients;
 	}
 }

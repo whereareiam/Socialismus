@@ -1,24 +1,23 @@
 package me.whereareiam.socialismus.api.event.chat;
 
 import me.whereareiam.socialismus.api.model.chat.ChatMessage;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-
-import java.util.Collection;
 
 /**
  * This event is called before a message is sent to the chat.
  * <p>
  * Allows to modify the ChatMessage object before it is sent to the chat, by
  * changing the message or the recipients.
+ * <p>
+ * Using this event we can add or remove players for requirement validation.
  *
  * @since 1.0.0
  */
 public class BeforeChatSendMessageEvent extends ChatEvent implements Cancellable {
 	private boolean cancelled;
 
-	public BeforeChatSendMessageEvent(ChatMessage chatMessage, Collection<? extends Player> recipients) {
-		super(chatMessage, recipients);
+	public BeforeChatSendMessageEvent(ChatMessage chatMessage) {
+		super(chatMessage);
 	}
 
 	/**

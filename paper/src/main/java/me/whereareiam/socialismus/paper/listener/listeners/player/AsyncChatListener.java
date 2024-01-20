@@ -10,14 +10,15 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 @Singleton
 public class AsyncChatListener implements ChatListener {
-	private final LoggerUtil loggerUtil;
 	private final ChatHandler chatHandler;
 
 	@Inject
 	public AsyncChatListener(LoggerUtil loggerUtil, ChatHandler chatHandler) {
-		this.loggerUtil = loggerUtil;
 		this.chatHandler = chatHandler;
 
 		loggerUtil.trace("Initializing class: " + this);
@@ -26,16 +27,18 @@ public class AsyncChatListener implements ChatListener {
 	@EventHandler
 	public void onEvent(AsyncChatEvent event) {
 		Player player = event.getPlayer();
+		Collection<? extends Player> recipients = event.viewers().stream()
+				.filter(audience -> audience instanceof Player)
+				.map(audience -> (Player) audience)
+				.collect(Collectors.toList());
 		String message = PlainTextComponentSerializer.plainText().serialize(event.message());
 
-		loggerUtil.debug("AsyncChatEvent: " + player.getName() + " " + message);
-
-		boolean cancelEvent = onPlayerChatEvent(player, message);
+		boolean cancelEvent = onPlayerChatEvent(player, recipients, message);
 		event.setCancelled(cancelEvent);
 	}
 
 	@Override
-	public boolean onPlayerChatEvent(Player player, String message) {
-		return chatHandler.handleChatEvent(player, message);
+	public boolean onPlayerChatEvent(Player player, Collection<? extends Player> recipients, String message) {
+		return chatHandler.handleChatEvent(player, recipients, message);
 	}
 }

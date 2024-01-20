@@ -15,7 +15,6 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
 import java.util.List;
 
 @Singleton
@@ -26,29 +25,28 @@ public class ChatBroadcaster {
 
 	@Inject
 	public ChatBroadcaster(LoggerUtil loggerUtil, FormatterUtil formatterUtil,
-						   MessageUtil messageUtil) {
+	                       MessageUtil messageUtil) {
 		this.loggerUtil = loggerUtil;
 		this.formatterUtil = formatterUtil;
 		this.messageUtil = messageUtil;
 	}
 
-	public void broadcastMessage(ChatMessage chatMessage, Collection<? extends Player> recipients) {
+	public void broadcastMessage(ChatMessage chatMessage) {
 		Component finalMessage = createFinalMessage(chatMessage);
 
-		OnChatSendMessageEvent event = new OnChatSendMessageEvent(chatMessage, recipients);
+		OnChatSendMessageEvent event = new OnChatSendMessageEvent(chatMessage);
 		Bukkit.getPluginManager().callEvent(event);
 
 		if (event.isCancelled()) {
 			return;
 		}
-		
-		chatMessage = event.getChatMessage();
-		recipients = event.getRecipients();
 
-		recipients.forEach(recipient -> messageUtil.sendMessage(recipient, finalMessage));
+		chatMessage = event.getChatMessage();
+
+		chatMessage.getRecipients().forEach(recipient -> messageUtil.sendMessage(recipient, finalMessage));
 		loggerUtil.info("[" + chatMessage.getChat().id.toUpperCase() + "] " + chatMessage.getSender().getName() + ": " + PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent()));
 
-		AfterChatSendMessageEvent afterEvent = new AfterChatSendMessageEvent(chatMessage, recipients);
+		AfterChatSendMessageEvent afterEvent = new AfterChatSendMessageEvent(chatMessage);
 		Bukkit.getPluginManager().callEvent(afterEvent);
 	}
 

@@ -70,6 +70,9 @@ public class FormatterUtil {
 		loggerUtil.debug("formatMessage:" + message);
 		final MiniMessage miniMessage = MiniMessage.miniMessage();
 
+		if (message == null || message.isEmpty())
+			return miniMessage.deserialize("");
+
 		if (player != null)
 			message = hookIntegration(player, message);
 
@@ -81,7 +84,7 @@ public class FormatterUtil {
 	public String hookIntegration(Player player, String message) {
 		for (Integration integration : integrationManager.getIntegrations()) {
 			if (integration.getType() == IntegrationType.MESSAGING) {
-				MessagingIntegration formatterIntegration = (MessagingIntegration)integration;
+				MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
 				message = formatterIntegration.formatMessage(player, message);
 
 				loggerUtil.trace("Hooked with MESSAGING integration: " + formatterIntegration.getName());
