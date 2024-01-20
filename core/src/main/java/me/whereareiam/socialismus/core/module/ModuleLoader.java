@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import me.whereareiam.socialismus.api.module.Module;
 import me.whereareiam.socialismus.core.module.announcer.AnnouncerModule;
 import me.whereareiam.socialismus.core.module.bubblechat.BubbleChatModule;
 import me.whereareiam.socialismus.core.module.chat.ChatModule;
@@ -26,7 +27,7 @@ public class ModuleLoader {
 
 	@Inject
 	public ModuleLoader(Injector injector, LoggerUtil loggerUtil,
-						@Named("modulePath") Path modulePath
+	                    @Named("modulePath") Path modulePath
 	) {
 		this.injector = injector;
 		this.loggerUtil = loggerUtil;
@@ -34,10 +35,10 @@ public class ModuleLoader {
 		loggerUtil.trace("Initializing class: " + this);
 
 		File moduleFile = modulePath.toFile();
-		if (! moduleFile.exists()) {
+		if (!moduleFile.exists()) {
 			boolean isCreated = moduleFile.mkdir();
 			loggerUtil.debug("Creating module dir");
-			if (! isCreated) {
+			if (!isCreated) {
 				loggerUtil.severe("Failed to create directory: " + moduleFile);
 			}
 		}
@@ -75,7 +76,7 @@ public class ModuleLoader {
 	}
 
 	public int getChatCount() {
-		ChatModule chatModule = (ChatModule)modules.stream()
+		ChatModule chatModule = (ChatModule) modules.stream()
 				.filter(module -> module instanceof ChatModule)
 				.findFirst()
 				.orElse(null);
@@ -84,11 +85,11 @@ public class ModuleLoader {
 			return 0;
 		}
 
-		return chatModule.getChatCount();
+		return chatModule.getChats().size();
 	}
 
 	public int getSwapperCount() {
-		SwapperModule swapperModule = (SwapperModule)modules.stream()
+		SwapperModule swapperModule = (SwapperModule) modules.stream()
 				.filter(module -> module instanceof SwapperModule)
 				.findFirst()
 				.orElse(null);
@@ -101,7 +102,7 @@ public class ModuleLoader {
 	}
 
 	public int getAnnouncementsCount() {
-		AnnouncerModule announcerModule = (AnnouncerModule)modules.stream()
+		AnnouncerModule announcerModule = (AnnouncerModule) modules.stream()
 				.filter(module -> module instanceof AnnouncerModule)
 				.findFirst()
 				.orElse(null);

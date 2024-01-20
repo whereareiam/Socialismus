@@ -6,11 +6,11 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.socialismus.api.model.announcement.Announcement;
 import me.whereareiam.socialismus.api.model.announcer.Announcer;
+import me.whereareiam.socialismus.api.module.Module;
 import me.whereareiam.socialismus.api.type.AnnouncementSelectionType;
 import me.whereareiam.socialismus.core.config.module.announcer.AnnouncementConfig;
 import me.whereareiam.socialismus.core.config.module.announcer.AnnouncerConfig;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.core.module.Module;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 
 import java.io.File;
@@ -32,7 +32,7 @@ public class AnnouncerModule implements Module {
 
 	@Inject
 	public AnnouncerModule(Injector injector, LoggerUtil loggerUtil, SettingsConfig settingsConfig,
-						   AnnouncerConfig announcerConfig, @Named("modulePath") Path modulePath) {
+	                       AnnouncerConfig announcerConfig, @Named("modulePath") Path modulePath) {
 		this.injector = injector;
 		this.loggerUtil = loggerUtil;
 		this.settingsConfig = settingsConfig;
@@ -47,7 +47,7 @@ public class AnnouncerModule implements Module {
 		loggerUtil.debug("Registering announcements");
 		List<File> files = Arrays.stream(announcerPath.toFile().listFiles())
 				.filter(file -> file.getName().endsWith(".yml"))
-				.filter(file -> ! file.getName().equals("announcer.yml"))
+				.filter(file -> !file.getName().equals("announcer.yml"))
 				.toList();
 
 		if (files.isEmpty()) {
@@ -63,7 +63,7 @@ public class AnnouncerModule implements Module {
 				List<Announcement> enabledAnnouncements = new ArrayList<>(announcementConfig.announcements.stream()
 						.filter(announcement -> announcement.enabled)
 						.toList());
-				if (! enabledAnnouncements.isEmpty()) {
+				if (!enabledAnnouncements.isEmpty()) {
 					loggerUtil.trace("Adding new announcements (" + enabledAnnouncements.size() + ")");
 					announcements.addAll(enabledAnnouncements);
 				}
@@ -139,10 +139,10 @@ public class AnnouncerModule implements Module {
 	@Override
 	public void initialize() {
 		File announcerDir = announcerPath.toFile();
-		if (! announcerDir.exists()) {
+		if (!announcerDir.exists()) {
 			boolean isCreated = announcerDir.mkdir();
 			loggerUtil.debug("Creating announcer dir");
-			if (! isCreated) {
+			if (!isCreated) {
 				loggerUtil.severe("Failed to create directory: " + announcerPath);
 			}
 		}

@@ -3,9 +3,9 @@ package me.whereareiam.socialismus.core.module.bubblechat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import me.whereareiam.socialismus.api.module.Module;
 import me.whereareiam.socialismus.core.config.module.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.core.module.Module;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 
 import java.nio.file.Path;

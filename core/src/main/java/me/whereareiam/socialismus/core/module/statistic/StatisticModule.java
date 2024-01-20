@@ -2,8 +2,8 @@ package me.whereareiam.socialismus.core.module.statistic;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.module.Module;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.core.module.Module;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 
 @Singleton

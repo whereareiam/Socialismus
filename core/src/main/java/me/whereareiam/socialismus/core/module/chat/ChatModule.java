@@ -9,28 +9,32 @@ import me.whereareiam.socialismus.core.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.core.config.module.chat.ChatsConfig;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.core.listener.state.ChatListenerState;
-import me.whereareiam.socialismus.core.module.Module;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Chat module
+ *
+ * @since 1.2.0
+ */
 @Singleton
-public class ChatModule implements Module {
+public class ChatModule implements me.whereareiam.socialismus.api.module.ChatModule {
 	private final LoggerUtil loggerUtil;
 	private final SettingsConfig settingsConfig;
 	private final ChatsConfig chatsConfig;
 	private final CommandRegistrar commandRegistrar;
 	private final Path modulePath;
 
-	private final List<Chat> chats = new ArrayList<>();
+	private List<Chat> chats = new ArrayList<>();
 
 	private boolean moduleStatus = false;
 
 	@Inject
-	public ChatModule(LoggerUtil loggerUtil, SettingsConfig settingsConfig, @Named("modulePath") Path modulePath, ChatsConfig chatsConfig,
-					  CommandRegistrar commandRegistrar) {
+	public ChatModule(LoggerUtil loggerUtil, SettingsConfig settingsConfig, @Named("modulePath") Path modulePath,
+	                  ChatsConfig chatsConfig, CommandRegistrar commandRegistrar) {
 		this.loggerUtil = loggerUtil;
 		this.settingsConfig = settingsConfig;
 		this.chatsConfig = chatsConfig;
@@ -40,6 +44,12 @@ public class ChatModule implements Module {
 		loggerUtil.trace("Initializing class: " + this);
 	}
 
+	/**
+	 * Allows to register a specific chat
+	 *
+	 * @param chat Chat
+	 * @since 1.2.0
+	 */
 	public void registerChat(Chat chat) {
 		loggerUtil.debug("Registering chat: " + chat.id);
 		loggerUtil.trace("Putting chat: " + chat);
@@ -70,20 +80,38 @@ public class ChatModule implements Module {
 		}
 	}
 
-	public void cleanChats() {
+	/**
+	 * Allows to unregister all chats
+	 *
+	 * @since 1.2.0
+	 */
+	public void unregisterChats() {
 		chats.clear();
-		loggerUtil.trace("All chats have been cleaned");
 	}
 
+	/**
+	 * Allows to get chat by id
+	 *
+	 * @param symbol Chat symbol
+	 * @return Chat
+	 * @since 1.2.0
+	 */
 	public Chat getChatBySymbol(String symbol) {
 		for (Chat chat : chats) {
-			if (chat.usage.symbol.equals(symbol) && ! chat.usage.type.equals(ChatUseType.COMMAND)) {
+			if (chat.usage.symbol.equals(symbol) && !chat.usage.type.equals(ChatUseType.COMMAND)) {
 				return chat;
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * Allows to get chat by command
+	 *
+	 * @param command Command
+	 * @return Chat
+	 * @since 1.2.0
+	 */
 	public Chat getChatByCommand(String command) {
 		for (Chat chat : chats) {
 			if (chat.usage.command.contains(command)) {
@@ -93,8 +121,24 @@ public class ChatModule implements Module {
 		return null;
 	}
 
-	public int getChatCount() {
-		return chats.size();
+	/**
+	 * Allows to get chats
+	 *
+	 * @return List of chats
+	 * @since 1.2.0
+	 */
+	public List<Chat> getChats() {
+		return chats;
+	}
+
+	/**
+	 * Allows to set chats that will be used by the module
+	 *
+	 * @param chats List of chats
+	 * @since 1.2.0
+	 */
+	public void setChats(List<Chat> chats) {
+		this.chats = chats;
 	}
 
 	private void createExampleChat() {
@@ -110,7 +154,7 @@ public class ChatModule implements Module {
 		chat.hoverFormat.add("<blue>Some text2");
 
 		chat.requirements.enabled = true;
-		chat.requirements.recipient.radius = - 1;
+		chat.requirements.recipient.radius = -1;
 		chat.requirements.recipient.seePermission = "";
 		chat.requirements.recipient.seeOwnMessage = true;
 		chat.requirements.recipient.worlds = List.of("world", "world_nether", "world_the_end");
@@ -127,6 +171,7 @@ public class ChatModule implements Module {
 	@Override
 	public void initialize() {
 		ChatListenerState.setRequired(true);
+		unregisterChats();
 		registerChats();
 
 		moduleStatus = true;
@@ -140,7 +185,7 @@ public class ChatModule implements Module {
 	@Override
 	public void reload() {
 		loggerUtil.trace("Before reload chats: " + chats);
-		cleanChats();
+		unregisterChats();
 
 		registerChats();
 		loggerUtil.trace("After reload chats: " + chats);

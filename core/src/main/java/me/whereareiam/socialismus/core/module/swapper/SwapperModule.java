@@ -5,12 +5,12 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.socialismus.api.model.swapper.Swapper;
+import me.whereareiam.socialismus.api.module.Module;
 import me.whereareiam.socialismus.core.config.module.swapper.SwapperConfig;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.core.integration.protocollib.PacketSender;
 import me.whereareiam.socialismus.core.integration.protocollib.entity.PlayerPacket;
 import me.whereareiam.socialismus.core.listener.state.ChatListenerState;
-import me.whereareiam.socialismus.core.module.Module;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import org.bukkit.entity.Player;
 
@@ -33,8 +33,8 @@ public class SwapperModule implements Module {
 
 	@Inject
 	public SwapperModule(Injector injector, LoggerUtil loggerUtil,
-						 @Named("modulePath") Path modulePath, SettingsConfig settingsConfig,
-						 SwapperRequirementValidator swapperRequirementValidator) {
+	                     @Named("modulePath") Path modulePath, SettingsConfig settingsConfig,
+	                     SwapperRequirementValidator swapperRequirementValidator) {
 		this.injector = injector;
 		this.loggerUtil = loggerUtil;
 		this.settingsConfig = settingsConfig;
@@ -61,7 +61,7 @@ public class SwapperModule implements Module {
 				List<Swapper> enabledSwappers = swapperConfig.swappers.stream()
 						.filter(swapper -> swapper.enabled)
 						.toList();
-				if (! enabledSwappers.isEmpty()) {
+				if (!enabledSwappers.isEmpty()) {
 					loggerUtil.trace("Adding new swappers (" + enabledSwappers.size() + ")");
 					swappers.addAll(enabledSwappers);
 				}
@@ -75,7 +75,7 @@ public class SwapperModule implements Module {
 	}
 
 	public void suggestSwappers(Player player) {
-		if (! settingsConfig.modules.swapper.suggest)
+		if (!settingsConfig.modules.swapper.suggest)
 			return;
 
 		final PacketSender packetSender = injector.getInstance(PacketSender.class);
@@ -115,10 +115,10 @@ public class SwapperModule implements Module {
 	@Override
 	public void initialize() {
 		File swapperDir = swapperPath.toFile();
-		if (! swapperDir.exists()) {
+		if (!swapperDir.exists()) {
 			boolean isCreated = swapperDir.mkdir();
 			loggerUtil.debug("Creating swapper dir");
-			if (! isCreated) {
+			if (!isCreated) {
 				loggerUtil.severe("Failed to create directory: " + swapperPath);
 			}
 		}

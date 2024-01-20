@@ -1,5 +1,7 @@
 package me.whereareiam.socialismus.api;
 
+import me.whereareiam.socialismus.api.module.ChatModule;
+
 /**
  * The main class of the Socialismus API.
  * <p>
@@ -24,4 +26,12 @@ public interface Socialismus {
 	 * @since 1.2.0
 	 */
 	void reload();
+
+	/**
+	 * Gets the chat manager.
+	 *
+	 * @return Chat manager
+	 * @since 1.2.0
+	 */
+	ChatModule getChatModule();
 }
