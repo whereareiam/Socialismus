@@ -21,18 +21,14 @@ public class BubbleMessageProcessor {
 	private final FormatterUtil formatterUtil;
 	private final MessageUtil messageUtil;
 	private final BubbleChatConfig bubbleChatConfig;
-	private final int maxLines;
-	private final int maxLineLength;
 
 	@Inject
 	public BubbleMessageProcessor(LoggerUtil loggerUtil, FormatterUtil formatterUtil,
-								  MessageUtil messageUtil, BubbleChatConfig bubbleChatConfig) {
+	                              MessageUtil messageUtil, BubbleChatConfig bubbleChatConfig) {
 		this.loggerUtil = loggerUtil;
 		this.formatterUtil = formatterUtil;
 		this.messageUtil = messageUtil;
 		this.bubbleChatConfig = bubbleChatConfig;
-		this.maxLines = bubbleChatConfig.settings.lineCount + 1;
-		this.maxLineLength = calculateMaxLineLength(bubbleChatConfig.settings.lineWidth);
 
 		loggerUtil.trace("Initializing class: " + this);
 	}
@@ -47,7 +43,7 @@ public class BubbleMessageProcessor {
 		List<Component> lines = splitIntoLines(message);
 
 		boolean isFirstMessage = true;
-		while (! lines.isEmpty()) {
+		while (!lines.isEmpty()) {
 			loggerUtil.debug("Processing lines of the message");
 			List<Component> messageLines = extractLines(lines);
 
@@ -70,8 +66,10 @@ public class BubbleMessageProcessor {
 
 	private List<Component> extractLines(List<Component> lines) {
 		loggerUtil.debug("Extracting lines from the message");
+		int maxLines = bubbleChatConfig.settings.lineCount + 1;
+
 		List<Component> messageLines = new ArrayList<>();
-		for (int i = 0 ; i < maxLines && ! lines.isEmpty() ; i++) {
+		for (int i = 0; i < maxLines && !lines.isEmpty(); i++) {
 			messageLines.add(lines.remove(0));
 		}
 		return messageLines;
@@ -96,7 +94,7 @@ public class BubbleMessageProcessor {
 
 	private Component appendEndOrCutFormat(Component format, boolean isLastLine, Player player) {
 		loggerUtil.debug("Appending end or cutting format");
-		if (! isLastLine) {
+		if (!isLastLine) {
 			format = format.append(formatterUtil.formatMessage(player, bubbleChatConfig.format.cutMessageFormat));
 		} else {
 			format = format.append(formatterUtil.formatMessage(player, bubbleChatConfig.format.endMessageFormat));
@@ -106,11 +104,13 @@ public class BubbleMessageProcessor {
 
 	private List<Component> splitIntoLines(Component message) {
 		loggerUtil.debug("Splitting message into lines");
+		int maxLineLength = calculateMaxLineLength(bubbleChatConfig.settings.lineWidth);
+
 		List<Component> lines = new ArrayList<>();
 		String[] words = PlainTextComponentSerializer.plainText().serialize(message).split(" ");
 		StringBuilder line = new StringBuilder();
 		for (String word : words) {
-			if (line.length() + word.length() > maxLineLength) {
+			if (line.length() + word.length() + 1 > maxLineLength) {
 				lines.add(Component.text(line.toString()));
 				line.setLength(0);
 			}
@@ -120,12 +120,12 @@ public class BubbleMessageProcessor {
 					word = word.substring(maxLineLength);
 				}
 			}
-			if (! line.isEmpty()) {
+			if (!line.isEmpty()) {
 				line.append(" ");
 			}
 			line.append(word);
 		}
-		if (! line.isEmpty()) {
+		if (!line.isEmpty()) {
 			lines.add(Component.text(line.toString()));
 		}
 		return lines;
@@ -133,7 +133,8 @@ public class BubbleMessageProcessor {
 
 	private int calculateMaxLineLength(int lineWidth) {
 		loggerUtil.debug("Calculating maximum line length");
-		return (int)Math.round(lineWidth * 16.0 / 100);
+		System.out.println(lineWidth);
+		return (int) Math.round(lineWidth * 16.0 / 100.0);
 	}
 
 	private double calculateDisplayTime(Component message) {
