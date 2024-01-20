@@ -133,7 +133,6 @@ public class BubbleMessageProcessor {
 
 	private int calculateMaxLineLength(int lineWidth) {
 		loggerUtil.debug("Calculating maximum line length");
-		System.out.println(lineWidth);
 		return (int) Math.round(lineWidth * 16.0 / 100.0);
 	}
 
