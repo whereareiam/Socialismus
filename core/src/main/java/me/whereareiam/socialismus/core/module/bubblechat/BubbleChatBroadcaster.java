@@ -27,7 +27,7 @@ public class BubbleChatBroadcaster {
 
 	@Inject
 	public BubbleChatBroadcaster(LoggerUtil loggerUtil, BubbleFactory bubbleFactory,
-								 EntityPacketSender entityPacketSender, BubbleChatConfig bubbleChatConfig) {
+	                             EntityPacketSender entityPacketSender, BubbleChatConfig bubbleChatConfig) {
 		this.loggerUtil = loggerUtil;
 		this.bubbleFactory = bubbleFactory;
 		this.entityPacketSender = entityPacketSender;
@@ -47,16 +47,16 @@ public class BubbleChatBroadcaster {
 
 		List<PacketEntity> entities = new ArrayList<>();
 		entities.add(bubbleFactory.createBubble(bubbleMessage, player, random.nextInt()));
-		for (int i = 0 ; i < bubbleChatConfig.settings.headDistance ; i++) {
+		for (int i = 0; i < bubbleChatConfig.settings.headDistance; i++) {
 			PacketEntity invisibleEntity = bubbleFactory.createBubbleDistance(player, random.nextInt());
 			entities.add(invisibleEntity);
 		}
 		playerEntities.put(player, entities);
 
 		loggerUtil.debug("Broadcasting bubble");
-		for (Player onlinePlayer : bubbleMessage.getReceivers()) {
+		for (Player onlinePlayer : bubbleMessage.getRecipients()) {
 			int previousEntityId = player.getEntityId();
-			for (int i = 1 ; i < entities.size() ; i++) {
+			for (int i = 1; i < entities.size(); i++) {
 				PacketEntity entity = entities.get(i);
 				entityPacketSender.sendEntityMountPacket(onlinePlayer, entity, previousEntityId);
 				previousEntityId = entity.getId();

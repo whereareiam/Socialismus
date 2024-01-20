@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.core.chat.message;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.api.type.ChatUseType;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
+@Singleton
 public class ChatMessageFactory {
 	private final ChatModule chatModule;
 

@@ -5,7 +5,7 @@ import me.whereareiam.socialismus.api.model.chat.Chat;
 import java.util.List;
 
 /**
- * Chat manager
+ * ChatModule
  *
  * @since 1.2.0
  */

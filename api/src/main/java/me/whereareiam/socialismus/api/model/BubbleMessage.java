@@ -9,14 +9,14 @@ public class BubbleMessage {
 	private double displayTime;
 	private Component content;
 	private Player sender;
-	private Collection<? extends Player> receivers;
+	private Collection<? extends Player> recipients;
 
 	public BubbleMessage(double displayTime, Component content, Player sender,
-						 Collection<? extends Player> receivers) {
+	                     Collection<? extends Player> recipients) {
 		this.displayTime = displayTime;
 		this.content = content;
 		this.sender = sender;
-		this.receivers = receivers;
+		this.recipients = recipients;
 	}
 
 	public double getDisplayTime() {
@@ -43,11 +43,11 @@ public class BubbleMessage {
 		this.sender = sender;
 	}
 
-	public Collection<? extends Player> getReceivers() {
-		return receivers;
+	public Collection<? extends Player> getRecipients() {
+		return recipients;
 	}
 
-	public void setReceivers(Collection<? extends Player> receivers) {
-		this.receivers = receivers;
+	public void setRecipients(Collection<? extends Player> recipients) {
+		this.recipients = recipients;
 	}
 }

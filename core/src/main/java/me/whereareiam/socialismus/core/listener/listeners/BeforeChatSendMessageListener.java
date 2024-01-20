@@ -24,7 +24,7 @@ public class BeforeChatSendMessageListener implements Listener {
 	public void onEvent(BeforeChatSendMessageEvent event) {
 		ChatMessage chatMessage = event.getChatMessage();
 
-		event.setChatMessage(chatMentionService.hookChatMention(chatMessage));
+		event.setChatMessage(chatMentionService.hookChatMention(chatMessage, event.getRecipients()));
 		event.setChatMessage(swapperService.hookSwapper(chatMessage));
 	}
 }
