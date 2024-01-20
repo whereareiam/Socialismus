@@ -15,11 +15,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Chat module
- *
- * @since 1.2.0
- */
 @Singleton
 public class ChatModule implements me.whereareiam.socialismus.api.module.ChatModule {
 	private final LoggerUtil loggerUtil;
@@ -44,27 +39,6 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		loggerUtil.trace("Initializing class: " + this);
 	}
 
-	/**
-	 * Allows to register a specific chat
-	 *
-	 * @param chat Chat
-	 * @since 1.2.0
-	 */
-	public void registerChat(Chat chat) {
-		loggerUtil.debug("Registering chat: " + chat.id);
-		loggerUtil.trace("Putting chat: " + chat);
-
-		loggerUtil.trace("Chat information");
-		loggerUtil.trace("Chat id: " + chat.id);
-		loggerUtil.trace("Chat usage: " + chat.usage.type + " " + chat.usage.symbol + " " + chat.usage.command);
-		loggerUtil.trace("Chat message format: " + chat.messageFormat);
-		loggerUtil.trace("Chat hover format: " + chat.hoverFormat.stream().toString());
-		loggerUtil.trace("Chat requirements: " + chat.requirements);
-
-		chats.add(chat);
-		commandRegistrar.registerChatCommand(chat);
-	}
-
 	private void registerChats() {
 		loggerUtil.debug("Reloading chats.yml");
 		chatsConfig.reload(modulePath.resolve("chats.yml"));
@@ -81,21 +55,33 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 	}
 
 	/**
-	 * Allows to unregister all chats
+	 * Allows to register a specific chat
 	 *
+	 * @param chat Chat
 	 * @since 1.2.0
 	 */
+	@Override
+	public void registerChat(Chat chat) {
+		loggerUtil.debug("Registering chat: " + chat.id);
+		loggerUtil.trace("Putting chat: " + chat);
+
+		loggerUtil.trace("Chat information");
+		loggerUtil.trace("Chat id: " + chat.id);
+		loggerUtil.trace("Chat usage: " + chat.usage.type + " " + chat.usage.symbol + " " + chat.usage.command);
+		loggerUtil.trace("Chat message format: " + chat.messageFormat);
+		loggerUtil.trace("Chat hover format: " + chat.hoverFormat.stream().toString());
+		loggerUtil.trace("Chat requirements: " + chat.requirements);
+
+		chats.add(chat);
+		commandRegistrar.registerChatCommand(chat);
+	}
+
+	@Override
 	public void unregisterChats() {
 		chats.clear();
 	}
 
-	/**
-	 * Allows to get chat by id
-	 *
-	 * @param symbol Chat symbol
-	 * @return Chat
-	 * @since 1.2.0
-	 */
+	@Override
 	public Chat getChatBySymbol(String symbol) {
 		for (Chat chat : chats) {
 			if (chat.usage.symbol.equals(symbol) && !chat.usage.type.equals(ChatUseType.COMMAND)) {
@@ -105,13 +91,7 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		return null;
 	}
 
-	/**
-	 * Allows to get chat by command
-	 *
-	 * @param command Command
-	 * @return Chat
-	 * @since 1.2.0
-	 */
+	@Override
 	public Chat getChatByCommand(String command) {
 		for (Chat chat : chats) {
 			if (chat.usage.command.contains(command)) {
@@ -121,22 +101,12 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		return null;
 	}
 
-	/**
-	 * Allows to get chats
-	 *
-	 * @return List of chats
-	 * @since 1.2.0
-	 */
+	@Override
 	public List<Chat> getChats() {
 		return chats;
 	}
 
-	/**
-	 * Allows to set chats that will be used by the module
-	 *
-	 * @param chats List of chats
-	 * @since 1.2.0
-	 */
+	@Override
 	public void setChats(List<Chat> chats) {
 		this.chats = chats;
 	}
