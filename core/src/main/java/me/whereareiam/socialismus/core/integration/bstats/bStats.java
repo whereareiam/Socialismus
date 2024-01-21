@@ -9,19 +9,13 @@ import me.whereareiam.socialismus.core.integration.bstats.chart.ChatCountChart;
 import me.whereareiam.socialismus.core.integration.bstats.chart.HookCountChart;
 import me.whereareiam.socialismus.core.integration.bstats.chart.SwapperCountChart;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
 
 public class bStats implements Integration {
 	private final Injector injector;
 	private final Plugin plugin;
 	private Metrics metrics;
-
-	private boolean isEnabled;
 
 	@Inject
 	public bStats(Injector injector, Plugin plugin) {
@@ -31,19 +25,7 @@ public class bStats implements Integration {
 
 	@Override
 	public void initialize() {
-		metrics = new Metrics((JavaPlugin)plugin, 19855);
-
-		try {
-			File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bstats/config.yml");
-			if (! bStatsFolder.exists()) {
-				isEnabled = false;
-			} else {
-				FileConfiguration bStatsConfig = YamlConfiguration.loadConfiguration(bStatsFolder);
-				isEnabled = bStatsConfig.getBoolean("enabled", false);
-			}
-		} catch (NullPointerException e) {
-			isEnabled = false;
-		}
+		metrics = new Metrics((JavaPlugin) plugin, 19855);
 
 		registerCharts();
 	}
@@ -55,7 +37,7 @@ public class bStats implements Integration {
 
 	@Override
 	public boolean isEnabled() {
-		return isEnabled;
+		return true;
 	}
 
 	@Override
