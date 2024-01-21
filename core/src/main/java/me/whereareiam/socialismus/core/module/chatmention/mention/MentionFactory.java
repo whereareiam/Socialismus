@@ -8,7 +8,6 @@ import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.api.model.chatmention.mention.Mention;
 import me.whereareiam.socialismus.core.config.module.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.core.config.module.chatmention.ChatMentionConfig;
-import me.whereareiam.socialismus.core.util.FormatterUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -21,14 +20,12 @@ import java.util.Optional;
 
 @Singleton
 public class MentionFactory {
-	private final FormatterUtil formatterUtil;
 	private final ChatMentionConfig chatMentionConfig;
 	private final BubbleChatConfig bubbleChatConfig;
 
 	@Inject
-	public MentionFactory(FormatterUtil formatterUtil, ChatMentionConfig chatMentionConfig,
+	public MentionFactory(ChatMentionConfig chatMentionConfig,
 	                      BubbleChatConfig bubbleChatConfig) {
-		this.formatterUtil = formatterUtil;
 		this.chatMentionConfig = chatMentionConfig;
 		this.bubbleChatConfig = bubbleChatConfig;
 	}
@@ -63,10 +60,17 @@ public class MentionFactory {
 		Chat chat = optionalChat.orElse(null);
 
 		if (usedAllTag != null && sender.hasPermission(chatMentionConfig.settings.allTagSettings.permission)) {
-			return Bukkit.getOnlinePlayers();
+			Collection<? extends Player> recipients = Bukkit.getOnlinePlayers();
+			if (!sender.hasPermission(chatMentionConfig.settings.selfMentionPermission))
+				recipients.remove(sender);
+
+			return recipients;
 		}
 
 		if (usedNearbyTag != null && sender.hasPermission(chatMentionConfig.settings.nearbyTagSettings.permission)) {
+			if (!sender.hasPermission(chatMentionConfig.settings.selfMentionPermission))
+				players.remove(sender);
+			
 			return players;
 		}
 
