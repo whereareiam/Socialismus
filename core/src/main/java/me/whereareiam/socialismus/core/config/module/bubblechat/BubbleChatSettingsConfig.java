@@ -115,5 +115,13 @@ public class BubbleChatSettingsConfig {
 			},
 			at = Comment.At.PREPEND
 	)
-	public Vector3f displayScale = new Vector3f((float)1.0, (float)1.0, (float)1.0);
+	public Vector3f displayScale = new Vector3f((float) 1.0, (float) 1.0, (float) 1.0);
+
+	@Comment(
+			value = {
+					@CommentValue(" This setting allows you to set the maximum number of mentions in a single message."),
+			},
+			at = Comment.At.PREPEND
+	)
+	public int maxMentions = 5;
 }

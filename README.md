@@ -102,6 +102,7 @@ SocialismusAPI api = SocialismusAPI.getInstance();
 - [ ] Placeholders
 - [ ] Statistics
 - [ ] Swapper placeholder list command
+- [ ] Tag Parser
 - [ ] User Click Action
 - [x] Chats <sup>From 0.0.1
 - [x] Swapper <sup>From 0.1.0
@@ -110,5 +111,4 @@ SocialismusAPI api = SocialismusAPI.getInstance();
 - [x] Private Messages <sup> From 1.0.0
 - [x] Message Announcer <sup> From 1.1.0
 - [x] API <sup> From 1.2.0
-- [x] Tag Parser <sup> From 1.2.0
 - [x] User Mention <sup> From 1.2.0

@@ -34,7 +34,7 @@ public class ChatService {
 	}
 
 	public void distributeMessage(ChatMessage chatMessage) {
-		loggerUtil.debug("Distributing message: " + chatMessage.getContent());
+		loggerUtil.debug("Distributing ChatMessage: " + chatMessage);
 
 		Player sender = chatMessage.getSender();
 		Chat chat = chatMessage.getChat();

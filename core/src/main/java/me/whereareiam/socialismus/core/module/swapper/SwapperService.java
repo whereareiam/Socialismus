@@ -65,8 +65,6 @@ public class SwapperService implements Listener {
 	}
 
 	private Component hookSwapper(Component content, Player player) {
-		loggerUtil.debug("Swapping message: " + content);
-
 		List<Swapper> swappers = swapperModule.getSwappers();
 		for (Swapper swapper : swappers) {
 			for (int i = 0; i < swapper.placeholders.size(); i++) {

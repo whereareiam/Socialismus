@@ -6,31 +6,31 @@ import me.whereareiam.socialismus.api.model.BubbleMessage;
 import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.api.model.chatmention.mention.Mention;
 import me.whereareiam.socialismus.core.module.chatmention.mention.MentionFactory;
+import me.whereareiam.socialismus.core.util.LoggerUtil;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
 
 @Singleton
 public class ChatMentionService {
+	private final LoggerUtil loggerUtil;
 	private final MentionFactory mentionFactory;
 	private final ChatMentionFormatter chatMentionFormatter;
 	private final ChatMentionNotifier chatMentionNotifier;
 
 	@Inject
-	public ChatMentionService(MentionFactory mentionFactory, ChatMentionFormatter chatMentionFormatter,
-	                          ChatMentionNotifier chatMentionNotifier) {
+	public ChatMentionService(LoggerUtil loggerUtil, MentionFactory mentionFactory,
+	                          ChatMentionFormatter chatMentionFormatter, ChatMentionNotifier chatMentionNotifier) {
+		this.loggerUtil = loggerUtil;
 		this.mentionFactory = mentionFactory;
 		this.chatMentionFormatter = chatMentionFormatter;
 		this.chatMentionNotifier = chatMentionNotifier;
 	}
 
 	public ChatMessage hookChatMention(ChatMessage chatMessage) {
+		loggerUtil.debug("Hooking chat mention for chat message: " + chatMessage);
 		if (!chatMessage.getChat().mentions.enabled)
 			return chatMessage;
 
-		Component content = chatMessage.getContent();
-		Player player = chatMessage.getSender();
-
-		Mention mention = mentionFactory.createMention(player, chatMessage.getRecipients(), content);
+		Mention mention = mentionFactory.createMention(chatMessage);
 
 		Component component = applyMention(mention);
 		chatMessage.setContent(component);
@@ -39,10 +39,8 @@ public class ChatMentionService {
 	}
 
 	public BubbleMessage hookChatMention(BubbleMessage bubbleMessage) {
-		Player player = bubbleMessage.getSender();
-		Component content = bubbleMessage.getContent();
-
-		Mention mention = mentionFactory.createMention(player, bubbleMessage.getRecipients(), content);
+		loggerUtil.debug("Hooking chat mention for bubble message: " + bubbleMessage);
+		Mention mention = mentionFactory.createMention(bubbleMessage);
 
 		Component component = applyMention(mention);
 		bubbleMessage.setContent(component);
@@ -51,6 +49,10 @@ public class ChatMentionService {
 	}
 
 	private Component applyMention(Mention mention) {
+		if (mention.getMentionedPlayers().isEmpty())
+			return mention.getContent();
+
+		loggerUtil.debug("Applying mention: " + mention);
 		mention = chatMentionFormatter.formatMention(mention);
 		chatMentionNotifier.notifyPlayers(mention);
 
