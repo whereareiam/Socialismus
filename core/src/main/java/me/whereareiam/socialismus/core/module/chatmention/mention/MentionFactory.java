@@ -70,7 +70,7 @@ public class MentionFactory {
 		if (usedNearbyTag != null && sender.hasPermission(chatMentionConfig.settings.nearbyTagSettings.permission)) {
 			if (!sender.hasPermission(chatMentionConfig.settings.selfMentionPermission))
 				players.remove(sender);
-			
+
 			return players;
 		}
 
@@ -78,9 +78,24 @@ public class MentionFactory {
 				.filter(p -> plainContent.stream().anyMatch(s -> s.contains(p.getName())))
 				.toList();
 
-		if (chat != null && recipients.size() > chat.mentions.maxMentions) {
-			int maxMentions = getMaxMentions(chat, sender);
-			recipients = recipients.stream().limit(maxMentions).toList();
+		if (chat != null) {
+			int chatRadius = chat.requirements.recipient.radius;
+			int mentionRadius = chat.mentions.radius;
+
+			if (mentionRadius < chatRadius) {
+				recipients = recipients.stream()
+						.filter(p -> p.getLocation().distance(sender.getLocation()) <= mentionRadius)
+						.toList();
+			} else if (mentionRadius > chatRadius) {
+				recipients = Bukkit.getOnlinePlayers().stream()
+						.filter(p -> p.getLocation().distance(sender.getLocation()) <= mentionRadius)
+						.toList();
+			}
+
+			if (recipients.size() > chat.mentions.maxMentions) {
+				int maxMentions = getMaxMentions(chat, sender);
+				recipients = recipients.stream().limit(maxMentions).toList();
+			}
 		}
 
 		if (chat == null) {
@@ -91,7 +106,6 @@ public class MentionFactory {
 		}
 
 		return recipients;
-
 	}
 
 	private int getMaxMentions(Chat chat, Player player) {
