@@ -54,6 +54,7 @@ public class ChatMentionService {
 
 		loggerUtil.debug("Applying mention: " + mention);
 		mention = chatMentionFormatter.formatMention(mention);
+		loggerUtil.debug("Notifying players: " + mention.getMentionedPlayers());
 		chatMentionNotifier.notifyPlayers(mention);
 
 		return mention.getContent();

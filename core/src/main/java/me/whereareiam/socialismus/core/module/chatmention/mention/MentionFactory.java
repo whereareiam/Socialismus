@@ -11,6 +11,7 @@ import me.whereareiam.socialismus.core.config.module.chatmention.ChatMentionConf
 import me.whereareiam.socialismus.core.util.FormatterUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
@@ -48,16 +49,31 @@ public class MentionFactory {
 		String nearbyFormat = formatterUtil.cleanMessage(chatMentionConfig.settings.nearbyFormat);
 		boolean nearbyTag = plainContent.stream().allMatch(s -> s.equals(nearbyFormat));
 
+		Collection<? extends Player> recipients = getRecipients(sender, players, plainContent, allTag, nearbyTag, optionalChat);
+
+		return new Mention(content, allTag, nearbyTag, sender, recipients);
+	}
+
+	private Collection<? extends Player> getRecipients(Player sender, Collection<? extends Player> players, List<String> plainContent, boolean allTag, boolean nearbyTag, Optional<Chat> optionalChat) {
+		Chat chat = optionalChat.orElse(null);
+
+		if (allTag && sender.hasPermission(chatMentionConfig.settings.allMentionPermission)) {
+			return Bukkit.getOnlinePlayers();
+		}
+
+		if (nearbyTag && sender.hasPermission(chatMentionConfig.settings.nearbyMentionPermission)) {
+			return players;
+		}
+
 		Collection<? extends Player> recipients = players.stream()
 				.filter(p -> plainContent.stream().anyMatch(s -> s.contains(p.getName())))
 				.toList();
 
-		Chat chat = optionalChat.orElse(null);
 		if (chat != null && recipients.size() > chat.mentions.maxMentions) {
 			int maxMentions = getMaxMentions(chat, sender);
 			recipients = recipients.stream().limit(maxMentions).toList();
 		}
-
+		
 		if (chat == null) {
 			recipients = recipients.stream()
 					.limit(bubbleChatConfig.settings.maxMentions)
@@ -65,7 +81,8 @@ public class MentionFactory {
 					.toList();
 		}
 
-		return new Mention(content, allTag, nearbyTag, sender, recipients);
+		return recipients;
+
 	}
 
 	private int getMaxMentions(Chat chat, Player player) {
