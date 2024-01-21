@@ -28,9 +28,9 @@ public class ChatMentionFormatter {
 	}
 
 	public Mention formatMention(Mention mention) {
-		if (mention.getUsedAllTag() == null)
+		if (mention.getUsedAllTag() != null)
 			return formatAllMention(mention);
-		else if (mention.getUsedNearbyTag() == null)
+		else if (mention.getUsedNearbyTag() != null)
 			return formatNearbyMention(mention);
 		else
 			return formatPlayerMention(mention);

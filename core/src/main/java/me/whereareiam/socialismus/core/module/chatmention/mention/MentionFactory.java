@@ -46,7 +46,7 @@ public class MentionFactory {
 				.findFirst()
 				.orElse(null);
 
-		String usedNearbyTag = chatMentionConfig.settings.allTagSettings.tags.stream()
+		String usedNearbyTag = chatMentionConfig.settings.nearbyTagSettings.tags.stream()
 				.filter(plainContent::contains)
 				.findFirst()
 				.orElse(null);
