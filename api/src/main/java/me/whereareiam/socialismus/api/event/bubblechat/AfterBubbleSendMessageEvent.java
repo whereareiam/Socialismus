@@ -10,6 +10,12 @@ import me.whereareiam.socialismus.api.model.BubbleMessage;
  * @since 1.2.0
  */
 public class AfterBubbleSendMessageEvent extends BubbleEvent {
+	/**
+	 * Constructor for the event.
+	 *
+	 * @param bubbleMessage The BubbleMessage object that has been sent to the bubble chat.
+	 * @since 1.2.0
+	 */
 	public AfterBubbleSendMessageEvent(BubbleMessage bubbleMessage) {
 		super(bubbleMessage);
 	}

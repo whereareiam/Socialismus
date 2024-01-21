@@ -14,6 +14,12 @@ import org.bukkit.event.Cancellable;
 public class OnBubbleSendMessageEvent extends BubbleEvent implements Cancellable {
 	private boolean cancelled;
 
+	/**
+	 * Constructor for the event.
+	 *
+	 * @param bubbleMessage The BubbleMessage object that is about to be sent to the bubble chat.
+	 * @since 1.2.0
+	 */
 	public OnBubbleSendMessageEvent(BubbleMessage bubbleMessage) {
 		super(bubbleMessage);
 	}

@@ -16,6 +16,12 @@ import org.bukkit.event.Cancellable;
 public class BeforeChatSendMessageEvent extends ChatEvent implements Cancellable {
 	private boolean cancelled;
 
+	/**
+	 * Constructor for the event.
+	 *
+	 * @param chatMessage The ChatMessage object that is about to be sent to the chat.
+	 * @since 1.0.0
+	 */
 	public BeforeChatSendMessageEvent(ChatMessage chatMessage) {
 		super(chatMessage);
 	}

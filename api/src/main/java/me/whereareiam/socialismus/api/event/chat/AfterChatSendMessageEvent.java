@@ -10,6 +10,12 @@ import me.whereareiam.socialismus.api.model.chat.ChatMessage;
  * @since 1.0.0
  */
 public class AfterChatSendMessageEvent extends ChatEvent {
+	/**
+	 * Constructor for the event.
+	 *
+	 * @param chatMessage The ChatMessage object that has been sent to the chat.
+	 * @since 1.0.0
+	 */
 	public AfterChatSendMessageEvent(ChatMessage chatMessage) {
 		super(chatMessage);
 	}

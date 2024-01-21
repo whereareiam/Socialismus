@@ -10,6 +10,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class ChatEvent extends Event {
 	private static final HandlerList HANDLER_LIST = new HandlerList();
+
+	/**
+	 * ChatMessage object that is being sent to the chat.
+	 */
 	protected ChatMessage chatMessage;
 
 	/**
@@ -24,10 +28,16 @@ public abstract class ChatEvent extends Event {
 		this.chatMessage = chatMessage;
 	}
 
+	/**
+	 * @return The handler list.
+	 */
 	public static HandlerList getHandlerList() {
 		return HANDLER_LIST;
 	}
 
+	/**
+	 * @return The handler list.
+	 */
 	@Override
 	public @NotNull HandlerList getHandlers() {
 		return HANDLER_LIST;
@@ -35,6 +45,12 @@ public abstract class ChatEvent extends Event {
 
 	/**
 	 * Gets the message that is being sent to the chat.
+	 * <p>
+	 * ChatMessage#getContent() allows you to get the message.
+	 * <p>
+	 * ChatMessage#getSender() allows you to get the sender.
+	 * <p>
+	 * ChatMessage#getRecipients() allows you to get the recipients.
 	 *
 	 * @return The message that is being sent to the chat.
 	 * @since 1.2.0
@@ -49,6 +65,8 @@ public abstract class ChatEvent extends Event {
 	 * ChatMessage#setContent(Component) allows you to change the message.
 	 * <p>
 	 * ChatMessage#setSender(Player) allows you to change the sender.
+	 * <p>
+	 * ChatMessage#setRecipients(Players) allows you to change the recipients.
 	 *
 	 * @param chatMessage The message that is being sent to the chat.
 	 * @since 1.2.0

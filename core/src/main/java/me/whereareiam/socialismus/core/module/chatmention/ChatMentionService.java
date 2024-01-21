@@ -11,13 +11,16 @@ import org.bukkit.entity.Player;
 
 @Singleton
 public class ChatMentionService {
-	private final ChatMentionModule chatMentionModule;
 	private final MentionFactory mentionFactory;
+	private final ChatMentionFormatter chatMentionFormatter;
+	private final ChatMentionNotifier chatMentionNotifier;
 
 	@Inject
-	public ChatMentionService(ChatMentionModule chatMentionModule, MentionFactory mentionFactory) {
-		this.chatMentionModule = chatMentionModule;
+	public ChatMentionService(MentionFactory mentionFactory, ChatMentionFormatter chatMentionFormatter,
+	                          ChatMentionNotifier chatMentionNotifier) {
 		this.mentionFactory = mentionFactory;
+		this.chatMentionFormatter = chatMentionFormatter;
+		this.chatMentionNotifier = chatMentionNotifier;
 	}
 
 	public ChatMessage hookChatMention(ChatMessage chatMessage) {
@@ -48,9 +51,8 @@ public class ChatMentionService {
 	}
 
 	private Component applyMention(Mention mention) {
-		//TODO Implement formats
-		//TODO Implement notifications
-		//TODO Implement per player settings
+		mention = chatMentionFormatter.formatMention(mention);
+		chatMentionNotifier.notifyPlayers(mention);
 
 		return mention.getContent();
 	}

@@ -10,6 +10,11 @@ import com.google.inject.Singleton;
 public class SocialismusAPI {
 	private static Socialismus instance;
 
+	/**
+	 * Constructor for the class
+	 *
+	 * @param instance The instance of the plugin
+	 */
 	@Inject
 	public SocialismusAPI(Socialismus instance) {
 		SocialismusAPI.instance = instance;

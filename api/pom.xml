@@ -53,6 +53,11 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <failOnWarnings>true</failOnWarnings>
+                            <quiet>true</quiet>
+                            <release>11</release>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

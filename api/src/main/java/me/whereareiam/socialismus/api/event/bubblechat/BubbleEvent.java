@@ -10,6 +10,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class BubbleEvent extends Event {
 	private static final HandlerList HANDLER_LIST = new HandlerList();
+
+	/**
+	 * BubbleMessage object that is being sent to the bubble chat.
+	 */
 	protected BubbleMessage bubbleMessage;
 
 	/**
@@ -24,10 +28,16 @@ public abstract class BubbleEvent extends Event {
 		this.bubbleMessage = bubbleMessage;
 	}
 
+	/**
+	 * @return The handler list.
+	 */
 	public static HandlerList getHandlerList() {
 		return HANDLER_LIST;
 	}
 
+	/**
+	 * @return The handler list.
+	 */
 	@Override
 	public @NotNull HandlerList getHandlers() {
 		return HANDLER_LIST;
