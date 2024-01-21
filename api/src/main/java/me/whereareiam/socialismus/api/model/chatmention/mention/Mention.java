@@ -7,17 +7,17 @@ import java.util.Collection;
 
 public class Mention {
 	private Component content;
-	private boolean mentionAllTag;
-	private boolean mentionNearbyTag;
+	private String usedAllTag;
+	private String usedNearbyTag;
 
 	private Player sender;
 	private Collection<? extends Player> mentionedPlayers;
 
-	public Mention(Component content, boolean mentionAllTag, boolean mentionNearbyTag, Player sender,
+	public Mention(Component content, String usedAllTag, String usedNearbyTag, Player sender,
 	               Collection<? extends Player> mentionedPlayers) {
 		this.content = content;
-		this.mentionAllTag = mentionAllTag;
-		this.mentionNearbyTag = mentionNearbyTag;
+		this.usedAllTag = usedAllTag;
+		this.usedNearbyTag = usedNearbyTag;
 		this.sender = sender;
 		this.mentionedPlayers = mentionedPlayers;
 	}
@@ -30,20 +30,20 @@ public class Mention {
 		this.content = content;
 	}
 
-	public boolean canMentionAll() {
-		return mentionAllTag;
+	public String getUsedAllTag() {
+		return usedAllTag;
 	}
 
-	public void setMentionAllTag(boolean mentionAllTag) {
-		this.mentionAllTag = mentionAllTag;
+	public void setUsedAllTag(String usedAllTag) {
+		this.usedAllTag = usedAllTag;
 	}
 
-	public boolean canMentionNearby() {
-		return mentionNearbyTag;
+	public String getUsedNearbyTag() {
+		return usedNearbyTag;
 	}
 
-	public void setMentionNearbyTag(boolean mentionNearbyTag) {
-		this.mentionNearbyTag = mentionNearbyTag;
+	public void setUsedNearbyTag(String usedNearbyTag) {
+		this.usedNearbyTag = usedNearbyTag;
 	}
 
 	public Player getSender() {

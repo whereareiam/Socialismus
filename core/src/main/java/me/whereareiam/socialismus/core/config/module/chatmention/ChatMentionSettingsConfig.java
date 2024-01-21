@@ -1,10 +1,11 @@
 package me.whereareiam.socialismus.core.config.module.chatmention;
 
+import me.whereareiam.socialismus.core.config.module.chatmention.tag.AllTagSettingsConfig;
+import me.whereareiam.socialismus.core.config.module.chatmention.tag.NearbyTagSettingsConfig;
+
 public class ChatMentionSettingsConfig {
-	public String allMentionPermission = "socialismus.chat.mention.all";
-	public String nearbyMentionPermission = "socialismus.chat.mention.nearby";
 	public String selfMentionPermission = "socialismus.chat.mention.self";
 	public String maxMentionPermission = "socialismus.chat.mention.max.";
-	public String allFormat = "<red>@all</red>";
-	public String nearbyFormat = "<blue>@nearby</blue>";
+	public AllTagSettingsConfig allTagSettings = new AllTagSettingsConfig();
+	public NearbyTagSettingsConfig nearbyTagSettings = new NearbyTagSettingsConfig();
 }

@@ -28,24 +28,32 @@ public class ChatMentionFormatter {
 	}
 
 	public Mention formatMention(Mention mention) {
-		if (mention.canMentionAll())
+		if (mention.getUsedAllTag() == null)
 			return formatAllMention(mention);
-		else if (mention.canMentionNearby())
+		else if (mention.getUsedNearbyTag() == null)
 			return formatNearbyMention(mention);
 		else
 			return formatPlayerMention(mention);
 	}
 
 	private Mention formatAllMention(Mention mention) {
-		Component component = formatterUtil.formatMessage(mention.getSender(), chatMentionConfig.settings.allFormat);
-		mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), "@all", component));
-		
+		String tag = mention.getUsedAllTag();
+		String format = chatMentionConfig.settings.allTagSettings.format
+				.replace("{usedTag}", tag);
+
+		Component component = formatterUtil.formatMessage(mention.getSender(), format);
+		mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), tag, component));
+
 		return mention;
 	}
 
 	private Mention formatNearbyMention(Mention mention) {
-		Component component = formatterUtil.formatMessage(mention.getSender(), chatMentionConfig.settings.nearbyFormat);
-		mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), "@nearby", component));
+		String tag = mention.getUsedNearbyTag();
+		String format = chatMentionConfig.settings.nearbyTagSettings.format
+				.replace("{usedTag}", tag);
+
+		Component component = formatterUtil.formatMessage(mention.getSender(), format);
+		mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), tag, component));
 
 		return mention;
 	}

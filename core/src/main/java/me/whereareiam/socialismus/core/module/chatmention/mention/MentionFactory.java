@@ -44,24 +44,29 @@ public class MentionFactory {
 	private Mention createMention(Player sender, Collection<? extends Player> players, Component content, Optional<Chat> optionalChat) {
 		List<String> plainContent = List.of(PlainTextComponentSerializer.plainText().serialize(content).split(" "));
 
-		String allFormat = formatterUtil.cleanMessage(chatMentionConfig.settings.allFormat);
-		boolean allTag = plainContent.stream().allMatch(s -> s.equals(allFormat));
-		String nearbyFormat = formatterUtil.cleanMessage(chatMentionConfig.settings.nearbyFormat);
-		boolean nearbyTag = plainContent.stream().allMatch(s -> s.equals(nearbyFormat));
+		String usedAllTag = chatMentionConfig.settings.allTagSettings.tags.stream()
+				.filter(plainContent::contains)
+				.findFirst()
+				.orElse(null);
 
-		Collection<? extends Player> recipients = getRecipients(sender, players, plainContent, allTag, nearbyTag, optionalChat);
+		String usedNearbyTag = chatMentionConfig.settings.allTagSettings.tags.stream()
+				.filter(plainContent::contains)
+				.findFirst()
+				.orElse(null);
 
-		return new Mention(content, allTag, nearbyTag, sender, recipients);
+		Collection<? extends Player> recipients = getRecipients(sender, players, plainContent, usedAllTag, usedNearbyTag, optionalChat);
+
+		return new Mention(content, usedAllTag, usedNearbyTag, sender, recipients);
 	}
 
-	private Collection<? extends Player> getRecipients(Player sender, Collection<? extends Player> players, List<String> plainContent, boolean allTag, boolean nearbyTag, Optional<Chat> optionalChat) {
+	private Collection<? extends Player> getRecipients(Player sender, Collection<? extends Player> players, List<String> plainContent, String usedAllTag, String usedNearbyTag, Optional<Chat> optionalChat) {
 		Chat chat = optionalChat.orElse(null);
 
-		if (allTag && sender.hasPermission(chatMentionConfig.settings.allMentionPermission)) {
+		if (usedAllTag != null && sender.hasPermission(chatMentionConfig.settings.allTagSettings.permission)) {
 			return Bukkit.getOnlinePlayers();
 		}
 
-		if (nearbyTag && sender.hasPermission(chatMentionConfig.settings.nearbyMentionPermission)) {
+		if (usedNearbyTag != null && sender.hasPermission(chatMentionConfig.settings.nearbyTagSettings.permission)) {
 			return players;
 		}
 
@@ -73,7 +78,7 @@ public class MentionFactory {
 			int maxMentions = getMaxMentions(chat, sender);
 			recipients = recipients.stream().limit(maxMentions).toList();
 		}
-		
+
 		if (chat == null) {
 			recipients = recipients.stream()
 					.limit(bubbleChatConfig.settings.maxMentions)
