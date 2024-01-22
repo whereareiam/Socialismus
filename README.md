@@ -98,6 +98,7 @@ SocialismusAPI api = SocialismusAPI.getInstance();
 - [ ] Automatic Moderation (regex filtering and external APIs)
 - [ ] Chat Bot (if message matches conditions then send a message)
 - [ ] Colorization (allow to choose a color for each chat/bubble)
+- [ ] Features as external modules
 - [ ] Folia Support
 - [ ] Item/Inventory Display Chat
 - [ ] MultiPaper Support
