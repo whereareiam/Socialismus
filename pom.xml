@@ -27,7 +27,7 @@
         <maven.assembly.version>3.3.0</maven.assembly.version>
         <maven.antrun.version>3.1.0</maven.antrun.version>
         <maven.resources.version>3.3.1</maven.resources.version>
-        <maven.source.version>3.3.0</maven.source.version>
+        <maven.source.version>3.6.3</maven.source.version>
 
         <!-- Dependencies -->
         <!-- core -->
