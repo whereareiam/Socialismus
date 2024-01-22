@@ -8,11 +8,10 @@ import me.whereareiam.socialismus.api.model.swapper.Swapper;
 import me.whereareiam.socialismus.api.module.Module;
 import me.whereareiam.socialismus.core.config.module.swapper.SwapperConfig;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
-import me.whereareiam.socialismus.core.integration.protocollib.PacketSender;
-import me.whereareiam.socialismus.core.integration.protocollib.entity.PlayerPacket;
+import me.whereareiam.socialismus.core.integration.IntegrationManager;
 import me.whereareiam.socialismus.core.listener.state.ChatListenerState;
+import me.whereareiam.socialismus.core.listener.state.JoinListenerState;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -24,22 +23,21 @@ import java.util.List;
 public class SwapperModule implements Module {
 	private final Injector injector;
 	private final LoggerUtil loggerUtil;
+	private final IntegrationManager integrationManager;
 	private final SettingsConfig settingsConfig;
-	private final SwapperRequirementValidator swapperRequirementValidator;
 	private final Path swapperPath;
 	private final List<Swapper> swappers = new ArrayList<>();
 
 	private boolean moduleStatus;
 
 	@Inject
-	public SwapperModule(Injector injector, LoggerUtil loggerUtil,
-	                     @Named("modulePath") Path modulePath, SettingsConfig settingsConfig,
-	                     SwapperRequirementValidator swapperRequirementValidator) {
+	public SwapperModule(Injector injector, LoggerUtil loggerUtil, IntegrationManager integrationManager,
+	                     @Named("modulePath") Path modulePath, SettingsConfig settingsConfig) {
 		this.injector = injector;
 		this.loggerUtil = loggerUtil;
+		this.integrationManager = integrationManager;
 		this.settingsConfig = settingsConfig;
 
-		this.swapperRequirementValidator = swapperRequirementValidator;
 		this.swapperPath = modulePath.resolve("swapper");
 
 		loggerUtil.trace("Initializing class: " + this);
@@ -49,7 +47,7 @@ public class SwapperModule implements Module {
 		loggerUtil.debug("Registering swappers");
 		List<File> files = Arrays.stream(swapperPath.toFile().listFiles()).filter(file -> file.getName().endsWith(".yml")).toList();
 		if (files.isEmpty()) {
-			loggerUtil.debug("Creating an example swapper, because dir is empty");
+			loggerUtil.trace("Creating an example swapper, because dir is empty");
 			SwapperConfig swapperConfig = createExampleSwapperConfig();
 			swapperConfig.reload(swapperPath.resolve("example.yml"));
 			swappers.addAll(swapperConfig.swappers);
@@ -72,26 +70,6 @@ public class SwapperModule implements Module {
 	public void cleanSwappers() {
 		loggerUtil.debug("Cleaning swappers");
 		swappers.clear();
-	}
-
-	public void suggestSwappers(Player player) {
-		if (!settingsConfig.modules.swapper.suggest)
-			return;
-
-		final PacketSender packetSender = injector.getInstance(PacketSender.class);
-		final PlayerPacket playerPacket = injector.getInstance(PlayerPacket.class);
-		loggerUtil.debug("Sending swappers to " + player.getName());
-		for (Swapper swapper : swappers) {
-			if (swapperRequirementValidator.validatePlayer(swapper, player, false)) {
-				loggerUtil.trace("Player " + player.getName() + " will receive these swappers: " + swapper.placeholders);
-				for (String placeholder : swapper.placeholders) {
-					packetSender.sendPacket(
-							player,
-							playerPacket.createPlayerInfoPacket(placeholder)
-					);
-				}
-			}
-		}
 	}
 
 	public List<Swapper> getSwappers() {
@@ -124,6 +102,9 @@ public class SwapperModule implements Module {
 		}
 
 		ChatListenerState.setRequired(true);
+		if (integrationManager.isIntegrationEnabled("ProtocolLib"))
+			JoinListenerState.setRequired(true);
+
 		registerSwappers();
 		moduleStatus = true;
 	}

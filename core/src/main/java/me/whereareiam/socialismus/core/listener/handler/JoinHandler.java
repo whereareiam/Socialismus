@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.core.integration.IntegrationManager;
-import me.whereareiam.socialismus.core.module.swapper.SwapperModule;
+import me.whereareiam.socialismus.core.module.swapper.SwapperService;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import org.bukkit.entity.Player;
 
@@ -19,15 +19,12 @@ public class JoinHandler {
 		this.injector = injector;
 		this.loggerUtil = loggerUtil;
 		this.integrationManager = integrationManager;
+
+		loggerUtil.trace("Initializing class: " + this);
 	}
 
 	public void handleJoinEvent(Player player) {
-		if (integrationManager.isIntegrationEnabled("ProtocolLib")) {
-			final SwapperModule swapperModule = injector.getInstance(SwapperModule.class);
-			swapperModule.suggestSwappers(player);
-		} else {
-			loggerUtil.warning("You can't use the Swapper suggestion without ProtocolLib!");
-		}
+		injector.getInstance(SwapperService.class).suggestSwappers(player);
 	}
 
 }

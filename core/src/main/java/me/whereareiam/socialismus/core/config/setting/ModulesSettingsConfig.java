@@ -51,6 +51,7 @@ public class ModulesSettingsConfig {
 					@CommentValue(type = CommentValue.Type.NEW_LINE),
 					@CommentValue(" The chat mention module allows you to mention a player in the chat by typing"),
 					@CommentValue(" @playername. The player will receive a notification that he has been mentioned."),
+					@CommentValue(" *It is recommended to enable it for chat OR bubbles, not both*"),
 			},
 			at = Comment.At.PREPEND
 	)
