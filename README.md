@@ -95,15 +95,18 @@ SocialismusAPI api = SocialismusAPI.getInstance();
 
 # TODO List:
 
-- [ ] Automatic Moderation
-- [ ] Chat Bot
-- [ ] Colorization
+- [ ] Automatic Moderation (regex filtering and external APIs)
+- [ ] Chat Bot (if message matches conditions then send a message)
+- [ ] Colorization (allow to choose a color for each chat/bubble)
+- [ ] Folia Support
 - [ ] Item/Inventory Display Chat
+- [ ] MultiPaper Support
 - [ ] Placeholders
 - [ ] Statistics
-- [ ] Swapper placeholder list command
+- [ ] Swapper Update (placeholder list command, customize suggestions)
 - [ ] Tag Parser
-- [ ] User Click Action
+- [ ] User Click Action (execute command, open url, send action bar)
+- [ ] Velocity Support
 - [x] Chats <sup>From 0.0.1
 - [x] Swapper <sup>From 0.1.0
 - [x] Bubble Chat <sup> From 0.2.0
