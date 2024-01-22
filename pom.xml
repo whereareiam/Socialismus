@@ -34,7 +34,7 @@
         <guice.version>7.0.0</guice.version>
         <serializer.version>1.1.1</serializer.version>
         <acf-paper.version>0.5.1</acf-paper.version>
-        <sqlite-jdbc.version>3.44.1.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.45.0.0</sqlite-jdbc.version>
 
         <bstats-bukkit.version>3.0.2</bstats-bukkit.version>
         <adventure-platform-bukkit.version>4.3.2</adventure-platform-bukkit.version>
