@@ -1,11 +1,10 @@
 package me.whereareiam.socialismus.api.model.chatmention.notification;
 
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
+import net.kyori.adventure.bossbar.BossBar;
 
 public class BossBarNotification {
-	public BarColor color = BarColor.RED;
-	public BarStyle style = BarStyle.SOLID;
+	public BossBar.Color color = BossBar.Color.RED;
+	public BossBar.Overlay style = BossBar.Overlay.PROGRESS;
 	public int duration = 30;
-	public String title = "You were mentioned!";
+	public String message = "You were mentioned!";
 }

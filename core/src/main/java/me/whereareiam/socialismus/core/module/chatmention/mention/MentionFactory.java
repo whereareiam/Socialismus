@@ -100,14 +100,16 @@ public class MentionFactory {
 			int chatRadius = chat.requirements.recipient.radius;
 			int mentionRadius = chat.mentions.radius;
 
-			if (mentionRadius < chatRadius) {
-				recipients = recipients.stream()
-						.filter(p -> DistanceCalculatorUtil.calculateDistance(p, sender) <= mentionRadius)
-						.toList();
-			} else if (mentionRadius > chatRadius) {
-				recipients = Bukkit.getOnlinePlayers().stream()
-						.filter(p -> DistanceCalculatorUtil.calculateDistance(p, sender) <= mentionRadius)
-						.toList();
+			if (usedAllTag != null && usedNearbyTag != null) {
+				if (mentionRadius < chatRadius) {
+					recipients = recipients.stream()
+							.filter(p -> DistanceCalculatorUtil.calculateDistance(p, sender) <= mentionRadius)
+							.toList();
+				} else if (mentionRadius > chatRadius) {
+					recipients = Bukkit.getOnlinePlayers().stream()
+							.filter(p -> DistanceCalculatorUtil.calculateDistance(p, sender) <= mentionRadius)
+							.toList();
+				}
 			}
 
 			if (recipients.size() > chat.mentions.maxMentions) {
