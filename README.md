@@ -106,6 +106,7 @@ SocialismusAPI api = SocialismusAPI.getInstance();
 - [ ] Statistics
 - [ ] Swapper Update (placeholder list command, customize suggestions)
 - [ ] Tag Parser
+- [ ] Sounds everywhere (when you click on a message, when you receive a message, etc.)
 - [ ] User Click Action (execute command, open url, send action bar)
 - [ ] Velocity Support
 - [x] Chats <sup>From 0.0.1
