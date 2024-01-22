@@ -101,7 +101,7 @@ public class ChatMentionModule implements Module {
 
 	@Override
 	public boolean isEnabled() {
-		return moduleStatus == settingsConfig.modules.chatmention;
+		return moduleStatus == (settingsConfig.modules.chatmention.enableForChats || settingsConfig.modules.chatmention.enableForBubbles);
 	}
 
 	@Override

@@ -49,12 +49,12 @@ public class ModulesSettingsConfig {
 	@Comment(
 			value = {
 					@CommentValue(type = CommentValue.Type.NEW_LINE),
-					@CommentValue(" The chatmention module allows you to mention players in chat messages."),
-					@CommentValue(" When you mention a player, he will receive a notification"),
+					@CommentValue(" The chat mention module allows you to mention a player in the chat by typing"),
+					@CommentValue(" @playername. The player will receive a notification that he has been mentioned."),
 			},
 			at = Comment.At.PREPEND
 	)
-	public boolean chatmention = true;
+	public ChatMentionSettingsConfig chatmention = new ChatMentionSettingsConfig();
 
 	/*public StatisticSettingsConfig statistic = new StatisticSettingsConfig();*/
 }
