@@ -8,6 +8,8 @@ import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.api.model.chatmention.mention.Mention;
 import me.whereareiam.socialismus.core.config.module.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.core.config.module.chatmention.ChatMentionConfig;
+import me.whereareiam.socialismus.core.util.DistanceCalculatorUtil;
+import me.whereareiam.socialismus.core.util.LoggerUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -20,14 +22,18 @@ import java.util.Optional;
 
 @Singleton
 public class MentionFactory {
+	private final LoggerUtil loggerUtil;
 	private final ChatMentionConfig chatMentionConfig;
 	private final BubbleChatConfig bubbleChatConfig;
 
 	@Inject
-	public MentionFactory(ChatMentionConfig chatMentionConfig,
+	public MentionFactory(LoggerUtil loggerUtil, ChatMentionConfig chatMentionConfig,
 	                      BubbleChatConfig bubbleChatConfig) {
+		this.loggerUtil = loggerUtil;
 		this.chatMentionConfig = chatMentionConfig;
 		this.bubbleChatConfig = bubbleChatConfig;
+
+		loggerUtil.trace("Initializing class: " + this);
 	}
 
 	public Mention createMention(BubbleMessage bubbleMessage) {
@@ -53,7 +59,19 @@ public class MentionFactory {
 
 		Collection<? extends Player> recipients = getRecipients(sender, players, plainContent, usedAllTag, usedNearbyTag, optionalChat);
 
-		return new Mention(content, usedAllTag, usedNearbyTag, sender, recipients);
+		Mention mention = new Mention(content, usedAllTag, usedNearbyTag, sender, recipients);
+
+		loggerUtil.debug(" "
+				+ "\n Created new mention"
+				+ "\n content: " + PlainTextComponentSerializer.plainText().serialize(content)
+				+ "\n recipients: " + recipients.stream().map(Player::getName).toList()
+				+ "\n sender: " + sender.getName()
+				+ "\n usedNearbyTag: " + usedNearbyTag
+				+ "\n usedAllTag: " + usedAllTag
+				+ " "
+		);
+
+		return mention;
 	}
 
 	private Collection<? extends Player> getRecipients(Player sender, Collection<? extends Player> players, List<String> plainContent, String usedAllTag, String usedNearbyTag, Optional<Chat> optionalChat) {
@@ -84,11 +102,11 @@ public class MentionFactory {
 
 			if (mentionRadius < chatRadius) {
 				recipients = recipients.stream()
-						.filter(p -> p.getLocation().distance(sender.getLocation()) <= mentionRadius)
+						.filter(p -> DistanceCalculatorUtil.calculateDistance(p, sender) <= mentionRadius)
 						.toList();
 			} else if (mentionRadius > chatRadius) {
 				recipients = Bukkit.getOnlinePlayers().stream()
-						.filter(p -> p.getLocation().distance(sender.getLocation()) <= mentionRadius)
+						.filter(p -> DistanceCalculatorUtil.calculateDistance(p, sender) <= mentionRadius)
 						.toList();
 			}
 

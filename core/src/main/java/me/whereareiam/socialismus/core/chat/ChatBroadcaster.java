@@ -29,6 +29,8 @@ public class ChatBroadcaster {
 		this.loggerUtil = loggerUtil;
 		this.formatterUtil = formatterUtil;
 		this.messageUtil = messageUtil;
+
+		loggerUtil.trace("Initializing class: " + this);
 	}
 
 	public void broadcastMessage(ChatMessage chatMessage) {
@@ -57,7 +59,6 @@ public class ChatBroadcaster {
 
 		messageFormat = messageUtil.replacePlaceholder(messageFormat, "{playerName}", chatMessage.getSender().getName());
 		messageFormat = messageUtil.replacePlaceholder(messageFormat, "{message}", chatMessage.getContent());
-
 
 		if (hoverFormat != null) {
 			messageFormat = messageFormat.hoverEvent(HoverEvent.showText(hoverFormat));

@@ -4,6 +4,7 @@ import co.aikar.commands.CommandIssuer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.core.platform.PlatformMessageSender;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.entity.Player;
@@ -42,8 +43,21 @@ public class MessageUtil {
 	}
 
 	public void sendMessage(Player sender, Component message) {
-		loggerUtil.debug("Sending message to " + sender.getName());
+		loggerUtil.trace("Sending actionbar to " + sender.getName());
 		platformMessageSender.sendMessage(sender, message);
+	}
+
+	public void sendActionBar(Player sender, String message) {
+		if (message == null || message.isEmpty())
+			return;
+
+		sendActionBar(sender, formatterUtil.formatMessage(sender, message));
+	}
+
+	public void sendActionBar(Player player, Component message) {
+		loggerUtil.trace("Sending action bar to " + player.getName());
+
+		((Audience) player).sendActionBar(message);
 	}
 
 	public Component replacePlaceholder(Component component, String placeholder, Object content) {

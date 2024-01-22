@@ -34,13 +34,13 @@ public class ChatService {
 	}
 
 	public void distributeMessage(ChatMessage chatMessage) {
-		loggerUtil.debug("Distributing ChatMessage: " + chatMessage);
+		loggerUtil.trace("Distributing ChatMessage: " + chatMessage);
 
 		Player sender = chatMessage.getSender();
 		Chat chat = chatMessage.getChat();
 
 		if (!chatRequirementValidator.validatePlayer(chatMessage)) {
-			loggerUtil.debug(sender.getName() + " didn't met requirements");
+			loggerUtil.trace(sender.getName() + " didn't met requirements");
 			return;
 		}
 

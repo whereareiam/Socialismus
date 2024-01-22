@@ -41,17 +41,16 @@ public class ChatMentionModule implements Module {
 	}
 
 	private void registerChatMentions() {
-		loggerUtil.debug("Reloading chatmentions.yml");
 		chatMentionConfig.reload(modulePath.resolve("chatmentions.yml"));
 
 		if (chatMentionConfig.formats.isEmpty()) {
-			loggerUtil.debug("Creating an example format for chatmention, because format section is empty");
+			loggerUtil.trace("Creating an example format for chatmention, because format section is empty");
 			createExampleFormat();
 			chatMentionConfig.save(modulePath.resolve("chatmentions.yml"));
 		}
 
 		if (chatMentionConfig.notifications.isEmpty()) {
-			loggerUtil.debug("Creating an example notification for chatmention, because notification section is empty");
+			loggerUtil.trace("Creating an example notification for chatmention, because notification section is empty");
 			createExampleNotification();
 			chatMentionConfig.save(modulePath.resolve("chatmentions.yml"));
 		}

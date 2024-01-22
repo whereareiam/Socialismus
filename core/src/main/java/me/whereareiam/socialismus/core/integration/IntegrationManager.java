@@ -47,7 +47,7 @@ public class IntegrationManager {
 	}
 
 	public void registerIntegration(Integration integration) {
-		loggerUtil.debug("Registered integration: " + integration.getName());
+		loggerUtil.trace("Registered integration: " + integration.getName());
 		integrations.add(integration);
 	}
 

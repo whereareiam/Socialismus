@@ -61,13 +61,11 @@ public class FormatterUtil {
 	}
 
 	public Component formatMessage(String message) {
-		loggerUtil.debug("formatMessage: " + message);
-
 		return formatMessage(null, message);
 	}
 
 	public Component formatMessage(Player player, String message) {
-		loggerUtil.debug("formatMessage:" + message);
+		loggerUtil.trace("formatMessage:" + message);
 		final MiniMessage miniMessage = MiniMessage.miniMessage();
 
 		if (message == null || message.isEmpty())

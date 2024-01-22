@@ -19,7 +19,7 @@ public class InfoPrinterUtil {
 
 	@Inject
 	public InfoPrinterUtil(LoggerUtil loggerUtil, CommandManager commandManager, IntegrationManager integrationManager,
-						   ModuleLoader moduleLoader) {
+	                       ModuleLoader moduleLoader) {
 		this.loggerUtil = loggerUtil;
 		this.commandManager = commandManager;
 		this.integrationManager = integrationManager;
@@ -55,7 +55,7 @@ public class InfoPrinterUtil {
 		});
 
 		int chatCount = moduleLoader.getChatCount();
-		loggerUtil.info("  Registered " + chatCount + " " + (chatCount == 1 ? "chat" : "chat"));
+		loggerUtil.info("  Registered " + chatCount + " " + (chatCount == 1 ? "chat" : "chats"));
 
 		int swapperCount = moduleLoader.getSwapperCount();
 		loggerUtil.info("  Registered " + swapperCount + " " + (swapperCount == 1 ? "swapper" : "swappers"));

@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.api.type.ChatUseType;
 import me.whereareiam.socialismus.core.module.chat.ChatModule;
+import me.whereareiam.socialismus.core.util.LoggerUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
@@ -15,11 +16,15 @@ import java.util.Optional;
 
 @Singleton
 public class ChatMessageFactory {
+	private final LoggerUtil loggerUtil;
 	private final ChatModule chatModule;
 
 	@Inject
-	public ChatMessageFactory(ChatModule chatModule) {
+	public ChatMessageFactory(LoggerUtil loggerUtil, ChatModule chatModule) {
 		this.chatModule = chatModule;
+		this.loggerUtil = loggerUtil;
+
+		loggerUtil.trace("Initializing class: " + this);
 	}
 
 	public ChatMessage createChatMessage(Player sender, Collection<? extends Player> recipients, String message, Optional<String> command) {
@@ -45,6 +50,17 @@ public class ChatMessageFactory {
 
 		Component content = PlainTextComponentSerializer.plainText().deserialize(message.trim());
 
-		return new ChatMessage(content, chat, sender, recipients);
+		ChatMessage chatMessage = new ChatMessage(content, chat, sender, recipients);
+
+		loggerUtil.debug(" "
+				+ "\n Created new ChatMessage "
+				+ "\n chat: " + chat.id
+				+ "\n content: " + PlainTextComponentSerializer.plainText().serialize(content)
+				+ "\n recipients: " + recipients.stream().map(Player::getName).toList()
+				+ "\n sender: " + sender.getName()
+				+ " "
+		);
+
+		return chatMessage;
 	}
 }

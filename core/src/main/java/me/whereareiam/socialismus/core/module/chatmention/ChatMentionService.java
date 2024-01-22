@@ -26,7 +26,7 @@ public class ChatMentionService {
 	}
 
 	public ChatMessage hookChatMention(ChatMessage chatMessage) {
-		loggerUtil.debug("Hooking chat mention for chat message: " + chatMessage);
+		loggerUtil.trace("Hooking chat mention for chat message: " + chatMessage);
 		if (!chatMessage.getChat().mentions.enabled)
 			return chatMessage;
 
@@ -39,7 +39,7 @@ public class ChatMentionService {
 	}
 
 	public BubbleMessage hookChatMention(BubbleMessage bubbleMessage) {
-		loggerUtil.debug("Hooking chat mention for bubble message: " + bubbleMessage);
+		loggerUtil.trace("Hooking chat mention for bubble message: " + bubbleMessage);
 		Mention mention = mentionFactory.createMention(bubbleMessage);
 
 		Component component = applyMention(mention);
@@ -52,9 +52,9 @@ public class ChatMentionService {
 		if (mention.getMentionedPlayers().isEmpty())
 			return mention.getContent();
 
-		loggerUtil.debug("Applying mention: " + mention);
+		loggerUtil.trace("Applying mention: " + mention);
 		mention = chatMentionFormatter.formatMention(mention);
-		loggerUtil.debug("Notifying players: " + mention.getMentionedPlayers());
+		loggerUtil.trace("Notifying players: " + mention.getMentionedPlayers());
 		chatMentionNotifier.notifyPlayers(mention);
 
 		return mention.getContent();

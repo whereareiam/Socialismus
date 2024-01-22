@@ -26,8 +26,8 @@ public class AnnounceCommand extends CommandBase {
 
 	@Inject
 	public AnnounceCommand(LoggerUtil loggerUtil, MessageUtil messageUtil, CommandsConfig commands,
-						   MessagesConfig messages, AnnouncerModule announcerModule,
-						   AnnouncementBroadcaster announcementBroadcaster) {
+	                       MessagesConfig messages, AnnouncerModule announcerModule,
+	                       AnnouncementBroadcaster announcementBroadcaster) {
 		this.loggerUtil = loggerUtil;
 		this.messageUtil = messageUtil;
 		this.commands = commands;
@@ -42,18 +42,17 @@ public class AnnounceCommand extends CommandBase {
 	@Description("%description.announce")
 	@Syntax("%syntax.announce")
 	public void onCommand(CommandIssuer issuer, String announcementId) {
-		Announcement announcement = announcerModule.getAnnouncements().stream()
+		java.util.Optional<Announcement> announcement = announcerModule.getAnnouncements().stream()
 				.filter(announcement1 -> announcement1.id.equals(announcementId))
-				.findFirst()
-				.orElse(null);
+				.findFirst();
 
-		if (announcement == null) {
+		if (announcement.isEmpty()) {
 			messageUtil.sendMessage(issuer, messages.commands.announceCommand.noAnnouncement);
 			return;
 		}
 
 		messageUtil.sendMessage(issuer, messages.commands.announceCommand.announce);
-		announcementBroadcaster.postAnnouncement(announcement);
+		announcementBroadcaster.postAnnouncement(announcement.get());
 	}
 
 	@Override
