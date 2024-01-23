@@ -24,7 +24,7 @@ public class ChatMentionNotifier {
 
 	public void notifyPlayers(Mention mention) {
 		Optional<ChatMentionNotificationFormat> format = chatMentionModule.getNotifications().stream().filter(
-				f -> mention.getSender().hasPermission(f.permission)
+				f -> f.permission.isBlank() || f.permission.isEmpty() || mention.getSender().hasPermission(f.permission)
 		).findFirst();
 
 		if (format.isEmpty())

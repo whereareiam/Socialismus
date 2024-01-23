@@ -65,7 +65,7 @@ public class ChatMentionFormatter {
 
 	private Mention formatPlayerMention(Mention mention) {
 		Optional<ChatMentionFormat> format = chatMentionModule.getFormats().stream().filter(
-				f -> mention.getSender().hasPermission(f.permission)
+				f -> f.permission.isBlank() || f.permission.isEmpty() || mention.getSender().hasPermission(f.permission)
 		).findFirst();
 
 		if (format.isEmpty())
