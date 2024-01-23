@@ -1,23 +1,6 @@
 ![head](.github/assets/SocialismusPage-Head.png)
 ![welcome](.github/assets/SocialismusPage-Welcome.png)
-
-# Compatibility
-
-- Created for version 1.20.4, but should work on versions below *(If you are getting an error on Spigot 1.20.2 when a
-  player joins the server, switch your server and plugin to Paper).*
-- Works on Spigot and its forks *(Paper recommended)*.
-
-# Dependencies
-
-- Java 17 or newer
-- ProtocolLib *(Optional, but BubbleChat will not work without it)*
-- PlaceholderAPI *(Optional)*
-
-# Description
-
-A plugin made **by players for players**, designed to make communicating more convenient and modern. You can do exactly
-what
-you want with this plugin, as it offers many different modules and great customization of all settings and messages!
+![dependencies](.github/assets/SocialismusPage-Dependencies.png)
 
 ## Modules
 
@@ -29,11 +12,6 @@ you want with this plugin, as it offers many different modules and great customi
   Experience a smooth bubble transition when the player runs, it's not what you've seen in other plugins.
 - **Announcer**: Allows you to create many different messages that will be sent to the chat after a certain period of
   time.
-
-## Information
-
-- Integrates with PlaceholderAPI, allowing you to use placeholders from that plugin directly in messages.
-- Displays statistics from your own server and from other servers if you have enabled bStats on your server.
 
 # Using the API
 
