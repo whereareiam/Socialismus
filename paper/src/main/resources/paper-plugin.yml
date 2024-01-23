@@ -3,6 +3,7 @@ version: '${project.parent.version}'
 main: me.whereareiam.socialismus.paper.SocialismusPaper
 loader: me.whereareiam.socialismus.paper.SocialismusPaperLoader
 api-version: '1.19'
+folia-supported: true
 dependencies:
   server:
     PlaceholderAPI:
