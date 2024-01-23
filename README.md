@@ -1,7 +1,5 @@
-# Socialismus
-
-![bStats](https://bstats.org/signatures/bukkit/socialismus.svg)
-![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml) ![SpigotMC downloads](https://pluginbadges.glitch.me/api/v1/dl/downloads-limegreen.svg?spigot=113119&github=whereareiam%2FSocialismus&style=flat) ![GitHub release](https://img.shields.io/github/v/release/whereareiam/Socialismus)
+![head](.github/assets/SocialismusPage-Head.png)
+![welcome](.github/assets/SocialismusPage-Welcome.png)
 
 # Compatibility
 
@@ -117,3 +115,8 @@ SocialismusAPI api = SocialismusAPI.getInstance();
 - [x] Message Announcer <sup> From 1.1.0
 - [x] API <sup> From 1.2.0
 - [x] User Mention <sup> From 1.2.0
+
+# Statistics
+
+![bStats](https://bstats.org/signatures/bukkit/socialismus.svg)
+![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml) ![SpigotMC downloads](https://pluginbadges.glitch.me/api/v1/dl/downloads-limegreen.svg?spigot=113119&github=whereareiam%2FSocialismus&style=flat) ![GitHub release](https://img.shields.io/github/v/release/whereareiam/Socialismus)
