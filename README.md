@@ -1,6 +1,7 @@
 ![head](.github/assets/SocialismusPage-Head.png)
 ![welcome](.github/assets/SocialismusPage-Welcome.png)
 ![dependencies](.github/assets/SocialismusPage-Dependencies.png)
+![comparison](.github/assets/SocialismusPage-Comparison.png)
 
 ## Modules
 
