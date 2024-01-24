@@ -108,24 +108,29 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 	private void createExampleChat() {
 		Chat chat = new Chat();
 
-		chat.id = "example";
-		chat.usage.command = "example";
+		chat.id = "global";
+		chat.usage.command = "global";
 		chat.usage.symbol = "";
 		chat.usage.type = ChatUseType.SYMBOL_COMMAND;
 
-		chat.messageFormat = "<red>{playerName}: <white>{message}";
-		chat.hoverFormat.add("<blue>Some text1");
-		chat.hoverFormat.add("<blue>Some text2");
+		chat.messageFormat = "<gold><bold><insertion:/global message>G</insertion><reset> <dark_gray>| <gray><click:run_command:/tpa {playerName>%luckperms_prefix%{playerName}</click>: <white>{message}";
+		chat.hoverFormat.add(" ");
+		chat.hoverFormat.add("<dark_gray> Information");
+		chat.hoverFormat.add("<gray>  Message was sent at: <gold>%player_world_time_24%");
+		chat.hoverFormat.add(" ");
+		chat.hoverFormat.add("<gray>  World: <gold>%player_world_name%");
+		chat.hoverFormat.add("<gray>  XYZ: <gold>%player_location_x%, %player_location_y%, %player_location_z%");
+		chat.hoverFormat.add(" ");
 
 		chat.requirements.enabled = true;
 		chat.requirements.recipient.radius = -1;
 		chat.requirements.recipient.seePermission = "";
 		chat.requirements.recipient.seeOwnMessage = true;
-		chat.requirements.recipient.worlds = List.of("world", "world_nether", "world_the_end");
+		chat.requirements.recipient.worlds = new ArrayList<>();
 
 		chat.requirements.sender.minOnline = 0;
 		chat.requirements.sender.usePermission = "";
-		chat.requirements.sender.worlds = List.of("world", "world_nether", "world_the_end");
+		chat.requirements.sender.worlds = new ArrayList<>();
 		chat.requirements.sender.symbolCountThreshold = 0;
 
 		chatsConfig.chats.add(chat);

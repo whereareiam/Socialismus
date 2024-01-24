@@ -78,15 +78,22 @@ public class SwapperModule implements Module {
 
 	private SwapperConfig createExampleSwapperConfig() {
 		SwapperConfig swapperConfig = injector.getInstance(SwapperConfig.class);
-		Swapper exampleSwapper = injector.getInstance(Swapper.class);
-		exampleSwapper.placeholders.add("{example}");
-		exampleSwapper.content.add("example");
-		exampleSwapper.settings.directSearch = true;
-		exampleSwapper.settings.randomContent = false;
-		exampleSwapper.requirements.enabled = false;
-		exampleSwapper.requirements.usePermission = "";
 
-		swapperConfig.swappers.add(exampleSwapper);
+		String[] phrases = {"happy", "sad", "love", "laugh", "cry", "angry", "surprised", "confused", "excited", "bored"};
+		String[] replacements = {":)", ":(", "<3", ":D", ":'(", ">:(", ":O", ":/", ":)", ":|"};
+
+		for (int i = 0; i < 10; i++) {
+			Swapper swapper = injector.getInstance(Swapper.class);
+			swapper.placeholders.add("{" + phrases[i] + "}");
+			swapper.content.add(replacements[i]);
+			swapper.settings.directSearch = true;
+			swapper.settings.randomContent = false;
+			swapper.requirements.enabled = false;
+			swapper.requirements.usePermission = "";
+
+			swapperConfig.swappers.add(swapper);
+		}
+
 		return swapperConfig;
 	}
 
