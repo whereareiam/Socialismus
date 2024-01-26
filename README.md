@@ -9,14 +9,11 @@
 - [ ] Chat Bot (if message matches conditions then send a message)
 - [ ] Colorization (allow to choose a color for each chat/bubble)
 - [ ] Features as external modules
-- [ ] Folia Support
 - [ ] Item/Inventory Display Chat
 - [ ] MultiPaper Support
 - [ ] Placeholders
 - [ ] Statistics
 - [ ] Swapper Update (placeholder list command, customize suggestions)
-- [ ] Tag Parser
-- [ ] Sounds everywhere (when you click on a message, when you receive a message, etc.)
 - [ ] User Click Action (execute command, open url, send action bar)
 - [ ] Velocity Support
 - [x] Chats <sup>From 0.0.1
@@ -27,6 +24,9 @@
 - [x] Message Announcer <sup> From 1.1.0
 - [x] API <sup> From 1.2.0
 - [x] User Mention <sup> From 1.2.0
+- [x] Folia Support <sup> From 1.3.0
+- [x] Sounds everywhere <sup> From 1.3.0
+- [x] Tag Parser <sup> From 1.3.0
 
 # Using the API
 
