@@ -1,12 +1,10 @@
 package me.whereareiam.socialismus.core.version;
 
-import com.google.inject.Singleton;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Singleton
 public enum Version {
 	V1_19_4(0),
 	V1_20_0(0),

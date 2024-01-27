@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.core;
 
 import com.google.inject.Injector;
+import me.whereareiam.socialismus.api.Socialismus;
 import me.whereareiam.socialismus.core.command.management.CommandManager;
 import me.whereareiam.socialismus.core.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.core.config.ConfigManager;
@@ -9,7 +10,7 @@ import me.whereareiam.socialismus.core.module.chat.ChatModule;
 import me.whereareiam.socialismus.core.util.InfoPrinterUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public abstract class Socialismus extends JavaPlugin implements me.whereareiam.socialismus.api.Socialismus {
+public abstract class AbstractSocialismus extends JavaPlugin implements Socialismus {
 	public static String version;
 	protected Injector injector;
 

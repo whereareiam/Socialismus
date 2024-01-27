@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.core.util;
 
 import com.google.inject.Inject;
-import me.whereareiam.socialismus.core.Socialismus;
+import me.whereareiam.socialismus.core.AbstractSocialismus;
 import me.whereareiam.socialismus.core.command.management.CommandManager;
 import me.whereareiam.socialismus.core.integration.Integration;
 import me.whereareiam.socialismus.core.integration.IntegrationManager;
@@ -27,7 +27,7 @@ public class InfoPrinterUtil {
 
 	public void printStartMessage() {
 		loggerUtil.info("");
-		loggerUtil.info("  █▀ █▀▀   Socialismus v" + Socialismus.version);
+		loggerUtil.info("  █▀ █▀▀   Socialismus v" + AbstractSocialismus.version);
 		loggerUtil.info("  ▄█ █▄▄   Platform: " + PlatformType.getCurrentPlatform());
 		loggerUtil.info("");
 

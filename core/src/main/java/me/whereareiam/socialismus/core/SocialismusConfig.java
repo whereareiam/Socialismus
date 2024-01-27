@@ -15,10 +15,10 @@ import org.bukkit.plugin.Plugin;
 import java.nio.file.Path;
 
 public abstract class SocialismusConfig extends AbstractModule {
-	protected final me.whereareiam.socialismus.core.Socialismus instance;
+	protected final AbstractSocialismus instance;
 	protected final Plugin plugin;
 
-	public SocialismusConfig(me.whereareiam.socialismus.core.Socialismus instance, Plugin plugin) {
+	public SocialismusConfig(AbstractSocialismus instance, Plugin plugin) {
 		this.instance = instance;
 		this.plugin = plugin;
 	}

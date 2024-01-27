@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.core.integration.placeholderapi.placeholders;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.whereareiam.socialismus.core.Socialismus;
+import me.whereareiam.socialismus.core.AbstractSocialismus;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public class Placeholders extends PlaceholderExpansion {
 	@Inject
 	public Placeholders() {
 		//basicPlaceholders.put("test", this::test);
-		advancedPlaceholders.put("statistics_chat_", this::getChatMessageCount);
+		//advancedPlaceholders.put("statistics_chat_", this::getChatMessageCount);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class Placeholders extends PlaceholderExpansion {
 
 	@Override
 	public @NotNull String getVersion() {
-		return Socialismus.version;
+		return AbstractSocialismus.version;
 	}
 
 	@Override
