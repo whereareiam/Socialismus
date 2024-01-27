@@ -10,12 +10,14 @@ public class ChatMessage {
 	private Chat chat;
 	private Player sender;
 	private Collection<? extends Player> recipients;
+	private boolean cancelled;
 
-	public ChatMessage(Component content, Chat chat, Player sender, Collection<? extends Player> recipients) {
+	public ChatMessage(Component content, Chat chat, Player sender, Collection<? extends Player> recipients, boolean cancelled) {
 		this.content = content;
 		this.chat = chat;
 		this.sender = sender;
 		this.recipients = recipients;
+		this.cancelled = cancelled;
 	}
 
 	public Player getSender() {
@@ -48,5 +50,13 @@ public class ChatMessage {
 
 	public void setRecipients(Collection<? extends Player> recipients) {
 		this.recipients = recipients;
+	}
+
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
+	public void setCancelled(boolean cancelled) {
+		this.cancelled = cancelled;
 	}
 }

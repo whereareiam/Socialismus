@@ -1,10 +1,11 @@
 package me.whereareiam.socialismus.core.listener;
 
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.Collection;
 
 public interface ChatListener extends Listener {
-	boolean onPlayerChatEvent(Player player, Collection<? extends Player> recipients, String message);
+	ChatMessage onPlayerChatEvent(Player player, Collection<? extends Player> recipients, String message);
 }

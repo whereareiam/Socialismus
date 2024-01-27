@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.paper.listener.listeners.player;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.core.listener.ChatListener;
 import me.whereareiam.socialismus.core.listener.handler.ChatHandler;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
@@ -31,14 +32,20 @@ public class AsyncChatListener implements ChatListener {
 				.filter(audience -> audience instanceof Player)
 				.map(audience -> (Player) audience)
 				.collect(Collectors.toList());
-		String message = PlainTextComponentSerializer.plainText().serialize(event.message());
+		String originalMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
 
-		boolean cancelEvent = onPlayerChatEvent(player, recipients, message);
-		event.setCancelled(cancelEvent);
+		ChatMessage chatMessage = onPlayerChatEvent(player, recipients, originalMessage);
+
+		event.viewers().clear();
+		event.viewers().addAll(chatMessage.getRecipients());
+		event.message(chatMessage.getContent());
+		event.renderer((source, sourceDisplayName, message, viewer) -> chatMessage.getContent());
+
+		event.setCancelled(chatMessage.isCancelled());
 	}
 
 	@Override
-	public boolean onPlayerChatEvent(Player player, Collection<? extends Player> recipients, String message) {
+	public ChatMessage onPlayerChatEvent(Player player, Collection<? extends Player> recipients, String message) {
 		return chatHandler.handleChatEvent(player, recipients, message);
 	}
 }

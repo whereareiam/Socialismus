@@ -36,8 +36,7 @@ public class ChatHandler {
 		loggerUtil.trace("Initializing class: " + this);
 	}
 
-	public boolean handleChatEvent(Player player, Collection<? extends Player> recipients, String message) {
-		boolean cancelEvent = false;
+	public ChatMessage handleChatEvent(Player player, Collection<? extends Player> recipients, String message) {
 		ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, recipients, message, Optional.empty());
 
 		if (integrationManager.isIntegrationEnabled("ProtocolLib")) {
@@ -49,13 +48,11 @@ public class ChatHandler {
 		}
 
 		if (settingsConfig.modules.chats && chatMessage.getChat() != null) {
-			cancelEvent = true;
-
 			final ChatService chatService = injector.getInstance(ChatService.class);
 			chatService.distributeMessage(chatMessage);
 		}
 
-		return cancelEvent;
+		return chatMessage;
 	}
 }
 

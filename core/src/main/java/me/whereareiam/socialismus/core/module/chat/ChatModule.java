@@ -113,7 +113,7 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		chat.usage.symbol = "";
 		chat.usage.type = ChatUseType.SYMBOL_COMMAND;
 
-		chat.messageFormat = "<gold><bold><insertion:/global message>G</insertion><reset> <dark_gray>| <gray><click:run_command:/tpa {playerName>%luckperms_prefix%{playerName}</click>: <white>{message}";
+		chat.messageFormat = "<gold><bold><insert:/global message>G</insert><reset> <dark_gray>| <gray><click:run_command:/tpa {playerName>%luckperms_prefix%{playerName}</click>: <white>{message}";
 		chat.hoverFormat.add(" ");
 		chat.hoverFormat.add("<dark_gray> Information");
 		chat.hoverFormat.add("<gray>  Message was sent at: <gold>%player_world_time_24%");

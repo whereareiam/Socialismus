@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.api.event.chat.AfterChatSendMessageEvent;
 import me.whereareiam.socialismus.api.event.chat.OnChatSendMessageEvent;
 import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.core.platform.PlatformIdentifier;
 import me.whereareiam.socialismus.core.util.FormatterUtil;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
@@ -34,7 +35,7 @@ public class ChatBroadcaster {
 	}
 
 	public void broadcastMessage(ChatMessage chatMessage) {
-		Component finalMessage = createFinalMessage(chatMessage);
+		chatMessage.setContent(createFinalMessage(chatMessage));
 
 		OnChatSendMessageEvent event = new OnChatSendMessageEvent(chatMessage);
 		Bukkit.getPluginManager().callEvent(event);
@@ -45,8 +46,12 @@ public class ChatBroadcaster {
 
 		chatMessage = event.getChatMessage();
 
-		chatMessage.getRecipients().forEach(recipient -> messageUtil.sendMessage(recipient, finalMessage));
-		loggerUtil.info("[" + chatMessage.getChat().id.toUpperCase() + "] " + chatMessage.getSender().getName() + ": " + PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent()));
+		if (!PlatformIdentifier.isPaper()) {
+			ChatMessage finalChatMessage = chatMessage;
+			chatMessage.getRecipients().forEach(recipient -> messageUtil.sendMessage(recipient, finalChatMessage.getContent()));
+			loggerUtil.info("[" + chatMessage.getChat().id.toUpperCase() + "] " + chatMessage.getSender().getName() + ": " + PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent()));
+			chatMessage.setCancelled(true);
+		}
 
 		AfterChatSendMessageEvent afterEvent = new AfterChatSendMessageEvent(chatMessage);
 		Bukkit.getPluginManager().callEvent(afterEvent);

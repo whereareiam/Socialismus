@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.spigot.listener.listeners.player;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.core.listener.ChatListener;
 import me.whereareiam.socialismus.core.listener.handler.ChatHandler;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
@@ -28,12 +29,12 @@ public class AsyncChatListener implements ChatListener {
 		Collection<? extends Player> recipients = event.getRecipients();
 		String message = event.getMessage();
 
-		boolean cancelEvent = onPlayerChatEvent(player, recipients, message);
-		event.setCancelled(cancelEvent);
+		ChatMessage chatMessage = onPlayerChatEvent(player, recipients, message);
+		event.setCancelled(chatMessage.isCancelled());
 	}
 
 	@Override
-	public boolean onPlayerChatEvent(Player player, Collection<? extends Player> recipients, String message) {
+	public ChatMessage onPlayerChatEvent(Player player, Collection<? extends Player> recipients, String message) {
 		return chatHandler.handleChatEvent(player, recipients, message);
 	}
 }

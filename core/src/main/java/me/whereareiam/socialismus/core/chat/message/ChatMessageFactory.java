@@ -50,7 +50,7 @@ public class ChatMessageFactory {
 
 		Component content = PlainTextComponentSerializer.plainText().deserialize(message.trim());
 
-		ChatMessage chatMessage = new ChatMessage(content, chat, sender, recipients);
+		ChatMessage chatMessage = new ChatMessage(content, chat, sender, recipients, false);
 
 		loggerUtil.debug(" "
 				+ "\n Created new ChatMessage "
