@@ -8,7 +8,7 @@ import java.util.List;
 public class Chat {
 	public String id;
 	public ChatUse usage = new ChatUse();
-	public String messageFormat;
+	public List<ChatMessageFormat> formats = new ArrayList<>();
 	public boolean enableSwapper = true;
 	public ChatMentionSettings mentions = new ChatMentionSettings();
 	public List<String> hoverFormat = new ArrayList<>();

@@ -8,7 +8,7 @@ import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.api.model.chatmention.mention.Mention;
 import me.whereareiam.socialismus.core.config.module.bubblechat.BubbleChatConfig;
 import me.whereareiam.socialismus.core.config.module.chatmention.ChatMentionConfig;
-import me.whereareiam.socialismus.core.util.DistanceCalculatorUtil;
+import me.whereareiam.socialismus.core.util.DistanceUtil;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -103,11 +103,11 @@ public class MentionFactory {
 			if (usedAllTag != null && usedNearbyTag != null) {
 				if (mentionRadius < chatRadius) {
 					recipients = recipients.stream()
-							.filter(p -> DistanceCalculatorUtil.calculateDistance(p, sender) <= mentionRadius)
+							.filter(p -> DistanceUtil.between(p, sender) <= mentionRadius)
 							.toList();
 				} else if (mentionRadius > chatRadius) {
 					recipients = Bukkit.getOnlinePlayers().stream()
-							.filter(p -> DistanceCalculatorUtil.calculateDistance(p, sender) <= mentionRadius)
+							.filter(p -> DistanceUtil.between(p, sender) <= mentionRadius)
 							.toList();
 				}
 			}

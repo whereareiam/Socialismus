@@ -31,21 +31,11 @@ public class LoggerUtil {
 	private void logMessage(String level, String message) {
 		if (isBukkitLoggerAvailable()) {
 			switch (level) {
-				case "INFO":
-					bukkitLogger.info(message);
-					break;
-				case "DEBUG":
-					bukkitLogger.info("[DEBUG] " + message);
-					break;
-				case "TRACE":
-					bukkitLogger.info("[TRACE] " + message);
-					break;
-				case "WARNING":
-					bukkitLogger.warning(message);
-					break;
-				case "SEVERE":
-					bukkitLogger.severe(message);
-					break;
+				case "INFO" -> bukkitLogger.info(message);
+				case "DEBUG" -> bukkitLogger.info("[DEBUG] " + message);
+				case "TRACE" -> bukkitLogger.info("[TRACE] " + message);
+				case "WARNING" -> bukkitLogger.warning(message);
+				case "SEVERE" -> bukkitLogger.severe(message);
 			}
 		}
 	}

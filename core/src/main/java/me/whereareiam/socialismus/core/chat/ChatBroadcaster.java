@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.api.event.chat.AfterChatSendMessageEvent;
 import me.whereareiam.socialismus.api.event.chat.OnChatSendMessageEvent;
 import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.model.chat.ChatMessageFormat;
 import me.whereareiam.socialismus.core.platform.PlatformIdentifier;
 import me.whereareiam.socialismus.core.util.FormatterUtil;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
@@ -17,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class ChatBroadcaster {
@@ -35,7 +37,11 @@ public class ChatBroadcaster {
 	}
 
 	public void broadcastMessage(ChatMessage chatMessage) {
-		chatMessage.setContent(createFinalMessage(chatMessage));
+		Component finalMessage = createFinalMessage(chatMessage);
+		if (finalMessage == null)
+			return;
+
+		chatMessage.setContent(finalMessage);
 
 		OnChatSendMessageEvent event = new OnChatSendMessageEvent(chatMessage);
 		Bukkit.getPluginManager().callEvent(event);
@@ -59,7 +65,14 @@ public class ChatBroadcaster {
 
 	private Component createFinalMessage(ChatMessage chatMessage) {
 		Chat chat = chatMessage.getChat();
-		Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), chat.messageFormat);
+		Optional<ChatMessageFormat> format = chat.formats.stream()
+				.filter(f -> f.permission.isBlank() && f.permission.isEmpty() || chatMessage.getSender().hasPermission(f.permission))
+				.findFirst();
+
+		if (format.isEmpty())
+			return null;
+
+		Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), format.get().format);
 		Component hoverFormat = createHoverFormat(chat.hoverFormat, chatMessage.getSender());
 
 		messageFormat = messageUtil.replacePlaceholder(messageFormat, "{playerName}", chatMessage.getSender().getName());

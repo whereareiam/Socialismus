@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.socialismus.api.model.chat.Chat;
+import me.whereareiam.socialismus.api.model.chat.ChatMessageFormat;
 import me.whereareiam.socialismus.api.type.ChatUseType;
 import me.whereareiam.socialismus.core.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.core.config.module.chat.ChatsConfig;
@@ -62,7 +63,7 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		loggerUtil.trace("Chat information");
 		loggerUtil.trace("Chat id: " + chat.id);
 		loggerUtil.trace("Chat usage: " + chat.usage.type + " " + chat.usage.symbol + " " + chat.usage.command);
-		loggerUtil.trace("Chat message format: " + chat.messageFormat);
+		loggerUtil.trace("Chat message formats: " + chat.formats);
 		loggerUtil.trace("Chat hover format: " + chat.hoverFormat.stream().toString());
 		loggerUtil.trace("Chat requirements: " + chat.requirements);
 
@@ -113,7 +114,10 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		chat.usage.symbol = "";
 		chat.usage.type = ChatUseType.SYMBOL_COMMAND;
 
-		chat.messageFormat = "<gold><bold><insert:/global message>G</insert><reset> <dark_gray>| <gray><click:run_command:/tpa {playerName>%luckperms_prefix%{playerName}</click>: <white>{message}";
+		ChatMessageFormat messageFormat = new ChatMessageFormat();
+		messageFormat.format = "<gold><bold><insert:/global message>G</insert><reset> <dark_gray>| <gray><click:run_command:/tpa {playerName>%luckperms_prefix%{playerName}</click>: <white>{message}";
+
+		chat.formats.add(messageFormat);
 		chat.hoverFormat.add(" ");
 		chat.hoverFormat.add("<dark_gray> Information");
 		chat.hoverFormat.add("<gray>  Message was sent at: <gold>%player_world_time_24%");

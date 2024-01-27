@@ -6,7 +6,7 @@ import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.api.model.chat.ChatRecipientRequirements;
 import me.whereareiam.socialismus.api.model.chat.ChatSenderRequirements;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
-import me.whereareiam.socialismus.core.util.DistanceCalculatorUtil;
+import me.whereareiam.socialismus.core.util.DistanceUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -51,7 +51,7 @@ public class ChatRequirementValidator {
 		if (recipientRequirements.radius >= 0)
 			recipients = recipients
 					.stream()
-					.filter(player -> DistanceCalculatorUtil.calculateDistance(player, sender) <= recipientRequirements.radius)
+					.filter(player -> DistanceUtil.between(player, sender) <= recipientRequirements.radius)
 					.collect(Collectors.toList());
 
 		return recipients;
