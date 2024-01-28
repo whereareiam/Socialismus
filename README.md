@@ -23,8 +23,8 @@
 - [x] Private Messages <sup> From 1.0.0
 - [x] Message Announcer <sup> From 1.1.0
 - [x] API <sup> From 1.2.0
+- [x] Folia Support <sup> From 1.2.0
 - [x] User Mention <sup> From 1.2.0
-- [x] Folia Support <sup> From 1.3.0
 - [x] Sounds everywhere <sup> From 1.3.0
 - [x] Tag Parser <sup> From 1.3.0
 
