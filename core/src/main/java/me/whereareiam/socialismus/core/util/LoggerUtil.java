@@ -2,7 +2,6 @@ package me.whereareiam.socialismus.core.util;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.cache.Cacheable;
 import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
 
 @Singleton
@@ -27,7 +26,6 @@ public class LoggerUtil {
 		return true;
 	}
 
-	@Cacheable
 	private void logMessage(String level, String message) {
 		if (isBukkitLoggerAvailable()) {
 			switch (level) {
