@@ -15,7 +15,7 @@
 
     <properties>
         <!-- Project config -->
-        <testDir>/Users/whereareiam/Projects/Test/plugins</testDir>
+        <testDir>/Users/whereareiam/Projects/TestP/local/templates/Lobby/default/plugins</testDir>
 
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
