@@ -46,7 +46,7 @@ public class ChatMentionFormatter {
 		String format = chatMentionConfig.settings.allTagSettings.format
 				.replace("{usedTag}", tag);
 
-		Component component = formatterUtil.formatMessage(mention.getSender(), format);
+		Component component = formatterUtil.formatMessage(mention.getSender(), format, true);
 		mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), tag, component));
 
 		return mention;
@@ -57,7 +57,7 @@ public class ChatMentionFormatter {
 		String format = chatMentionConfig.settings.nearbyTagSettings.format
 				.replace("{usedTag}", tag);
 
-		Component component = formatterUtil.formatMessage(mention.getSender(), format);
+		Component component = formatterUtil.formatMessage(mention.getSender(), format, true);
 		mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), tag, component));
 
 		return mention;
@@ -74,12 +74,12 @@ public class ChatMentionFormatter {
 		Component content = mention.getContent();
 
 		for (Player player : mention.getMentionedPlayers()) {
-			Component formatComponent = formatterUtil.formatMessage(mention.getSender(), format.get().format);
+			Component formatComponent = formatterUtil.formatMessage(mention.getSender(), format.get().format, true);
 			formatComponent = messageUtil.replacePlaceholder(formatComponent, "{playerName}", player.getName());
 
 			Component hoverComponent;
 			if (!format.get().hoverFormat.isEmpty()) {
-				hoverComponent = formatterUtil.formatMessage(mention.getSender(), String.join("\n", format.get().hoverFormat));
+				hoverComponent = formatterUtil.formatMessage(mention.getSender(), String.join("\n", format.get().hoverFormat), true);
 				hoverComponent = messageUtil.replacePlaceholder(hoverComponent, "{playerName}", player.getName());
 
 				content = messageUtil.replacePlaceholder(content, player.getName(), formatComponent.hoverEvent(HoverEvent.showText(hoverComponent)));

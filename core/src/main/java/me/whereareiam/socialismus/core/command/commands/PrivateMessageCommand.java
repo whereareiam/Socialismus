@@ -20,7 +20,7 @@ public class PrivateMessageCommand extends CommandBase {
 
 	@Inject
 	public PrivateMessageCommand(FormatterUtil formatterUtil, MessageUtil messageUtil, CommandsConfig commands,
-								 MessagesConfig messages) {
+	                             MessagesConfig messages) {
 		this.formatterUtil = formatterUtil;
 		this.messageUtil = messageUtil;
 		this.commands = commands;
@@ -33,7 +33,7 @@ public class PrivateMessageCommand extends CommandBase {
 	@Description("%description.privateMessage")
 	@Syntax("%syntax.privateMessage")
 	public void onCommand(CommandIssuer issuer, String targetPlayerName, String message) {
-		if (! issuer.isPlayer())
+		if (!issuer.isPlayer())
 			messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
 
 		Player player = issuer.getIssuer();
@@ -49,7 +49,7 @@ public class PrivateMessageCommand extends CommandBase {
 			return;
 		}
 
-		Component format = formatterUtil.formatMessage(player, messages.commands.privateMessageCommand.format);
+		Component format = formatterUtil.formatMessage(player, messages.commands.privateMessageCommand.format, true);
 
 		format = messageUtil.replacePlaceholder(format, "{senderName}", player.getName());
 		format = messageUtil.replacePlaceholder(format, "{recipientName}", recipient.getName());

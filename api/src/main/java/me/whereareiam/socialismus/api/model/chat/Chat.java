@@ -11,6 +11,5 @@ public class Chat {
 	public List<ChatMessageFormat> formats = new ArrayList<>();
 	public boolean enableSwapper = true;
 	public ChatMentionSettings mentions = new ChatMentionSettings();
-	public List<String> hoverFormat = new ArrayList<>();
 	public ChatRequirements requirements = new ChatRequirements();
 }

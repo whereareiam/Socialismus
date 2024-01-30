@@ -55,12 +55,12 @@ public class PlaceholderAPI implements MessagingIntegration {
 	}
 
 	@Override
-	public String formatMessage(Player player, String text) {
-		if (! isEnabled) {
-			return text;
+	public String formatMessage(Player player, String string) {
+		if (!isEnabled) {
+			return string;
 		}
 
-		return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
+		return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, string);
 	}
 }
 

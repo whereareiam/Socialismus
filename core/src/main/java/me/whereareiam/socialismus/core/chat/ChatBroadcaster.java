@@ -12,12 +12,9 @@ import me.whereareiam.socialismus.core.util.FormatterUtil;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
-import java.util.List;
 import java.util.Optional;
 
 @Singleton
@@ -72,25 +69,11 @@ public class ChatBroadcaster {
 		if (format.isEmpty())
 			return null;
 
-		Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), format.get().format);
-		Component hoverFormat = createHoverFormat(chat.hoverFormat, chatMessage.getSender());
+		Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), format.get().format, true);
 
 		messageFormat = messageUtil.replacePlaceholder(messageFormat, "{playerName}", chatMessage.getSender().getName());
 		messageFormat = messageUtil.replacePlaceholder(messageFormat, "{message}", chatMessage.getContent());
 
-		if (hoverFormat != null) {
-			messageFormat = messageFormat.hoverEvent(HoverEvent.showText(hoverFormat));
-		}
-
 		return messageFormat;
-	}
-
-	private Component createHoverFormat(List<String> hoverFormatList, Player sender) {
-		if (hoverFormatList == null || hoverFormatList.isEmpty()) {
-			return null;
-		}
-
-		String hoverFormatString = String.join("\n", hoverFormatList);
-		return formatterUtil.formatMessage(sender, hoverFormatString);
 	}
 }

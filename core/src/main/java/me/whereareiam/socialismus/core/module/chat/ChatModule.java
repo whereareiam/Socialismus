@@ -64,7 +64,6 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		loggerUtil.trace("Chat id: " + chat.id);
 		loggerUtil.trace("Chat usage: " + chat.usage.type + " " + chat.usage.symbol + " " + chat.usage.command);
 		loggerUtil.trace("Chat message formats: " + chat.formats);
-		loggerUtil.trace("Chat hover format: " + chat.hoverFormat.stream().toString());
 		loggerUtil.trace("Chat requirements: " + chat.requirements);
 
 		chats.add(chat);
@@ -115,16 +114,9 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		chat.usage.type = ChatUseType.SYMBOL_COMMAND;
 
 		ChatMessageFormat messageFormat = new ChatMessageFormat();
-		messageFormat.format = "<gold><bold><insert:/global message>G</insert><reset> <dark_gray>| <gray><click:run_command:/tpa {playerName>%luckperms_prefix%{playerName}</click>: <white>{message}";
+		messageFormat.format = "<gold><bold><chatDesc>G</chatDesc><reset> <dark_gray>| <gray><click:run_command:/tpa {playerName>%luckperms_prefix%{playerName}</click>: <white>{message}";
 
 		chat.formats.add(messageFormat);
-		chat.hoverFormat.add(" ");
-		chat.hoverFormat.add("<dark_gray> Information");
-		chat.hoverFormat.add("<gray>  Message was sent at: <gold>%player_world_time_24%");
-		chat.hoverFormat.add(" ");
-		chat.hoverFormat.add("<gray>  World: <gold>%player_world_name%");
-		chat.hoverFormat.add("<gray>  XYZ: <gold>%player_location_x%, %player_location_y%, %player_location_z%");
-		chat.hoverFormat.add(" ");
 
 		chat.requirements.enabled = true;
 		chat.requirements.recipient.radius = -1;

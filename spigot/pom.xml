@@ -52,9 +52,9 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <target>
-                                        <copy file="${project.build.directory}/${project.parent.artifactId}-PAPER-${project.parent.version}.jar"
+                                        <copy file="${project.build.directory}/${project.parent.artifactId}-SPIGOT-${project.parent.version}.jar"
                                               todir="${testDir}"/>
-                                        <move file="${testDir}/${project.parent.artifactId}-PAPER-${project.parent.version}.jar"
+                                        <move file="${testDir}/${project.parent.artifactId}-SPIGOT-${project.parent.version}.jar"
                                               tofile="${testDir}/${project.parent.artifactId}.jar"/>
                                     </target>
                                 </configuration>

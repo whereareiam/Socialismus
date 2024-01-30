@@ -31,7 +31,7 @@ public class MainCommand extends CommandBase {
 
 	@Inject
 	public MainCommand(LoggerUtil loggerUtil, CommandManager commandManager, FormatterUtil formatterUtil,
-					   MessageUtil messageUtil, CommandsConfig commands, MessagesConfig messages) {
+	                   MessageUtil messageUtil, CommandsConfig commands, MessagesConfig messages) {
 		this.commandManager = commandManager;
 		this.formatterUtil = formatterUtil;
 		this.messageUtil = messageUtil;
@@ -47,7 +47,7 @@ public class MainCommand extends CommandBase {
 	public void onCommand(CommandIssuer issuer) {
 		if (issuer.getIssuer() instanceof Player) {
 			Player player = issuer.getIssuer();
-			Component message = formatterUtil.formatMessage(player, buildHelpCommand(issuer));
+			Component message = formatterUtil.formatMessage(player, buildHelpCommand(issuer), true);
 			messageUtil.sendMessage(player, message);
 		} else {
 			issuer.sendMessage(formatterUtil.cleanMessage(buildHelpCommand(issuer)));
@@ -59,7 +59,7 @@ public class MainCommand extends CommandBase {
 		StringBuilder formattedCommands = getFormattedCommands(commands);
 
 		List<String> helpFormat = messages.commands.mainCommand.helpFormat;
-		for (int i = 0 ; i < helpFormat.size() ; i++) {
+		for (int i = 0; i < helpFormat.size(); i++) {
 			if (helpFormat.get(i).contains("{commands}")) {
 				String formattedCommandsStr = formattedCommands.toString();
 				if (formattedCommandsStr.endsWith("\n")) {
@@ -99,7 +99,7 @@ public class MainCommand extends CommandBase {
 	}
 
 	public Map<RootCommand, Set<RegisteredCommand>> getAllowedCommands(Map<RootCommand, Set<RegisteredCommand>> commands,
-																	   CommandIssuer issuer) {
+	                                                                   CommandIssuer issuer) {
 		Map<RootCommand, Set<RegisteredCommand>> filteredCommands = new HashMap<>();
 
 		for (Map.Entry<RootCommand, Set<RegisteredCommand>> entry : commands.entrySet()) {

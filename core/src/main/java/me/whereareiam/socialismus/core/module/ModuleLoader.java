@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.core.module.bubblechat.BubbleChatModule;
 import me.whereareiam.socialismus.core.module.chat.ChatModule;
 import me.whereareiam.socialismus.core.module.chatmention.ChatMentionModule;
 import me.whereareiam.socialismus.core.module.swapper.SwapperModule;
+import me.whereareiam.socialismus.core.module.tagparser.TagParserModule;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 
 import java.io.File;
@@ -50,7 +51,8 @@ public class ModuleLoader {
 				BubbleChatModule.class,
 				SwapperModule.class,
 				AnnouncerModule.class,
-				ChatMentionModule.class
+				ChatMentionModule.class,
+				TagParserModule.class
 		);
 
 		for (Class<? extends Module> moduleClass : modules) {

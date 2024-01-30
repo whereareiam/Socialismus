@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 @Singleton
 public class MessageUtil {
@@ -39,7 +40,7 @@ public class MessageUtil {
 			return;
 
 		if (issuer.isPlayer()) {
-			sendMessage(issuer.getIssuer(), formatterUtil.formatMessage(issuer.getIssuer(), message));
+			sendMessage(issuer.getIssuer(), formatterUtil.formatMessage(issuer.getIssuer(), message, true));
 		} else {
 			issuer.sendMessage(formatterUtil.cleanMessage(message));
 		}
@@ -49,7 +50,7 @@ public class MessageUtil {
 		if (message == null || message.isEmpty())
 			return;
 
-		sendMessage(sender, formatterUtil.formatMessage(sender, message));
+		sendMessage(sender, formatterUtil.formatMessage(sender, message, true));
 	}
 
 	public void sendMessage(Player sender, Component message) {
@@ -61,7 +62,7 @@ public class MessageUtil {
 		if (message == null || message.isEmpty())
 			return;
 
-		sendActionBar(sender, formatterUtil.formatMessage(sender, message));
+		sendActionBar(sender, formatterUtil.formatMessage(sender, message, false));
 	}
 
 	public void sendActionBar(Player player, Component message) {
@@ -74,7 +75,7 @@ public class MessageUtil {
 		if (message == null || message.isEmpty())
 			return;
 
-		sendBossBar(player, formatterUtil.formatMessage(player, message), color, style, duration);
+		sendBossBar(player, formatterUtil.formatMessage(player, message, false), color, style, duration);
 	}
 
 	public void sendBossBar(Player player, Component message, BossBar.Color color, BossBar.Overlay style, int duration) {
@@ -100,7 +101,7 @@ public class MessageUtil {
 		if (title == null || title.isEmpty())
 			return;
 
-		sendTitle(player, formatterUtil.formatMessage(player, title), formatterUtil.formatMessage(player, subtitle), fadeIn, stay, fadeOut);
+		sendTitle(player, formatterUtil.formatMessage(player, title, true), formatterUtil.formatMessage(player, subtitle, true), fadeIn, stay, fadeOut);
 	}
 
 	public void sendTitle(Player player, Component title, Component subtitle, Duration fadeIn, Duration stay, Duration fadeOut) {
@@ -109,21 +110,22 @@ public class MessageUtil {
 		((Audience) player).showTitle(Title.title(title, subtitle, Title.Times.times(fadeIn, stay, fadeOut)));
 	}
 
-	public Component replacePlaceholder(Component component, String placeholder, Object content) {
-		TextReplacementConfig textReplacementConfig;
-		if (content instanceof String) {
-			textReplacementConfig = TextReplacementConfig.builder()
-					.matchLiteral(placeholder)
-					.replacement((String) content)
-					.build();
+	public Component replacePlaceholder(Component component, Object placeholder, Object content) {
+		TextReplacementConfig.Builder textReplacementConfigBuilder;
+		if (placeholder instanceof Pattern) {
+			textReplacementConfigBuilder = TextReplacementConfig.builder().match((Pattern) placeholder);
 		} else {
-			textReplacementConfig = TextReplacementConfig.builder()
-					.matchLiteral(placeholder)
-					.replacement((Component) content)
-					.build();
+			textReplacementConfigBuilder = TextReplacementConfig.builder().matchLiteral((String) placeholder);
 		}
+
+		if (content instanceof String) {
+			textReplacementConfigBuilder.replacement((String) content);
+		} else {
+			textReplacementConfigBuilder.replacement((Component) content);
+		}
+
+		TextReplacementConfig textReplacementConfig = textReplacementConfigBuilder.build();
 
 		return component.replaceText(textReplacementConfig);
 	}
-
 }

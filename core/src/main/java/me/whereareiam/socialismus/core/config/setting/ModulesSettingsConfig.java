@@ -57,5 +57,7 @@ public class ModulesSettingsConfig {
 	)
 	public ChatMentionSettingsConfig chatmention = new ChatMentionSettingsConfig();
 
+	public boolean tagParser = true;
+
 	/*public StatisticSettingsConfig statistic = new StatisticSettingsConfig();*/
 }

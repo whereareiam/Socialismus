@@ -72,9 +72,9 @@ public class SwapperFormatter {
 				Component replacement;
 				if (swapper.settings.randomContent) {
 					int randomIndex = random.nextInt(swapper.content.size());
-					replacement = formatterUtil.formatMessage(player, swapper.content.get(randomIndex));
+					replacement = formatterUtil.formatMessage(player, swapper.content.get(randomIndex), true);
 				} else {
-					replacement = formatterUtil.formatMessage(player, swapper.content.get(0));
+					replacement = formatterUtil.formatMessage(player, swapper.content.get(0), true);
 				}
 
 				if (!swapper.contentHover.isEmpty()) {
@@ -85,7 +85,7 @@ public class SwapperFormatter {
 							hoverText.append("\n");
 						}
 					}
-					replacement = replacement.hoverEvent(HoverEvent.showText(formatterUtil.formatMessage(player, hoverText.toString())));
+					replacement = replacement.hoverEvent(HoverEvent.showText(formatterUtil.formatMessage(player, hoverText.toString(), true)));
 				}
 
 				content = messageUtil.replacePlaceholder(content, placeholder, replacement);

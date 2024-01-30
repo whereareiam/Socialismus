@@ -89,15 +89,15 @@ public class BubbleMessageProcessor {
 		} else {
 			format = bubbleChatConfig.format.queueMessageFormat;
 		}
-		return formatterUtil.formatMessage(player, format);
+		return formatterUtil.formatMessage(player, format, true);
 	}
 
 	private Component appendEndOrCutFormat(Component format, boolean isLastLine, Player player) {
 		loggerUtil.debug("Appending end or cutting format");
 		if (!isLastLine) {
-			format = format.append(formatterUtil.formatMessage(player, bubbleChatConfig.format.cutMessageFormat));
+			format = format.append(formatterUtil.formatMessage(player, bubbleChatConfig.format.cutMessageFormat, false));
 		} else {
-			format = format.append(formatterUtil.formatMessage(player, bubbleChatConfig.format.endMessageFormat));
+			format = format.append(formatterUtil.formatMessage(player, bubbleChatConfig.format.endMessageFormat, false));
 		}
 		return format;
 	}

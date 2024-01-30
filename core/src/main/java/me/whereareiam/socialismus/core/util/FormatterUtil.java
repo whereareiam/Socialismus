@@ -1,11 +1,13 @@
 package me.whereareiam.socialismus.core.util;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.core.integration.Integration;
 import me.whereareiam.socialismus.core.integration.IntegrationManager;
 import me.whereareiam.socialismus.core.integration.IntegrationType;
 import me.whereareiam.socialismus.core.integration.MessagingIntegration;
+import me.whereareiam.socialismus.core.module.tagparser.TagParserService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
@@ -15,15 +17,15 @@ import java.util.Map;
 
 @Singleton
 public class FormatterUtil {
+	private final Injector injector;
 	private final LoggerUtil loggerUtil;
-	private final IntegrationManager integrationManager;
 
 	private final Map<String, String> colorMap = new HashMap<>();
 
 	@Inject
-	public FormatterUtil(LoggerUtil loggerUtil, IntegrationManager integrationManager) {
+	public FormatterUtil(Injector injector, LoggerUtil loggerUtil) {
+		this.injector = injector;
 		this.loggerUtil = loggerUtil;
-		this.integrationManager = integrationManager;
 
 		loggerUtil.trace("Initializing class: " + this);
 
@@ -60,27 +62,34 @@ public class FormatterUtil {
 		return message;
 	}
 
-	public Component formatMessage(String message) {
-		return formatMessage(null, message);
+	public Component formatMessage(String message, boolean allowedTagParser) {
+		return formatMessage(null, message, allowedTagParser);
 	}
 
-	public Component formatMessage(Player player, String message) {
+	public Component formatMessage(String message) {
+		return formatMessage(null, message, false);
+	}
+
+	public Component formatMessage(Player player, String message, boolean allowTagParser) {
 		loggerUtil.trace("formatMessage:" + message);
 		final MiniMessage miniMessage = MiniMessage.miniMessage();
 
 		if (message == null || message.isEmpty())
 			return miniMessage.deserialize("");
 
+		message = convertLegacyColorCodes(message);
 		if (player != null)
 			message = hookIntegration(player, message);
 
-		message = convertLegacyColorCodes(message);
+		Component component = miniMessage.deserialize(message);
+		if (allowTagParser)
+			component = injector.getInstance(TagParserService.class).hookTagParser(component);
 
-		return miniMessage.deserialize(message);
+		return component;
 	}
 
 	public String hookIntegration(Player player, String message) {
-		for (Integration integration : integrationManager.getIntegrations()) {
+		for (Integration integration : injector.getInstance(IntegrationManager.class).getIntegrations()) {
 			if (integration.getType() == IntegrationType.MESSAGING) {
 				MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
 				message = formatterIntegration.formatMessage(player, message);

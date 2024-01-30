@@ -20,7 +20,7 @@ public class Updater {
 
 	@Inject
 	public Updater(Plugin plugin, LoggerUtil loggerUtil, SettingsConfig settingsConfig,
-				   Scheduler scheduler) {
+	               Scheduler scheduler) {
 		this.plugin = plugin;
 		this.loggerUtil = loggerUtil;
 
@@ -41,7 +41,7 @@ public class Updater {
 
 		if (compareVersions(currentVersion, latestVersion) > 0) {
 			loggerUtil.info("You are on a dev build.");
-		} else if (! currentVersion.equals(latestVersion)) {
+		} else if (!currentVersion.equals(latestVersion)) {
 			loggerUtil.severe("Update found! The latest version is " + latestVersion);
 			loggerUtil.severe("Download here: https://www.spigotmc.org/resources/113119/updates");
 		}
@@ -52,27 +52,30 @@ public class Updater {
 		String[] latestParts = latestVersion.split("\\.");
 
 		int length = Math.max(currentParts.length, latestParts.length);
-		for (int i = 0 ; i < length ; i++) {
+		for (int i = 0; i < length; i++) {
 			int currentPart = i < currentParts.length ?
 					Integer.parseInt(currentParts[i]) : 0;
 			int latestPart = i < latestParts.length ?
 					Integer.parseInt(latestParts[i]) : 0;
 
 			if (currentPart < latestPart)
-				return - 1;
+				return -1;
+
 			if (currentPart > latestPart)
 				return 1;
 		}
+
 		return 0;
 	}
 
 	private String getLatestVersion() {
 		BufferedReader reader = null;
 		HttpURLConnection conn = null;
+
 		try {
 			String updateUrl = "https://api.spigotmc.org/legacy/update.php?resource=113119";
-			URL url = new URL(updateUrl);
-			conn = (HttpURLConnection)url.openConnection();
+			final URL url = new URL(updateUrl);
+			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 
 			reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
