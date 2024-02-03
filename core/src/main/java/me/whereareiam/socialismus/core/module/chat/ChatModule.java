@@ -114,7 +114,7 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 		chat.usage.type = ChatUseType.SYMBOL_COMMAND;
 
 		ChatMessageFormat messageFormat = new ChatMessageFormat();
-		messageFormat.format = "<gold><bold><chatDesc>G</chatDesc><reset> <dark_gray>| <gray><click:run_command:/tpa {playerName>%luckperms_prefix%{playerName}</click>: <white>{message}";
+		messageFormat.format = "<gold><bold><globalChat>G</globalChat></bold></gold> <dark_gray>| <gray><click:run_command:/tpa {playerName><playerInformation>{playerName}</playerInformation></click>: <white><messageInformation>{message}</messageInformation>";
 
 		chat.formats.add(messageFormat);
 

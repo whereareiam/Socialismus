@@ -63,4 +63,3 @@ public class bStats implements Integration {
 		announcementCountChart.addChart();
 	}
 }
-

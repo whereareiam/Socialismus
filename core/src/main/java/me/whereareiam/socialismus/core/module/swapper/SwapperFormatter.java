@@ -88,6 +88,10 @@ public class SwapperFormatter {
 					replacement = replacement.hoverEvent(HoverEvent.showText(formatterUtil.formatMessage(player, hoverText.toString(), true)));
 				}
 
+				if (swapper.settings.sound != null) {
+					player.playSound(player.getLocation(), swapper.settings.sound, swapper.settings.soundVolume, swapper.settings.soundPitch);
+				}
+
 				content = messageUtil.replacePlaceholder(content, placeholder, replacement);
 			}
 		}

@@ -43,6 +43,9 @@ public class BubbleChatBroadcaster {
 		}
 
 		Player player = event.getBubbleMessage().getSender();
+		if (bubbleChatConfig.settings.sound.senderSound != null)
+			player.playSound(player.getLocation(), bubbleChatConfig.settings.sound.senderSound, bubbleChatConfig.settings.sound.senderSoundVolume, bubbleChatConfig.settings.sound.senderSoundPitch);
+
 		bubbleMessage = event.getBubbleMessage();
 
 		List<PacketEntity> entities = new ArrayList<>();
@@ -61,6 +64,9 @@ public class BubbleChatBroadcaster {
 				entityPacketSender.sendEntityMountPacket(onlinePlayer, entity, previousEntityId);
 				previousEntityId = entity.getId();
 			}
+
+			if (bubbleChatConfig.settings.sound.receiverSound != null)
+				onlinePlayer.playSound(onlinePlayer.getLocation(), bubbleChatConfig.settings.sound.receiverSound, bubbleChatConfig.settings.sound.receiverSoundVolume, bubbleChatConfig.settings.sound.receiverSoundPitch);
 
 			entityPacketSender.sendEntityMountPacket(onlinePlayer, entities.get(0), previousEntityId);
 		}

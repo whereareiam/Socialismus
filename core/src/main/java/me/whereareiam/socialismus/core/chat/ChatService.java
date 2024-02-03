@@ -40,6 +40,7 @@ public class ChatService {
 		Chat chat = chatMessage.getChat();
 
 		if (!chatRequirementValidator.validatePlayer(chatMessage)) {
+			chatMessage.setCancelled(true);
 			loggerUtil.trace(sender.getName() + " didn't met requirements");
 			return;
 		}

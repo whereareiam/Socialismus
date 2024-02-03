@@ -113,8 +113,16 @@ public class AnnouncerModule implements Module {
 		announcement.id = "example";
 		announcement.enabled = true;
 
-		announcement.message.add("<red>This is an example announcement");
-		announcement.message.add("<red>You can edit this in announcer/example.yml");
+		announcement.message.add("");
+		announcement.message.add("<gold><bold> Socialismus:</bold></gold>");
+		announcement.message.add("<white>  Thanks for installing my plugin!");
+		announcement.message.add("<white>  If you have any questions, feel free to ask!");
+		announcement.message.add("");
+		announcement.message.add("<gray>   Telegram: https://whereareiam.t.me/");
+		announcement.message.add("<gray>   Discord: @whereareiam");
+		announcement.message.add("");
+		announcement.message.add("<gray>  If you like the plugin, please leave a review on the plugin page, it will help me a lot!");
+		announcement.message.add("");
 
 		announcement.settings.delay = 10;
 		announcement.settings.repeat = true;

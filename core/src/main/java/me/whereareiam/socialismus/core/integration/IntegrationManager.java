@@ -24,7 +24,7 @@ public class IntegrationManager {
 
 		loggerUtil.trace("Initializing class: " + this);
 
-		injector.getInstance(bStats.class);
+		injector.getInstance(bStats.class).initialize();
 		List<Class<? extends Integration>> integrations = Arrays.asList(
 				PlaceholderAPI.class,
 				ProtocolLib.class

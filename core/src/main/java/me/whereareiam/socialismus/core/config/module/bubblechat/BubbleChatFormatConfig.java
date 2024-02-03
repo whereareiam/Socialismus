@@ -14,7 +14,7 @@ public class BubbleChatFormatConfig {
 			},
 			at = Comment.At.PREPEND
 	)
-	public String startMessageFormat = "{playerName}: {message}";
+	public String startMessageFormat = "<gold><bold>\uD83D\uDD14 <reset><white>{message}";
 
 	@Comment(
 			value = {
@@ -24,7 +24,7 @@ public class BubbleChatFormatConfig {
 			},
 			at = Comment.At.PREPEND
 	)
-	public String queueMessageFormat = "...{message}";
+	public String queueMessageFormat = "<white>...{message}";
 
 	@Comment(
 			value = {
@@ -34,7 +34,7 @@ public class BubbleChatFormatConfig {
 			},
 			at = Comment.At.PREPEND
 	)
-	public String cutMessageFormat = "...";
+	public String cutMessageFormat = "<white>...";
 
 	@Comment(
 			value = {
@@ -43,7 +43,7 @@ public class BubbleChatFormatConfig {
 			},
 			at = Comment.At.PREPEND
 	)
-	public String endMessageFormat = ".";
+	public String endMessageFormat = "<white>.";
 
 	@Comment(
 			value = {
@@ -52,7 +52,7 @@ public class BubbleChatFormatConfig {
 			},
 			at = Comment.At.PREPEND
 	)
-	public String backgroundColor = "#FFFF00";
+	public String backgroundColor = "#000000";
 
 	@Comment(
 			value = {
@@ -61,7 +61,7 @@ public class BubbleChatFormatConfig {
 			},
 			at = Comment.At.PREPEND
 	)
-	public int backgroundOpacity = 0;
+	public int backgroundOpacity = 40;
 
 	@Comment(
 			value = {

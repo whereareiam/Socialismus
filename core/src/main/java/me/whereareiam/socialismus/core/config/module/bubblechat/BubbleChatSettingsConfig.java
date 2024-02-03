@@ -124,4 +124,12 @@ public class BubbleChatSettingsConfig {
 			at = Comment.At.PREPEND
 	)
 	public int maxMentions = 5;
+
+	@Comment(
+			value = {
+					@CommentValue(" The sound option allows you to specify the sound that will be played when a bubble message is displayed."),
+			},
+			at = Comment.At.PREPEND
+	)
+	public BubbleChatSoundConfig sound = new BubbleChatSoundConfig();
 }

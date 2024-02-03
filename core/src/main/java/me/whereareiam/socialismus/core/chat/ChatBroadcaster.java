@@ -34,11 +34,11 @@ public class ChatBroadcaster {
 	}
 
 	public void broadcastMessage(ChatMessage chatMessage) {
-		Component finalMessage = createFinalMessage(chatMessage);
-		if (finalMessage == null)
+		ChatMessageFormat chatMessageFormat = getChatMessageFormat(chatMessage);
+		if (chatMessageFormat == null)
 			return;
 
-		chatMessage.setContent(finalMessage);
+		chatMessage.setContent(createComponent(chatMessage, chatMessageFormat));
 
 		OnChatSendMessageEvent event = new OnChatSendMessageEvent(chatMessage);
 		Bukkit.getPluginManager().callEvent(event);
@@ -52,28 +52,33 @@ public class ChatBroadcaster {
 		if (!PlatformIdentifier.isPaper()) {
 			ChatMessage finalChatMessage = chatMessage;
 			chatMessage.getRecipients().forEach(recipient -> messageUtil.sendMessage(recipient, finalChatMessage.getContent()));
-			loggerUtil.info("[" + chatMessage.getChat().id.toUpperCase() + "] " + chatMessage.getSender().getName() + ": " + PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent()));
 			chatMessage.setCancelled(true);
 		}
+
+		if (chatMessageFormat.sound != null) {
+			chatMessage.getRecipients().forEach(recipient -> recipient.playSound(recipient.getLocation(), chatMessageFormat.sound, 1, 1));
+		}
+		loggerUtil.info("[" + chatMessage.getChat().id.toUpperCase() + "] " + chatMessage.getSender().getName() + ": " + PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent()));
 
 		AfterChatSendMessageEvent afterEvent = new AfterChatSendMessageEvent(chatMessage);
 		Bukkit.getPluginManager().callEvent(afterEvent);
 	}
 
-	private Component createFinalMessage(ChatMessage chatMessage) {
-		Chat chat = chatMessage.getChat();
-		Optional<ChatMessageFormat> format = chat.formats.stream()
-				.filter(f -> f.permission.isBlank() && f.permission.isEmpty() || chatMessage.getSender().hasPermission(f.permission))
-				.findFirst();
-
-		if (format.isEmpty())
-			return null;
-
-		Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), format.get().format, true);
+	private Component createComponent(ChatMessage chatMessage, ChatMessageFormat chatMessageFormat) {
+		Component messageFormat = formatterUtil.formatMessage(chatMessage.getSender(), chatMessageFormat.format, true);
 
 		messageFormat = messageUtil.replacePlaceholder(messageFormat, "{playerName}", chatMessage.getSender().getName());
 		messageFormat = messageUtil.replacePlaceholder(messageFormat, "{message}", chatMessage.getContent());
 
 		return messageFormat;
+	}
+
+	private ChatMessageFormat getChatMessageFormat(ChatMessage chatMessage) {
+		Chat chat = chatMessage.getChat();
+		Optional<ChatMessageFormat> format = chat.formats.stream()
+				.filter(f -> f.permission.isBlank() && f.permission.isEmpty() || chatMessage.getSender().hasPermission(f.permission))
+				.findFirst();
+
+		return format.orElse(null);
 	}
 }

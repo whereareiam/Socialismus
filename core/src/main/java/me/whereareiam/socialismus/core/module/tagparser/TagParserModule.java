@@ -32,15 +32,46 @@ public class TagParserModule implements Module {
 	}
 
 	private void createExampleTagParser() {
-		TagParser tagParser = new TagParser();
-		tagParser.tag = "chatDesc";
-		tagParser.enabled = true;
-		tagParser.type = TagParserType.HOVER;
-		tagParser.content = List.of(
-				"Chat description"
+		TagParser globalChat = new TagParser();
+
+		globalChat.tag = "globalChat";
+		globalChat.enabled = true;
+		globalChat.type = TagParserType.HOVER;
+		globalChat.content = List.of(
+				" ",
+				"<dark_gray> Information</dark_gray>",
+				"<white>  Chat: <green>Global</green></white>  ",
+				" ",
+				"<gray> Global chat is a chat where you can  ",
+				"<gray> talk with everyone on the server  ",
+				" "
 		);
 
-		tagParserConfig.tagParsers.add(tagParser);
+		TagParser playerInformation = new TagParser();
+
+		playerInformation.tag = "playerInformation";
+		playerInformation.enabled = true;
+		playerInformation.type = TagParserType.HOVER;
+		playerInformation.content = List.of(
+				" ",
+				"<dark_gray> Information</dark_gray>",
+				"<white>  Player: <green>PlaceholderAPI</green></white>  ",
+				" "
+		);
+
+		TagParser messageInformation = new TagParser();
+
+		messageInformation.tag = "messageInformation";
+		messageInformation.enabled = true;
+		messageInformation.type = TagParserType.HOVER;
+		messageInformation.content = List.of(
+				" ",
+				"<dark_gray> Information</dark_gray>",
+				"<white>  Message was sent at: <green>PlaceholderAPI</green></white>  ",
+				" "
+		);
+
+		tagParserConfig.tagParsers.addAll(List.of(globalChat, playerInformation, messageInformation));
 	}
 
 	public List<TagParser> getTagParsers() {
