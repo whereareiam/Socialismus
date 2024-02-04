@@ -24,6 +24,7 @@ public class CommandRegistrar {
 		commandManager.registerCommand(injector.getInstance(PrivateMessageCommand.class));
 		commandManager.registerCommand(injector.getInstance(AnnounceCommand.class));
 		commandManager.registerCommand(injector.getInstance(BubbleCommand.class));
+		commandManager.registerCommand(injector.getInstance(ReplyCommand.class));
 	}
 
 	public void registerChatCommand(Chat chat) {

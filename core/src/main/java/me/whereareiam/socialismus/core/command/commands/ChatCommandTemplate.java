@@ -44,8 +44,10 @@ public class ChatCommandTemplate extends CommandBase {
 	@CommandAlias("%command.chat")
 	@CommandPermission("%permission.chat")
 	public void onCommand(CommandIssuer issuer) {
-		if (!issuer.isPlayer())
+		if (!issuer.isPlayer()) {
 			messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
+			return;
+		}
 
 		messageUtil.sendMessage(issuer, messages.commands.wrongSyntax);
 	}

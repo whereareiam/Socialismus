@@ -40,8 +40,10 @@ public class BubbleCommand extends CommandBase {
 	@CommandPermission("%permission.bubble")
 	@Description("%description.bubble")
 	public void onCommand(CommandIssuer issuer) {
-		if (!issuer.isPlayer())
+		if (!issuer.isPlayer()) {
 			messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
+			return;
+		}
 
 		messageUtil.sendMessage(issuer, messages.commands.wrongSyntax);
 	}

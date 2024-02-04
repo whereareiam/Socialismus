@@ -44,14 +44,14 @@ public class CommandManager {
 		for (RootCommand rootCommand : allCommands) {
 			String parentClassName = rootCommand.getDefCommand().getName();
 
-			if (! parentClassName.equals("chatcommandtemplate") && ! uniqueParentClassNames.contains(parentClassName)) {
+			if (!parentClassName.equals("chatcommandtemplate") && !uniqueParentClassNames.contains(parentClassName)) {
 				uniqueParentClassNames.add(parentClassName);
 
 				HashSet<RegisteredCommand> uniqueSubCommands = new HashSet<>();
 				rootCommand.getSubCommands().entries().forEach(entry -> {
 					RegisteredCommand registeredCommand = entry.getValue();
 
-					if (! uniqueSubCommands.contains(registeredCommand) && ! registeredCommand.equals(rootCommand.getDefaultRegisteredCommand())) {
+					if (!uniqueSubCommands.contains(registeredCommand) && !registeredCommand.equals(rootCommand.getDefaultRegisteredCommand())) {
 						uniqueSubCommands.add(registeredCommand);
 					}
 				});

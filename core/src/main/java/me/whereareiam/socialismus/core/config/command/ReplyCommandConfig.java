@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.core.config.command;
 
-public class PrivateMessageCommandConfig {
-	public String command = "msg|w";
+public class ReplyCommandConfig {
+	public String command = "reply";
 	public String permission = "socialismus.player";
-	public String syntax = "[recipient] [message]";
+	public String syntax = "[message]";
 	public boolean enabled = true;
 }
