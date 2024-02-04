@@ -76,7 +76,7 @@ public class ReplyCommand extends CommandBase {
 
 	@Override
 	public boolean isEnabled() {
-		return commands.replyCommand.enabled;
+		return commands.replyCommand.enabled == commands.privateMessageCommand.enabled;
 	}
 
 	@Override
