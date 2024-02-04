@@ -28,6 +28,16 @@ public class PrivateMessageCommand extends CommandBase {
 	}
 
 	@CommandAlias("%command.privateMessage")
+	@CommandPermission("%permission.privateMessage")
+	@Description("%description.privateMessage")
+	public void onCommand(CommandIssuer issuer) {
+		if (!issuer.isPlayer())
+			messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
+
+		messageUtil.sendMessage(issuer, messages.commands.wrongSyntax);
+	}
+
+	@CommandAlias("%command.privateMessage")
 	@CommandCompletion("@players @nothing")
 	@CommandPermission("%permission.privateMessage")
 	@Description("%description.privateMessage")

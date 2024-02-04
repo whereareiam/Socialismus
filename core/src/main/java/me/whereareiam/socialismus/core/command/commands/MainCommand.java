@@ -110,6 +110,10 @@ public class MainCommand extends CommandBase {
 				Set<RegisteredCommand> filteredRegisteredCommands = new HashSet<>();
 
 				for (RegisteredCommand registeredCommand : registeredCommands) {
+					if (registeredCommand.getCommand().equals(rootCommand.getCommandName()) ||
+							filteredRegisteredCommands.stream().anyMatch(c -> c.getCommand().equals(registeredCommand.getCommand())))
+						continue;
+
 					Set<String> requiredPermissions = registeredCommand.getRequiredPermissions();
 
 					boolean hasAllPermissions = requiredPermissions.stream().allMatch(issuer::hasPermission);

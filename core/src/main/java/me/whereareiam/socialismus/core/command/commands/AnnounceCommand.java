@@ -10,13 +10,11 @@ import me.whereareiam.socialismus.core.config.command.CommandsConfig;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
 import me.whereareiam.socialismus.core.module.announcer.AnnouncerModule;
 import me.whereareiam.socialismus.core.module.announcer.announcement.AnnouncementBroadcaster;
-import me.whereareiam.socialismus.core.util.LoggerUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 
 @Singleton
 @CommandAlias("%command.main")
 public class AnnounceCommand extends CommandBase {
-	private final LoggerUtil loggerUtil;
 	private final MessageUtil messageUtil;
 	private final CommandsConfig commands;
 	private final MessagesConfig messages;
@@ -25,15 +23,21 @@ public class AnnounceCommand extends CommandBase {
 	private final AnnouncementBroadcaster announcementBroadcaster;
 
 	@Inject
-	public AnnounceCommand(LoggerUtil loggerUtil, MessageUtil messageUtil, CommandsConfig commands,
+	public AnnounceCommand(MessageUtil messageUtil, CommandsConfig commands,
 	                       MessagesConfig messages, AnnouncerModule announcerModule,
 	                       AnnouncementBroadcaster announcementBroadcaster) {
-		this.loggerUtil = loggerUtil;
 		this.messageUtil = messageUtil;
 		this.commands = commands;
 		this.messages = messages;
 		this.announcerModule = announcerModule;
 		this.announcementBroadcaster = announcementBroadcaster;
+	}
+
+	@Subcommand("%command.announce")
+	@CommandPermission("%permission.announce")
+	@Description("%description.announce")
+	public void onCommand(CommandIssuer issuer) {
+		messageUtil.sendMessage(issuer, messages.commands.wrongSyntax);
 	}
 
 	@Subcommand("%command.announce")

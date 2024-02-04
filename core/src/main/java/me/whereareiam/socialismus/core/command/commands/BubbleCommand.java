@@ -37,6 +37,16 @@ public class BubbleCommand extends CommandBase {
 	}
 
 	@Subcommand("%command.bubble")
+	@CommandPermission("%permission.bubble")
+	@Description("%description.bubble")
+	public void onCommand(CommandIssuer issuer) {
+		if (!issuer.isPlayer())
+			messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
+
+		messageUtil.sendMessage(issuer, messages.commands.wrongSyntax);
+	}
+
+	@Subcommand("%command.bubble")
 	@CommandCompletion("@nothing")
 	@CommandPermission("%permission.bubble")
 	@Description("%description.bubble")
