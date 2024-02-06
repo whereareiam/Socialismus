@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.core.listener;
 
-import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.model.ChatMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 

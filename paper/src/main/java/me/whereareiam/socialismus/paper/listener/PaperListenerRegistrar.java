@@ -15,7 +15,7 @@ import org.bukkit.plugin.Plugin;
 public class PaperListenerRegistrar extends BaseListenerRegistrar {
 	@Inject
 	public PaperListenerRegistrar(Injector injector, LoggerUtil loggerUtil, Plugin plugin,
-								  ChatListenerState chatListenerState, JoinListenerState joinListenerState) {
+	                              ChatListenerState chatListenerState, JoinListenerState joinListenerState) {
 		super(injector, loggerUtil, plugin, chatListenerState, joinListenerState);
 
 		loggerUtil.trace("Initializing class: " + this);

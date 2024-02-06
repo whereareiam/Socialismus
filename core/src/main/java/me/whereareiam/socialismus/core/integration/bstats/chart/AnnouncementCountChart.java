@@ -2,17 +2,17 @@ package me.whereareiam.socialismus.core.integration.bstats.chart;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.module.ModuleLoader;
+import me.whereareiam.socialismus.core.SocialismusModuleLoader;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 
 @Singleton
 public class AnnouncementCountChart implements Chart {
-	private final ModuleLoader moduleLoader;
+	private final SocialismusModuleLoader moduleLoader;
 	private Metrics metrics;
 
 	@Inject
-	public AnnouncementCountChart(ModuleLoader moduleLoader) {
+	public AnnouncementCountChart(SocialismusModuleLoader moduleLoader) {
 		this.moduleLoader = moduleLoader;
 	}
 

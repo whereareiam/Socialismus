@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.core.command.management;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.model.chat.Chat;
+import me.whereareiam.socialismus.api.model.Chat;
 import me.whereareiam.socialismus.api.type.ChatUseType;
 import me.whereareiam.socialismus.core.command.commands.*;
 

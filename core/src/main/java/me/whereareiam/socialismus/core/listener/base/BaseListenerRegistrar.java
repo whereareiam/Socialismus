@@ -6,8 +6,7 @@ import me.whereareiam.socialismus.core.listener.ChatListener;
 import me.whereareiam.socialismus.core.listener.JoinListener;
 import me.whereareiam.socialismus.core.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.core.listener.listeners.BeforeBubbleSendMessageListener;
-import me.whereareiam.socialismus.core.listener.listeners.BeforeChatSendMessageListener;
-import me.whereareiam.socialismus.core.listener.listeners.player.PlayerJoinListener;
+import me.whereareiam.socialismus.core.listener.listeners.PlayerJoinListener;
 import me.whereareiam.socialismus.core.listener.state.ChatListenerState;
 import me.whereareiam.socialismus.core.listener.state.JoinListenerState;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
@@ -24,7 +23,7 @@ public abstract class BaseListenerRegistrar implements ListenerRegistrar {
 
 	@Inject
 	public BaseListenerRegistrar(Injector injector, LoggerUtil loggerUtil, Plugin plugin,
-								 ChatListenerState chatListenerState, JoinListenerState joinListenerState) {
+	                             ChatListenerState chatListenerState, JoinListenerState joinListenerState) {
 		this.injector = injector;
 		this.loggerUtil = loggerUtil;
 		this.plugin = plugin;

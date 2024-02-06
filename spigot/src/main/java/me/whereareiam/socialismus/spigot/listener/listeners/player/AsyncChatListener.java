@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.spigot.listener.listeners.player;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.model.ChatMessage;
 import me.whereareiam.socialismus.core.listener.ChatListener;
 import me.whereareiam.socialismus.core.listener.handler.ChatHandler;
 import me.whereareiam.socialismus.core.util.LoggerUtil;

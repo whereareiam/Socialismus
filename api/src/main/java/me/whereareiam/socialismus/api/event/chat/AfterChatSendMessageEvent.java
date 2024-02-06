@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.api.event.chat;
 
-import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.model.ChatMessage;
 
 /**
  * This event is called after a message has been sent to the chat.

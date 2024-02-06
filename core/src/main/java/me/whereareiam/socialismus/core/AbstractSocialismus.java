@@ -5,8 +5,6 @@ import me.whereareiam.socialismus.api.Socialismus;
 import me.whereareiam.socialismus.core.command.management.CommandManager;
 import me.whereareiam.socialismus.core.command.management.CommandRegistrar;
 import me.whereareiam.socialismus.core.config.ConfigManager;
-import me.whereareiam.socialismus.core.module.ModuleLoader;
-import me.whereareiam.socialismus.core.module.chat.ChatModule;
 import me.whereareiam.socialismus.core.util.InfoPrinterUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,7 +21,7 @@ public abstract class AbstractSocialismus extends JavaPlugin implements Socialis
 
 		injector.getInstance(CommandRegistrar.class).registerCommands();
 		injector.getInstance(CommandManager.class).setCommands();
-		injector.getInstance(ModuleLoader.class).loadModules();
+		injector.getInstance(SocialismusModuleLoader.class).loadModules();
 
 		injector.getInstance(InfoPrinterUtil.class).printStartMessage();
 	}
@@ -37,11 +35,6 @@ public abstract class AbstractSocialismus extends JavaPlugin implements Socialis
 	@Override
 	public void reload() {
 		injector.getInstance(ConfigManager.class).reloadConfigs();
-		injector.getInstance(ModuleLoader.class).reloadModules();
-	}
-
-	@Override
-	public ChatModule getChatModule() {
-		return injector.getInstance(ChatModule.class);
+		injector.getInstance(SocialismusModuleLoader.class).reloadModules();
 	}
 }

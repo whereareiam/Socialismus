@@ -2,17 +2,18 @@ package me.whereareiam.socialismus.core.integration.bstats.chart;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.core.module.ModuleLoader;
+import me.whereareiam.socialismus.api.module.ChatController;
+import me.whereareiam.socialismus.core.SocialismusModuleLoader;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 
 @Singleton
 public class ChatCountChart implements Chart {
-	private final ModuleLoader moduleLoader;
+	private final SocialismusModuleLoader moduleLoader;
 	private Metrics metrics;
 
 	@Inject
-	public ChatCountChart(ModuleLoader moduleLoader) {
+	public ChatCountChart(SocialismusModuleLoader moduleLoader) {
 		this.moduleLoader = moduleLoader;
 	}
 
@@ -30,7 +31,7 @@ public class ChatCountChart implements Chart {
 
 	@Override
 	public String getData() {
-		int chatCount = moduleLoader.getChatCount();
+		int chatCount = ((ChatController) moduleLoader.getModule("chat")).getChats().size();
 		return switch (chatCount) {
 			case 0 -> "NONE";
 			case 1, 2, 3, 4 -> String.valueOf(chatCount);

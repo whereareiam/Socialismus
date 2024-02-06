@@ -2,10 +2,10 @@ package me.whereareiam.socialismus.core.util;
 
 import com.google.inject.Inject;
 import me.whereareiam.socialismus.core.AbstractSocialismus;
+import me.whereareiam.socialismus.core.SocialismusModuleLoader;
 import me.whereareiam.socialismus.core.command.management.CommandManager;
 import me.whereareiam.socialismus.core.integration.Integration;
 import me.whereareiam.socialismus.core.integration.IntegrationManager;
-import me.whereareiam.socialismus.core.module.ModuleLoader;
 import me.whereareiam.socialismus.core.platform.PlatformType;
 
 import java.util.List;
@@ -14,11 +14,11 @@ public class InfoPrinterUtil {
 	private final LoggerUtil loggerUtil;
 	private final CommandManager commandManager;
 	private final IntegrationManager integrationManager;
-	private final ModuleLoader moduleLoader;
+	private final SocialismusModuleLoader moduleLoader;
 
 	@Inject
 	public InfoPrinterUtil(LoggerUtil loggerUtil, CommandManager commandManager, IntegrationManager integrationManager,
-	                       ModuleLoader moduleLoader) {
+	                       SocialismusModuleLoader moduleLoader) {
 		this.loggerUtil = loggerUtil;
 		this.commandManager = commandManager;
 		this.integrationManager = integrationManager;

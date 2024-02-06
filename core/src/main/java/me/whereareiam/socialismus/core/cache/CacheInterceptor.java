@@ -31,14 +31,14 @@ public class CacheInterceptor implements MethodInterceptor {
 		String methodName = invocation.getMethod().getName();
 		loggerUtil.trace("Invoking method: " + methodName);
 
-		if (! settingsConfig.performance.caching) {
+		if (!settingsConfig.performance.caching) {
 			loggerUtil.debug("Caching is disabled. Proceeding without caching.");
 			return invocation.proceed();
 		}
 
 		Cacheable cacheable = invocation.getMethod().getAnnotation(Cacheable.class);
 		int duration = cacheable.duration();
-		if (duration != - 1 && cache == null) {
+		if (duration != -1 && cache == null) {
 			cache = CacheBuilder.newBuilder()
 					.maximumSize(1000)
 					.expireAfterWrite(duration, TimeUnit.SECONDS)

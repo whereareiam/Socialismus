@@ -2,10 +2,10 @@ package me.whereareiam.socialismus.core.chat.message;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.model.chat.Chat;
-import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.model.Chat;
+import me.whereareiam.socialismus.api.model.ChatMessage;
+import me.whereareiam.socialismus.api.module.ChatController;
 import me.whereareiam.socialismus.api.type.ChatUseType;
-import me.whereareiam.socialismus.core.module.chat.ChatModule;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -17,10 +17,10 @@ import java.util.Optional;
 @Singleton
 public class ChatMessageFactory {
 	private final LoggerUtil loggerUtil;
-	private final ChatModule chatModule;
+	private final ChatController chatModule;
 
 	@Inject
-	public ChatMessageFactory(LoggerUtil loggerUtil, ChatModule chatModule) {
+	public ChatMessageFactory(LoggerUtil loggerUtil, ChatController chatModule) {
 		this.chatModule = chatModule;
 		this.loggerUtil = loggerUtil;
 

@@ -7,11 +7,11 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.core.SocialismusModuleLoader;
 import me.whereareiam.socialismus.core.command.base.CommandBase;
 import me.whereareiam.socialismus.core.config.ConfigManager;
 import me.whereareiam.socialismus.core.config.command.CommandsConfig;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
-import me.whereareiam.socialismus.core.module.ModuleLoader;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
 
@@ -23,11 +23,11 @@ public class ReloadCommand extends CommandBase {
 	private final CommandsConfig commands;
 	private final MessagesConfig messages;
 	private final ConfigManager configManager;
-	private final ModuleLoader moduleLoader;
+	private final SocialismusModuleLoader moduleLoader;
 
 	@Inject
 	public ReloadCommand(LoggerUtil loggerUtil, MessageUtil messageUtil, CommandsConfig commands,
-						 MessagesConfig messages, ConfigManager configManager, ModuleLoader moduleLoader) {
+	                     MessagesConfig messages, ConfigManager configManager, SocialismusModuleLoader moduleLoader) {
 		this.loggerUtil = loggerUtil;
 		this.messageUtil = messageUtil;
 		this.commands = commands;

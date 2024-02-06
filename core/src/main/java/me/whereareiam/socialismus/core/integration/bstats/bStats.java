@@ -7,7 +7,6 @@ import me.whereareiam.socialismus.core.integration.IntegrationType;
 import me.whereareiam.socialismus.core.integration.bstats.chart.AnnouncementCountChart;
 import me.whereareiam.socialismus.core.integration.bstats.chart.ChatCountChart;
 import me.whereareiam.socialismus.core.integration.bstats.chart.HookCountChart;
-import me.whereareiam.socialismus.core.integration.bstats.chart.SwapperCountChart;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,16 +1,12 @@
 package me.whereareiam.socialismus.api.event.chat;
 
-import me.whereareiam.socialismus.api.model.chat.ChatMessage;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
+import me.whereareiam.socialismus.api.event.Event;
+import me.whereareiam.socialismus.api.model.ChatMessage;
 
 /**
  * @since 1.2.0
  */
 public abstract class ChatEvent extends Event {
-	private static final HandlerList HANDLER_LIST = new HandlerList();
-
 	/**
 	 * ChatMessage object that is being sent to the chat.
 	 */
@@ -23,24 +19,7 @@ public abstract class ChatEvent extends Event {
 	 * @since 1.2.0
 	 */
 	public ChatEvent(ChatMessage chatMessage) {
-		super(true);
-
 		this.chatMessage = chatMessage;
-	}
-
-	/**
-	 * @return The handler list.
-	 */
-	public static HandlerList getHandlerList() {
-		return HANDLER_LIST;
-	}
-
-	/**
-	 * @return The handler list.
-	 */
-	@Override
-	public @NotNull HandlerList getHandlers() {
-		return HANDLER_LIST;
 	}
 
 	/**

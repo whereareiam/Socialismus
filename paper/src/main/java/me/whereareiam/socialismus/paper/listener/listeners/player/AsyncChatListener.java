@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.paper.listener.listeners.player;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import me.whereareiam.socialismus.api.model.chat.ChatMessage;
+import me.whereareiam.socialismus.api.model.ChatMessage;
 import me.whereareiam.socialismus.core.listener.ChatListener;
 import me.whereareiam.socialismus.core.listener.handler.ChatHandler;
 import me.whereareiam.socialismus.core.util.LoggerUtil;

@@ -30,7 +30,7 @@ public class SQLiteDatabase implements Database {
 	@Override
 	public void disconnect() {
 		try {
-			if (connection != null && ! connection.isClosed()) {
+			if (connection != null && !connection.isClosed()) {
 				connection.close();
 			}
 		} catch (SQLException e) {
@@ -54,7 +54,7 @@ public class SQLiteDatabase implements Database {
 			return statement.executeUpdate();
 		} catch (SQLException e) {
 			loggerUtil.severe(e.getMessage());
-			return - 1;
+			return -1;
 		}
 	}
 

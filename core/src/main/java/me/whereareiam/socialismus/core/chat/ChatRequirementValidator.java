@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.core.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.model.chat.ChatMessage;
-import me.whereareiam.socialismus.api.model.chat.ChatRecipientRequirements;
-import me.whereareiam.socialismus.api.model.chat.ChatSenderRequirements;
+import me.whereareiam.socialismus.api.model.ChatMessage;
+import me.whereareiam.socialismus.api.model.ChatRecipientRequirements;
+import me.whereareiam.socialismus.api.model.ChatSenderRequirements;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
 import me.whereareiam.socialismus.core.util.DistanceUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
