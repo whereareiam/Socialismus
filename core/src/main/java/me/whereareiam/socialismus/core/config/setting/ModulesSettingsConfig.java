@@ -13,7 +13,7 @@ public class ModulesSettingsConfig {
 			},
 			at = Comment.At.PREPEND
 	)
-	public boolean chats = true;
+	public ChatsSettingsConfig chats = new ChatsSettingsConfig();
 
 	@Comment(
 			value = {

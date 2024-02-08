@@ -47,7 +47,7 @@ public class ChatHandler {
 			loggerUtil.warning("You can't use the BubbleChat module without ProtocolLib!");
 		}
 
-		if (settingsConfig.modules.chats && chatMessage.getChat() != null) {
+		if (settingsConfig.modules.chats.enabled && chatMessage.getChat() != null) {
 			final ChatService chatService = injector.getInstance(ChatService.class);
 			chatService.distributeMessage(chatMessage);
 		}

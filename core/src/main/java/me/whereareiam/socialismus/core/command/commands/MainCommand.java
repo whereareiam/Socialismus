@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.core.cache.Cacheable;
 import me.whereareiam.socialismus.core.command.base.CommandBase;
 import me.whereareiam.socialismus.core.command.management.CommandManager;
 import me.whereareiam.socialismus.core.config.command.CommandsConfig;
@@ -54,6 +55,7 @@ public class MainCommand extends CommandBase {
 		}
 	}
 
+	@Cacheable(duration = 1)
 	private String buildHelpCommand(CommandIssuer issuer) {
 		Map<RootCommand, Set<RegisteredCommand>> commands = getAllowedCommands(commandManager.getAllCommands(), issuer);
 		StringBuilder formattedCommands = getFormattedCommands(commands);

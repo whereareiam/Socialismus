@@ -94,7 +94,6 @@ public class FormatterUtil {
 	}
 
 	public String hookIntegration(Player player, String message) {
-		System.out.println("hookIntegration:" + message);
 		for (Integration integration : injector.getInstance(IntegrationManager.class).getIntegrations()) {
 			if (integration.getType() == IntegrationType.MESSAGING) {
 				MessagingIntegration formatterIntegration = (MessagingIntegration) integration;

@@ -144,7 +144,7 @@ public class ChatModule implements me.whereareiam.socialismus.api.module.ChatMod
 
 	@Override
 	public boolean isEnabled() {
-		return moduleStatus == settingsConfig.modules.chats;
+		return moduleStatus == settingsConfig.modules.chats.enabled;
 	}
 
 	@Override

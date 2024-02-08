@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.api.event.chat.OnChatSendMessageEvent;
 import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.api.model.chat.ChatMessageFormat;
+import me.whereareiam.socialismus.core.config.setting.SettingsConfig;
 import me.whereareiam.socialismus.core.platform.PlatformIdentifier;
 import me.whereareiam.socialismus.core.util.FormatterUtil;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
@@ -19,13 +20,15 @@ import java.util.Optional;
 
 @Singleton
 public class ChatBroadcaster {
+	private final SettingsConfig settingsConfig;
 	private final LoggerUtil loggerUtil;
 	private final FormatterUtil formatterUtil;
 	private final MessageUtil messageUtil;
 
 	@Inject
-	public ChatBroadcaster(LoggerUtil loggerUtil, FormatterUtil formatterUtil,
+	public ChatBroadcaster(SettingsConfig settingsConfig, LoggerUtil loggerUtil, FormatterUtil formatterUtil,
 	                       MessageUtil messageUtil) {
+		this.settingsConfig = settingsConfig;
 		this.loggerUtil = loggerUtil;
 		this.formatterUtil = formatterUtil;
 		this.messageUtil = messageUtil;
@@ -49,7 +52,7 @@ public class ChatBroadcaster {
 
 		chatMessage = event.getChatMessage();
 
-		if (!PlatformIdentifier.isPaper()) {
+		if (!PlatformIdentifier.isPaper() || !settingsConfig.modules.chats.useVanillaChat) {
 			ChatMessage finalChatMessage = chatMessage;
 			chatMessage.getRecipients().forEach(recipient -> messageUtil.sendMessage(recipient, finalChatMessage.getContent()));
 			chatMessage.setCancelled(true);
