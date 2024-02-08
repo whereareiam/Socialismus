@@ -55,7 +55,7 @@ public class TagParserModule implements Module {
 		playerInformation.content = List.of(
 				" ",
 				"<dark_gray> Information</dark_gray>",
-				"<white>  Player: <green>PlaceholderAPI</green></white>  ",
+				"<white>  Player: <green>%player_name%</green></white>  ",
 				" "
 		);
 
@@ -67,7 +67,7 @@ public class TagParserModule implements Module {
 		messageInformation.content = List.of(
 				" ",
 				"<dark_gray> Information</dark_gray>",
-				"<white>  Message was sent at: <green>PlaceholderAPI</green></white>  ",
+				"<white>  Message was sent at: <green>%player_world_time_24%</green></white>  ",
 				" "
 		);
 

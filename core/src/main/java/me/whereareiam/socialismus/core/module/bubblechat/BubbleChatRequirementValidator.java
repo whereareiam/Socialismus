@@ -22,7 +22,7 @@ public class BubbleChatRequirementValidator {
 
 	@Inject
 	public BubbleChatRequirementValidator(MessageUtil messageUtil, MessagesConfig messagesConfig,
-										  BubbleChatConfig bubbleChatConfig) {
+	                                      BubbleChatConfig bubbleChatConfig) {
 		this.messageUtil = messageUtil;
 		this.messagesConfig = messagesConfig;
 		this.bubbleChatConfig = bubbleChatConfig;
@@ -30,13 +30,13 @@ public class BubbleChatRequirementValidator {
 
 	public Collection<? extends Player> validatePlayers(Player sender, Collection<? extends Player> onlinePlayers) {
 		BubbleChatRecipientRequirementConfig recipientRequirements = bubbleChatConfig.requirements.recipient;
-		if (! bubbleChatConfig.requirements.enabled)
+		if (!bubbleChatConfig.requirements.enabled)
 			return onlinePlayers;
 
-		if (! recipientRequirements.seeOwnBubble)
+		if (!recipientRequirements.seeOwnBubble)
 			onlinePlayers.remove(sender);
 
-		if (recipientRequirements.seePermission != null && ! recipientRequirements.seePermission.isEmpty())
+		if (recipientRequirements.seePermission != null && !recipientRequirements.seePermission.isEmpty())
 			onlinePlayers = onlinePlayers.stream().filter(player -> player.hasPermission(recipientRequirements.seePermission)).collect(Collectors.toList());
 
 		return onlinePlayers;
@@ -44,13 +44,13 @@ public class BubbleChatRequirementValidator {
 
 	public boolean validatePlayer(ChatMessage chatMessage) {
 		BubbleChatSenderRequirementConfig senderRequirements = bubbleChatConfig.requirements.sender;
-		if (! bubbleChatConfig.requirements.enabled)
+		if (!bubbleChatConfig.requirements.enabled)
 			return true;
 
 		Player sender = chatMessage.getSender();
 		String message = PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent());
 
-		if (senderRequirements.usePermission != null && ! sender.hasPermission(senderRequirements.usePermission)) {
+		if (senderRequirements.usePermission != null && !sender.hasPermission(senderRequirements.usePermission)) {
 			messageUtil.sendMessage(sender, messagesConfig.bubblechat.noUsePermission);
 			return false;
 		}
@@ -60,7 +60,7 @@ public class BubbleChatRequirementValidator {
 			return false;
 		}
 
-		if (! senderRequirements.worlds.isEmpty() && ! senderRequirements.worlds.contains(sender.getWorld().getName())) {
+		if (!senderRequirements.worlds.isEmpty() && !senderRequirements.worlds.contains(sender.getWorld().getName())) {
 			messageUtil.sendMessage(sender, messagesConfig.bubblechat.forbiddenWorld);
 			return false;
 		}

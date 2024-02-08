@@ -6,8 +6,10 @@ import me.whereareiam.socialismus.api.model.parser.TagParser;
 import me.whereareiam.socialismus.core.util.FormatterUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Singleton
@@ -21,7 +23,7 @@ public class TagParserService {
 		this.tagParserModule = tagParserModule;
 	}
 
-	public Component hookTagParser(Component message) {
+	public Component hookTagParser(Optional<Player> player, Component message) {
 		String plainMessage = PlainTextComponentSerializer.plainText().serialize(message);
 		List<TagParser> tagParsers = tagParserModule.getTagParsers();
 		tagParsers = tagParsers.stream().filter(
@@ -32,10 +34,10 @@ public class TagParserService {
 		for (TagParser tagParser : tagParsers) {
 			switch (tagParser.type) {
 				case HOVER:
-					message = formatHoverTag(message, tagParser);
+					message = formatHoverTag(player, message, tagParser);
 					break;
 				case TEXT:
-					message = formatTextTag(message, tagParser);
+					message = formatTextTag(player, message, tagParser);
 					break;
 			}
 		}
@@ -43,7 +45,7 @@ public class TagParserService {
 		return message;
 	}
 
-	private Component formatHoverTag(Component message, TagParser tagParser) {
+	private Component formatHoverTag(Optional<Player> player, Component message, TagParser tagParser) {
 		String tag = tagParser.tag;
 		Pattern pattern = Pattern.compile("<" + tag + ">(.*?)</" + tag + ">");
 
@@ -54,14 +56,14 @@ public class TagParserService {
 
 					return matchResult.content(matchResult.content().replaceAll("<" + tag + ">", "")
 									.replaceAll("</" + tag + ">", ""))
-							.hoverEvent(formatterUtil.formatMessage(content, false));
+							.hoverEvent(formatterUtil.formatMessage(player, content, false));
 				})
 		);
 
 		return message;
 	}
 
-	private Component formatTextTag(Component message, TagParser tagParser) {
+	private Component formatTextTag(Optional<Player> player, Component message, TagParser tagParser) {
 		String tag = tagParser.tag;
 		Pattern pattern = Pattern.compile("<" + tag + ">(.*?)</" + tag + ">");
 
@@ -74,7 +76,7 @@ public class TagParserService {
 					content = content.replaceAll("<" + tag + ">", "")
 							.replaceAll("</" + tag + ">", "");
 
-					return formatterUtil.formatMessage(content, false);
+					return formatterUtil.formatMessage(player, content, false);
 				})
 		);
 

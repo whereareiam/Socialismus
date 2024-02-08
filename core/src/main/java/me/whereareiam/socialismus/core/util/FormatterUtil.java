@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class FormatterUtil {
@@ -63,14 +64,18 @@ public class FormatterUtil {
 	}
 
 	public Component formatMessage(String message, boolean allowedTagParser) {
-		return formatMessage(null, message, allowedTagParser);
+		return formatMessage(Optional.empty(), message, allowedTagParser);
 	}
 
 	public Component formatMessage(String message) {
-		return formatMessage(null, message, false);
+		return formatMessage(Optional.empty(), message, false);
 	}
 
 	public Component formatMessage(Player player, String message, boolean allowTagParser) {
+		return formatMessage(Optional.of(player), message, allowTagParser);
+	}
+
+	public Component formatMessage(Optional<Player> player, String message, boolean allowTagParser) {
 		loggerUtil.trace("formatMessage:" + message);
 		final MiniMessage miniMessage = MiniMessage.miniMessage();
 
@@ -78,17 +83,18 @@ public class FormatterUtil {
 			return miniMessage.deserialize("");
 
 		message = convertLegacyColorCodes(message);
-		if (player != null)
-			message = hookIntegration(player, message);
+		if (player.isPresent())
+			message = hookIntegration(player.get(), message);
 
 		Component component = miniMessage.deserialize(message);
 		if (allowTagParser)
-			component = injector.getInstance(TagParserService.class).hookTagParser(component);
+			component = injector.getInstance(TagParserService.class).hookTagParser(player, component);
 
 		return component;
 	}
 
 	public String hookIntegration(Player player, String message) {
+		System.out.println("hookIntegration:" + message);
 		for (Integration integration : injector.getInstance(IntegrationManager.class).getIntegrations()) {
 			if (integration.getType() == IntegrationType.MESSAGING) {
 				MessagingIntegration formatterIntegration = (MessagingIntegration) integration;

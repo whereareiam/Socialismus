@@ -40,7 +40,7 @@ public class MessageUtil {
 			return;
 
 		if (issuer.isPlayer()) {
-			sendMessage(issuer.getIssuer(), formatterUtil.formatMessage(issuer.getIssuer(), message, true));
+			sendMessage(issuer.getIssuer(), formatterUtil.formatMessage((Player) issuer.getIssuer(), message, true));
 		} else {
 			issuer.sendMessage(formatterUtil.cleanMessage(message));
 		}
