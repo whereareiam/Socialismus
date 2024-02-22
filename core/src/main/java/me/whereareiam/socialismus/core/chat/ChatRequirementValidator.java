@@ -51,7 +51,10 @@ public class ChatRequirementValidator {
 		if (recipientRequirements.radius >= 0)
 			recipients = recipients
 					.stream()
-					.filter(player -> DistanceUtil.between(player, sender) <= recipientRequirements.radius)
+					.filter(player -> {
+						double distance = DistanceUtil.between(player, sender);
+						return distance != -1 && distance <= recipientRequirements.radius;
+					})
 					.collect(Collectors.toList());
 
 		return recipients;

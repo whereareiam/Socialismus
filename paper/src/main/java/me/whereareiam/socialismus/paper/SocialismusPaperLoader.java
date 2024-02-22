@@ -35,8 +35,6 @@ public class SocialismusPaperLoader implements PluginLoader {
 		addDependency(resolver, "com.google.inject:guice", prop.getProperty("guice"));
 		addDependency(resolver, "net.elytrium:serializer", prop.getProperty("serializer"));
 		addDependency(resolver, "co.aikar:acf-paper", prop.getProperty("acf-paper") + "-SNAPSHOT");
-		addDependency(resolver, "net.kyori:adventure-text-serializer-plain", prop.getProperty("adventure-text-serializer-plain"));
-		addDependency(resolver, "net.kyori:adventure-text-minimessage", prop.getProperty("adventure-text-minimessage"));
 
 		classpathBuilder.addLibrary(resolver);
 	}

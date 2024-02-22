@@ -103,11 +103,17 @@ public class MentionFactory {
 			if (usedAllTag != null && usedNearbyTag != null) {
 				if (mentionRadius < chatRadius) {
 					recipients = recipients.stream()
-							.filter(p -> DistanceUtil.between(p, sender) <= mentionRadius)
+							.filter(player -> {
+								double distance = DistanceUtil.between(player, sender);
+								return distance != -1 && distance <= mentionRadius;
+							})
 							.toList();
 				} else if (mentionRadius > chatRadius) {
 					recipients = Bukkit.getOnlinePlayers().stream()
-							.filter(p -> DistanceUtil.between(p, sender) <= mentionRadius)
+							.filter(player -> {
+								double distance = DistanceUtil.between(player, sender);
+								return distance != -1 && distance <= mentionRadius;
+							})
 							.toList();
 				}
 			}

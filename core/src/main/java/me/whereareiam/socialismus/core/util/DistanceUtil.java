@@ -11,6 +11,5 @@ public final class DistanceUtil {
 	public static double between(Player a, Player b) {
 		return between(a.getLocation(), b.getLocation());
 	}
-
 }
 
