@@ -50,7 +50,7 @@ public class BubbleChatRequirementValidator {
 		Player sender = chatMessage.getSender();
 		String message = PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent());
 
-		if (senderRequirements.usePermission != null && !sender.hasPermission(senderRequirements.usePermission)) {
+		if (senderRequirements.usePermission != null && !senderRequirements.usePermission.isEmpty() && !sender.hasPermission(senderRequirements.usePermission)) {
 			messageUtil.sendMessage(sender, messagesConfig.bubblechat.noUsePermission);
 			return false;
 		}
