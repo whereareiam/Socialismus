@@ -68,7 +68,7 @@ public class ChatRequirementValidator {
 		Player sender = chatMessage.getSender();
 		String message = PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent());
 
-		if (senderRequirements.minOnline > Bukkit.getOnlinePlayers().size()) {
+		if (Bukkit.getOnlinePlayers().size() <= senderRequirements.minOnline) {
 			messageUtil.sendMessage(sender, messagesConfig.chat.insufficientPlayers
 					.replace("{minOnline}", String.valueOf(senderRequirements.minOnline)));
 			return false;

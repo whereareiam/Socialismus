@@ -82,10 +82,10 @@ public class FormatterUtil {
 		if (message == null || message.isEmpty())
 			return miniMessage.deserialize("");
 
-		message = convertLegacyColorCodes(message);
 		if (player.isPresent())
 			message = hookIntegration(player.get(), message);
 
+		message = convertLegacyColorCodes(message);
 		Component component = miniMessage.deserialize(message);
 		if (allowTagParser)
 			component = injector.getInstance(TagParserService.class).hookTagParser(player, component);
