@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Singleton
@@ -95,11 +96,21 @@ public class FormatterUtil {
 
 	public String hookIntegration(Player player, String message) {
 		for (Integration integration : injector.getInstance(IntegrationManager.class).getIntegrations()) {
-			if (integration.getType() == IntegrationType.MESSAGING) {
+			if (integration.getType() == IntegrationType.MESSAGING && !Objects.equals(integration.getName(), "PlaceholderAPI")) {
 				MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
 				message = formatterIntegration.formatMessage(player, message);
 
 				loggerUtil.trace("Hooked with MESSAGING integration: " + formatterIntegration.getName());
+			}
+
+			if (integration.getName().equals("PlaceholderAPI")) {
+				MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
+				int tries = 0;
+				while (message.contains("%") && tries < 2) {
+					message = formatterIntegration.formatMessage(player, message);
+					tries++;
+					loggerUtil.trace("Hooked with MESSAGING integration: " + formatterIntegration.getName());
+				}
 			}
 		}
 
