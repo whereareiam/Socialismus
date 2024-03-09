@@ -13,7 +13,9 @@ import me.whereareiam.socialismus.core.command.base.CommandBase;
 import me.whereareiam.socialismus.core.config.message.MessagesConfig;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
 import me.whereareiam.socialismus.core.util.MessageUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,16 +25,18 @@ public class ChatCommandTemplate extends CommandBase {
 	private final MessagesConfig messages;
 	private final ChatMessageFactory chatMessageFactory;
 	private final ChatService chatService;
+	private final Plugin plugin;
 
 	private Chat chat;
 
 	@Inject
 	public ChatCommandTemplate(LoggerUtil loggerUtil, MessageUtil messageUtil, MessagesConfig messages,
-	                           ChatMessageFactory chatMessageFactory, ChatService chatService) {
+	                           ChatMessageFactory chatMessageFactory, ChatService chatService, Plugin plugin) {
 		this.messageUtil = messageUtil;
 		this.messages = messages;
 		this.chatMessageFactory = chatMessageFactory;
 		this.chatService = chatService;
+		this.plugin = plugin;
 
 		loggerUtil.trace("Initializing class: " + this);
 	}
@@ -60,9 +64,10 @@ public class ChatCommandTemplate extends CommandBase {
 			messageUtil.sendMessage(issuer, messages.commands.onlyForPlayer);
 
 		Player player = issuer.getIssuer();
-
-		ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, List.of(), message, Optional.of(chat.usage.command));
-		chatService.distributeMessage(chatMessage);
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+			ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, List.of(), message, Optional.of(chat.usage.command));
+			chatService.distributeMessage(chatMessage);
+		});
 	}
 
 	@Override

@@ -32,8 +32,12 @@ public class ChatMessageFactory {
 		String symbol;
 		Chat chat = null;
 
+		ChatUseType useType = ChatUseType.SYMBOL;
+
 		if (command.isPresent()) {
 			chat = chatModule.getChatByCommand(command.get());
+			useType = ChatUseType.COMMAND;
+
 			if (chat.usage.type.equals(ChatUseType.SYMBOL))
 				chat = null;
 		}
@@ -41,16 +45,18 @@ public class ChatMessageFactory {
 		if (chat == null) {
 			symbol = String.valueOf(chatSymbol);
 			chat = chatModule.getChatBySymbol(symbol);
+
 			if (chat != null) {
 				message = message.substring(1);
 			} else {
 				chat = chatModule.getChatBySymbol("");
 			}
+
+			useType = ChatUseType.SYMBOL;
 		}
 
 		Component content = PlainTextComponentSerializer.plainText().deserialize(message.trim());
-
-		ChatMessage chatMessage = new ChatMessage(content, chat, sender, recipients, false);
+		ChatMessage chatMessage = new ChatMessage(sender, useType, content, chat, recipients, false);
 
 		loggerUtil.debug(" "
 				+ "\n Created new ChatMessage "

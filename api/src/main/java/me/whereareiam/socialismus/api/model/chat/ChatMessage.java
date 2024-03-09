@@ -1,31 +1,31 @@
 package me.whereareiam.socialismus.api.model.chat;
 
+import me.whereareiam.socialismus.api.type.ChatUseType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
 public class ChatMessage {
+	private final Player sender;
+	private final ChatUseType useType;
 	private Component content;
 	private Chat chat;
-	private Player sender;
 	private Collection<? extends Player> recipients;
 	private boolean cancelled;
 
-	public ChatMessage(Component content, Chat chat, Player sender, Collection<? extends Player> recipients, boolean cancelled) {
+	public ChatMessage(Player sender, ChatUseType useType, Component content, Chat chat,
+	                   Collection<? extends Player> recipients, boolean cancelled) {
+		this.sender = sender;
+		this.useType = useType;
 		this.content = content;
 		this.chat = chat;
-		this.sender = sender;
 		this.recipients = recipients;
 		this.cancelled = cancelled;
 	}
 
 	public Player getSender() {
 		return sender;
-	}
-
-	public void setSender(Player sender) {
-		this.sender = sender;
 	}
 
 	public Component getContent() {
@@ -50,6 +50,10 @@ public class ChatMessage {
 
 	public void setRecipients(Collection<? extends Player> recipients) {
 		this.recipients = recipients;
+	}
+
+	public ChatUseType getUseType() {
+		return useType;
 	}
 
 	public boolean isCancelled() {
