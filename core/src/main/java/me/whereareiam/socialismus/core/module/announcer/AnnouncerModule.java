@@ -90,7 +90,9 @@ public class AnnouncerModule implements Module {
 							.findFirst();
 					announcement.ifPresent(validAnnouncements::add);
 				}
-				announcers.put(announcer, validAnnouncements);
+
+				if (!validAnnouncements.isEmpty())
+					announcers.put(announcer, validAnnouncements);
 			}
 		}
 	}
