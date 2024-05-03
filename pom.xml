@@ -46,7 +46,7 @@
         <folialib.version>0.3.4</folialib.version>
 
         <!-- CVE Overrides -->
-        <guava.version>33.1.0-jre</guava.version>
+        <guava.version>33.2.0-jre</guava.version>
     </properties>
 
     <profiles>
