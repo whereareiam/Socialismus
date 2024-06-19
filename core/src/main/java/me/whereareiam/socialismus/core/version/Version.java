@@ -14,7 +14,7 @@ public enum Version {
 	V1_20_4(1),
 	V1_20_5(1),
 	V1_20_6(1),
-	V1_21_0(1);
+	V1_21(1);
 
 	private static final Map<String, Version> VERSION_MAP = new HashMap<>();
 
@@ -45,5 +45,7 @@ public enum Version {
 		VERSION_MAP.put("1.20.3", V1_20_3);
 		VERSION_MAP.put("1.20.4", V1_20_4);
 		VERSION_MAP.put("1.20.5", V1_20_5);
+		VERSION_MAP.put("1.20.6", V1_20_6);
+		VERSION_MAP.put("1.21", V1_21);
 	}
 }
