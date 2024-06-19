@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.core.Scheduler;
 import me.whereareiam.socialismus.core.platform.PlatformCommunicator;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -89,7 +88,7 @@ public class MessageUtil {
 			long elapsedTime = System.currentTimeMillis() - startTime;
 			float progress = 1.0f - (float) elapsedTime / (duration * 1000);
 			if (progress <= 0) {
-				((Audience) player).hideBossBar(bossBar);
+				platformCommunicator.hideBossBar(player, bossBar);
 			} else {
 				bossBar.progress(progress);
 			}

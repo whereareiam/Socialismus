@@ -14,6 +14,8 @@ public abstract class PlatformCommunicator {
 
 	public abstract void showBossBar(Player player, BossBar bossBar);
 
+	public abstract void hideBossBar(Player player, BossBar bossBar);
+
 	public interface MessageUtil {
 		void sendMessage(Player player, Component message);
 
@@ -22,5 +24,7 @@ public abstract class PlatformCommunicator {
 		void showTitle(Player player, Title title);
 
 		void showBossBar(Player player, BossBar bossBar);
+
+		void hideBossBar(Player player, BossBar bossBar);
 	}
 }

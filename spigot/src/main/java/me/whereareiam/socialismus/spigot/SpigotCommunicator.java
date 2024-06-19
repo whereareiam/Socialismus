@@ -38,5 +38,10 @@ public class SpigotCommunicator extends PlatformCommunicator {
 	public void showBossBar(Player player, BossBar bossBar) {
 		audiences.sender(player).showBossBar(bossBar);
 	}
+
+	@Override
+	public void hideBossBar(Player player, BossBar bossBar) {
+		audiences.sender(player).hideBossBar(bossBar);
+	}
 }
 
