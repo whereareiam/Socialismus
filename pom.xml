@@ -27,7 +27,7 @@
         <maven.assembly.version>3.3.0</maven.assembly.version>
         <maven.antrun.version>3.1.0</maven.antrun.version>
         <maven.resources.version>3.3.1</maven.resources.version>
-        <maven.javadoc.version>3.7.0</maven.javadoc.version>
+        <maven.javadoc.version>3.8.0</maven.javadoc.version>
 
         <!-- Dependencies -->
         <guice.version>7.0.0</guice.version>
