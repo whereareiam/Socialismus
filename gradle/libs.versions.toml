@@ -4,7 +4,7 @@
 shadow = "8.1.7"
 
 # compile time processing
-lombok = "1.18.32"
+lombok = "1.18.34"
 
 # general
 guice = "7.0.0"
