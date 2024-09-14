@@ -2,7 +2,9 @@ package me.whereareiam.socialismus.api;
 
 import lombok.Setter;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -26,12 +28,12 @@ public enum PluginType {
     }
 
     private static String getPluginTypeFromManifest() {
-        try (JarFile jarFile = new JarFile(PluginType.class.getProtectionDomain().getCodeSource().getLocation().getPath())) {
+        try (JarFile jarFile = new JarFile(new File(PluginType.class.getProtectionDomain().getCodeSource().getLocation().toURI()))) {
             Manifest manifest = jarFile.getManifest();
             Attributes attributes = manifest.getMainAttributes();
 
             return attributes.getValue("Plugin-Type");
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return null;
         }
