@@ -35,7 +35,7 @@ cloud-core = "2.0.0"
 cloud-cooldown = "1.0.0-rc.1"
 cloud-paper = "2.0.0-beta.9"
 cloud-velocity = "2.0.0-beta.9"
-cloud-minecraft-extras = "2.0.0-beta.9"
+cloud-minecraft-extras = "2.0.0-beta.10"
 
 [libraries]
 
