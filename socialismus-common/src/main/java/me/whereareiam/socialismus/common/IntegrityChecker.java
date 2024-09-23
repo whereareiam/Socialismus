@@ -20,7 +20,6 @@ public class IntegrityChecker {
     }
 
     public boolean checkIntegrity() {
-        System.out.println("Checking integrity...");
         PluginType pluginType = PluginType.getExactType();
         Version currentVersion = interactor.getServerVersion();
 

@@ -64,6 +64,7 @@ public class EventController implements EventManager {
                     listener.getMethod().invoke(listener.getListener(), event);
                 } catch (Exception e) {
                     loggingHelper.severe("Failed to call event " + event.getClass().getSimpleName() + " for listener " + listener.getListener().getClass().getSimpleName());
+                    e.printStackTrace();
                 }
             });
 

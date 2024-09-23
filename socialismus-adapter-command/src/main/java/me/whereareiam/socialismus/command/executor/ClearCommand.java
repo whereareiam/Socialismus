@@ -84,7 +84,7 @@ public class ClearCommand extends CommandBase {
     }
 
     private void handleNumericContext(DummyPlayer dummyPlayer, int number) {
-        if (!hasMinimumMessages()) {
+        if (hasMinimumMessages()) {
             dummyPlayer.sendMessage(serializer.format(dummyPlayer, messages.get().getCommands().getClearCommand().getNotEnoughHistory()));
             return;
         }
@@ -94,7 +94,7 @@ public class ClearCommand extends CommandBase {
     }
 
     private void handleInvalidNumber(DummyPlayer dummyPlayer, int number) {
-        if (!hasMinimumMessages()) {
+        if (hasMinimumMessages()) {
             dummyPlayer.sendMessage(serializer.format(dummyPlayer, messages.get().getCommands().getClearCommand().getNotEnoughHistory()));
             return;
         }
@@ -104,7 +104,7 @@ public class ClearCommand extends CommandBase {
     }
 
     private void handleNonNumericContext(DummyPlayer dummyPlayer, String context) {
-        if (!hasMinimumMessages()) {
+        if (hasMinimumMessages()) {
             dummyPlayer.sendMessage(serializer.format(dummyPlayer, messages.get().getCommands().getClearCommand().getNotEnoughHistory()));
             return;
         }
@@ -119,7 +119,7 @@ public class ClearCommand extends CommandBase {
     }
 
     private boolean hasMinimumMessages() {
-        return containerService.getMessages().size() >= 5;
+        return containerService.getMessages().size() < 5;
     }
 
     private void sendResponse(DummyPlayer dummyPlayer, int count, String successMessage, String failureMessage) {

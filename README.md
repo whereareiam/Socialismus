@@ -23,6 +23,8 @@
 - [Swapper](https://github.com/whereareiam/Swapper) *[WIP]* - The message magician! Transform words into emojis,
   phrases,
   or anything you fancy. Perfect for adding a touch of surprise to your chat.
+- [Colorizer](https://github.com/whereareiam/Colorizer) *[WIP]* - The chat colorist! Allow players to select chat color
+  and message palette. Ideal for adding a touch of personalization to your chat.
 - [Warden](https://github.com/whereareiam/Warden) *[WIP]* - The chat cop! Keep your server safe and friendly with
   automatic moderation. Ideal for filtering out bad language, spam, or anything else you don’t want to see.
 - [Essentials](https://github.com/whereareiam/Essentials) *[WIP]* - The essential toolkit! A collection of useful
