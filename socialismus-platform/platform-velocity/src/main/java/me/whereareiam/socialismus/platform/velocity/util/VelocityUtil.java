@@ -1,15 +1,15 @@
 package me.whereareiam.socialismus.platform.velocity.util;
 
-import com.velocitypowered.api.event.PostOrder;
+import me.whereareiam.socialismus.api.type.EventPriority;
 
 public class VelocityUtil {
-    public static PostOrder of(me.whereareiam.socialismus.api.type.EventPriority priority) {
+    public static short of(EventPriority priority) {
         return switch (priority) {
-            case LOWEST -> PostOrder.FIRST;
-            case LOW -> PostOrder.EARLY;
-            case NORMAL -> PostOrder.NORMAL;
-            case HIGH -> PostOrder.LATE;
-            case HIGHEST -> PostOrder.LAST;
+            case LOWEST -> Short.MIN_VALUE;
+            case LOW -> Short.MIN_VALUE / 2;
+            case NORMAL -> 0;
+            case HIGH -> Short.MAX_VALUE / 2;
+            case HIGHEST -> Short.MAX_VALUE;
         };
     }
 }
