@@ -34,6 +34,7 @@
   activity with detailed statistics. Ideal for monitoring chat trends, player activity, and more.
 - [Chatter](https://github.com/whereareiam/Chatter) *[WIP]* - Conditional chat helper! Your personal chat assistant
   that can help you with your chat needs. Great for adding a touch of automation to your server.
+- [Bridger](https://github.com/whereareiam/Bridger) *[WIP]* - The connection expert! Seamlessly link your server with Discord using DiscordSRV and similar plugins.
 
 ## Premium modules
 
