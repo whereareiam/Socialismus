@@ -1,7 +1,7 @@
 [versions]
 
 # plugins
-shadow = "8.3.2"
+shadow = "8.3.5"
 
 # compile time processing
 lombok = "1.18.36"
