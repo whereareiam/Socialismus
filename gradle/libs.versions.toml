@@ -8,7 +8,7 @@ lombok = "1.18.36"
 
 # general
 guice = "7.0.0"
-libby = "2.0.0-SNAPSHOT"
+libby = "2.0.1"
 jackson = "2.18.2"
 
 # platform api versions
@@ -23,11 +23,11 @@ bStats = "3.1.0"
 valiobungee = "0.12.4"
 
 # adventure
-adventure = "4.17.0"
+adventure = "4.19.0"
 adventure-minimessage = "4.17.0"
-adventure-legacy = "4.17.0"
-adventure-plain = "4.17.0"
-adventure-gson = "4.17.0"
+adventure-legacy = "4.19.0"
+adventure-plain = "4.19.0"
+adventure-gson = "4.19.0"
 adventure-platform-bukkit = "4.3.4"
 
 # cloud
@@ -59,10 +59,10 @@ bStats-bukkit = { group = "org.bstats", name = "bstats-bukkit", version.ref = "b
 valiobungee = { group = "com.github.ProxioDev.ValioBungee", name = "RedisBungee-Velocity", version.ref = "valiobungee" }
 
 # libby
-libby-core = { group = "com.alessiodp.libby", name = "libby-core", version.ref = "libby" }
-libby-bukkit = { group = "com.alessiodp.libby", name = "libby-bukkit", version.ref = "libby" }
-libby-paper = { group = "com.alessiodp.libby", name = "libby-paper", version.ref = "libby" }
-libby-velocity = { group = "com.alessiodp.libby", name = "libby-velocity", version.ref = "libby" }
+libby-core = { group = "com.github.whereareiam.libby", name = "libby-core", version.ref = "libby" }
+libby-bukkit = { group = "com.github.whereareiam.libby", name = "libby-bukkit", version.ref = "libby" }
+libby-paper = { group = "com.github.whereareiam.libby", name = "libby-paper", version.ref = "libby" }
+libby-velocity = { group = "com.github.whereareiam.libby", name = "libby-velocity", version.ref = "libby" }
 
 # adventure
 adventure = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
