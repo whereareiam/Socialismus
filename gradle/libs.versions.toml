@@ -9,7 +9,7 @@ lombok = "1.18.36"
 # general
 guice = "7.0.0"
 libby = "2.0.1"
-jackson = "2.14.3"
+jackson = "2.18.2"
 
 # platform api versions
 velocity = "3.3.0-SNAPSHOT"
