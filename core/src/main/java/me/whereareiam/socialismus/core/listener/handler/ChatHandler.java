@@ -18,41 +18,42 @@ import java.util.Optional;
 
 @Singleton
 public class ChatHandler {
-	private final Injector injector;
-	private final LoggerUtil loggerUtil;
-	private final IntegrationManager integrationManager;
-	private final ChatMessageFactory chatMessageFactory;
-	private final SettingsConfig settingsConfig;
+		private final Injector injector;
+		private final LoggerUtil loggerUtil;
+		private final IntegrationManager integrationManager;
+		private final ChatMessageFactory chatMessageFactory;
+		private final SettingsConfig settingsConfig;
 
-	@Inject
-	public ChatHandler(Injector injector, LoggerUtil loggerUtil, IntegrationManager integrationManager,
-	                   ChatMessageFactory chatMessageFactory, SettingsConfig settingsConfig) {
-		this.injector = injector;
-		this.loggerUtil = loggerUtil;
-		this.integrationManager = integrationManager;
-		this.chatMessageFactory = chatMessageFactory;
-		this.settingsConfig = settingsConfig;
+		@Inject
+		public ChatHandler(Injector injector, LoggerUtil loggerUtil, IntegrationManager integrationManager,
+		                   ChatMessageFactory chatMessageFactory, SettingsConfig settingsConfig) {
+				this.injector = injector;
+				this.loggerUtil = loggerUtil;
+				this.integrationManager = integrationManager;
+				this.chatMessageFactory = chatMessageFactory;
+				this.settingsConfig = settingsConfig;
 
-		loggerUtil.trace("Initializing class: " + this);
-	}
-
-	public ChatMessage handleChatEvent(Player player, Collection<? extends Player> recipients, String message) {
-		ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, recipients, message, Optional.empty());
-
-		if (integrationManager.isIntegrationEnabled("ProtocolLib")) {
-			final BubbleChatService bubbleChatService = injector.getInstance(BubbleChatService.class);
-			if (settingsConfig.modules.bubblechat)
-				bubbleChatService.distributeBubbleMessage(BubbleTriggerType.CHAT, chatMessage);
-		} else {
-			loggerUtil.warning("You can't use the BubbleChat module without ProtocolLib!");
+				loggerUtil.trace("Initializing class: " + this);
 		}
 
-		if (settingsConfig.modules.chats.enabled && chatMessage.getChat() != null) {
-			final ChatService chatService = injector.getInstance(ChatService.class);
-			chatService.distributeMessage(chatMessage);
-		}
+		public ChatMessage handleChatEvent(Player player, Collection<? extends Player> recipients, String message) {
+				ChatMessage chatMessage = chatMessageFactory.createChatMessage(player, recipients, message, Optional.empty());
 
-		return chatMessage;
-	}
+				if (settingsConfig.modules.bubblechat) {
+						if (integrationManager.isIntegrationEnabled("ProtocolLib")) {
+								final BubbleChatService bubbleChatService = injector.getInstance(BubbleChatService.class);
+								bubbleChatService.distributeBubbleMessage(BubbleTriggerType.CHAT, chatMessage);
+						} else {
+								loggerUtil.warning("You cant use the BubbleChat module without ProtocolLib!");
+						}
+				}
+
+				if (settingsConfig.modules.chats.enabled && chatMessage.getChat() != null) {
+						final ChatService chatService = injector.getInstance(ChatService.class);
+						chatService.distributeMessage(chatMessage);
+				}
+
+				return chatMessage;
+		}
 }
 
