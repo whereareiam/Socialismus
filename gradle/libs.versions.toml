@@ -23,7 +23,7 @@ bStats = "3.1.0"
 valiobungee = "0.12.4"
 
 # adventure
-adventure = "4.17.0"
+adventure = "4.19.0"
 adventure-minimessage = "4.17.0"
 adventure-legacy = "4.17.0"
 adventure-plain = "4.17.0"
