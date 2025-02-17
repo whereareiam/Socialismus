@@ -22,123 +22,125 @@ import java.util.regex.Pattern;
 
 @Singleton
 public class FormatterUtil {
-	private final Injector injector;
-	private final LoggerUtil loggerUtil;
-	private final SettingsConfig settingsConfig;
+		private final Injector injector;
+		private final LoggerUtil loggerUtil;
+		private final SettingsConfig settingsConfig;
 
-	private final Map<String, String> colorMap = new HashMap<>();
-	private final Pattern pattern = Pattern.compile("§x(§[0-9A-Fa-f]){6}");
+		private final Map<String, String> colorMap = new HashMap<>();
+		private final Pattern pattern = Pattern.compile("§x(§[0-9A-Fa-f]){6}");
 
-	@Inject
-	public FormatterUtil(Injector injector, LoggerUtil loggerUtil, SettingsConfig settingsConfig) {
-		this.injector = injector;
-		this.loggerUtil = loggerUtil;
-		this.settingsConfig = settingsConfig;
+		@Inject
+		public FormatterUtil(Injector injector, LoggerUtil loggerUtil, SettingsConfig settingsConfig) {
+				this.injector = injector;
+				this.loggerUtil = loggerUtil;
+				this.settingsConfig = settingsConfig;
 
-		loggerUtil.trace("Initializing class: " + this);
+				loggerUtil.trace("Initializing class: " + this);
 
-		colorMap.put("&0", "<black>");
-		colorMap.put("&1", "<dark_blue>");
-		colorMap.put("&2", "<dark_green>");
-		colorMap.put("&3", "<dark_aqua>");
-		colorMap.put("&4", "<dark_red>");
-		colorMap.put("&5", "<dark_purple>");
-		colorMap.put("&6", "<gold>");
-		colorMap.put("&7", "<gray>");
-		colorMap.put("&8", "<dark_gray>");
-		colorMap.put("&9", "<blue>");
-		colorMap.put("&a", "<green>");
-		colorMap.put("&b", "<aqua>");
-		colorMap.put("&c", "<red>");
-		colorMap.put("&d", "<light_purple>");
-		colorMap.put("&e", "<yellow>");
-		colorMap.put("&f", "<white>");
-		colorMap.put("&k", "<obfuscated>");
-		colorMap.put("&l", "<bold>");
-		colorMap.put("&m", "<strikethrough>");
-		colorMap.put("&n", "<underline>");
-		colorMap.put("&o", "<italic>");
-		colorMap.put("&r", "<reset>");
-	}
+				colorMap.put("&0", "<black>");
+				colorMap.put("&1", "<dark_blue>");
+				colorMap.put("&2", "<dark_green>");
+				colorMap.put("&3", "<dark_aqua>");
+				colorMap.put("&4", "<dark_red>");
+				colorMap.put("&5", "<dark_purple>");
+				colorMap.put("&6", "<gold>");
+				colorMap.put("&7", "<gray>");
+				colorMap.put("&8", "<dark_gray>");
+				colorMap.put("&9", "<blue>");
+				colorMap.put("&a", "<green>");
+				colorMap.put("&b", "<aqua>");
+				colorMap.put("&c", "<red>");
+				colorMap.put("&d", "<light_purple>");
+				colorMap.put("&e", "<yellow>");
+				colorMap.put("&f", "<white>");
+				colorMap.put("&k", "<obfuscated>");
+				colorMap.put("&l", "<bold>");
+				colorMap.put("&m", "<strikethrough>");
+				colorMap.put("&n", "<underline>");
+				colorMap.put("&o", "<italic>");
+				colorMap.put("&r", "<reset>");
+		}
 
-	public String cleanMessage(String message) {
-		message = message.replaceAll("<[^>]*>", "");
+		public String cleanMessage(String message) {
+				message = message.replaceAll("<[^>]*>", "");
 
-		message = message.replaceAll("&[0-9a-fk-or]", "");
-		message = message.replaceAll("§[0-9a-fk-or]", "");
+				message = message.replaceAll("&[0-9a-fk-or]", "");
+				message = message.replaceAll("§[0-9a-fk-or]", "");
 
-		return message;
-	}
+				return message;
+		}
 
-	public Component formatMessage(String message, boolean allowedTagParser) {
-		return formatMessage(Optional.empty(), message, allowedTagParser);
-	}
+		public Component formatMessage(String message, boolean allowedTagParser) {
+				return formatMessage(Optional.empty(), message, allowedTagParser);
+		}
 
-	public Component formatMessage(String message) {
-		return formatMessage(Optional.empty(), message, false);
-	}
+		public Component formatMessage(String message) {
+				return formatMessage(Optional.empty(), message, false);
+		}
 
-	public Component formatMessage(Player player, String message, boolean allowTagParser) {
-		return formatMessage(Optional.of(player), message, allowTagParser);
-	}
+		public Component formatMessage(Player player, String message, boolean allowTagParser) {
+				return formatMessage(Optional.of(player), message, allowTagParser);
+		}
 
-	public Component formatMessage(Optional<Player> player, String message, boolean allowTagParser) {
-		loggerUtil.trace("formatMessage:" + message);
-		final MiniMessage miniMessage = MiniMessage.miniMessage();
+		public Component formatMessage(Optional<Player> player, String message, boolean allowTagParser) {
+				loggerUtil.trace("formatMessage:" + message);
+				final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-		if (message == null || message.isEmpty())
-			return miniMessage.deserialize("");
+				if (message == null || message.isEmpty())
+						return miniMessage.deserialize("");
 
-		if (player.isPresent())
-			message = hookIntegration(player.get(), message);
+				if (player.isPresent())
+						message = hookIntegration(player.get(), message);
 
-		if (settingsConfig.performance.convertLegacyColors)
-			message = convertLegacyColorCodes(message);
+				if (settingsConfig.performance.convertLegacyColors)
+						message = convertLegacyColorCodes(message);
 
-		Component component = miniMessage.deserialize(message);
-		if (allowTagParser)
-			component = injector.getInstance(TagParserService.class).hookTagParser(player, component);
+				Component component = miniMessage.deserialize(message);
+				if (allowTagParser)
+						component = injector.getInstance(TagParserService.class).hookTagParser(player, component);
 
-		return component;
-	}
+				return component;
+		}
 
-	public String hookIntegration(Player player, String message) {
-		for (Integration integration : injector.getInstance(IntegrationManager.class).getIntegrations()) {
-			if (integration.getType() == IntegrationType.MESSAGING && !Objects.equals(integration.getName(), "PlaceholderAPI")) {
-				MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
-				message = formatterIntegration.formatMessage(player, message);
+		public String hookIntegration(Player player, String message) {
+				message = message.replace("{playerName}", player.getName());
 
-				loggerUtil.trace("Hooked with MESSAGING integration: " + formatterIntegration.getName());
-			}
+				for (Integration integration : injector.getInstance(IntegrationManager.class).getIntegrations()) {
+						if (integration.getType() == IntegrationType.MESSAGING && !Objects.equals(integration.getName(), "PlaceholderAPI")) {
+								MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
+								message = formatterIntegration.formatMessage(player, message);
 
-			if (integration.getName().equals("PlaceholderAPI")) {
-				MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
-				int tries = 0;
-				while (message.contains("%") && tries < 3) {
-					message = formatterIntegration.formatMessage(player, message);
-					tries++;
-					loggerUtil.trace("Hooked with MESSAGING integration: " + formatterIntegration.getName());
+								loggerUtil.trace("Hooked with MESSAGING integration: " + formatterIntegration.getName());
+						}
+
+						if (integration.getName().equals("PlaceholderAPI")) {
+								MessagingIntegration formatterIntegration = (MessagingIntegration) integration;
+								int tries = 0;
+								while (message.contains("%") && tries < 3) {
+										message = formatterIntegration.formatMessage(player, message);
+										tries++;
+										loggerUtil.trace("Hooked with MESSAGING integration: " + formatterIntegration.getName());
+								}
+						}
 				}
-			}
+
+				return message;
 		}
 
-		return message;
-	}
+		private String convertLegacyColorCodes(String message) {
+				Matcher matcher = pattern.matcher(message);
+				while (matcher.find()) {
+						String colorCode = matcher.group();
+						String newColorCode = "<#" + colorCode.substring(2).replaceAll("§", "") + ">";
+						message = message.replace(colorCode, newColorCode);
+				}
 
-	private String convertLegacyColorCodes(String message) {
-		Matcher matcher = pattern.matcher(message);
-		while (matcher.find()) {
-			String colorCode = matcher.group();
-			String newColorCode = "<#" + colorCode.substring(2).replaceAll("§", "") + ">";
-			message = message.replace(colorCode, newColorCode);
+				for (Map.Entry<String, String> entry : colorMap.entrySet()) {
+						message = message.replaceAll("(?i)" + entry.getKey(), entry.getValue());
+						message = message.replaceAll("(?i)" + entry.getKey().replace("&", "§"), entry.getValue());
+				}
+
+
+				return message;
 		}
-
-		for (Map.Entry<String, String> entry : colorMap.entrySet()) {
-			message = message.replaceAll("(?i)" + entry.getKey(), entry.getValue());
-			message = message.replaceAll("(?i)" + entry.getKey().replace("&", "§"), entry.getValue());
-		}
-
-
-		return message;
-	}
 }
