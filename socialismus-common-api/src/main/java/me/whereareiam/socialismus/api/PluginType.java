@@ -10,7 +10,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 public enum PluginType {
-    UNKNOWN, MODERN, BUKKIT, PAPER, VELOCITY;
+    UNKNOWN, BUKKIT, PAPER, VELOCITY;
 
     @Setter
     private static PluginType pluginType = UNKNOWN;

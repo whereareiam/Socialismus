@@ -21,6 +21,8 @@ subprojects {
         relocate("org.yaml.snakeyaml", "me.whereareiam.socialismus.library.snakeyaml")
         relocate("com.google.common", "me.whereareiam.socialismus.library.guava")
         relocate("com.google.inject", "me.whereareiam.socialismus.library.guice")
+
+        destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
     }
 
     repositories {
