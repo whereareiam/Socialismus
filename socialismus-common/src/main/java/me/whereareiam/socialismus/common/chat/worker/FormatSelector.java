@@ -59,13 +59,10 @@ public class FormatSelector {
         }
 
         loggingHelper.debug("Selected format: " + chatFormat);
-        formattedChatMessage.setFormat(serializer.format(new SerializerContent(
+        formattedChatMessage.setFormat(serializer.format(
                 formattedChatMessage.getSender(),
-                List.of(
-                        new SerializerPlaceholder("{playerName}", formattedChatMessage.getSender().getUsername())
-                ),
                 chatFormat.getFormat()
-        )));
+        ));
 
         return formattedChatMessage;
     }

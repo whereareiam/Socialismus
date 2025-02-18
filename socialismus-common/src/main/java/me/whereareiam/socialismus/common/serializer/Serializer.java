@@ -47,6 +47,7 @@ public class Serializer implements SerializationService, SerializationWorker {
         if (content.getMessage().isEmpty()) return Component.empty();
 
         content.setMessage(content.getMessage().replace("{prefix}", messages.get().getPrefix()));
+        content.setMessage(content.getMessage().replace("{playerName}", content.getDummyPlayer().getUsername()));
         content.setMessage(hookIntegrations(content));
 
         for (SerializerPlaceholder placeholder : content.getPlaceholders())

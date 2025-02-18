@@ -115,7 +115,11 @@ public class ClearCommand extends CommandBase {
         }
 
         int count = chatHistory.removeMessages(context);
-        sendResponse(dummyPlayer, count, messages.get().getCommands().getClearCommand().getClearedAmount(), messages.get().getCommands().getClearCommand().getNoUserHistory().replace("{playerName}", context));
+        sendResponse(
+                dummyPlayer, count,
+                messages.get().getCommands().getClearCommand().getClearedAmount(),
+                messages.get().getCommands().getClearCommand().getNoUserHistory()
+        );
     }
 
     private boolean hasMinimumMessages() {
