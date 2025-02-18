@@ -6,16 +6,61 @@ import net.kyori.adventure.text.Component;
 
 import java.util.UUID;
 
+/**
+ * Interface for platform-specific interactions in the Socialismus plugin system.
+ * Provides methods for common server operations like broadcasting messages,
+ * checking player permissions, and retrieving server information.
+ *
+ * <p>This interface abstracts platform-specific implementations (e.g., Bukkit, Velocity)
+ * to ensure consistent behavior across different server platforms.</p>
+ */
 public interface PlatformInteractor {
+    /**
+     * Broadcasts a message to all online players.
+     *
+     * @param component The message to broadcast using Adventure's Component system
+     */
     void broadcast(Component component);
 
+    /**
+     * Checks if two players are within a specified range of each other.
+     *
+     * @param player1 UUID of the first player
+     * @param player2 UUID of the second player
+     * @param range The maximum distance to check
+     * @return true if players are within range, false otherwise
+     */
     boolean areWithinRange(UUID player1, UUID player2, double range);
 
+    /**
+     * Checks if a player has a specific permission.
+     *
+     * @param username The player's username
+     * @param permission The permission to check
+     * @return true if the player has the permission, false otherwise
+     */
     boolean hasPermission(String username, String permission);
 
+    /**
+     * Checks if a dummy player has a specific permission.
+     *
+     * @param dummyPlayer The dummy player instance
+     * @param permission The permission to check
+     * @return true if the dummy player has the permission, false otherwise
+     */
     boolean hasPermission(DummyPlayer dummyPlayer, String permission);
 
+    /**
+     * Gets the current number of online players.
+     *
+     * @return The number of online players
+     */
     int getOnlinePlayersCount();
 
+    /**
+     * Gets the current server version.
+     *
+     * @return The server version information
+     */
     Version getServerVersion();
 }

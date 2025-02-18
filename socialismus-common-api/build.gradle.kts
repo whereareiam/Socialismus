@@ -7,38 +7,31 @@ repositories {
 }
 
 dependencies {
-    "compileOnly"(libs.bundles.adventure)
-    "compileOnly"(libs.libby.core)
+    compileOnly(libs.bundles.adventure)
+    compileOnly(libs.libby.core)
 }
 
-tasks.register("generateJavadocs", Javadoc::class) {
-    source = sourceSets["main"].allJava
-    classpath = configurations["compileClasspath"]
-    setDestinationDir(file(layout.buildDirectory.dir("generated/javadoc")))
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
-    options {
+tasks.withType<Javadoc> {
+    (options as StandardJavadocDocletOptions).apply {
+        addStringOption("Xdoclint:none", "-quiet")
         title = "Socialismus API"
         windowTitle = "Socialismus API"
     }
 }
 
-tasks.register("javadocJar", Jar::class) {
-    archiveClassifier.set("javadoc")
-    from(tasks["generateJavadocs"])
-}
-
-tasks.register("sourcesJar", Jar::class) {
-    archiveClassifier.set("sources")
-    from(sourceSets["main"].allSource)
-}
-
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            from(components["java"])
+            groupId = "me.whereareiam"
+            artifactId = rootProject.name
+            version = rootProject.version.toString()
 
-            artifact(tasks["javadocJar"])
-            artifact(tasks["sourcesJar"])
+            from(components["java"])
         }
     }
 }

@@ -14,7 +14,7 @@ import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.InternalChat;
 import me.whereareiam.socialismus.api.output.LoggingHelper;
-import me.whereareiam.socialismus.api.type.chat.ChatType;
+import me.whereareiam.socialismus.api.type.ChatType;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

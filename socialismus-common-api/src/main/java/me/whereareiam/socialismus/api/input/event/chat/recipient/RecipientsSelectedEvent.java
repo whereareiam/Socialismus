@@ -11,12 +11,34 @@ import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 
 import java.util.Set;
 
+/**
+ * Event that is fired when a new set of recipients is selected for a chat message.
+ * This event allows modification or cancellation of the recipient selection process
+ * before the recipients are finalized.
+ *
+ * <p>The event provides access to both the chat message and the newly selected
+ * set of recipients, allowing for custom filtering or modification of the recipient list.</p>
+ *
+ * <p>Being a {@link CancellableEvent}, the recipient selection can be cancelled by
+ * setting the cancelled flag to true.</p>
+ */
 @Setter
 @Getter
 @ToString
 @AllArgsConstructor
 public class RecipientsSelectedEvent implements Event, CancellableEvent {
+    /**
+     * The chat message for which recipients are being selected
+     */
     private final ChatMessage chatMessage;
+
+    /**
+     * The newly selected set of recipients for the message
+     */
     private final Set<DummyPlayer> newRecipients;
+
+    /**
+     * Flag indicating whether the recipient selection has been cancelled
+     */
     private boolean cancelled;
 }

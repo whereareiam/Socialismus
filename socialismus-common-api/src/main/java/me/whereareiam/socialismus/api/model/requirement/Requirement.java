@@ -4,6 +4,19 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.type.requirement.RequirementConditionType;
 
+/**
+ * Represents a requirement condition that can be checked against a specific value.
+ * This class is used to define validation rules or access conditions within the plugin.
+ *
+ * <p>A requirement consists of two main components:</p>
+ * <ul>
+ *   <li>A condition type that determines how the comparison should be performed</li>
+ *   <li>An expected value that serves as the comparison target</li>
+ * </ul>
+ *
+ * <p>The class supports builder pattern through {@link SuperBuilder} annotation,
+ * allowing for easy creation and modification of requirements.</p>
+ */
 @Getter
 @Setter
 @ToString
@@ -11,6 +24,13 @@ import me.whereareiam.socialismus.api.type.requirement.RequirementConditionType;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class Requirement {
+    /**
+     * The type of condition to be checked
+     */
     private RequirementConditionType condition;
+
+    /**
+     * The expected value to compare against
+     */
     private String expected;
 }

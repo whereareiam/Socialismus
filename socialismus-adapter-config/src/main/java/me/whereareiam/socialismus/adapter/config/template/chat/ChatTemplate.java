@@ -9,7 +9,7 @@ import me.whereareiam.socialismus.api.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.api.model.requirement.type.PermissionRequirement;
 import me.whereareiam.socialismus.api.output.DefaultConfig;
 import me.whereareiam.socialismus.api.type.Participants;
-import me.whereareiam.socialismus.api.type.chat.ChatType;
+import me.whereareiam.socialismus.api.type.ChatType;
 import me.whereareiam.socialismus.api.type.requirement.RequirementConditionType;
 import me.whereareiam.socialismus.api.type.requirement.RequirementOperatorType;
 import me.whereareiam.socialismus.api.type.requirement.RequirementType;
