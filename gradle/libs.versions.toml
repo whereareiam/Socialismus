@@ -20,7 +20,7 @@ paper = "1.21-R0.1-SNAPSHOT"
 placeholderAPI = "2.11.6"
 papiProxyBridge = "1.6"
 bStats = "3.1.0"
-valiobungee = "0.12.4"
+valiobungee = "0.13.0"
 
 # adventure
 adventure = "4.19.0"
