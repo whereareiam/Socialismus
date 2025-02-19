@@ -13,9 +13,6 @@ import me.whereareiam.socialismus.api.type.requirement.RequirementConditionType;
  *   <li>A condition type that determines how the comparison should be performed</li>
  *   <li>An expected value that serves as the comparison target</li>
  * </ul>
- *
- * <p>The class supports builder pattern through {@link SuperBuilder} annotation,
- * allowing for easy creation and modification of requirements.</p>
  */
 @Getter
 @Setter

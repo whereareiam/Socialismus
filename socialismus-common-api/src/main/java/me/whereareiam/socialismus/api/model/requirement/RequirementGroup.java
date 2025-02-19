@@ -19,9 +19,6 @@ import java.util.Map;
  *   <li>A logical operator (AND, OR) that determines how multiple requirements are combined</li>
  *   <li>A map of requirements, organized by their type</li>
  * </ul>
- *
- * <p>The class uses {@link SuperBuilder} for flexible object creation and
- * supports different types of requirements through a generic map structure.</p>
  */
 @Getter
 @Setter

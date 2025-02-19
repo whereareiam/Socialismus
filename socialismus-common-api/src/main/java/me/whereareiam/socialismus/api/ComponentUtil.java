@@ -31,7 +31,7 @@ public class ComponentUtil {
     private static final MiniMessage MINI_MESSAGE_SERIALIZER = MiniMessage.miniMessage();
 
     /**
-     * Serializer for legacy format using ampersand (&).
+     * Serializer for legacy format using ampersand (&amp;).
      */
     @Getter
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
