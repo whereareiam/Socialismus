@@ -2,6 +2,7 @@
 
 # plugins
 shadow = "8.3.6"
+delombok = "8.12.1"
 
 # compile time processing
 lombok = "1.18.36"
@@ -100,3 +101,4 @@ bStats-velocity = ["bStats", "bStats-velocity"]
 [plugins]
 
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+delombok = { id = "io.freefair.lombok", version.ref = "delombok"}

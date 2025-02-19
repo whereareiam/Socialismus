@@ -1,6 +1,6 @@
 plugins {
-    id("io.freefair.lombok") version "8.12.1"
     id("maven-publish")
+    alias(libs.plugins.delombok)
 }
 
 repositories {
