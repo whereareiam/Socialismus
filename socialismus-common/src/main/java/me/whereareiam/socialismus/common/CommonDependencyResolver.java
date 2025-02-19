@@ -56,7 +56,12 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
                 .artifactId("jackson-databind")
                 .version(Constants.Dependency.JACKSON)
                 .resolveTransitiveDependencies(true)
-                .build());
+                .relocate(
+                        Relocation.builder()
+                                .pattern("com{}fasterxml{}jackson")
+                                .relocatedPattern("me.whereareiam.socialismus.library.jackson")
+                                .build()
+                ).build());
 
         addDependency(Library.builder()
                 .groupId("com{}fasterxml{}jackson{}dataformat")
@@ -65,8 +70,8 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
                 .resolveTransitiveDependencies(true)
                 .relocate(
                         Relocation.builder()
-                                .pattern("org{}yaml{}snakeyaml")
-                                .relocatedPattern("me.whereareiam.socialismus.library.snakeyaml")
+                                .pattern("com{}fasterxml{}jackson")
+                                .relocatedPattern("me.whereareiam.socialismus.library.jackson")
                                 .build()
                 ).build());
     }
