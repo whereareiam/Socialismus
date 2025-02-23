@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -84,67 +85,64 @@ public class MentionFactory {
 				return mention;
 		}
 
-		private Collection<? extends Player> getRecipients(Player sender, Collection<? extends Player> players, List<String> plainContent, String usedAllTag, String usedNearbyTag, Optional<Chat> optionalChat) {
-				Chat chat = optionalChat.orElse(null);
+	private Collection<? extends Player> getRecipients(Player sender, Collection<? extends Player> players, List<String> plainContent, String usedAllTag, String usedNearbyTag, Optional<Chat> optionalChat) {
+		Chat chat = optionalChat.orElse(null);
+		List<Player> recipients = new ArrayList<>(players);
 
-				if (usedAllTag != null && sender.hasPermission(chatMentionConfig.settings.allTagSettings.permission)) {
-						Collection<? extends Player> recipients = Bukkit.getOnlinePlayers();
-						if (!sender.hasPermission(chatMentionConfig.settings.selfMentionPermission))
-								recipients.remove(sender);
-
-						return recipients;
-				}
-
-				if (usedNearbyTag != null && sender.hasPermission(chatMentionConfig.settings.nearbyTagSettings.permission)) {
-						if (!sender.hasPermission(chatMentionConfig.settings.selfMentionPermission))
-								players.remove(sender);
-
-						return players;
-				}
-
-				Collection<? extends Player> recipients = players.stream()
-								.filter(p -> plainContent.stream().anyMatch(s -> s.contains(p.getName())))
-								.toList();
-
-				if (chat != null) {
-						int chatRadius = chat.requirements.recipient.radius;
-						int mentionRadius = chat.mentions.radius;
-
-						if (usedAllTag != null && usedNearbyTag != null) {
-								if (mentionRadius < chatRadius) {
-										recipients = recipients.stream()
-														.filter(player -> {
-																double distance = DistanceUtil.between(player, sender);
-																return distance != -1 && distance <= mentionRadius;
-														})
-														.toList();
-								} else if (mentionRadius > chatRadius) {
-										recipients = Bukkit.getOnlinePlayers().stream()
-														.filter(player -> {
-																double distance = DistanceUtil.between(player, sender);
-																return distance != -1 && distance <= mentionRadius;
-														})
-														.toList();
-								}
-						}
-
-						if (recipients.size() > chat.mentions.maxMentions && chat.mentions.maxMentions != -1) {
-								int maxMentions = getMaxMentions(chat, sender);
-								recipients = recipients.stream().limit(maxMentions).toList();
-						}
-				}
-
-				if (chat == null && bubbleChatConfig.settings.maxMentions != -1) {
-						recipients = recipients.stream()
-										.limit(bubbleChatConfig.settings.maxMentions)
-										.filter(p -> !p.equals(sender))
-										.toList();
-				}
-
-				return recipients;
+		if (usedAllTag != null && sender.hasPermission(chatMentionConfig.settings.allTagSettings.permission)) {
+			recipients = new ArrayList<>(Bukkit.getOnlinePlayers());
+			if (!sender.hasPermission(chatMentionConfig.settings.selfMentionPermission)) {
+				recipients.remove(sender);
+			}
+			return recipients;
 		}
 
-		private int getMaxMentions(Chat chat, Player player) {
+		if (usedNearbyTag != null && sender.hasPermission(chatMentionConfig.settings.nearbyTagSettings.permission)) {
+			if (!sender.hasPermission(chatMentionConfig.settings.selfMentionPermission)) {
+				recipients.remove(sender);
+			}
+			return recipients;
+		}
+
+		recipients = recipients.stream()
+				.filter(p -> !p.equals(sender) && plainContent.stream().anyMatch(s -> s.equalsIgnoreCase(p.getName())))
+				.toList();
+
+		if (chat != null) {
+			int chatRadius = chat.requirements.recipient.radius;
+			int mentionRadius = chat.mentions.radius;
+
+			if (usedAllTag != null && usedNearbyTag != null) {
+				if (mentionRadius < chatRadius) {
+					recipients = recipients.stream()
+							.filter(player -> DistanceUtil.between(player, sender) <= mentionRadius)
+							.toList();
+				} else if (mentionRadius > chatRadius) {
+					recipients = Bukkit.getOnlinePlayers().stream()
+							.filter(player -> DistanceUtil.between(player, sender) <= mentionRadius)
+							.map(player -> (Player) player)
+							.toList();
+
+				}
+			}
+
+			if (recipients.size() > chat.mentions.maxMentions && chat.mentions.maxMentions != -1) {
+				int maxMentions = getMaxMentions(chat, sender);
+				recipients = recipients.stream().limit(maxMentions).toList();
+			}
+		}
+
+		if (chat == null && bubbleChatConfig.settings.maxMentions != -1) {
+			recipients = recipients.stream()
+					.limit(bubbleChatConfig.settings.maxMentions)
+					.toList();
+		}
+
+		return recipients;
+	}
+
+
+	private int getMaxMentions(Chat chat, Player player) {
 				int maxMentions = chat.mentions.maxMentions;
 				if (maxMentions == -1) return Integer.MAX_VALUE;
 
