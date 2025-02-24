@@ -2,7 +2,7 @@
 
 # plugins
 shadow = "8.3.6"
-delombok = "8.12.1"
+delombok = "8.12.2"
 
 # compile time processing
 lombok = "1.18.36"
