@@ -8,13 +8,18 @@ import me.whereareiam.socialismus.api.input.requirement.RequirementValidation;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.requirement.Requirement;
 import me.whereareiam.socialismus.api.model.requirement.type.ServerRequirement;
+import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.api.type.requirement.RequirementType;
 
 @Singleton
 public class ServerRequirementValidation implements RequirementValidation {
+    private final LoggingHelper loggingHelper;
+
     @Inject
-    public ServerRequirementValidation(ExtendedRegistry<RequirementType, RequirementValidation> registry) {
-        registry.register(RequirementType.SERVER, this);
+    public ServerRequirementValidation(ExtendedRegistry<RequirementType, RequirementValidation> registry, LoggingHelper loggingHelper) {
+	    this.loggingHelper = loggingHelper;
+
+	    registry.register(RequirementType.SERVER, this);
     }
 
     @Override
@@ -31,8 +36,12 @@ public class ServerRequirementValidation implements RequirementValidation {
 
         String[] expectedValues = sr.getExpected().split("\\|");
         for (String expectedValue : expectedValues)
-            if (String.valueOf(checkResult).equals(expectedValue))
+            if (String.valueOf(checkResult).equals(expectedValue)) {
+                loggingHelper.debug("Server check result {} for player {}", checkResult, dummyPlayer.getUsername());
                 return true;
+            }
+
+        loggingHelper.debug("Server check result {} for player {}", checkResult, dummyPlayer.getUsername());
 
         return false;
     }

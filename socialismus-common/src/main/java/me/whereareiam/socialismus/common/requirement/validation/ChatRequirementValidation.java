@@ -8,13 +8,18 @@ import me.whereareiam.socialismus.api.input.requirement.RequirementValidation;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.requirement.Requirement;
 import me.whereareiam.socialismus.api.model.requirement.type.ChatRequirement;
+import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.api.type.requirement.RequirementType;
 
 @Singleton
 public class ChatRequirementValidation implements RequirementValidation {
+    private final LoggingHelper loggingHelper;
+
     @Inject
-    public ChatRequirementValidation(ExtendedRegistry<RequirementType, RequirementValidation> registry) {
-        registry.register(RequirementType.CHAT, this);
+    public ChatRequirementValidation(ExtendedRegistry<RequirementType, RequirementValidation> registry, LoggingHelper loggingHelper) {
+	    this.loggingHelper = loggingHelper;
+
+	    registry.register(RequirementType.CHAT, this);
     }
 
     @Override
@@ -31,10 +36,13 @@ public class ChatRequirementValidation implements RequirementValidation {
         }
 
         String[] expectedValues = cr.getExpected().split("\\|");
-        for (String expectedValue : expectedValues)
-            if (String.valueOf(checkResult).equals(expectedValue))
-                return true;
+        for (String expectedValue : expectedValues) {
+            if (String.valueOf(checkResult).equals(expectedValue)) {
+                loggingHelper.debug("Found matching expected value: " + checkResult + " for player " + dummyPlayer.getUsername());
+            }
+        }
 
+        loggingHelper.debug("No matching expected values found for player " + dummyPlayer.getUsername());
         return false;
     }
 }

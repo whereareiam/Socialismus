@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.api.input.requirement.RequirementValidation;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.requirement.Requirement;
 import me.whereareiam.socialismus.api.model.requirement.type.PlaceholderRequirement;
+import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.api.output.integration.Integration;
 import me.whereareiam.socialismus.api.output.integration.PlaceholderResolverIntegration;
 import me.whereareiam.socialismus.api.type.requirement.RequirementType;
@@ -17,10 +18,13 @@ import java.util.Set;
 @Singleton
 public class PlaceholderRequirementValidation implements RequirementValidation {
     private final Set<Integration> integrations;
+    private final LoggingHelper loggingHelper;
 
     @Inject
-    public PlaceholderRequirementValidation(ExtendedRegistry<RequirementType, RequirementValidation> registry, Set<Integration> integrations) {
+    public PlaceholderRequirementValidation(ExtendedRegistry<RequirementType, RequirementValidation> registry,
+                                            Set<Integration> integrations, LoggingHelper loggingHelper) {
         this.integrations = integrations;
+        this.loggingHelper = loggingHelper;
         registry.register(RequirementType.PLACEHOLDER, this);
     }
 
@@ -30,6 +34,7 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
         if (resolver == null || !(requirement instanceof PlaceholderRequirement pr))
             return false;
 
+        loggingHelper.debug("Checking placeholder requirement for player " + dummyPlayer.getUsername());
         return checkCondition(pr, resolver, dummyPlayer);
     }
 
@@ -47,17 +52,31 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
 
         for (String placeholder : placeholders) {
             String resolvedPlaceholder = resolver.format(dummyPlayer, placeholder);
+            loggingHelper.debug("Resolved placeholder '{}' to: '{}'", placeholder, resolvedPlaceholder);
+
             for (String expected : expectedValues) {
-                if (switch (pr.getCondition()) {
-                    case EQUALS -> resolvedPlaceholder.equals(expected);
-                    case GREATER_THAN, LESS_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN_OR_EQUALS ->
-                            String.valueOf(compareNumericValues(pr, resolvedPlaceholder, expected)).equals(expected);
+                boolean result = switch (pr.getCondition()) {
+                    case EQUALS -> {
+                        boolean equals = resolvedPlaceholder.equals(expected);
+                        loggingHelper.debug("EQUALS comparison: '" + resolvedPlaceholder + "' == '" + expected + "' = " + equals);
+                        yield equals;
+                    }
+                    case GREATER_THAN, LESS_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN_OR_EQUALS -> {
+                        boolean comparison = compareNumericValues(pr, resolvedPlaceholder, expected);
+                        loggingHelper.debug("Numeric comparison " + pr.getCondition() + " for values: " + resolvedPlaceholder + " " + pr.getCondition() + " " + expected + " = " + comparison);
+                        yield String.valueOf(comparison).equals(expected);
+                    }
                     default -> false;
-                }) {
+                };
+
+                if (result) {
+                    loggingHelper.debug("Found matching condition for player " + dummyPlayer.getUsername());
                     return true;
                 }
             }
         }
+
+        loggingHelper.debug("No matching conditions found for player " + dummyPlayer.getUsername());
         return false;
     }
 
@@ -66,14 +85,19 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
             double value = Double.parseDouble(formattedValue);
             double expectedValue = Double.parseDouble(expected);
 
-            return switch (pr.getCondition()) {
+            boolean result = switch (pr.getCondition()) {
                 case GREATER_THAN -> value > expectedValue;
                 case LESS_THAN -> value < expectedValue;
                 case GREATER_THAN_OR_EQUALS -> value >= expectedValue;
                 case LESS_THAN_OR_EQUALS -> value <= expectedValue;
                 default -> false;
             };
-        } catch (NumberFormatException ignored) {
+
+            loggingHelper.debug("Numeric comparison result: " + result + " for values: " + value + " " + pr.getCondition() + " " + expectedValue);
+            return result;
+
+        } catch (NumberFormatException e) {
+            loggingHelper.debug("Failed to parse numeric values: " + formattedValue + " " + pr.getCondition() + " " + expected);
             return false;
         }
     }
