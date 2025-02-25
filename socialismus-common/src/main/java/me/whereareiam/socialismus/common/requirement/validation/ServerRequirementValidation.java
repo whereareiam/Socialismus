@@ -27,6 +27,7 @@ public class ServerRequirementValidation implements RequirementValidation {
         if (!(requirement instanceof ServerRequirement sr)) return false;
         if (!PlatformType.isProxy()) return false;
 
+        loggingHelper.debug("Checking server requirement for player {}", dummyPlayer.getUsername());
         boolean checkResult = false;
         switch (sr.getCondition()) {
             case EQUALS ->

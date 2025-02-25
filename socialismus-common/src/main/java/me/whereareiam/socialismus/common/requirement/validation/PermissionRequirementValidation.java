@@ -28,6 +28,7 @@ public class PermissionRequirementValidation implements RequirementValidation {
     public boolean check(Requirement requirement, DummyPlayer dummyPlayer) {
         if (!(requirement instanceof PermissionRequirement pr)) return false;
 
+        loggingHelper.debug("Checking permission requirement for player " + dummyPlayer.getUsername());
         boolean checkResult = false;
         switch (pr.getCondition()) {
             case HAS -> checkResult = pr.getPermissions().stream()

@@ -52,7 +52,6 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
 
         for (String placeholder : placeholders) {
             String resolvedPlaceholder = resolver.format(dummyPlayer, placeholder);
-            loggingHelper.debug("Resolved placeholder '{}' to: '{}'", placeholder, resolvedPlaceholder);
 
             for (String expected : expectedValues) {
                 boolean result = switch (pr.getCondition()) {

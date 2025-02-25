@@ -27,6 +27,7 @@ public class ChatRequirementValidation implements RequirementValidation {
         if (!(requirement instanceof ChatRequirement cr)) return false;
         if (!PlatformType.isGameServer()) return false;
 
+        loggingHelper.debug("Checking chat requirement for player " + dummyPlayer.getUsername());
         boolean checkResult = false;
         switch (cr.getCondition()) {
             case EQUALS ->
@@ -39,6 +40,7 @@ public class ChatRequirementValidation implements RequirementValidation {
         for (String expectedValue : expectedValues) {
             if (String.valueOf(checkResult).equals(expectedValue)) {
                 loggingHelper.debug("Found matching expected value: " + checkResult + " for player " + dummyPlayer.getUsername());
+                return true;
             }
         }
 

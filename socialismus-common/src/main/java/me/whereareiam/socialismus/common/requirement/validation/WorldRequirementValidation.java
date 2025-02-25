@@ -27,6 +27,7 @@ public class WorldRequirementValidation implements RequirementValidation {
         if (!(requirement instanceof WorldRequirement wr)) return false;
         if (!PlatformType.isGameServer()) return false;
 
+        loggingHelper.debug("Checking world requirement for player " + dummyPlayer.getUsername());
         boolean checkResult = false;
         switch (wr.getCondition()) {
             case EQUALS ->
