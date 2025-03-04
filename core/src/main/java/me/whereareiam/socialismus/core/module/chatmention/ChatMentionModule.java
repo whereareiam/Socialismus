@@ -77,11 +77,11 @@ public class ChatMentionModule implements Module {
 
 		chatMentionFormat.enabled = true;
 		chatMentionFormat.permission = "";
-		chatMentionFormat.format = "<aqua>@{playerName}</aqua>";
+		chatMentionFormat.format = "<aqua>@{mentionedName}</aqua>";
 		chatMentionFormat.hoverFormat = List.of(
 				" ",
 				"<dark_gray> Information</dark_gray>",
-				"<white>  Player: <aqua>{playerName}</aqua>",
+				"<white>  Player: <aqua>{mentionedName}</aqua>",
 				" "
 		);
 

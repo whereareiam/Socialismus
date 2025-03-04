@@ -65,7 +65,7 @@ public class ChatMentionFormatter {
 
 		private Mention formatPlayerMention(Mention mention) {
 				Optional<ChatMentionFormat> format = chatMentionModule.getFormats().stream().filter(
-								f -> f.permission.isBlank() || f.permission.isEmpty() || mention.getSender().hasPermission(f.permission)
+						f -> f.permission.isBlank() || mention.getSender().hasPermission(f.permission)
 				).findFirst();
 
 				if (format.isEmpty())
@@ -75,10 +75,12 @@ public class ChatMentionFormatter {
 
 				for (Player player : mention.getMentionedPlayers()) {
 						Component formatComponent = formatterUtil.formatMessage(mention.getSender(), format.get().format, true);
+						formatComponent = messageUtil.replacePlaceholder(formatComponent, "{mentionedName}", player.getName());
 
 						Component hoverComponent;
 						if (!format.get().hoverFormat.isEmpty()) {
 								hoverComponent = formatterUtil.formatMessage(mention.getSender(), String.join("\n", format.get().hoverFormat), true);
+								hoverComponent = messageUtil.replacePlaceholder(hoverComponent, "{mentionedName}", player.getName());
 
 								content = messageUtil.replacePlaceholder(content, player.getName(), formatComponent.hoverEvent(HoverEvent.showText(hoverComponent)));
 						} else {
