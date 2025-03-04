@@ -60,7 +60,7 @@ public class ChatBroadcaster {
 				}
 
 				if (chatMessageFormat.sound != null) {
-						chatMessage.getRecipients().forEach(recipient -> recipient.playSound(recipient.getLocation(), chatMessageFormat.sound, 1, 1));
+						chatMessage.getRecipients().forEach(recipient -> recipient.playSound(recipient.getLocation(), chatMessageFormat.sound.toLowerCase(), 1, 1));
 				}
 				loggerUtil.info("[" + chatMessage.getChat().id.toUpperCase() + "] " + chatMessage.getSender().getName() + ": " + PlainTextComponentSerializer.plainText().serialize(chatMessage.getContent()));
 

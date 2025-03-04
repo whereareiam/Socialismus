@@ -56,7 +56,7 @@ public class ChatMentionNotifier {
 				case SOUND:
 					mention.getMentionedPlayers().forEach(player -> player.playSound(
 							player,
-							format.get().sound.sound,
+							format.get().sound.sound.toLowerCase(),
 							format.get().sound.volume,
 							format.get().sound.pitch
 					));

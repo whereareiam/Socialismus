@@ -1,9 +1,7 @@
 package me.whereareiam.socialismus.api.model.chat;
 
-import org.bukkit.Sound;
-
 public class ChatMessageFormat {
-	public String format = "";
+	public String format = "ENTITY_EXPERIENCE_ORB_PICKUP";
 	public String permission = "";
-	public Sound sound = null;
+	public String sound = null;
 }

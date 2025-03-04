@@ -187,7 +187,7 @@ public class SwapperFormatter {
 				if (swapper.settings.sound != null)
 						player.playSound(
 										player.getLocation(),
-										swapper.settings.sound,
+										swapper.settings.sound.toLowerCase(),
 										swapper.settings.soundVolume,
 										swapper.settings.soundPitch
 						);
