@@ -26,7 +26,7 @@ valiobungee = "0.13.0"
 # adventure
 adventure = "4.19.0"
 adventure-minimessage = "4.19.0"
-adventure-legacy = "4.19.0"
+adventure-legacy = "4.20.0"
 adventure-plain = "4.19.0"
 adventure-gson = "4.19.0"
 adventure-platform-bukkit = "4.3.4"
