@@ -53,11 +53,14 @@ public class ConfigManager implements Provider<ObjectMapper>, ConfigurationManag
     private ObjectMapper objectMapper;
 
     @Inject
-    public ConfigManager(Injector injector, @Named("dataPath") Path dataPath) {
+    public ConfigManager(
+            Injector injector,
+            @Named("dataPath") Path dataPath,
+            Map<Class<?>, DefaultConfig<?>> templates
+    ) {
         this.injector = injector;
         this.dataPath = dataPath;
-
-        addTemplates();
+        this.templates.putAll(templates);
     }
 
     @Override
@@ -130,14 +133,5 @@ public class ConfigManager implements Provider<ObjectMapper>, ConfigurationManag
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         return objectMapper;
-    }
-
-    private void addTemplates() {
-        templates.put(Settings.class, injector.getInstance(SettingsTemplate.class));
-        templates.put(Messages.class, injector.getInstance(MessagesTemplate.class));
-        templates.put(Commands.class, injector.getInstance(CommandsTemplate.class));
-        templates.put(ChatMessages.class, injector.getInstance(ChatMessagesTemplate.class));
-        templates.put(ChatSettings.class, injector.getInstance(ChatSettingsTemplate.class));
-        templates.put(ChatsConfig.class, injector.getInstance(ChatTemplate.class));
     }
 }
