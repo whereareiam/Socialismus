@@ -54,11 +54,17 @@ public class ChatSelector {
         loggingHelper.debug("Selecting chat for user " + chatMessage.getSender().getUsername());
         String symbol = selectSymbol(chatMessage);
 
-        InternalChat chat = containerService.getChatBySymbol(symbol).getFirst();
+        List<InternalChat> chats = containerService.getChatBySymbol(symbol);
+        if (chats.isEmpty()) {
+            notifyAboutAbsentChat(chatMessage);
+            chatMessage.setCancelled(true);
+            return chatMessage;
+        }
+
+        InternalChat chat = chats.getFirst();
         if (chat == null || !checkRequirements(chat, chatMessage)) {
             notifyAboutAbsentChat(chatMessage);
             chatMessage.setCancelled(true);
-
             return chatMessage;
         }
 
