@@ -19,6 +19,7 @@ public enum Version {
 		V1_21_2("1.21.2", 1),
 		V1_21_3("1.21.3", 1),
 		V1_21_4("1.21.4", 1),
+		V1_21_5("1.21.5", 1),
 		FUTURE("future", 1);
 
 		private static final Map<String, Version> VERSION_MAP = new HashMap<>();
