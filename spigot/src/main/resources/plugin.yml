@@ -5,7 +5,8 @@ api-version: '1.19'
 author: whereareiam
 softdepend: [
   PlaceholderAPI,
-  ProtocolLib
+  ProtocolLib,
+  DiscordSRV
 ]
 
 libraries:

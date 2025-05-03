@@ -67,6 +67,12 @@
             <version>${folialib.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.discordsrv</groupId>
+            <artifactId>discordsrv</artifactId>
+            <version>${discordsrv.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.core.integration.bstats.bStats;
+import me.whereareiam.socialismus.core.integration.discordsrv.DiscordSRV;
 import me.whereareiam.socialismus.core.integration.placeholderapi.PlaceholderAPI;
 import me.whereareiam.socialismus.core.integration.protocollib.ProtocolLib;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
@@ -27,7 +28,8 @@ public class IntegrationManager {
 		injector.getInstance(bStats.class).initialize();
 		List<Class<? extends Integration>> integrations = Arrays.asList(
 				PlaceholderAPI.class,
-				ProtocolLib.class
+				ProtocolLib.class,
+				DiscordSRV.class
 		);
 
 		for (Class<? extends Integration> integrationClass : integrations) {
