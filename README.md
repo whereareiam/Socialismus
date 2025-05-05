@@ -5,7 +5,7 @@
 
 # Using the API
 
-If you need help using the API, you can PM me on Discord (whereareiam) or on [Telegram](https://whereareiam.t.me/). You
+If you are in need of help with the API, you can ask me directly or the community on our [Discord server](https://discord.arcadeya.com/). You
 can also read
 the [Javadocs](https://javadoc.jitpack.io/com/github/whereareiam/Socialismus/api/latest/javadoc/index.html).
 
