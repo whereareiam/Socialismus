@@ -23,7 +23,13 @@ subprojects {
         relocate("com.google.common", "me.whereareiam.socialismus.library.guava")
         relocate("com.google.inject", "me.whereareiam.socialismus.library.guice")
 
-        destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
+        val defaultDestination = rootProject.layout.buildDirectory.dir("libs")
+
+        val customOutputDir = if (project.hasProperty("output")) {
+            project.layout.dir(project.provider { File(project.property("output").toString()) })
+        } else { null }
+
+        destinationDirectory.set(customOutputDir ?: defaultDestination)
     }
 
     repositories {
