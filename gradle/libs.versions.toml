@@ -10,6 +10,7 @@ lombok = "1.18.38"
 guice = "7.0.0"
 libby = "2.0.1"
 jackson = "2.18.3"
+snakeyaml = "2.4"
 
 # platform api versions
 velocity = "3.3.0-SNAPSHOT"
@@ -44,6 +45,7 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
+snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
 
 # platform api
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }

@@ -9,80 +9,97 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CommonDependencyResolver implements DependencyResolver {
-    protected final List<Library> libraries = new ArrayList<>();
+	protected final List<Library> libraries = new ArrayList<>();
 
-    @Override
-    public void loadLibraries() {
-        // Common libraries
-        addDependency(Library.builder()
-                .groupId("com{}google{}inject")
-                .artifactId("guice")
-                .version(Constants.Dependency.GUICE)
-                .resolveTransitiveDependencies(true)
-                .relocate(
-                        Relocation.builder()
-                                .pattern("com{}google{}inject")
-                                .relocatedPattern("me.whereareiam.socialismus.library.guice")
-                                .build()
-                ).relocate(
-                        Relocation.builder()
-                                .pattern("com{}google{}common")
-                                .relocatedPattern("me.whereareiam.socialismus.library.guava")
-                                .build()
-                ).build());
+	@Override
+	public void loadLibraries() {
+		// Common libraries
+		addDependency(Library.builder()
+				.groupId("com{}google{}inject")
+				.artifactId("guice")
+				.version(Constants.Dependency.GUICE)
+				.resolveTransitiveDependencies(true)
+				.relocate(
+						Relocation.builder()
+								.pattern("com{}google{}inject")
+								.relocatedPattern("me.whereareiam.socialismus.library.guice")
+								.build()
+				).relocate(
+						Relocation.builder()
+								.pattern("com{}google{}common")
+								.relocatedPattern("me.whereareiam.socialismus.library.guava")
+								.build()
+				).build());
 
-        // Cloud libraries
-        addDependency(Library.builder()
-                .groupId("org{}incendo")
-                .artifactId("cloud-core")
-                .version(Constants.Dependency.CLOUD)
-                .build());
+		addDependency(Library.builder()
+				.groupId("org{}yaml")
+				.artifactId("snakeyaml")
+				.version(Constants.Dependency.SNAKEYAML)
+				.resolveTransitiveDependencies(true)
+				.relocate(
+						Relocation.builder()
+								.pattern("org{}yaml{}snakeyaml")
+								.relocatedPattern("me.whereareiam.socialismus.library.snakeyaml")
+								.build()
+				).build());
 
-        addDependency(Library.builder()
-                .groupId("org{}incendo")
-                .artifactId("cloud-processors-cooldown")
-                .version(Constants.Dependency.CLOUD_COOLDOWN)
-                .build());
+		// Cloud libraries
+		addDependency(Library.builder()
+				.groupId("org{}incendo")
+				.artifactId("cloud-core")
+				.version(Constants.Dependency.CLOUD)
+				.build());
 
-        addDependency(Library.builder()
-                .groupId("org{}incendo")
-                .artifactId("cloud-annotations")
-                .version(Constants.Dependency.CLOUD)
-                .build());
+		addDependency(Library.builder()
+				.groupId("org{}incendo")
+				.artifactId("cloud-processors-cooldown")
+				.version(Constants.Dependency.CLOUD_COOLDOWN)
+				.build());
 
-        // Jackson libraries
-        addDependency(Library.builder()
-                .groupId("com{}fasterxml{}jackson{}core")
-                .artifactId("jackson-databind")
-                .version(Constants.Dependency.JACKSON)
-                .resolveTransitiveDependencies(true)
-                .relocate(
-                        Relocation.builder()
-                                .pattern("com{}fasterxml{}jackson")
-                                .relocatedPattern("me.whereareiam.socialismus.library.jackson")
-                                .build()
-                ).build());
+		addDependency(Library.builder()
+				.groupId("org{}incendo")
+				.artifactId("cloud-annotations")
+				.version(Constants.Dependency.CLOUD)
+				.build());
 
-        addDependency(Library.builder()
-                .groupId("com{}fasterxml{}jackson{}dataformat")
-                .artifactId("jackson-dataformat-yaml")
-                .version(Constants.Dependency.JACKSON)
-                .resolveTransitiveDependencies(true)
-                .relocate(
-                        Relocation.builder()
-                                .pattern("com{}fasterxml{}jackson")
-                                .relocatedPattern("me.whereareiam.socialismus.library.jackson")
-                                .build()
-                ).build());
-    }
+		// Jackson libraries
+		addDependency(Library.builder()
+				.groupId("com{}fasterxml{}jackson{}core")
+				.artifactId("jackson-databind")
+				.version(Constants.Dependency.JACKSON)
+				.resolveTransitiveDependencies(true)
+				.relocate(
+						Relocation.builder()
+								.pattern("com{}fasterxml{}jackson")
+								.relocatedPattern("me.whereareiam.socialismus.library.jackson")
+								.build()
+				).build());
 
-    @Override
-    public void addDependency(Library library) {
-        libraries.add(library);
-    }
+		addDependency(Library.builder()
+				.groupId("com{}fasterxml{}jackson{}dataformat")
+				.artifactId("jackson-dataformat-yaml")
+				.version(Constants.Dependency.JACKSON)
+				.resolveTransitiveDependencies(true)
+				.relocate(
+						Relocation.builder()
+								.pattern("com{}fasterxml{}jackson")
+								.relocatedPattern("me.whereareiam.socialismus.library.jackson")
+								.build()
+				).relocate(
+						Relocation.builder()
+								.pattern("org{}yaml{}snakeyaml")
+								.relocatedPattern("me.whereareiam.socialismus.library.snakeyaml")
+								.build()
+				).build());
+	}
 
-    @Override
-    public void clearDependencies() {
-        libraries.clear();
-    }
+	@Override
+	public void addDependency(Library library) {
+		libraries.add(library);
+	}
+
+	@Override
+	public void clearDependencies() {
+		libraries.clear();
+	}
 }
