@@ -33,7 +33,7 @@ jobs:
           echo "VERSION=${GITHUB_REF##*/}-${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       - name: Build project
-        run: ./gradlew build shadowJar
+        run: ./gradlew shadowJar
 
       - name: Create output directory
         run: mkdir output

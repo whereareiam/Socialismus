@@ -1,13 +1,12 @@
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.gradle.kotlin.dsl.filter
 
 subprojects {
     if (project.name != "common") {
         dependencies {
             "implementation"(project(":socialismus-platform:platform-bukkit:common"))
             "implementation"(project(":socialismus-integration:integration-placeholderapi"))
-            "implementation"(rootProject.libs.bundles.bStats.bukkit)
 
+            "implementation"(rootProject.libs.bundles.bStats.bukkit)
             "compileOnly"(rootProject.libs.cloud.paper)
         }
 
