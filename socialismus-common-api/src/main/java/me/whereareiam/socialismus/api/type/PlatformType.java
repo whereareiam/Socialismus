@@ -110,7 +110,7 @@ public enum PlatformType {
 	 * @return true if Paper is detected, false otherwise
 	 */
 	private static boolean isPaper() {
-		return isClassPresent("io.papermc.paper.threadedregions.EntityScheduler");
+		return isClassPresent("io.papermc.paper.threadedregions.scheduler.EntityScheduler");
 	}
 
 	/**

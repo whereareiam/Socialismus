@@ -7,6 +7,12 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<ShadowJar> {
     archiveClassifier.set("PAPER")
+    
+    manifest {
+        attributes(
+            "Plugin-Type" to "PAPER"
+        )
+    }
 }
 
 dependencies {

@@ -1,5 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     alias(libs.plugins.shadow)
@@ -7,6 +6,11 @@ plugins {
 
 subprojects {
     plugins.apply(rootProject.libs.plugins.shadow.get().pluginId)
+
+    if (name == "platform-bukkit") {
+        tasks.named<Jar>("jar").configure { enabled = false }
+        tasks.named("shadowJar").configure { enabled = false }
+    }
 
     tasks.withType<ShadowJar> {
         archiveBaseName.set(rootProject.name)
@@ -23,9 +27,12 @@ subprojects {
 
         val customOutputDir = if (project.hasProperty("output")) {
             project.layout.dir(project.provider { File(project.property("output").toString()) })
-        } else { null }
+        } else {
+            null
+        }
 
-        destinationDirectory.set(customOutputDir ?: defaultDestination)
+        if (project.name != "common")
+            destinationDirectory.set(customOutputDir ?: defaultDestination)
     }
 
     repositories {

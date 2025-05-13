@@ -1,4 +1,4 @@
-defaultTasks("build", "shadowJar")
+defaultTasks("shadowJar")
 
 allprojects {
     version = (System.getenv("VERSION") ?: "dev")
