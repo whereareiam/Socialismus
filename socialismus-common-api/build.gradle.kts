@@ -1,6 +1,5 @@
 plugins {
     id("maven-publish")
-    alias(libs.plugins.delombok)
 }
 
 repositories {
@@ -8,30 +7,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.bundles.adventure)
-    compileOnly(libs.libby.core)
+    "compileOnly"(libs.bundles.adventure)
+    "compileOnly"(libs.libby.core)
 }
 
-tasks.withType<Javadoc> {
-    (options as StandardJavadocDocletOptions).apply {
-        addStringOption("Xdoclint:none", "-quiet")
-        title = "Socialismus API"
-        windowTitle = "Socialismus API"
-    }
-}
-
-val delombokTask = tasks.named("delombok")
-
-val javadocJar by tasks.registering(Jar::class) {
-    dependsOn(tasks.javadoc)
-    from(tasks.javadoc)
-    archiveClassifier.set("javadoc")
-}
-
-val sourcesJar by tasks.registering(Jar::class) {
-    dependsOn(delombokTask)
-    archiveClassifier.set("sources")
-    from(delombokTask)
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 publishing {
@@ -42,8 +24,14 @@ publishing {
             version = rootProject.version.toString()
 
             from(components["java"])
-            artifact(sourcesJar.get())
-            artifact(javadocJar.get())
         }
+    }
+}
+
+tasks.withType<Javadoc> {
+    (options as StandardJavadocDocletOptions).apply {
+        addStringOption("Xdoclint:none", "-quiet")
+        title = "Socialismus API"
+        windowTitle = "Socialismus API"
     }
 }

@@ -101,4 +101,3 @@ bStats-velocity = ["bStats", "bStats-velocity"]
 [plugins]
 
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
-delombok = { id = "io.freefair.lombok", version.ref = "delombok"}
