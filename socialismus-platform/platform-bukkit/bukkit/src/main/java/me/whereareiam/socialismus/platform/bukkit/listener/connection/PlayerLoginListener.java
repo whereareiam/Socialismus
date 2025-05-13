@@ -25,7 +25,7 @@ public class PlayerLoginListener implements DynamicListener<PlayerLoginEvent> {
 				.username(player.getName())
 				.uniqueId(player.getUniqueId())
 				.location(player.getWorld().getName())
-				.locale(Locale.of(player.getLocale()))
+				.locale(Locale.forLanguageTag(player.getLocale()))
 				// helpers
 				.interactor(interactor)
 				.build();

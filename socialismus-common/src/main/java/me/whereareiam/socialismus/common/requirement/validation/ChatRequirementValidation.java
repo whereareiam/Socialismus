@@ -29,7 +29,7 @@ public class ChatRequirementValidation implements RequirementValidation {
 		boolean checkResult = false;
 		switch (cr.getCondition()) {
 			case EQUALS ->
-					checkResult = cr.getChatIdentifiers().size() == 1 && cr.getChatIdentifiers().getFirst().equals(dummyPlayer.getLastChat() != null ? dummyPlayer.getLastChat().getId() : "null");
+					checkResult = cr.getChatIdentifiers().size() == 1 && cr.getChatIdentifiers().get(0).equals(dummyPlayer.getLastChat() != null ? dummyPlayer.getLastChat().getId() : "null");
 			case CONTAINS ->
 					checkResult = cr.getChatIdentifiers().contains(dummyPlayer.getLastChat() != null ? dummyPlayer.getLastChat().getId() : "null");
 		}

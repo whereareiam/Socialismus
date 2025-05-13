@@ -59,7 +59,7 @@ public class ChatSelector {
 			return chatMessage;
 		}
 
-		InternalChat chat = chats.getFirst();
+		InternalChat chat = chats.get(0);
 		if (chat == null || !checkRequirements(chat, chatMessage)) {
 			notifyAboutAbsentChat(chatMessage);
 			chatMessage.setCancelled(true);

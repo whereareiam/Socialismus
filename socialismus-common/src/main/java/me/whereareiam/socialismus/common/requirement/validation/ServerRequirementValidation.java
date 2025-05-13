@@ -30,7 +30,7 @@ public class ServerRequirementValidation implements RequirementValidation {
 		boolean checkResult = false;
 		switch (sr.getCondition()) {
 			case EQUALS ->
-					checkResult = sr.getServers().size() == 1 && sr.getServers().getFirst().equals(dummyPlayer.getLocation());
+					checkResult = sr.getServers().size() == 1 && sr.getServers().get(0).equals(dummyPlayer.getLocation());
 			case CONTAINS -> checkResult = sr.getServers().contains(dummyPlayer.getLocation());
 		}
 

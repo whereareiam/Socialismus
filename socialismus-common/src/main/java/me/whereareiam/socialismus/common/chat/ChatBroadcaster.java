@@ -61,8 +61,8 @@ public class ChatBroadcaster {
 					.replacement(Serializer.serialize(sender, chatMessages.get().getClearFormat().getFormat())
 							.clickEvent(ClickEvent.runCommand(
 									"/" + commands.get().get("clear").getUsage()
-											.replace("{command}", commands.get().get("main").getAliases().getFirst())
-											.replace("{alias}", commands.get().get("clear").getAliases().getFirst())
+											.replace("{command}", commands.get().get("main").getAliases().get(0))
+											.replace("{alias}", commands.get().get("clear").getAliases().get(0))
 											.replace("[context]", String.valueOf(formattedChatMessage.getId()))))
 					)
 					.build();

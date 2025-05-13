@@ -46,7 +46,7 @@ public class FormatSelector {
 	private FormattedChatMessage formatChat(FormattedChatMessage formattedChatMessage) {
 		Logger.debug("Formatting chat message for user " + formattedChatMessage.getSender().getUsername());
 
-		ChatFormat chatFormat = formattedChatMessage.getChat().getFormats().getLast();
+		ChatFormat chatFormat = formattedChatMessage.getChat().getFormats().get(formattedChatMessage.getChat().getFormats().size() - 1);
 		if (chatFormat == null || !checkRequirements(chatFormat, formattedChatMessage)) {
 			notifyAboutAbsentFormat(formattedChatMessage);
 			formattedChatMessage.setCancelled(true);

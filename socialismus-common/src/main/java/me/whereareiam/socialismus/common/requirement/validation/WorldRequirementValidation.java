@@ -30,7 +30,7 @@ public class WorldRequirementValidation implements RequirementValidation {
 		boolean checkResult = false;
 		switch (wr.getCondition()) {
 			case EQUALS ->
-					checkResult = wr.getWorlds().size() == 1 && wr.getWorlds().getFirst().equals(dummyPlayer.getLocation());
+					checkResult = wr.getWorlds().size() == 1 && wr.getWorlds().get(0).equals(dummyPlayer.getLocation());
 			case CONTAINS -> checkResult = wr.getWorlds().contains(dummyPlayer.getLocation());
 		}
 
