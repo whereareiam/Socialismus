@@ -17,7 +17,7 @@ import java.util.jar.Manifest;
 public enum PluginType {
     /** Represents an unknown or unsupported plugin type */
     UNKNOWN,
-    /** Represents a Bukkit plugin implementation */
+    /** Represents a Spigot plugin implementation */
     BUKKIT,
     /** Represents a Paper plugin implementation */
     PAPER,

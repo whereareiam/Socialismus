@@ -1,12 +1,23 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.apache.tools.ant.filters.ReplaceTokens
+import org.gradle.kotlin.dsl.filter
 
-tasks.withType<ShadowJar> {
-    archiveClassifier.set("BUKKIT")
+subprojects {
+    if (project.name != "common") {
+        dependencies {
+            "implementation"(project(":socialismus-platform:platform-bukkit:common"))
+            "implementation"(project(":socialismus-integration:integration-placeholderapi"))
+            "implementation"(rootProject.libs.bundles.bStats.bukkit)
 
-    relocate("net.kyori.adventure", "me.whereareiam.socialismus.library.adventure")
-}
+            "compileOnly"(rootProject.libs.cloud.paper)
+        }
 
-dependencies {
-    "compileOnly"(libs.bundles.bukkit)
-    "implementation"(libs.libby.bukkit)
+        tasks.named<Copy>("processResources") {
+            filter<ReplaceTokens>(
+                "tokens" to mapOf(
+                    "projectName" to rootProject.name,
+                    "projectVersion" to project.version
+                )
+            )
+        }
+    }
 }

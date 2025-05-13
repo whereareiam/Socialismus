@@ -6,14 +6,10 @@ plugins {
 }
 
 subprojects {
-    apply(plugin = "com.gradleup.shadow")
+    plugins.apply(rootProject.libs.plugins.shadow.get().pluginId)
 
     tasks.withType<ShadowJar> {
         archiveBaseName.set(rootProject.name)
-
-        manifest {
-            attributes["Plugin-Type"] = archiveClassifier
-        }
 
         relocate("com.alessiodp.libby", "me.whereareiam.socialismus.library.libby")
         relocate("org.bstats", "me.whereareiam.socialismus.library.bStats")
@@ -41,43 +37,14 @@ subprojects {
     dependencies {
         "implementation"(project(":socialismus-integration:integration-packetevents"))
         "implementation"(project(":socialismus-integration:integration-bstats"))
-        "implementation"(project(":socialismus-adapter-command"))
-        "implementation"(project(":socialismus-adapter-config"))
-        "implementation"(project(":socialismus-adapter-module"))
-        "implementation"(project(":socialismus-platform"))
-        "implementation"(project(":socialismus-common-api"))
-        "implementation"(project(":socialismus-common"))
-        "implementation"(project(":socialismus-shared"))
-
         "compileOnly"(rootProject.libs.bundles.cloud)
-    }
 
-    when (name) {
-        "platform-paper", "platform-bukkit" -> {
-            dependencies {
-                "implementation"(project(":socialismus-integration:integration-placeholderapi"))
-                "implementation"(rootProject.libs.bundles.bStats.bukkit)
-
-                "compileOnly"(rootProject.libs.cloud.paper)
+        rootProject.allprojects
+            .filter { it != project && it.parent == rootProject }
+            .forEach { subproject ->
+                if (subproject.name != "socialismus-platform" && subproject.name != "socialismus-integration")
+                    "implementation"(project(":${subproject.name}"))
             }
-
-            tasks.named<Copy>("processResources") {
-                filter<ReplaceTokens>(
-                    "tokens" to mapOf(
-                        "projectName" to rootProject.name,
-                        "projectVersion" to project.version
-                    )
-                )
-            }
-        }
-
-        "platform-velocity" -> {
-            dependencies {
-                "implementation"(project(":socialismus-integration:integration-papiproxybridge"))
-                "implementation"(project(":socialismus-integration:integration-valiobungee"))
-                "implementation"(rootProject.libs.bundles.bStats.velocity)
-            }
-        }
     }
 
     tasks.named<Jar>("jar") {
