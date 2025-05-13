@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.api.type;
 
-import me.whereareiam.socialismus.api.ComponentUtil;
+import me.whereareiam.socialismus.api.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 
@@ -18,33 +18,43 @@ import net.kyori.adventure.text.serializer.ComponentSerializer;
  * </ul>
  */
 public enum SerializationType {
-		/** Uses '&amp;' color codes for legacy text formatting */
-		LEGACY_AMPERSAND,
+	/**
+	 * Uses '&amp;' color codes for legacy text formatting
+	 */
+	LEGACY_AMPERSAND,
 
-		/** Uses '§' section symbols for legacy text formatting */
-		LEGACY_SECTION,
+	/**
+	 * Uses '§' section symbols for legacy text formatting
+	 */
+	LEGACY_SECTION,
 
-		/** Uses MiniMessage format for modern component serialization */
-		MINIMESSAGE,
+	/**
+	 * Uses MiniMessage format for modern component serialization
+	 */
+	MINIMESSAGE,
 
-		/** Uses standard GSON serialization */
-		GSON,
+	/**
+	 * Uses standard GSON serialization
+	 */
+	GSON,
 
-		/** Uses GSON serialization with downsampling capabilities */
-		GSON_DOWNSAMPLING;
+	/**
+	 * Uses GSON serialization with downsampling capabilities
+	 */
+	GSON_DOWNSAMPLING;
 
-		/**
-		 * Gets the appropriate component serializer for this type.
-		 *
-		 * @return the component serializer corresponding to this type
-		 */
-		public ComponentSerializer<Component, ?, String> getSerializer() {
-				return switch (this) {
-						case LEGACY_AMPERSAND -> ComponentUtil.getLEGACY_SERIALIZER();
-						case LEGACY_SECTION -> ComponentUtil.getLEGACY_SECTION_SERIALIZER();
-						case MINIMESSAGE -> ComponentUtil.getMINI_MESSAGE_SERIALIZER();
-						case GSON -> ComponentUtil.getGSON_SERIALIZER();
-						case GSON_DOWNSAMPLING -> ComponentUtil.getGSON_DOWNSAMPLING_SERIALIZER();
-				};
-		}
+	/**
+	 * Gets the appropriate component serializer for this type.
+	 *
+	 * @return the component serializer corresponding to this type
+	 */
+	public ComponentSerializer<Component, ?, String> getSerializer() {
+		return switch (this) {
+			case LEGACY_AMPERSAND -> ComponentUtil.getLEGACY_SERIALIZER();
+			case LEGACY_SECTION -> ComponentUtil.getLEGACY_SECTION_SERIALIZER();
+			case MINIMESSAGE -> ComponentUtil.getMINI_MESSAGE_SERIALIZER();
+			case GSON -> ComponentUtil.getGSON_SERIALIZER();
+			case GSON_DOWNSAMPLING -> ComponentUtil.getGSON_DOWNSAMPLING_SERIALIZER();
+		};
+	}
 }

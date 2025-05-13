@@ -2,16 +2,19 @@ package me.whereareiam.socialismus.common;
 
 import com.google.inject.Injector;
 import me.whereareiam.socialismus.api.AnsiColor;
-import me.whereareiam.socialismus.api.EventUtil;
-import me.whereareiam.socialismus.api.PlatformType;
-import me.whereareiam.socialismus.api.PluginType;
+import me.whereareiam.socialismus.api.Logger;
+import me.whereareiam.socialismus.api.Serializer;
 import me.whereareiam.socialismus.api.input.event.plugin.PluginInitializedEvent;
+import me.whereareiam.socialismus.api.input.serializer.SerializationService;
 import me.whereareiam.socialismus.api.model.chat.ChatMessages;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.api.output.command.CommandService;
 import me.whereareiam.socialismus.api.output.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.api.output.module.ModuleService;
+import me.whereareiam.socialismus.api.type.PlatformType;
+import me.whereareiam.socialismus.api.type.PluginType;
+import me.whereareiam.socialismus.api.util.EventUtil;
 import me.whereareiam.socialismus.common.chat.worker.FormatSelector;
 import me.whereareiam.socialismus.common.chat.worker.chatmessage.ChatSelector;
 import me.whereareiam.socialismus.common.chat.worker.chatmessage.RecipientResolver;
@@ -24,57 +27,61 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommonSocialismus {
-    private Injector injector;
+	private Injector injector;
 
-    public void onEnable() {
-        injector = CommonInjector.getInjector();
+	public void onEnable() {
+		injector = CommonInjector.getInjector();
 
-        // Initialize all component before first event is triggered, leads to faster response time
-        injector.getInstance(ChatContainer.class);
-        injector.getInstance(RecipientResolver.class);
-        injector.getInstance(ChatSelector.class);
-        injector.getInstance(RecipientSelector.class);
-        injector.getInstance(FormatSelector.class);
-        injector.getInstance(ChatMessages.class);
-        injector.getInstance(ChatSettings.class);
+		// Static helpers
+		Logger.init(injector.getInstance(LoggingHelper.class));
+		Serializer.init(injector.getInstance(SerializationService.class));
 
-        injector.getInstance(CommandService.class).registerCommands();
-        injector.getInstance(ListenerRegistrar.class).registerListeners();
+		// Initialize all component before first event is triggered, leads to faster response time
+		injector.getInstance(ChatContainer.class);
+		injector.getInstance(RecipientResolver.class);
+		injector.getInstance(ChatSelector.class);
+		injector.getInstance(RecipientSelector.class);
+		injector.getInstance(FormatSelector.class);
+		injector.getInstance(ChatMessages.class);
+		injector.getInstance(ChatSettings.class);
 
-        printWelcomeMessage();
+		injector.getInstance(CommandService.class).registerCommands();
+		injector.getInstance(ListenerRegistrar.class).registerListeners();
 
-        injector.getInstance(Updater.class).start();
-        injector.getInstance(ModuleService.class).loadModules();
+		printWelcomeMessage();
 
-        EventUtil.callEvent(new PluginInitializedEvent(), () -> {});
-    }
+		injector.getInstance(Updater.class).start();
+		injector.getInstance(ModuleService.class).loadModules();
 
-    public void onDisable() {
+		EventUtil.callEvent(new PluginInitializedEvent(), () -> {});
+	}
 
-    }
+	public void onDisable() {
 
-    private void printWelcomeMessage() {
-        LoggingHelper loggingHelper = injector.getInstance(LoggingHelper.class);
-        List<String> content = new ArrayList<>();
+	}
 
-        content.add(" ");
-        content.add(AnsiColor.CYAN + "  █▀ █▀▀   " + AnsiColor.RESET + "Socialismus v" + AnsiColor.GRAY + Constants.VERSION + AnsiColor.RESET);
-        content.add(AnsiColor.CYAN + "  ▄█ █▄▄   " + AnsiColor.RESET + "Platform: "
-                + AnsiColor.GRAY
-                + PlatformType.getType().toString()
-                + " [" + PluginType.getType().toString() + "]"
-                + AnsiColor.RESET
-        );
-        content.add(" ");
-        int commandCount = injector.getInstance(CommandService.class).getCommandCount();
-        content.add("  Loaded " + AnsiColor.CYAN + commandCount + AnsiColor.RESET + " command" + (commandCount == 1 ? "" : "s"));
-        int chatCount = injector.getInstance(ChatContainer.class).getChats().size();
-        content.add("  Loaded " + AnsiColor.CYAN + chatCount + AnsiColor.RESET + " chat" + (chatCount == 1 ? "" : "s"));
-        content.add(" ");
-        content.add("  Integrations:");
-        injector.getInstance(IntegrationProvider.class).get().forEach(integration -> content.add("    - " + AnsiColor.GREEN + integration.getName() + AnsiColor.RESET));
-        content.add(" ");
+	private void printWelcomeMessage() {
+		LoggingHelper loggingHelper = injector.getInstance(LoggingHelper.class);
+		List<String> content = new ArrayList<>();
 
-        content.forEach(loggingHelper::info);
-    }
+		content.add(" ");
+		content.add(AnsiColor.CYAN + "  █▀ █▀▀   " + AnsiColor.RESET + "Socialismus v" + AnsiColor.GRAY + Constants.VERSION + AnsiColor.RESET);
+		content.add(AnsiColor.CYAN + "  ▄█ █▄▄   " + AnsiColor.RESET + "Platform: "
+				+ AnsiColor.GRAY
+				+ PlatformType.getType().toString()
+				+ " [" + PluginType.getType().toString() + "]"
+				+ AnsiColor.RESET
+		);
+		content.add(" ");
+		int commandCount = injector.getInstance(CommandService.class).getCommandCount();
+		content.add("  Loaded " + AnsiColor.CYAN + commandCount + AnsiColor.RESET + " command" + (commandCount == 1 ? "" : "s"));
+		int chatCount = injector.getInstance(ChatContainer.class).getChats().size();
+		content.add("  Loaded " + AnsiColor.CYAN + chatCount + AnsiColor.RESET + " chat" + (chatCount == 1 ? "" : "s"));
+		content.add(" ");
+		content.add("  Integrations:");
+		injector.getInstance(IntegrationProvider.class).get().forEach(integration -> content.add("    - " + AnsiColor.GREEN + integration.getName() + AnsiColor.RESET));
+		content.add(" ");
+
+		content.forEach(loggingHelper::info);
+	}
 }

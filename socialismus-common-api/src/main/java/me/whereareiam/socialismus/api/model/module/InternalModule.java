@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.output.module.SocialisticModule;
-import me.whereareiam.socialismus.api.type.ModuleState;
+import me.whereareiam.socialismus.api.type.module.ModuleState;
 
 import java.nio.file.Path;
 
@@ -13,7 +13,7 @@ import java.nio.file.Path;
  * Represents an internal module configuration with additional runtime properties.
  * Extends the base {@link Module} class to add functionality specific to the
  * plugin's module handling system.
- *
+ * <p>
  * This class maintains module state, file path, and the associated module instance,
  * providing essential information for module management during runtime.
  */
@@ -22,18 +22,18 @@ import java.nio.file.Path;
 @ToString
 @SuperBuilder(toBuilder = true)
 public class InternalModule extends Module {
-    /**
-     * The file system path to the module
-     */
-    private Path path;
+	/**
+	 * The file system path to the module
+	 */
+	private Path path;
 
-    /**
-     * The loaded module instance
-     */
-    private SocialisticModule module;
+	/**
+	 * The loaded module instance
+	 */
+	private SocialisticModule module;
 
-    /**
-     * The current state of the module
-     */
-    private ModuleState state;
+	/**
+	 * The current state of the module
+	 */
+	private ModuleState state;
 }

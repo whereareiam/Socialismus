@@ -10,7 +10,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import jakarta.inject.Inject;
 import lombok.Getter;
-import me.whereareiam.socialismus.api.PluginType;
+import me.whereareiam.socialismus.api.type.PluginType;
 import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.common.CommonSocialismus;
 import me.whereareiam.socialismus.common.IntegrityChecker;
@@ -25,64 +25,64 @@ import org.slf4j.Logger;
 import java.nio.file.Path;
 
 @Plugin(
-        id = "socialismus",
-        name = Constants.NAME,
-        version = Constants.VERSION,
-        authors = "whereareiam",
-        dependencies = {
-                @Dependency(id = "packetevents", optional = true),
-                @Dependency(id = "papiproxybridge", optional = true),
-                @Dependency(id = "redisbungee", optional = true),
-        }
+		id = "socialismus",
+		name = Constants.NAME,
+		version = Constants.VERSION,
+		authors = "whereareiam",
+		dependencies = {
+				@Dependency(id = "packetevents", optional = true),
+				@Dependency(id = "papiproxybridge", optional = true),
+				@Dependency(id = "redisbungee", optional = true),
+		}
 )
 public class VelocitySocialismus {
-    private final CommonSocialismus commonSocialismus = new CommonSocialismus();
+	private final CommonSocialismus commonSocialismus = new CommonSocialismus();
 
-    private final ProxyServer proxyServer;
-    private final PluginContainer pluginContainer;
-    @Getter
-    private final Logger logger;
-    private final Path dataPath;
+	private final ProxyServer proxyServer;
+	private final PluginContainer pluginContainer;
+	@Getter
+	private final Logger logger;
+	private final Path dataPath;
 
-    @Inject
-    public VelocitySocialismus(ProxyServer proxyServer, PluginContainer pluginContainer, Logger logger, @DataDirectory Path dataPath) {
-        this.proxyServer = proxyServer;
-        this.pluginContainer = pluginContainer;
-        this.logger = logger;
-        this.dataPath = dataPath;
-    }
+	@Inject
+	public VelocitySocialismus(ProxyServer proxyServer, PluginContainer pluginContainer, Logger logger, @DataDirectory Path dataPath) {
+		this.proxyServer = proxyServer;
+		this.pluginContainer = pluginContainer;
+		this.logger = logger;
+		this.dataPath = dataPath;
+	}
 
-    @Subscribe
-    public void onProxyInitializationEvent(ProxyInitializeEvent event) {
-        PluginType.setPluginType(PluginType.VELOCITY);
+	@Subscribe
+	public void onProxyInitializationEvent(ProxyInitializeEvent event) {
+		PluginType.setPluginType(PluginType.VELOCITY);
 
-        VelocityDependencyResolver dependencyResolver = new VelocityDependencyResolver(this, logger, dataPath, proxyServer.getPluginManager());
-        dependencyResolver.loadLibraries();
-        dependencyResolver.resolveDependencies();
+		VelocityDependencyResolver dependencyResolver = new VelocityDependencyResolver(this, logger, dataPath, proxyServer.getPluginManager());
+		dependencyResolver.loadLibraries();
+		dependencyResolver.resolveDependencies();
 
-        new VelocityInjector(
-                this,
-                pluginContainer,
-                proxyServer,
-                dependencyResolver,
-                dataPath
-        );
+		new VelocityInjector(
+				this,
+				pluginContainer,
+				proxyServer,
+				dependencyResolver,
+				dataPath
+		);
 
-        VelocityLoggingHelper.setLogger(logger);
+		VelocityLoggingHelper.setLogger(logger);
 
-        if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
-            throw new RuntimeException("Integrity check failed, plugin will be disabled");
+		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
+			throw new RuntimeException("Integrity check failed, plugin will be disabled");
 
-        CommonInjector.getInjector().getInstance(PAPIProxyBridgeIntegration.class);
-        CommonInjector.getInjector().getInstance(PacketEventsIntegration.class);
-        CommonInjector.getInjector().getInstance(ValioBungeeIntegration.class);
-        CommonInjector.getInjector().getInstance(bStatsIntegration.class);
+		CommonInjector.getInjector().getInstance(PAPIProxyBridgeIntegration.class);
+		CommonInjector.getInjector().getInstance(PacketEventsIntegration.class);
+		CommonInjector.getInjector().getInstance(ValioBungeeIntegration.class);
+		CommonInjector.getInjector().getInstance(bStatsIntegration.class);
 
-        commonSocialismus.onEnable();
-    }
+		commonSocialismus.onEnable();
+	}
 
-    @Subscribe
-    public void onProxyShutdownEvent(ProxyShutdownEvent event) {
-        commonSocialismus.onDisable();
-    }
+	@Subscribe
+	public void onProxyShutdownEvent(ProxyShutdownEvent event) {
+		commonSocialismus.onDisable();
+	}
 }

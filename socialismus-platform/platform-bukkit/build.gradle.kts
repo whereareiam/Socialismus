@@ -6,7 +6,6 @@ subprojects {
             "implementation"(project(":socialismus-platform:platform-bukkit:common"))
             "implementation"(project(":socialismus-integration:integration-placeholderapi"))
 
-            "implementation"(rootProject.libs.bundles.bStats.bukkit)
             "compileOnly"(rootProject.libs.cloud.paper)
         }
 

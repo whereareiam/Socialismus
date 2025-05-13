@@ -7,10 +7,10 @@ import com.google.inject.name.Named;
 import me.whereareiam.socialismus.adapter.config.dynamic.ChatsConfig;
 import me.whereareiam.socialismus.adapter.config.management.ConfigLoader;
 import me.whereareiam.socialismus.adapter.config.management.ConfigManager;
+import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.Reloadable;
 import me.whereareiam.socialismus.api.input.registry.Registry;
 import me.whereareiam.socialismus.api.model.chat.Chat;
-import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.api.type.ConfigurationType;
 
 import java.io.IOException;
@@ -23,66 +23,68 @@ import java.util.stream.Stream;
 
 @Singleton
 public class ChatsProvider implements Provider<List<Chat>>, Reloadable {
-    private final Path dataPath;
-    private final LoggingHelper loggingHelper;
-    private final ConfigLoader configLoader;
-    private final ConfigurationType configurationType;
-    private List<Chat> chats;
+	private final Path dataPath;
+	private final ConfigLoader configLoader;
+	private final ConfigurationType configurationType;
+	private List<Chat> chats;
 
-    @Inject
-    public ChatsProvider(@Named("chatPath") Path dataPath, LoggingHelper loggingHelper,
-                         ConfigLoader configLoader, ConfigManager configManager, Registry<Reloadable> registry) {
-        this.dataPath = dataPath;
-        this.loggingHelper = loggingHelper;
-        this.configLoader = configLoader;
-        this.configurationType = configManager.getConfigurationType();
+	@Inject
+	public ChatsProvider(
+			@Named("chatPath") Path dataPath,
+			ConfigLoader configLoader,
+			ConfigManager configManager,
+			Registry<Reloadable> registry
+	) {
+		this.dataPath = dataPath;
+		this.configLoader = configLoader;
+		this.configurationType = configManager.getConfigurationType();
 
-        registry.register(this);
-    }
+		registry.register(this);
+	}
 
-    @Override
-    public List<Chat> get() {
-        if (chats != null) return chats;
+	@Override
+	public List<Chat> get() {
+		if (chats != null) return chats;
 
-        loadChats();
+		loadChats();
 
-        return chats;
-    }
+		return chats;
+	}
 
-    @Override
-    public void reload() {
-        loadChats();
-    }
+	@Override
+	public void reload() {
+		loadChats();
+	}
 
-    private void loadChats() {
-        chats = new ArrayList<>();
-        try (Stream<Path> paths = Files.list(dataPath)) {
-            paths.filter(path -> path.getFileName().toString().endsWith(configurationType.getExtension())).forEach(path -> {
-                String fileName = path.getFileName().toString().replace(configurationType.getExtension(), "");
+	private void loadChats() {
+		chats = new ArrayList<>();
+		try (Stream<Path> paths = Files.list(dataPath)) {
+			paths.filter(path -> path.getFileName().toString().endsWith(configurationType.getExtension())).forEach(path -> {
+				String fileName = path.getFileName().toString().replace(configurationType.getExtension(), "");
 
-                if (Files.isDirectory(path)
-                        || fileName.startsWith("messages")
-                        || fileName.startsWith("settings")
-                        || fileName.isEmpty()
-                ) return;
+				if (Files.isDirectory(path)
+						|| fileName.startsWith("messages")
+						|| fileName.startsWith("settings")
+						|| fileName.isEmpty()
+				) return;
 
-                chats.addAll(addChatsFromConfig(path.getParent().resolve(fileName)));
-            });
-        } catch (IOException e) {
-            loggingHelper.severe("Failed to load chat configurations", e);
-            chats = Collections.emptyList();
-            return;
-        }
+				chats.addAll(addChatsFromConfig(path.getParent().resolve(fileName)));
+			});
+		} catch (IOException e) {
+			Logger.severe("Failed to load chat configurations", e);
+			chats = Collections.emptyList();
+			return;
+		}
 
-        if (chats.isEmpty()) chats.addAll(addChatsFromConfig(dataPath.resolve("chats-default")));
+		if (chats.isEmpty()) chats.addAll(addChatsFromConfig(dataPath.resolve("chats-default")));
 
-        chats.removeIf(chat -> chats.stream().anyMatch(c -> c != chat && c.getId().equals(chat.getId())));
-    }
+		chats.removeIf(chat -> chats.stream().anyMatch(c -> c != chat && c.getId().equals(chat.getId())));
+	}
 
-    private List<Chat> addChatsFromConfig(Path path) {
-        ChatsConfig chatsConfig = configLoader.load(path, ChatsConfig.class);
-        return chatsConfig.getChats().stream()
-                .filter(Chat::isEnabled)
-                .toList();
-    }
+	private List<Chat> addChatsFromConfig(Path path) {
+		ChatsConfig chatsConfig = configLoader.load(path, ChatsConfig.class);
+		return chatsConfig.getChats().stream()
+				.filter(Chat::isEnabled)
+				.toList();
+	}
 }

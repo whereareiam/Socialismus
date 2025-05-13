@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import me.whereareiam.socialismus.api.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.api.type.Participants;
+import me.whereareiam.socialismus.api.type.chat.Participants;
 
 import java.util.Map;
 
@@ -19,16 +19,16 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatFormat {
-    /**
-     * The format string used for message formatting.
-     * Can include placeholders and formatting codes.
-     */
-    private String format;
+	/**
+	 * The format string used for message formatting.
+	 * Can include placeholders and formatting codes.
+	 */
+	private String format;
 
-    /**
-     * Maps participant types to their respective requirement groups.
-     * Defines what requirements different participants need to meet
-     * to use this chat format.
-     */
-    private Map<Participants, RequirementGroup> requirements;
+	/**
+	 * Maps participant types to their respective requirement groups.
+	 * Defines what requirements different participants need to meet
+	 * to use this chat format.
+	 */
+	private Map<Participants, RequirementGroup> requirements;
 }

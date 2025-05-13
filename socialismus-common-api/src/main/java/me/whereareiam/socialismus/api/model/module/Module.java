@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.api.model.module;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.api.PlatformType;
+import me.whereareiam.socialismus.api.type.PlatformType;
 import me.whereareiam.socialismus.api.type.Version;
 
 import java.util.List;
@@ -22,38 +22,38 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class Module {
-    /**
-     * The name of the module
-     */
-    private String name;
+	/**
+	 * The name of the module
+	 */
+	private String name;
 
-    /**
-     * The version string of the module
-     */
-    private String version;
+	/**
+	 * The version string of the module
+	 */
+	private String version;
 
-    /**
-     * List of module authors
-     */
-    private List<String> authors;
+	/**
+	 * List of module authors
+	 */
+	private List<String> authors;
 
-    /**
-     * List of platforms this module supports
-     */
-    private List<PlatformType> supportedPlatforms;
+	/**
+	 * List of platforms this module supports
+	 */
+	private List<PlatformType> supportedPlatforms;
 
-    /**
-     * List of game versions this module supports
-     */
-    private List<Version> supportedVersions;
+	/**
+	 * List of game versions this module supports
+	 */
+	private List<Version> supportedVersions;
 
-    /**
-     * List of other modules this module depends on
-     */
-    private List<ModuleDependency> dependencies;
+	/**
+	 * List of other modules this module depends on
+	 */
+	private List<ModuleDependency> dependencies;
 
-    /**
-     * The main class path of the module
-     */
-    private String main;
+	/**
+	 * The main class path of the module
+	 */
+	private String main;
 }

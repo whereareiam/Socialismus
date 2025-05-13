@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.api.type.DependencyType;
+import me.whereareiam.socialismus.api.type.module.DependencyType;
 
 /**
  * Represents a dependency relationship between modules in the Socialismus plugin system.
@@ -20,18 +20,18 @@ import me.whereareiam.socialismus.api.type.DependencyType;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class ModuleDependency {
-    /**
-     * The name of the required module
-     */
-    private String name;
+	/**
+	 * The name of the required module
+	 */
+	private String name;
 
-    /**
-     * The required version of the module
-     */
-    private String version;
+	/**
+	 * The required version of the module
+	 */
+	private String version;
 
-    /**
-     * The type of dependency relationship
-     */
-    private DependencyType type;
+	/**
+	 * The type of dependency relationship
+	 */
+	private DependencyType type;
 }

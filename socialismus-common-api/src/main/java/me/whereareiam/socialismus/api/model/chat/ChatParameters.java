@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import me.whereareiam.socialismus.api.type.ChatType;
+import me.whereareiam.socialismus.api.type.chat.ChatType;
 
 /**
  * Represents the configuration parameters for a chat channel.
@@ -16,19 +16,19 @@ import me.whereareiam.socialismus.api.type.ChatType;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatParameters {
-    /**
-     * The type of chat channel (e.g., GLOBAL, LOCAL, CUSTOM).
-     */
-    private ChatType type;
+	/**
+	 * The type of chat channel (e.g., GLOBAL, LOCAL, CUSTOM).
+	 */
+	private ChatType type;
 
-    /**
-     * The symbol or prefix that identifies this chat channel.
-     */
-    private String symbol;
+	/**
+	 * The symbol or prefix that identifies this chat channel.
+	 */
+	private String symbol;
 
-    /**
-     * The radius (in blocks) within which players can receive messages.
-     * Only applicable for LOCAL chat types.
-     */
-    private int radius;
+	/**
+	 * The radius (in blocks) within which players can receive messages.
+	 * Only applicable for LOCAL chat types.
+	 */
+	private int radius;
 }
