@@ -16,80 +16,80 @@ import java.util.Optional;
 
 @Singleton
 public class ChatMentionFormatter {
-		private final FormatterUtil formatterUtil;
-		private final MessageUtil messageUtil;
-		private final ChatMentionConfig chatMentionConfig;
-		private final ChatMentionModule chatMentionModule;
+	private final FormatterUtil formatterUtil;
+	private final MessageUtil messageUtil;
+	private final ChatMentionConfig chatMentionConfig;
+	private final ChatMentionModule chatMentionModule;
 
-		@Inject
-		public ChatMentionFormatter(LoggerUtil loggerUtil, FormatterUtil formatterUtil, MessageUtil messageUtil,
-		                            ChatMentionConfig chatMentionConfig, ChatMentionModule chatMentionModule) {
-				this.formatterUtil = formatterUtil;
-				this.chatMentionConfig = chatMentionConfig;
-				this.chatMentionModule = chatMentionModule;
-				this.messageUtil = messageUtil;
+	@Inject
+	public ChatMentionFormatter(LoggerUtil loggerUtil, FormatterUtil formatterUtil, MessageUtil messageUtil,
+	                            ChatMentionConfig chatMentionConfig, ChatMentionModule chatMentionModule) {
+		this.formatterUtil = formatterUtil;
+		this.chatMentionConfig = chatMentionConfig;
+		this.chatMentionModule = chatMentionModule;
+		this.messageUtil = messageUtil;
 
-				loggerUtil.trace("Initializing class: " + this);
+		loggerUtil.trace("Initializing class: " + this);
+	}
+
+	public Mention formatMention(Mention mention) {
+		if (mention.getUsedAllTag() != null)
+			return formatAllMention(mention);
+		else if (mention.getUsedNearbyTag() != null)
+			return formatNearbyMention(mention);
+		else
+			return formatPlayerMention(mention);
+	}
+
+	private Mention formatAllMention(Mention mention) {
+		String tag = mention.getUsedAllTag();
+		String format = chatMentionConfig.settings.allTagSettings.format
+				.replace("{usedTag}", tag);
+
+		Component component = formatterUtil.formatMessage(mention.getSender(), format, true);
+		mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), tag, component));
+
+		return mention;
+	}
+
+	private Mention formatNearbyMention(Mention mention) {
+		String tag = mention.getUsedNearbyTag();
+		String format = chatMentionConfig.settings.nearbyTagSettings.format
+				.replace("{usedTag}", tag);
+
+		Component component = formatterUtil.formatMessage(mention.getSender(), format, true);
+		mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), tag, component));
+
+		return mention;
+	}
+
+	private Mention formatPlayerMention(Mention mention) {
+		Optional<ChatMentionFormat> format = chatMentionModule.getFormats().stream().filter(
+				f -> f.permission.isBlank() || mention.getSender().hasPermission(f.permission)
+		).findFirst();
+
+		if (format.isEmpty())
+			return mention;
+
+		Component content = mention.getContent();
+
+		for (Player player : mention.getMentionedPlayers()) {
+			String message = format.get().format.replace("{mentionedName}", player.getName());
+			Component formatComponent = formatterUtil.formatMessage(mention.getSender(), message, true);
+
+			Component hoverComponent;
+			if (!format.get().hoverFormat.isEmpty()) {
+				String hoverMessage = String.join("\n", format.get().hoverFormat).replace("{mentionedName}", player.getName());
+				hoverComponent = formatterUtil.formatMessage(mention.getSender(), hoverMessage, true);
+
+				content = messageUtil.replacePlaceholder(content, player.getName(), formatComponent.hoverEvent(HoverEvent.showText(hoverComponent)));
+			} else {
+				content = messageUtil.replacePlaceholder(content, player.getName(), formatComponent);
+			}
 		}
 
-		public Mention formatMention(Mention mention) {
-				if (mention.getUsedAllTag() != null)
-						return formatAllMention(mention);
-				else if (mention.getUsedNearbyTag() != null)
-						return formatNearbyMention(mention);
-				else
-						return formatPlayerMention(mention);
-		}
+		mention.setContent(content);
 
-		private Mention formatAllMention(Mention mention) {
-				String tag = mention.getUsedAllTag();
-				String format = chatMentionConfig.settings.allTagSettings.format
-								.replace("{usedTag}", tag);
-
-				Component component = formatterUtil.formatMessage(mention.getSender(), format, true);
-				mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), tag, component));
-
-				return mention;
-		}
-
-		private Mention formatNearbyMention(Mention mention) {
-				String tag = mention.getUsedNearbyTag();
-				String format = chatMentionConfig.settings.nearbyTagSettings.format
-								.replace("{usedTag}", tag);
-
-				Component component = formatterUtil.formatMessage(mention.getSender(), format, true);
-				mention.setContent(messageUtil.replacePlaceholder(mention.getContent(), tag, component));
-
-				return mention;
-		}
-
-		private Mention formatPlayerMention(Mention mention) {
-				Optional<ChatMentionFormat> format = chatMentionModule.getFormats().stream().filter(
-						f -> f.permission.isBlank() || mention.getSender().hasPermission(f.permission)
-				).findFirst();
-
-				if (format.isEmpty())
-						return mention;
-
-				Component content = mention.getContent();
-
-				for (Player player : mention.getMentionedPlayers()) {
-						Component formatComponent = formatterUtil.formatMessage(mention.getSender(), format.get().format, true);
-						formatComponent = messageUtil.replacePlaceholder(formatComponent, "{mentionedName}", player.getName());
-
-						Component hoverComponent;
-						if (!format.get().hoverFormat.isEmpty()) {
-								hoverComponent = formatterUtil.formatMessage(mention.getSender(), String.join("\n", format.get().hoverFormat), true);
-								hoverComponent = messageUtil.replacePlaceholder(hoverComponent, "{mentionedName}", player.getName());
-
-								content = messageUtil.replacePlaceholder(content, player.getName(), formatComponent.hoverEvent(HoverEvent.showText(hoverComponent)));
-						} else {
-								content = messageUtil.replacePlaceholder(content, player.getName(), formatComponent);
-						}
-				}
-
-				mention.setContent(content);
-
-				return mention;
-		}
+		return mention;
+	}
 }
