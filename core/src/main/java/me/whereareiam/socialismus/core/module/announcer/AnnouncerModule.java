@@ -120,8 +120,7 @@ public class AnnouncerModule implements Module {
 		announcement.message.add("<white>  Thanks for installing my plugin!");
 		announcement.message.add("<white>  If you have any questions, feel free to ask!");
 		announcement.message.add("");
-		announcement.message.add("<gray>   Telegram: https://whereareiam.t.me/");
-		announcement.message.add("<gray>   Discord: @whereareiam");
+		announcement.message.add("<gray>   Discord: https://discord.arcadeya.com/");
 		announcement.message.add("");
 		announcement.message.add("<gray>  If you like the plugin, please leave a review on the plugin page, it will help me a lot!");
 		announcement.message.add("");
