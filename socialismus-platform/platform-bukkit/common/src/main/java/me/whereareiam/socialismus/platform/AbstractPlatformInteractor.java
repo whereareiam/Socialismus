@@ -40,6 +40,9 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 		Player p2 = Bukkit.getPlayer(player2);
 		if (p1 == null || p2 == null) return false;
 
+		// Check if both players are in the same world before measuring distance
+		if (!p1.getWorld().equals(p2.getWorld())) return false;
+
 		return p1.getLocation().distanceSquared(p2.getLocation()) <= range * range;
 	}
 
