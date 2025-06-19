@@ -28,7 +28,7 @@ adventure = "4.21.0"
 adventure-minimessage = "4.21.0"
 adventure-legacy = "4.21.0"
 adventure-plain = "4.21.0"
-adventure-gson = "4.19.0"
+adventure-gson = "4.23.0"
 adventure-platform-bukkit = "4.4.0"
 
 # cloud
