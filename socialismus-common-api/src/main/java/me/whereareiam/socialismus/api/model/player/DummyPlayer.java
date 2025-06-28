@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.model.chat.Chat;
+import me.whereareiam.socialismus.api.model.position.Position;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -84,5 +85,23 @@ public class DummyPlayer implements Serializable {
 	 */
 	public boolean hasPermission(String permission) {
 		return interactor.hasPermission(this, permission);
+	}
+
+	/**
+	 * Gets the position of the player.
+	 *
+	 * @return the position of the player
+	 */
+	public Position getPosition() {
+		return interactor.getPosition(this);
+	}
+
+	/**
+	 * Gets the eye position of the player.
+	 *
+	 * @return the eye position of the player
+	 */
+	public Position getEyePosition() {
+		return interactor.getEyePosition(this);
 	}
 }
