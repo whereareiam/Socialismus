@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.api.output;
 
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
+import me.whereareiam.socialismus.api.model.position.Position;
 import me.whereareiam.socialismus.api.type.Version;
 import net.kyori.adventure.text.Component;
 
@@ -15,52 +16,60 @@ import java.util.UUID;
  * to ensure consistent behavior across different server platforms.</p>
  */
 public interface PlatformInteractor {
-    /**
-     * Broadcasts a message to all online players.
-     *
-     * @param component The message to broadcast using Adventure's Component system
-     */
-    void broadcast(Component component);
+	/**
+	 * Broadcasts a message to all online players.
+	 *
+	 * @param component The message to broadcast using Adventure's Component system
+	 */
+	void broadcast(Component component);
 
-    /**
-     * Checks if two players are within a specified range of each other.
-     *
-     * @param player1 UUID of the first player
-     * @param player2 UUID of the second player
-     * @param range The maximum distance to check
-     * @return true if players are within range, false otherwise
-     */
-    boolean areWithinRange(UUID player1, UUID player2, double range);
+	/**
+	 * Checks if two players are within a specified range of each other.
+	 *
+	 * @param player1 UUID of the first player
+	 * @param player2 UUID of the second player
+	 * @param range   The maximum distance to check
+	 * @return true if players are within range, false otherwise
+	 */
+	boolean areWithinRange(UUID player1, UUID player2, double range);
 
-    /**
-     * Checks if a player has a specific permission.
-     *
-     * @param username The player's username
-     * @param permission The permission to check
-     * @return true if the player has the permission, false otherwise
-     */
-    boolean hasPermission(String username, String permission);
+	/**
+	 * Gets the position of a player.
+	 *
+	 * @param dummyPlayer The dummy player instance
+	 * @return An array of doubles representing the player's position (x, y, z)
+	 */
+	Position getPosition(DummyPlayer dummyPlayer);
 
-    /**
-     * Checks if a dummy player has a specific permission.
-     *
-     * @param dummyPlayer The dummy player instance
-     * @param permission The permission to check
-     * @return true if the dummy player has the permission, false otherwise
-     */
-    boolean hasPermission(DummyPlayer dummyPlayer, String permission);
+	/**
+	 * Checks if a player has a specific permission.
+	 *
+	 * @param username   The player's username
+	 * @param permission The permission to check
+	 * @return true if the player has the permission, false otherwise
+	 */
+	boolean hasPermission(String username, String permission);
 
-    /**
-     * Gets the current number of online players.
-     *
-     * @return The number of online players
-     */
-    int getOnlinePlayersCount();
+	/**
+	 * Checks if a dummy player has a specific permission.
+	 *
+	 * @param dummyPlayer The dummy player instance
+	 * @param permission  The permission to check
+	 * @return true if the dummy player has the permission, false otherwise
+	 */
+	boolean hasPermission(DummyPlayer dummyPlayer, String permission);
 
-    /**
-     * Gets the current server version.
-     *
-     * @return The server version information
-     */
-    Version getServerVersion();
+	/**
+	 * Gets the current number of online players.
+	 *
+	 * @return The number of online players
+	 */
+	int getOnlinePlayersCount();
+
+	/**
+	 * Gets the current server version.
+	 *
+	 * @return The server version information
+	 */
+	Version getServerVersion();
 }

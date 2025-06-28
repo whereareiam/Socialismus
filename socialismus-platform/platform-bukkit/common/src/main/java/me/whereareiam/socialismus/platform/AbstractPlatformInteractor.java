@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
+import me.whereareiam.socialismus.api.model.position.Position;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.integration.Integration;
 import me.whereareiam.socialismus.api.output.integration.SynchronizationIntegration;
@@ -18,6 +19,15 @@ import java.util.UUID;
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 	private final Provider<Set<Integration>> integrations;
+
+	@Override
+	public Position getPosition(DummyPlayer dummyPlayer) {
+		Player player = Bukkit.getPlayer(dummyPlayer.getUniqueId());
+		if (player == null) {
+			return null;
+		}
+		return new Position(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+	}
 
 	@Override
 	public boolean areWithinRange(UUID player1, UUID player2, double range) {
