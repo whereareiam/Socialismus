@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.proxy.ProxyServer;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.position.Position;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
@@ -17,14 +18,19 @@ import java.util.Set;
 import java.util.UUID;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class VelocityPlatformInteractor implements PlatformInteractor {
 	private final ProxyServer proxyServer;
 	private final Provider<Set<Integration>> integrations;
 
-	@Inject
-	public VelocityPlatformInteractor(ProxyServer proxyServer, Provider<Set<Integration>> integrations) {
-		this.proxyServer = proxyServer;
-		this.integrations = integrations;
+	@Override
+	public Position getPosition(DummyPlayer dummyPlayer) {
+		throw new UnsupportedOperationException("Velocity does not support getting player position directly.");
+	}
+
+	@Override
+	public Position getEyePosition(DummyPlayer dummyPlayer) {
+		throw new UnsupportedOperationException("Velocity does not support getting player eye position directly.");
 	}
 
 	@Override
@@ -57,11 +63,6 @@ public class VelocityPlatformInteractor implements PlatformInteractor {
 								)
 						)
 				).orElse(false);
-	}
-
-	@Override
-	public Position getPosition(DummyPlayer dummyPlayer) {
-		throw new UnsupportedOperationException("Velocity does not support getting player position directly.");
 	}
 
 	@Override

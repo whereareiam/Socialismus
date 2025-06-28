@@ -23,6 +23,8 @@ public interface PlatformInteractor {
 	 */
 	void broadcast(Component component);
 
+	Position getEyePosition(DummyPlayer dummyPlayer);
+
 	/**
 	 * Checks if two players are within a specified range of each other.
 	 *

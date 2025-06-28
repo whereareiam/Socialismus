@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.api.output.integration.Integration;
 import me.whereareiam.socialismus.api.output.integration.SynchronizationIntegration;
 import me.whereareiam.socialismus.api.type.Version;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
@@ -26,7 +27,22 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 		if (player == null) {
 			return null;
 		}
-		return new Position(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+
+		Location location = player.getLocation();
+
+		return new Position(location.getX(), location.getY(), location.getZ());
+	}
+
+	@Override
+	public Position getEyePosition(DummyPlayer dummyPlayer) {
+		Player player = Bukkit.getPlayer(dummyPlayer.getUniqueId());
+		if (player == null) {
+			return null;
+		}
+
+		Location location = player.getEyeLocation();
+
+		return new Position(location.getX(), location.getY(), location.getZ());
 	}
 
 	@Override
