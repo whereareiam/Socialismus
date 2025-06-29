@@ -7,9 +7,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.output.config.ConfigurationMerger;
 
-import java.util.Iterator;
-import java.util.Map;
-
 @Singleton
 public class ConfigMerger implements ConfigurationMerger {
 	private final ObjectMapper objectMapper;
@@ -33,8 +30,7 @@ public class ConfigMerger implements ConfigurationMerger {
 	}
 
 	private void mergeNodes(ObjectNode configNode, JsonNode defaultConfigNode) {
-		for (Iterator<Map.Entry<String, JsonNode>> it = defaultConfigNode.fields(); it.hasNext(); ) {
-			Map.Entry<String, JsonNode> entry = it.next();
+		defaultConfigNode.properties().forEach(entry -> {
 			String key = entry.getKey();
 			JsonNode value = entry.getValue();
 
@@ -43,6 +39,6 @@ public class ConfigMerger implements ConfigurationMerger {
 			} else if (configNode.get(key).isObject() && value.isObject()) {
 				mergeNodes((ObjectNode) configNode.get(key), value);
 			}
-		}
+		});
 	}
 }
