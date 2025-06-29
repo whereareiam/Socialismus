@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.adapter.module.resolver.*;
 import me.whereareiam.socialismus.api.AnsiColor;
 import me.whereareiam.socialismus.api.Logger;
+import me.whereareiam.socialismus.api.exception.ModuleLifecycleException;
 import me.whereareiam.socialismus.api.model.module.InternalModule;
 import me.whereareiam.socialismus.api.output.PlatformClassLoader;
 import me.whereareiam.socialismus.api.output.module.SocialisticModule;
@@ -63,7 +64,13 @@ public class ModuleLifecycleController {
 
 			Logger.info("Loaded module " + AnsiColor.YELLOW + module.getName() + AnsiColor.RESET + " v" + module.getVersion() + " [" + String.join(", ", module.getAuthors()) + "]");
 
-			module.getModule().onLoad();
+			try {
+				module.getModule().onLoad();
+			} catch (ModuleLifecycleException ex) {
+				Logger.severe("Module " + module.getName() + " aborted load: " + ex.getMessage());
+				module.setState(ModuleState.ERROR);
+				return;
+			}
 
 			if (module.getModule() instanceof ResourceProvider provider) {
 				provider.provideResources().forEach((k, v) -> {
@@ -81,7 +88,13 @@ public class ModuleLifecycleController {
 		if (!module.getState().equals(ModuleState.LOADED)) return;
 
 		module.setState(ModuleState.ENABLED);
-		module.getModule().onEnable();
+
+		try {
+			module.getModule().onEnable();
+		} catch (ModuleLifecycleException ex) {
+			Logger.severe("Module " + module.getName() + " aborted enable: " + ex.getMessage());
+			module.setState(ModuleState.ERROR);
+		}
 	}
 
 	public void disableModule(InternalModule module) {
