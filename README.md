@@ -38,6 +38,11 @@
 - [Statistics](https://github.com/whereareiam/Statistics) *[WIP]* - The data analyst! Keep track of your server’s
   activity with detailed statistics. Ideal for monitoring chat trends, player activity, and more.
 
+### Infrastructure modules
+
+- [SocialismusRedis](https://github.com/whereareiam/SocialismusRedis) - The resource provider! Enables caching and
+  synchronization features for other modules using Redis.
+
 ## Premium modules
 
 - ChatterPlus *[WIP]* - Same as Chatter, but with AI capabilities.
