@@ -29,13 +29,15 @@ import java.util.List;
 public class CommonSocialismus {
 	private Injector injector;
 
-	public void onEnable() {
+	public void onLoad() {
 		injector = CommonInjector.getInjector();
 
 		// Static helpers
 		Logger.init(injector.getInstance(LoggingHelper.class));
 		Serializer.init(injector.getInstance(SerializationService.class));
+	}
 
+	public void onEnable() {
 		// Initialize all component before first event is triggered, leads to faster response time
 		injector.getInstance(ChatContainer.class);
 		injector.getInstance(RecipientResolver.class);

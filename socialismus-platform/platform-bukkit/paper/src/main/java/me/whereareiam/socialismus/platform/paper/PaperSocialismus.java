@@ -23,13 +23,15 @@ public class PaperSocialismus extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		PluginType.setPluginType(PluginType.PAPER);
+		BukkitLoggingHelper.setLogger(logger);
 
 		PaperDependencyResolver dependencyResolver = new PaperDependencyResolver(this);
 		dependencyResolver.loadLibraries();
 		dependencyResolver.resolveDependencies();
 
 		new PaperInjector(this, dependencyResolver, dataPath);
-		BukkitLoggingHelper.setLogger(logger);
+
+		commonSocialismus.onLoad();
 
 		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
 			getServer().getPluginManager().disablePlugin(this);

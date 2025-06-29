@@ -55,6 +55,7 @@ public class VelocitySocialismus {
 	@Subscribe
 	public void onProxyInitializationEvent(ProxyInitializeEvent event) {
 		PluginType.setPluginType(PluginType.VELOCITY);
+		VelocityLoggingHelper.setLogger(logger);
 
 		VelocityDependencyResolver dependencyResolver = new VelocityDependencyResolver(this, logger, dataPath, proxyServer.getPluginManager());
 		dependencyResolver.loadLibraries();
@@ -68,7 +69,7 @@ public class VelocitySocialismus {
 				dataPath
 		);
 
-		VelocityLoggingHelper.setLogger(logger);
+		commonSocialismus.onLoad();
 
 		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
 			throw new RuntimeException("Integrity check failed, plugin will be disabled");

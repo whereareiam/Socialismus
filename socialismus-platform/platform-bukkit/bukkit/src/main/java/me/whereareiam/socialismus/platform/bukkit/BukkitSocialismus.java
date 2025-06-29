@@ -23,13 +23,15 @@ public class BukkitSocialismus extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		PluginType.setPluginType(PluginType.BUKKIT);
+		BukkitLoggingHelper.setLogger(logger);
 
 		BukkitDependencyResolver dependencyResolver = new BukkitDependencyResolver(this);
 		dependencyResolver.loadLibraries();
 		dependencyResolver.resolveDependencies();
 
 		new BukkitInjector(this, dependencyResolver, dataPath);
-		BukkitLoggingHelper.setLogger(logger);
+
+		commonSocialismus.onLoad();
 
 		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
 			getPluginLoader().disablePlugin(this);
