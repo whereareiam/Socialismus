@@ -14,6 +14,7 @@ public final class Constants {
 		public static final String GUICE = "@guiceVersion@";
 		public static final String JACKSON = "@jacksonVersion@";
 		public static final String SNAKEYAML = "@snakeyamlVersion@";
+		public static final String JEDIS = "@jedisVersion@";
 		public static final String ADVENTURE = "@adventureVersion@";
 		public static final String ADVENTURE_BUKKIT = "@adventureBukkitVersion@";
 

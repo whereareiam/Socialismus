@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.api.model.module;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import me.whereareiam.socialismus.api.output.resource.ResourceRequirement;
 import me.whereareiam.socialismus.api.type.PlatformType;
 import me.whereareiam.socialismus.api.type.Version;
 
@@ -51,6 +52,8 @@ public class Module {
 	 * List of other modules this module depends on
 	 */
 	private List<ModuleDependency> dependencies;
+
+	private List<ResourceRequirement> requirements = List.of();
 
 	/**
 	 * The main class path of the module

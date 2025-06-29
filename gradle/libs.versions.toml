@@ -12,6 +12,10 @@ libby = "2.0.1"
 jackson = "2.19.1"
 snakeyaml = "2.4"
 
+# resouces
+ormlite = "6.1"
+jedis = "6.0.0"
+
 # platform api versions
 velocity = "3.3.0-SNAPSHOT"
 spigot = "1.21-R0.1-SNAPSHOT"
@@ -45,6 +49,10 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
+
+# resources
+ormlite = { group = "com.j256.ormlite", name = "ormlite-core", version.ref = "ormlite" }
+jedis = { group = "redis.clients", name = "jedis", version.ref = "jedis" }
 
 # platform api
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
