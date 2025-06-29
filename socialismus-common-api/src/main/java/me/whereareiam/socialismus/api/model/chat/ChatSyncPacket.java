@@ -16,5 +16,6 @@ import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 @AllArgsConstructor
 public class ChatSyncPacket {
 	private String origin;
+	private String content;
 	private ChatMessage message;
 }

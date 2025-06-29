@@ -1,8 +1,6 @@
 package me.whereareiam.socialismus.api.model.chat.message;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
@@ -21,6 +19,8 @@ import java.util.Set;
 @Setter
 @ToString
 @SuperBuilder(toBuilder = true)
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class ChatMessage {
 	/**
 	 * Unique identifier for the message.
@@ -58,3 +58,4 @@ public class ChatMessage {
 	 */
 	private boolean vanillaSending;
 }
+

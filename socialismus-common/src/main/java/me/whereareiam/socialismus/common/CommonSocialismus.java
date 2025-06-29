@@ -42,11 +42,10 @@ public class CommonSocialismus {
 		injector.getInstance(ChatSettings.class);
 
 		injector.getInstance(CommandService.class).registerCommands();
+		injector.getInstance(ModuleService.class).loadModules();
 		injector.getInstance(ListenerRegistrar.class).registerListeners();
 
 		injector.getInstance(Updater.class).start();
-		injector.getInstance(ModuleService.class).loadModules();
-
 		injector.getInstance(ChatNetworkBridge.class).startListening();
 
 		injector.getInstance(WelcomeBannerPrinter.class).print();

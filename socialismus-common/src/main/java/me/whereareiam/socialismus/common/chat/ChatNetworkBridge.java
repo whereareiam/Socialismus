@@ -9,6 +9,7 @@ import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.SerializationService;
 import me.whereareiam.socialismus.api.output.resource.sync.SyncService;
+import me.whereareiam.socialismus.api.util.ComponentUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	private final SyncService sync;
 	private final SerializationService serializationService;
 	private final ChatCoordinator coordinator;
+	private final PlatformInteractor platformInteractor;
 	private final String serverId;
 
 	@Inject
@@ -28,11 +30,13 @@ public class ChatNetworkBridge implements ChatSyncBus {
 			SyncService sync,
 			SerializationService serializationService,
 			ChatCoordinator coordinator,
-			PlatformInteractor platformInteractor
+			PlatformInteractor platformInteractor,
+			PlatformInteractor platformInteractor1
 	) {
 		this.sync = sync;
 		this.serializationService = serializationService;
 		this.coordinator = coordinator;
+		this.platformInteractor = platformInteractor1;
 
 		String serverIdentifier = platformInteractor.getServerIp() + ":" + platformInteractor.getServerPort();
 		this.serverId = UUID.nameUUIDFromBytes(serverIdentifier.getBytes(StandardCharsets.UTF_8)).toString();
@@ -41,9 +45,13 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	@Override
 	public void publish(ChatMessage message) {
 		try {
-			ChatSyncPacket packet = new ChatSyncPacket(serverId, message);
+			String content = ComponentUtil.toString(message.getContent());
+			ChatSyncPacket packet = new ChatSyncPacket(serverId, content, message);
+
 			byte[] data = serializationService.serialize(packet);
 			sync.publish(CHANNEL, data);
+
+			Logger.debug("Published chat message to sync channel: " + message.getId());
 		} catch (Exception ex) {
 			Logger.warn("Failed to sync chat message: " + ex);
 		}
@@ -57,11 +65,16 @@ public class ChatNetworkBridge implements ChatSyncBus {
 
 				if (serverId.equals(packet.getOrigin())) return;
 
-				packet.getMessage().setRecipients(Set.of());
+				ChatMessage message = packet.getMessage();
+				message.setContent(ComponentUtil.toMiniMessage(packet.getContent()));
+				message.setRecipients(Set.of());
+				message.getSender().setInteractor(platformInteractor);
 
-				coordinator.coordinate(packet.getMessage());
+				Logger.debug("Received chat message from sync channel: " + message.getId());
+				coordinator.coordinate(message);
 			} catch (Exception ex) {
 				Logger.warn("Bad chat-sync packet: " + ex);
+				ex.printStackTrace();
 			}
 		});
 	}

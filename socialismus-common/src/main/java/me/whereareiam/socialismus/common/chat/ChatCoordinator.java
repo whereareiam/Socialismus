@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.common.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.input.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.api.input.event.chat.ChatBroadcastEvent;
@@ -13,20 +14,12 @@ import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ChatCoordinator implements ChatCoordinationService {
 	private final ChatMessageProcessor chatMessageProcessor;
 	private final FormattedChatMessageProcessor formattedChatMessageProcessor;
 	private final ChatBroadcaster chatBroadcaster;
 	private final ChatHistoryContainerService chatHistoryContainer;
-
-	@Inject
-	public ChatCoordinator(ChatMessageProcessor chatMessageProcessor, FormattedChatMessageProcessor formattedChatMessageProcessor,
-	                       ChatBroadcaster chatBroadcaster, ChatHistoryContainerService chatHistoryContainer) {
-		this.chatMessageProcessor = chatMessageProcessor;
-		this.formattedChatMessageProcessor = formattedChatMessageProcessor;
-		this.chatBroadcaster = chatBroadcaster;
-		this.chatHistoryContainer = chatHistoryContainer;
-	}
 
 	public FormattedChatMessage coordinate(ChatMessage chatMessage) {
 		chatMessage = chatMessageProcessor.process(chatMessage);

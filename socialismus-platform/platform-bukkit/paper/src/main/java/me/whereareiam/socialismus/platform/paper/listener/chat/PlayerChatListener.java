@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.api.input.chat.ChatSyncBus;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.output.listener.DynamicListener;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
+	private final ChatSyncBus chatSyncBus;
 	private final ChatCoordinator chatCoordinator;
 	private final ChatMessageFactory chatMessageFactory;
 	private final ChatBroadcaster chatBroadcaster;
@@ -38,6 +40,7 @@ public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
 						.collect(Collectors.toSet()),
 				content
 		);
+		chatSyncBus.publish(chatMessage);
 		FormattedChatMessage formattedChatMessage = chatCoordinator.coordinate(chatMessage);
 
 		if (formattedChatMessage == null || formattedChatMessage.isCancelled() || !formattedChatMessage.isVanillaSending()) {

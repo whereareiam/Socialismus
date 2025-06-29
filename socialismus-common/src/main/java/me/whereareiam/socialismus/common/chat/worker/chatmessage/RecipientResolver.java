@@ -22,7 +22,9 @@ public class RecipientResolver {
 	private ChatMessage resolveRecipients(ChatMessage chatMessage) {
 		if (!chatMessage.getRecipients().isEmpty()) return chatMessage;
 
-		EventUtil.callEvent(new RecipientsResolvedEvent(chatMessage, chatMessage.isCancelled()), playerContainer::getPlayers);
+		EventUtil.callEvent(new RecipientsResolvedEvent(chatMessage, chatMessage.isCancelled()),
+				() -> chatMessage.setRecipients(playerContainer.getPlayers())
+		);
 
 		return chatMessage;
 	}

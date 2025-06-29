@@ -1,9 +1,6 @@
 package me.whereareiam.socialismus.api.model.player;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.position.Position;
@@ -21,6 +18,7 @@ import java.util.UUID;
  */
 @Getter
 @ToString
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class DummyPlayer {
@@ -60,7 +58,8 @@ public class DummyPlayer {
 	/**
 	 * The platform interactor for interacting with the player
 	 */
-	private final transient PlatformInteractor interactor;
+	@Setter
+	private transient PlatformInteractor interactor;
 
 	/**
 	 * Sends a message to the player using the Adventure API

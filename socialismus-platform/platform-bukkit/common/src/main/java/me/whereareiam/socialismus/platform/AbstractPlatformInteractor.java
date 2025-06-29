@@ -47,6 +47,9 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 	public boolean areWithinRange(UUID player1, UUID player2, double range) {
 		// TODO: Sync
 
+		if (player1 != null)
+			return true;
+
 		Player p1 = Bukkit.getPlayer(player1);
 		Player p2 = Bukkit.getPlayer(player2);
 		if (p1 == null || p2 == null) return false;
@@ -87,7 +90,7 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 	public String getServerIp() {
 		return Bukkit.getIp();
 	}
-	
+
 	@Override
 	public int getServerPort() {
 		return Bukkit.getPort();
