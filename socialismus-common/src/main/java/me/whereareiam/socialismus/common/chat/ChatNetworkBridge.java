@@ -6,10 +6,13 @@ import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.chat.ChatSyncBus;
 import me.whereareiam.socialismus.api.model.chat.ChatSyncPacket;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.SerializationService;
 import me.whereareiam.socialismus.api.output.resource.sync.SyncService;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
+import java.util.UUID;
 
 @Singleton
 public class ChatNetworkBridge implements ChatSyncBus {
@@ -24,13 +27,15 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	public ChatNetworkBridge(
 			SyncService sync,
 			SerializationService serializationService,
-			ChatCoordinator coordinator
+			ChatCoordinator coordinator,
+			PlatformInteractor platformInteractor
 	) {
 		this.sync = sync;
 		this.serializationService = serializationService;
 		this.coordinator = coordinator;
-		this.serverId = System.getProperty("socialismus.server",
-				"default-server");
+
+		String serverIdentifier = platformInteractor.getServerIp() + ":" + platformInteractor.getServerPort();
+		this.serverId = UUID.nameUUIDFromBytes(serverIdentifier.getBytes(StandardCharsets.UTF_8)).toString();
 	}
 
 	@Override
