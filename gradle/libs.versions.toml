@@ -9,7 +9,7 @@ lombok = "1.18.38"
 # general
 guice = "7.0.0"
 libby = "2.0.1"
-jackson = "2.18.3"
+jackson = "2.19.1"
 snakeyaml = "2.4"
 
 # platform api versions
