@@ -85,7 +85,7 @@ public class WelcomeBannerPrinter {
 		if (db || sync || cache) {
 			l.add("  Connections:");
 			if (db) l.add(formatConn("Database"));
-			if (sync) l.add(formatConn("Sync"));
+			if (sync) l.add(formatConn("Synchronization"));
 			if (cache) l.add(formatConn("Cache"));
 			l.add("");
 		}

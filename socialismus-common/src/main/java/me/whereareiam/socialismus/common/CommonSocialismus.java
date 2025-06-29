@@ -43,10 +43,10 @@ public class CommonSocialismus {
 		injector.getInstance(CommandService.class).registerCommands();
 		injector.getInstance(ListenerRegistrar.class).registerListeners();
 
-		injector.getInstance(WelcomeBannerPrinter.class).print();
-
 		injector.getInstance(Updater.class).start();
 		injector.getInstance(ModuleService.class).loadModules();
+
+		injector.getInstance(WelcomeBannerPrinter.class).print();
 
 		EventUtil.callEvent(new PluginInitializedEvent(), () -> {});
 	}
