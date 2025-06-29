@@ -45,6 +45,7 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	@Override
 	public void publish(ChatMessage message) {
 		try {
+			message.setRemote(true);
 			String content = ComponentUtil.toString(message.getContent());
 			ChatSyncPacket packet = new ChatSyncPacket(serverId, content, message);
 

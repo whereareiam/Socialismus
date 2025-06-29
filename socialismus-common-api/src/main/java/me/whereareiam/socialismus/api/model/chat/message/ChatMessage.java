@@ -57,5 +57,10 @@ public class ChatMessage {
 	 * Whether the message should be sent through Minecraft's vanilla chat system.
 	 */
 	private boolean vanillaSending;
+
+	/**
+	 * Whether the message is sent from a remote source (e.g., another server).
+	 */
+	private boolean remote;
 }
 
