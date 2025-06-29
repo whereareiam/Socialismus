@@ -17,7 +17,6 @@ import me.whereareiam.socialismus.common.IntegrityChecker;
 import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
 import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
 import me.whereareiam.socialismus.integration.papiproxybridge.PAPIProxyBridgeIntegration;
-import me.whereareiam.socialismus.integration.valiobungee.ValioBungeeIntegration;
 import me.whereareiam.socialismus.platform.velocity.inject.VelocityInjector;
 import me.whereareiam.socialismus.shared.Constants;
 import org.slf4j.Logger;
@@ -32,7 +31,6 @@ import java.nio.file.Path;
 		dependencies = {
 				@Dependency(id = "packetevents", optional = true),
 				@Dependency(id = "papiproxybridge", optional = true),
-				@Dependency(id = "redisbungee", optional = true),
 		}
 )
 public class VelocitySocialismus {
@@ -76,7 +74,6 @@ public class VelocitySocialismus {
 
 		CommonInjector.getInjector().getInstance(PAPIProxyBridgeIntegration.class);
 		CommonInjector.getInjector().getInstance(PacketEventsIntegration.class);
-		CommonInjector.getInjector().getInstance(ValioBungeeIntegration.class);
 		CommonInjector.getInjector().getInstance(bStatsIntegration.class);
 
 		commonSocialismus.onEnable();
