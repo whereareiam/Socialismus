@@ -75,7 +75,6 @@ public class ChatNetworkBridge implements ChatSyncBus {
 				coordinator.coordinate(message);
 			} catch (Exception ex) {
 				Logger.warn("Bad chat-sync packet: " + ex);
-				ex.printStackTrace();
 			}
 		});
 	}

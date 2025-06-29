@@ -8,7 +8,6 @@ import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerServic
 import me.whereareiam.socialismus.api.input.event.chat.ChatBroadcastEvent;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.api.type.PlatformType;
 import me.whereareiam.socialismus.api.util.EventUtil;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
@@ -29,7 +28,7 @@ public class ChatCoordinator implements ChatCoordinationService {
 
 		EventUtil.callEvent(new ChatBroadcastEvent(formattedChatMessage, formattedChatMessage.isCancelled()), () -> {
 			formattedChatMessage.getSender().setLastChat(formattedChatMessage.getChat());
-			if (!formattedChatMessage.isVanillaSending() || PlatformType.isProxy())
+			if (!formattedChatMessage.isVanillaSending() || formattedChatMessage.isRemote())
 				chatBroadcaster.broadcast(formattedChatMessage);
 
 			chatHistoryContainer.addMessage(formattedChatMessage.getId(), formattedChatMessage);

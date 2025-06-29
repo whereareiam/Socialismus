@@ -1,30 +1,24 @@
 package me.whereareiam.socialismus.platform;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.position.Position;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.integration.Integration;
 import me.whereareiam.socialismus.api.type.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.Set;
 import java.util.UUID;
 
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public abstract class AbstractPlatformInteractor implements PlatformInteractor {
-	private final Provider<Set<Integration>> integrations;
-
 	@Override
 	public Position getPosition(DummyPlayer dummyPlayer) {
 		Player player = Bukkit.getPlayer(dummyPlayer.getUniqueId());
-		if (player == null) {
+		if (player == null)
 			return null;
-		}
 
 		Location location = player.getLocation();
 
@@ -34,9 +28,8 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 	@Override
 	public Position getEyePosition(DummyPlayer dummyPlayer) {
 		Player player = Bukkit.getPlayer(dummyPlayer.getUniqueId());
-		if (player == null) {
+		if (player == null)
 			return null;
-		}
 
 		Location location = player.getEyeLocation();
 
@@ -46,9 +39,6 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 	@Override
 	public boolean areWithinRange(UUID player1, UUID player2, double range) {
 		// TODO: Sync
-
-		if (player1 != null)
-			return true;
 
 		Player p1 = Bukkit.getPlayer(player1);
 		Player p2 = Bukkit.getPlayer(player2);
