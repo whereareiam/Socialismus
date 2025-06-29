@@ -4,7 +4,7 @@ import com.google.inject.Injector;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.Serializer;
 import me.whereareiam.socialismus.api.input.event.plugin.PluginInitializedEvent;
-import me.whereareiam.socialismus.api.input.serializer.SerializationService;
+import me.whereareiam.socialismus.api.input.serializer.ComponentService;
 import me.whereareiam.socialismus.api.model.chat.ChatMessages;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.output.LoggingHelper;
@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.api.output.command.CommandService;
 import me.whereareiam.socialismus.api.output.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.api.output.module.ModuleService;
 import me.whereareiam.socialismus.api.util.EventUtil;
+import me.whereareiam.socialismus.common.chat.ChatNetworkBridge;
 import me.whereareiam.socialismus.common.chat.worker.FormatSelector;
 import me.whereareiam.socialismus.common.chat.worker.chatmessage.ChatSelector;
 import me.whereareiam.socialismus.common.chat.worker.chatmessage.RecipientResolver;
@@ -27,7 +28,7 @@ public class CommonSocialismus {
 
 		// Static helpers
 		Logger.init(injector.getInstance(LoggingHelper.class));
-		Serializer.init(injector.getInstance(SerializationService.class));
+		Serializer.init(injector.getInstance(ComponentService.class));
 	}
 
 	public void onEnable() {
@@ -45,6 +46,8 @@ public class CommonSocialismus {
 
 		injector.getInstance(Updater.class).start();
 		injector.getInstance(ModuleService.class).loadModules();
+
+		injector.getInstance(ChatNetworkBridge.class).startListening();
 
 		injector.getInstance(WelcomeBannerPrinter.class).print();
 

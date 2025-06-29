@@ -15,7 +15,7 @@ import me.whereareiam.socialismus.api.input.registry.ExtendedRegistry;
 import me.whereareiam.socialismus.api.input.registry.Registry;
 import me.whereareiam.socialismus.api.input.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.api.input.requirement.RequirementValidation;
-import me.whereareiam.socialismus.api.input.serializer.SerializationService;
+import me.whereareiam.socialismus.api.input.serializer.ComponentService;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.model.serializer.SerializerContent;
@@ -35,7 +35,7 @@ import me.whereareiam.socialismus.common.provider.ReloadableProvider;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.common.requirement.RequirementRegistry;
 import me.whereareiam.socialismus.common.requirement.validation.*;
-import me.whereareiam.socialismus.common.serializer.Serializer;
+import me.whereareiam.socialismus.common.serializer.ComponentSerializer;
 
 import java.util.Set;
 
@@ -61,8 +61,8 @@ public class CommonConfiguration extends AbstractModule {
 		bind(new TypeLiteral<Registry<Reloadable>>() {}).to(ReloadableProvider.class).asEagerSingleton();
 		bind(new TypeLiteral<Set<Reloadable>>() {}).annotatedWith(Names.named("reloadables")).toProvider(ReloadableProvider.class).asEagerSingleton();
 
-		bind(SerializationService.class).to(Serializer.class);
-		bind(new TypeLiteral<WorkerProcessor<SerializerContent>>() {}).to(Serializer.class);
+		bind(ComponentService.class).to(ComponentSerializer.class);
+		bind(new TypeLiteral<WorkerProcessor<SerializerContent>>() {}).to(ComponentSerializer.class);
 
 		bind(PermissionRequirementValidation.class).asEagerSingleton();
 		bind(WorldRequirementValidation.class).asEagerSingleton();
