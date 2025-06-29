@@ -57,13 +57,6 @@ public class ModuleLifecycleController {
 			module.getModule().setModule(module);
 			module.getModule().setWorkingPath(module.getPath().getParent().resolve(module.getName()));
 
-			if (module.getModule() instanceof ResourceProvider provider) {
-				provider.provideResources().forEach((k, v) -> {
-					registry.register(k, v);
-					Logger.info("Registered resource " + k + " from module " + module.getName());
-				});
-			}
-
 			injector.injectMembers(module.getModule());
 
 			if (checkRequirements(module)) return;
@@ -71,6 +64,13 @@ public class ModuleLifecycleController {
 			Logger.info("Loaded module " + AnsiColor.YELLOW + module.getName() + AnsiColor.RESET + " v" + module.getVersion() + " [" + String.join(", ", module.getAuthors()) + "]");
 
 			module.getModule().onLoad();
+
+			if (module.getModule() instanceof ResourceProvider provider) {
+				provider.provideResources().forEach((k, v) -> {
+					registry.register(k, v);
+					Logger.info("Registered resource " + k + " from module " + module.getName());
+				});
+			}
 		} catch (MalformedURLException | ClassNotFoundException e) {
 			Logger.severe("Failed to load module " + module.getName() + ": " + e);
 			module.setState(ModuleState.ERROR);
@@ -94,12 +94,12 @@ public class ModuleLifecycleController {
 	public void unloadModule(InternalModule module) {
 		if (!module.getState().equals(ModuleState.DISABLED)) return;
 
+		module.setState(ModuleState.UNLOADED);
+		module.getModule().onUnload();
+
 		if (module.getModule() instanceof ResourceProvider provider) {
 			provider.provideResources().keySet().forEach(registry::unregister);
 		}
-
-		module.setState(ModuleState.UNLOADED);
-		module.getModule().onUnload();
 	}
 
 	private boolean checkRequirements(InternalModule module) {

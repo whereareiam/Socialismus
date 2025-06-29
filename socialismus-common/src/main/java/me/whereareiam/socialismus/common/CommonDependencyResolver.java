@@ -43,6 +43,15 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 								.build()
 				).build());
 
+		// Jedis
+		addDependency(Library.builder()
+				.groupId("redis.clients")
+				.artifactId("jedis")
+				.version(Constants.Dependency.JEDIS)
+				.resolveTransitiveDependencies(true)
+				.build()
+		);
+
 		// Cloud libraries
 		addDependency(Library.builder()
 				.groupId("org{}incendo")
