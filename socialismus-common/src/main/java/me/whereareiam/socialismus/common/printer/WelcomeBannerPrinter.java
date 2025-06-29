@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.AnsiColor;
 import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.api.output.command.CommandService;
+import me.whereareiam.socialismus.api.output.resource.ResourceRegistry;
 import me.whereareiam.socialismus.api.type.PlatformType;
 import me.whereareiam.socialismus.api.type.PluginType;
+import me.whereareiam.socialismus.api.type.ResourceType;
 import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.provider.IntegrationProvider;
 import me.whereareiam.socialismus.shared.Constants;
@@ -20,12 +22,14 @@ public class WelcomeBannerPrinter {
 	private final CommandService commandService;
 	private final ChatContainer chatContainer;
 	private final IntegrationProvider integrationProvider;
+	private final ResourceRegistry resourceRegistry;
 
 	public void print() {
 		List<String> lines = new ArrayList<>();
 		lines.addAll(buildTitleLines());
 		lines.addAll(buildStatsLines());
 		lines.addAll(buildIntegrationLines());
+		lines.addAll(buildConnectionLines());
 		lines.forEach(loggingHelper::info);
 	}
 
@@ -70,5 +74,31 @@ public class WelcomeBannerPrinter {
 						AnsiColor.RESET));
 		l.add("");
 		return l;
+	}
+
+	private List<String> buildConnectionLines() {
+		List<String> l = new ArrayList<>();
+		boolean db = resourceRegistry.has(ResourceType.DATABASE);
+		boolean sync = resourceRegistry.has(ResourceType.SYNC);
+		boolean cache = resourceRegistry.has(ResourceType.CACHE);
+
+		if (db || sync || cache) {
+			l.add("  Connections:");
+			if (db) l.add(formatConn("Database"));
+			if (sync) l.add(formatConn("Sync"));
+			if (cache) l.add(formatConn("Cache"));
+			l.add("");
+		}
+
+		return l;
+	}
+
+	private String formatConn(String label) {
+		return String.format(
+				"    - %s%s%s",
+				AnsiColor.GREEN,
+				label,
+				AnsiColor.RESET
+		);
 	}
 }

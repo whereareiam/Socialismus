@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.api.model.module.InternalModule;
 import me.whereareiam.socialismus.api.output.PlatformClassLoader;
 import me.whereareiam.socialismus.api.output.module.SocialisticModule;
 import me.whereareiam.socialismus.api.output.resource.ResourceProvider;
+import me.whereareiam.socialismus.api.output.resource.ResourceRegistry;
 import me.whereareiam.socialismus.api.type.module.ModuleState;
 
 import java.net.MalformedURLException;
