@@ -14,6 +14,11 @@ public enum Version {
 	UNSUPPORTED,
 
 	/**
+	 * Represents the future version, used for pre-release or upcoming versions
+	 */
+	FUTURE,
+
+	/**
 	 * Minecraft versions from 1.16 to 1.21.4
 	 */
 	V_1_16,
@@ -44,7 +49,9 @@ public enum Version {
 	V_1_21_2,
 	V_1_21_3,
 	V_1_21_4,
-	V_1_21_5;
+	V_1_21_5,
+	V_1_21_6,
+	V_1_21_7;
 
 	/**
 	 * Converts a version string to its corresponding Version enum.
@@ -55,12 +62,40 @@ public enum Version {
 	public static Version of(String version) {
 		if (version == null || version.isEmpty()) return Version.UNSUPPORTED;
 
-		String normalizedVersion = version.split("[\\s-]")[0].replace(".", "_");
+		String normalizedVersion = version.split("[\\s-]")[0];
 
 		try {
-			return Version.valueOf("V_" + normalizedVersion);
+			return Version.valueOf("V_" + normalizedVersion.replace(".", "_"));
 		} catch (IllegalArgumentException e) {
-			return Version.UNSUPPORTED;
+			Version latest = getLatest();
+			if (latest == UNSUPPORTED) {
+				return UNSUPPORTED;
+			}
+
+			String[] latestVersionParts = latest.name().substring(2).split("_");
+			String[] currentVersionParts = normalizedVersion.split("\\.");
+
+			int minLength = Math.min(latestVersionParts.length, currentVersionParts.length);
+			for (int i = 0; i < minLength; i++) {
+				try {
+					int latestPart = Integer.parseInt(latestVersionParts[i]);
+					int currentPart = Integer.parseInt(currentVersionParts[i]);
+
+					if (currentPart > latestPart) {
+						return FUTURE;
+					} else if (currentPart < latestPart) {
+						return UNSUPPORTED;
+					}
+				} catch (NumberFormatException ex) {
+					return UNSUPPORTED;
+				}
+			}
+
+			if (currentVersionParts.length > latestVersionParts.length) {
+				return FUTURE;
+			}
+
+			return UNSUPPORTED;
 		}
 	}
 
@@ -71,8 +106,8 @@ public enum Version {
 	 */
 	public static Version getLatest() {
 		return Arrays.stream(Version.values())
-				.filter(version -> version != UNSUPPORTED)
-				.max(Comparator.comparing(Enum::name))
+				.filter(version -> version != UNSUPPORTED && version != FUTURE)
+				.max(Comparator.comparing(v -> v.name().substring(2).replaceAll("_", ".")))
 				.orElse(UNSUPPORTED);
 	}
 
