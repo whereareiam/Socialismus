@@ -3,15 +3,13 @@ package me.whereareiam.socialismus.adapter.module;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.adapter.module.resolver.ModuleDependencyResolver;
-import me.whereareiam.socialismus.adapter.module.resolver.ModulePlatformResolver;
-import me.whereareiam.socialismus.adapter.module.resolver.ModuleResolver;
-import me.whereareiam.socialismus.adapter.module.resolver.ModuleVersionResolver;
+import me.whereareiam.socialismus.adapter.module.resolver.*;
 import me.whereareiam.socialismus.api.AnsiColor;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.model.module.InternalModule;
 import me.whereareiam.socialismus.api.output.PlatformClassLoader;
 import me.whereareiam.socialismus.api.output.module.SocialisticModule;
+import me.whereareiam.socialismus.api.output.resource.ResourceProvider;
 import me.whereareiam.socialismus.api.type.module.ModuleState;
 
 import java.net.MalformedURLException;
@@ -23,18 +21,25 @@ import java.util.List;
 public class ModuleLifecycleController {
 	private final Injector injector;
 	private final PlatformClassLoader platformClassLoader;
+	private final ResourceRegistry registry;
 
 	private final List<ModuleResolver> resolvers;
 
 	@Inject
-	public ModuleLifecycleController(Injector injector, PlatformClassLoader platformClassLoader) {
+	public ModuleLifecycleController(
+			Injector injector,
+			PlatformClassLoader platformClassLoader,
+			ResourceRegistry registry
+	) {
 		this.injector = injector;
 		this.platformClassLoader = platformClassLoader;
+		this.registry = registry;
 
 		this.resolvers = List.of(
 				injector.getInstance(ModuleDependencyResolver.class),
 				injector.getInstance(ModuleVersionResolver.class),
-				injector.getInstance(ModulePlatformResolver.class)
+				injector.getInstance(ModulePlatformResolver.class),
+				injector.getInstance(ModuleResourceResolver.class)
 		);
 	}
 
@@ -50,6 +55,14 @@ public class ModuleLifecycleController {
 			module.setState(ModuleState.LOADED);
 			module.getModule().setModule(module);
 			module.getModule().setWorkingPath(module.getPath().getParent().resolve(module.getName()));
+
+			if (module.getModule() instanceof ResourceProvider provider) {
+				provider.provideResources().forEach((k, v) -> {
+					registry.register(k, v);
+					Logger.info("Registered resource " + k + " from module " + module.getName());
+				});
+			}
+
 			injector.injectMembers(module.getModule());
 
 			if (checkRequirements(module)) return;
@@ -79,6 +92,10 @@ public class ModuleLifecycleController {
 
 	public void unloadModule(InternalModule module) {
 		if (!module.getState().equals(ModuleState.DISABLED)) return;
+
+		if (module.getModule() instanceof ResourceProvider provider) {
+			provider.provideResources().keySet().forEach(registry::unregister);
+		}
 
 		module.setState(ModuleState.UNLOADED);
 		module.getModule().onUnload();

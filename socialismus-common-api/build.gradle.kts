@@ -9,6 +9,7 @@ repositories {
 dependencies {
     "compileOnly"(libs.bundles.adventure)
     "compileOnly"(libs.libby.core)
+    "compileOnly"(libs.ormlite)
 }
 
 java {
