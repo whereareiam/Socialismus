@@ -11,25 +11,19 @@ import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Locale;
 import java.util.UUID;
 
 /**
  * Represents a lightweight player entity in the Socialismus plugin.
  * This class provides essential player properties and functionality without
- * being tied to a specific platform implementation. It implements {@link Serializable}
- * to support data persistence and transfer.
+ * being tied to a specific platform implementation.
  */
 @Getter
 @ToString
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class DummyPlayer implements Serializable {
-	@Serial
-	private static final long serialVersionUID = 1L;
-
+public class DummyPlayer {
 	/**
 	 * The player's username
 	 */
