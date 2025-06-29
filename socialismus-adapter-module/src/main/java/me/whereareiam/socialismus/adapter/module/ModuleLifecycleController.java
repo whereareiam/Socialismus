@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.adapter.module;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.adapter.module.resolver.*;
 import me.whereareiam.socialismus.api.AnsiColor;
@@ -62,22 +63,22 @@ public class ModuleLifecycleController {
 
 			if (checkRequirements(module)) return;
 
-			Logger.info("Loaded module " + AnsiColor.YELLOW + module.getName() + AnsiColor.RESET + " v" + module.getVersion() + " [" + String.join(", ", module.getAuthors()) + "]");
-
 			try {
 				module.getModule().onLoad();
-			} catch (ModuleLifecycleException ex) {
+
+				if (module.getModule() instanceof ResourceProvider provider) {
+					provider.provideResources().forEach((k, v) -> {
+						registry.register(k, v);
+						Logger.info("Registered resource " + k + " from module " + module.getName());
+					});
+				}
+			} catch (ModuleLifecycleException | ProvisionException ex) {
 				Logger.severe("Module " + module.getName() + " aborted load: " + ex.getMessage());
 				module.setState(ModuleState.ERROR);
 				return;
 			}
 
-			if (module.getModule() instanceof ResourceProvider provider) {
-				provider.provideResources().forEach((k, v) -> {
-					registry.register(k, v);
-					Logger.info("Registered resource " + k + " from module " + module.getName());
-				});
-			}
+			Logger.info("Loaded module " + AnsiColor.YELLOW + module.getName() + AnsiColor.RESET + " v" + module.getVersion() + " [" + String.join(", ", module.getAuthors()) + "]");
 		} catch (MalformedURLException | ClassNotFoundException e) {
 			Logger.severe("Failed to load module " + module.getName() + ": " + e);
 			module.setState(ModuleState.ERROR);
