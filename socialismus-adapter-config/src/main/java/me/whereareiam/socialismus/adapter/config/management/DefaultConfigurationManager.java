@@ -7,20 +7,20 @@ import me.whereareiam.socialismus.api.output.config.ConfigurationManager;
 import me.whereareiam.socialismus.api.output.config.ConfigurationTypeResolver;
 import me.whereareiam.socialismus.api.type.ConfigurationType;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultConfigurationManager implements ConfigurationManager {
 	private final ConfigurationTypeResolver typeResolver;
-	private final Map<Class<?>, DefaultConfig<?>> templates;
+
+	private final Map<Class<?>, DefaultConfig<?>> templates = new ConcurrentHashMap<>();
 
 	@Inject
 	public DefaultConfigurationManager(
 			ConfigurationTypeResolver typeResolver,
-			@Named("configTemplates") Map<Class<?>, DefaultConfig<?>> templates
-	) {
+			@Named("configTemplates") Map<Class<?>, DefaultConfig<?>> bootstrap) {
 		this.typeResolver = typeResolver;
-		this.templates = new HashMap<>(templates);
+		this.templates.putAll(bootstrap);
 	}
 
 	@Override
@@ -29,13 +29,13 @@ public class DefaultConfigurationManager implements ConfigurationManager {
 	}
 
 	@Override
-	public void addTemplate(Class<?> clazz, DefaultConfig<?> template) {
-		templates.put(clazz, template);
+	public void addTemplate(Class<?> type, DefaultConfig<?> template) {
+		templates.put(type, template);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> DefaultConfig<T> getTemplate(Class<T> clazz) {
-		return (DefaultConfig<T>) templates.get(clazz);
+	public <T> DefaultConfig<T> getTemplate(Class<T> type) {
+		return (DefaultConfig<T>) templates.get(type);
 	}
 }
