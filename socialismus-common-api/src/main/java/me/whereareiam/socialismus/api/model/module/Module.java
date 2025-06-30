@@ -53,6 +53,10 @@ public class Module {
 	 */
 	private List<ModuleDependency> dependencies;
 
+	/**
+	 * List of resource requirements for this module
+	 * (e.g., database)
+	 */
 	private List<ResourceRequirement> requirements = List.of();
 
 	/**
