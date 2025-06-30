@@ -5,16 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.output.config.ConfigurationMerger;
 
 @Singleton
-public class ConfigMerger implements ConfigurationMerger {
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
+public class DefaultConfigurationMerger implements ConfigurationMerger {
 	private final ObjectMapper objectMapper;
-
-	@Inject
-	public ConfigMerger(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
-	}
 
 	public <T> void merge(T config, T defaultConfig) {
 		try {

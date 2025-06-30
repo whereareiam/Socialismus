@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import me.whereareiam.socialismus.adapter.config.management.ConfigLoader;
+import me.whereareiam.socialismus.adapter.config.management.DefaultConfigurationLoader;
 import me.whereareiam.socialismus.api.Reloadable;
 import me.whereareiam.socialismus.api.input.registry.Registry;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
@@ -13,34 +13,34 @@ import java.nio.file.Path;
 
 @Singleton
 public class ChatSettingsProvider implements Provider<ChatSettings>, Reloadable {
-    private final Path dataPath;
-    private final ConfigLoader configLoader;
+	private final Path dataPath;
+	private final DefaultConfigurationLoader defaultConfigurationLoader;
 
-    private ChatSettings chatSettings;
+	private ChatSettings chatSettings;
 
-    @Inject
-    public ChatSettingsProvider(@Named("chatPath") Path dataPath, ConfigLoader configLoader, Registry<Reloadable> registry) {
-        this.dataPath = dataPath;
-        this.configLoader = configLoader;
+	@Inject
+	public ChatSettingsProvider(@Named("chatPath") Path dataPath, DefaultConfigurationLoader defaultConfigurationLoader, Registry<Reloadable> registry) {
+		this.dataPath = dataPath;
+		this.defaultConfigurationLoader = defaultConfigurationLoader;
 
-        registry.register(this);
-    }
+		registry.register(this);
+	}
 
-    @Override
-    public ChatSettings get() {
-        if (chatSettings != null) return chatSettings;
+	@Override
+	public ChatSettings get() {
+		if (chatSettings != null) return chatSettings;
 
-        load();
+		load();
 
-        return chatSettings;
-    }
+		return chatSettings;
+	}
 
-    @Override
-    public void reload() {
-        load();
-    }
+	@Override
+	public void reload() {
+		load();
+	}
 
-    private void load() {
-        chatSettings = configLoader.load(dataPath.resolve("settings"), ChatSettings.class);
-    }
+	private void load() {
+		chatSettings = defaultConfigurationLoader.load(dataPath.resolve("settings"), ChatSettings.class);
+	}
 }
