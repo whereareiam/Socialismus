@@ -70,8 +70,8 @@ public class ComponentUtil {
 	 * @param component the component to convert
 	 * @return formatted string with ampersand color codes
 	 */
-	public static String toString(Component component) {
-		return toString(component, false);
+	public static String toLegacy(Component component) {
+		return toLegacy(component, false);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class ComponentUtil {
 	 * @param section   true to use section symbol (§), false for ampersand (&amp;)
 	 * @return formatted string with color codes
 	 */
-	public static String toString(Component component, boolean section) {
+	public static String toLegacy(Component component, boolean section) {
 		if (section) return LEGACY_SECTION_SERIALIZER.serialize(component);
 		return LEGACY_SERIALIZER.serialize(component);
 	}
@@ -116,5 +116,15 @@ public class ComponentUtil {
 	public static Component toGson(String string, boolean downsampling) {
 		if (downsampling) return GSON_DOWNSAMPLING_SERIALIZER.deserialize(string);
 		return GSON_SERIALIZER.deserialize(string);
+	}
+
+	/**
+	 * Converts a component to a Gson formatted string.
+	 *
+	 * @param component the component to convert
+	 * @return Gson formatted string
+	 */
+	public static String toGson(Component component) {
+		return GSON_SERIALIZER.serialize(component);
 	}
 }

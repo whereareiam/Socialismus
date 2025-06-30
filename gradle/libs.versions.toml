@@ -65,7 +65,6 @@ papiProxyBridge = { group = "net.william278", name = "papiproxybridge", version.
 bStats = { group = "org.bstats", name = "bstats-base", version.ref = "bStats" }
 bStats-velocity = { group = "org.bstats", name = "bstats-velocity", version.ref = "bStats" }
 bStats-bukkit = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bStats" }
-valiobungee = { group = "com.github.ProxioDev.ValioBungee", name = "RedisBungee-Velocity", version.ref = "valiobungee" }
 
 # libby
 libby-core = { group = "com.github.whereareiam.libby", name = "libby-core", version.ref = "libby" }

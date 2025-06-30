@@ -15,21 +15,21 @@ import net.kyori.adventure.text.Component;
  *   <li>Conversion of text to Adventure Components</li>
  * </ul>
  */
-public interface SerializationService {
-		/**
-		 * Formats a message with player-specific context.
-		 *
-		 * @param dummyPlayer the player context for formatting
-		 * @param message the message to format
-		 * @return the formatted message as an Adventure Component
-		 */
-		Component format(DummyPlayer dummyPlayer, String message);
+public interface ComponentService {
+	/**
+	 * Formats a message with player-specific context.
+	 *
+	 * @param dummyPlayer the player context for formatting
+	 * @param message     the message to format
+	 * @return the formatted message as an Adventure Component
+	 */
+	Component format(DummyPlayer dummyPlayer, String message);
 
-		/**
-		 * Formats serializer content into a component.
-		 *
-		 * @param content the content to format
-		 * @return the formatted content as an Adventure Component
-		 */
-		Component format(SerializerContent content);
+	/**
+	 * Formats serializer content into a component.
+	 *
+	 * @param content the content to format
+	 * @return the formatted content as an Adventure Component
+	 */
+	Component format(SerializerContent content);
 }

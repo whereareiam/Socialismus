@@ -2,31 +2,26 @@ package me.whereareiam.socialismus.common.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.input.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.api.input.event.chat.ChatBroadcastEvent;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.api.type.PlatformType;
 import me.whereareiam.socialismus.api.util.EventUtil;
+import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcastPolicy;
+import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ChatCoordinator implements ChatCoordinationService {
-	private final ChatMessageProcessor chatMessageProcessor;
 	private final FormattedChatMessageProcessor formattedChatMessageProcessor;
-	private final ChatBroadcaster chatBroadcaster;
 	private final ChatHistoryContainerService chatHistoryContainer;
-
-	@Inject
-	public ChatCoordinator(ChatMessageProcessor chatMessageProcessor, FormattedChatMessageProcessor formattedChatMessageProcessor,
-	                       ChatBroadcaster chatBroadcaster, ChatHistoryContainerService chatHistoryContainer) {
-		this.chatMessageProcessor = chatMessageProcessor;
-		this.formattedChatMessageProcessor = formattedChatMessageProcessor;
-		this.chatBroadcaster = chatBroadcaster;
-		this.chatHistoryContainer = chatHistoryContainer;
-	}
+	private final ChatMessageProcessor chatMessageProcessor;
+	private final ChatBroadcaster chatBroadcaster;
+	private final ChatBroadcastPolicy policy;
 
 	public FormattedChatMessage coordinate(ChatMessage chatMessage) {
 		chatMessage = chatMessageProcessor.process(chatMessage);
@@ -36,7 +31,7 @@ public class ChatCoordinator implements ChatCoordinationService {
 
 		EventUtil.callEvent(new ChatBroadcastEvent(formattedChatMessage, formattedChatMessage.isCancelled()), () -> {
 			formattedChatMessage.getSender().setLastChat(formattedChatMessage.getChat());
-			if (!formattedChatMessage.isVanillaSending() || PlatformType.isProxy())
+			if (policy.allows(formattedChatMessage))
 				chatBroadcaster.broadcast(formattedChatMessage);
 
 			chatHistoryContainer.addMessage(formattedChatMessage.getId(), formattedChatMessage);

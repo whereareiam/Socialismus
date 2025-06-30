@@ -8,60 +8,61 @@ import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerServic
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
+import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
 @Singleton
 public class ChatHistoryController implements ChatHistoryService {
-    private final ChatHistoryContainerService chatHistoryContainer;
-    private final Provider<ChatSettings> chatSettings;
-    private final ChatBroadcaster chatBroadcaster;
+	private final ChatHistoryContainerService chatHistoryContainer;
+	private final Provider<ChatSettings> chatSettings;
+	private final ChatBroadcaster chatBroadcaster;
 
-    @Inject
-    public ChatHistoryController(ChatHistoryContainerService chatHistoryContainer, Provider<ChatSettings> chatSettings, ChatBroadcaster chatBroadcaster, PlatformInteractor interactor) {
-        this.chatHistoryContainer = chatHistoryContainer;
-        this.chatSettings = chatSettings;
-        this.chatBroadcaster = chatBroadcaster;
-    }
+	@Inject
+	public ChatHistoryController(ChatHistoryContainerService chatHistoryContainer, Provider<ChatSettings> chatSettings, ChatBroadcaster chatBroadcaster, PlatformInteractor interactor) {
+		this.chatHistoryContainer = chatHistoryContainer;
+		this.chatSettings = chatSettings;
+		this.chatBroadcaster = chatBroadcaster;
+	}
 
-    @Override
-    public boolean removeMessage(int id) {
-        boolean removed = chatHistoryContainer.removeMessage(id);
-        if (removed) sendChatHistory();
+	@Override
+	public boolean removeMessage(int id) {
+		boolean removed = chatHistoryContainer.removeMessage(id);
+		if (removed) sendChatHistory();
 
-        return removed;
-    }
+		return removed;
+	}
 
-    @Override
-    public int removeMessages(int amount) {
-        int count = chatHistoryContainer.removeMessages(amount);
-        if (count > 0) sendChatHistory();
+	@Override
+	public int removeMessages(int amount) {
+		int count = chatHistoryContainer.removeMessages(amount);
+		if (count > 0) sendChatHistory();
 
-        return count;
-    }
+		return count;
+	}
 
-    @Override
-    public int removeMessages(String username) {
-        List<FormattedChatMessage> messages = chatHistoryContainer.getMessages(username);
+	@Override
+	public int removeMessages(String username) {
+		List<FormattedChatMessage> messages = chatHistoryContainer.getMessages(username);
 
-        int count = messages.size();
-        messages.forEach(message -> chatHistoryContainer.removeMessage(message.getId()));
+		int count = messages.size();
+		messages.forEach(message -> chatHistoryContainer.removeMessage(message.getId()));
 
-        if (count > 0) sendChatHistory();
+		if (count > 0) sendChatHistory();
 
-        return count;
-    }
+		return count;
+	}
 
-    private void sendChatHistory() {
-        Component filler = Component.empty();
-        for (int i = 0; i < chatSettings.get().getHistory().getFillerSize(); i++)
-            filler = filler.append(Component.newline());
+	private void sendChatHistory() {
+		Component filler = Component.empty();
+		for (int i = 0; i < chatSettings.get().getHistory().getFillerSize(); i++)
+			filler = filler.append(Component.newline());
 
-        Component finalFiller = filler;
-        chatHistoryContainer.getMessages().forEach(m -> {
-            m.getSender().sendMessage(finalFiller);
-            chatBroadcaster.broadcast(m);
-        });
-    }
+		Component finalFiller = filler;
+		chatHistoryContainer.getMessages().forEach(m -> {
+			m.getSender().sendMessage(finalFiller);
+			chatBroadcaster.broadcast(m);
+		});
+	}
 }

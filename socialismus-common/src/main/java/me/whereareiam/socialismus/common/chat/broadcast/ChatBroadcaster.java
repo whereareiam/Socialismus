@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.common.chat;
+package me.whereareiam.socialismus.common.chat.broadcast;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -31,7 +31,7 @@ public class ChatBroadcaster {
 	private final Provider<Map<String, CommandEntity>> commands;
 
 	public void broadcast(FormattedChatMessage chatMessage) {
-		Logger.info("[%s] %s: %s", chatMessage.getChat().getId().toUpperCase(), chatMessage.getSender().getUsername(), ComponentUtil.toString(chatMessage.getContent(), true));
+		Logger.info("[%s] %s: %s", chatMessage.getChat().getId().toUpperCase(), chatMessage.getSender().getUsername(), ComponentUtil.toLegacy(chatMessage.getContent(), true));
 
 		chatMessage.getRecipients().forEach(recipient ->
 				recipient.sendMessage(

@@ -1,14 +1,14 @@
 package me.whereareiam.socialismus.api;
 
-import me.whereareiam.socialismus.api.input.serializer.SerializationService;
+import me.whereareiam.socialismus.api.input.serializer.ComponentService;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.serializer.SerializerContent;
 import net.kyori.adventure.text.Component;
 
 public class Serializer {
-	private static SerializationService service;
+	private static ComponentService service;
 
-	public static void init(SerializationService service) {
+	public static void init(ComponentService service) {
 		Serializer.service = service;
 	}
 

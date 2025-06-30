@@ -26,78 +26,130 @@ import java.util.Map;
 @ToString
 @Singleton
 public class Settings {
-    /** Debug level for logging */
-    private int level;
+	/**
+	 * Debug level for logging
+	 */
+	private int level;
 
-    /** Type of serialization to use for messages */
-    private SerializationType serializer;
+	/**
+	 * Type of serialization to use for messages
+	 */
+	private SerializationType serializer;
 
-    /** Update checker configuration */
-    private Updater updater;
+	/**
+	 * Synchronization settings for the plugin.
+	 */
+	private Synchronization synchronization;
 
-    /** Miscellaneous plugin settings */
-    private Miscellaneous misc;
+	/**
+	 * Update checker configuration
+	 */
+	private Updater updater;
 
-    /** Event listener configurations */
-    private Listeners listeners;
+	/**
+	 * Miscellaneous plugin settings
+	 */
+	private Miscellaneous misc;
 
-    /**
-     * Configuration for the plugin's update checker.
-     * Controls update notifications and checking behavior.
-     */
-    @Getter
-    @Setter
-    @ToString
-    public static class Updater {
-        /** Whether to check for plugin updates */
-        private boolean checkForUpdates;
+	/**
+	 * Event listener configurations
+	 */
+	private Listeners listeners;
 
-        /** Whether to show update notifications */
-        private boolean warnAboutUpdates;
+	/**
+	 * Synchronization settings for the plugin.
+	 * Controls how the plugin synchronizes data and operations.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Synchronization {
+		private boolean enabled;
+		private String server;
 
-        /** Whether to warn about development builds */
-        private boolean warnAboutDevBuilds;
+		// Option for Proxy servers to use the real server name instead of custom identifier
+		private boolean useRealServerName;
+	}
 
-        /** Update check interval in minutes */
-        private int interval;
-    }
+	/**
+	 * Configuration for the plugin's update checker.
+	 * Controls update notifications and checking behavior.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Updater {
+		/**
+		 * Whether to check for plugin updates
+		 */
+		private boolean checkForUpdates;
 
-    /**
-     * Miscellaneous plugin configuration options.
-     * Controls various plugin behaviors and features.
-     */
-    @Getter
-    @Setter
-    @ToString
-    public static class Miscellaneous {
-        /** Whether to disable join notifications */
-        private boolean disableJoinNotification;
+		/**
+		 * Whether to show update notifications
+		 */
+		private boolean warnAboutUpdates;
 
-        /** Whether to disable quit notifications */
-        private boolean disableQuitNotification;
+		/**
+		 * Whether to warn about development builds
+		 */
+		private boolean warnAboutDevBuilds;
 
-        /** Whether to allow legacy message parsing */
-        private boolean allowLegacyParsing;
+		/**
+		 * Update check interval in minutes
+		 */
+		private int interval;
+	}
 
-        /** Whether to enable Brigadier command system */
-        private boolean allowBrigadierCommands;
+	/**
+	 * Miscellaneous plugin configuration options.
+	 * Controls various plugin behaviors and features.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Miscellaneous {
+		/**
+		 * Whether to disable join notifications
+		 */
+		private boolean disableJoinNotification;
 
-        /** Whether to use vanilla message sending */
-        private boolean vanillaSending;
+		/**
+		 * Whether to disable quit notifications
+		 */
+		private boolean disableQuitNotification;
 
-        /** Number of commands to display per page */
-        private int commandsPerPage;
-    }
+		/**
+		 * Whether to allow legacy message parsing
+		 */
+		private boolean allowLegacyParsing;
 
-    /**
-     * Configuration for event listeners.
-     * Maps event names to their corresponding event configurations.
-     */
-    @Getter
-    @Setter
-    @ToString
-    public static class Listeners {
-        /** Map of event name to event configuration */
-        private Map<String, Event> events;
-    }
+		/**
+		 * Whether to enable Brigadier command system
+		 */
+		private boolean allowBrigadierCommands;
+
+		/**
+		 * Whether to use vanilla message sending
+		 */
+		private boolean vanillaSending;
+
+		/**
+		 * Number of commands to display per page
+		 */
+		private int commandsPerPage;
+	}
+
+	/**
+	 * Configuration for event listeners.
+	 * Maps event names to their corresponding event configurations.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Listeners {
+		/**
+		 * Map of event name to event configuration
+		 */
+		private Map<String, Event> events;
+	}
 }

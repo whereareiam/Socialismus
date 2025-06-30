@@ -1,9 +1,6 @@
 package me.whereareiam.socialismus.api.model.player;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.position.Position;
@@ -11,25 +8,20 @@ import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Locale;
 import java.util.UUID;
 
 /**
  * Represents a lightweight player entity in the Socialismus plugin.
  * This class provides essential player properties and functionality without
- * being tied to a specific platform implementation. It implements {@link Serializable}
- * to support data persistence and transfer.
+ * being tied to a specific platform implementation.
  */
 @Getter
 @ToString
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class DummyPlayer implements Serializable {
-	@Serial
-	private static final long serialVersionUID = 1L;
-
+public class DummyPlayer {
 	/**
 	 * The player's username
 	 */
@@ -41,7 +33,14 @@ public class DummyPlayer implements Serializable {
 	private final UUID uniqueId;
 
 	/**
-	 * The player's current location (world name, server name, or null)
+	 * The player's current server (null if not proxy or sync disabled).
+	 * Can be a server name or an identifier, if synchronization is enabled
+	 */
+	@Setter
+	private String server;
+
+	/**
+	 * The player's current location (world name or null)
 	 */
 	@Setter
 	private String location;
@@ -66,7 +65,8 @@ public class DummyPlayer implements Serializable {
 	/**
 	 * The platform interactor for interacting with the player
 	 */
-	private final transient PlatformInteractor interactor;
+	@Setter
+	private transient PlatformInteractor interactor;
 
 	/**
 	 * Sends a message to the player using the Adventure API

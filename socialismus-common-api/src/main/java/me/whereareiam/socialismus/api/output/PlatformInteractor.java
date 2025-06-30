@@ -74,4 +74,18 @@ public interface PlatformInteractor {
 	 * @return The server version information
 	 */
 	Version getServerVersion();
+
+	/**
+	 * Gets the server's IP address.
+	 *
+	 * @return The server's IP address as a String
+	 */
+	String getServerIp();
+
+	/**
+	 * Gets the server's port.
+	 *
+	 * @return The server's port as an integer
+	 */
+	int getServerPort();
 }
