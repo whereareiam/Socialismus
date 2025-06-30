@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import me.whereareiam.socialismus.adapter.config.management.ConfigLoader;
+import me.whereareiam.socialismus.adapter.config.management.DefaultConfigurationLoader;
 import me.whereareiam.socialismus.api.Reloadable;
 import me.whereareiam.socialismus.api.input.registry.Registry;
 import me.whereareiam.socialismus.api.model.config.Settings;
@@ -13,34 +13,34 @@ import java.nio.file.Path;
 
 @Singleton
 public class SettingsProvider implements Provider<Settings>, Reloadable {
-    private final Path dataPath;
-    private final ConfigLoader configLoader;
+	private final Path dataPath;
+	private final DefaultConfigurationLoader defaultConfigurationLoader;
 
-    private Settings settings;
+	private Settings settings;
 
-    @Inject
-    public SettingsProvider(@Named("dataPath") Path dataPath, ConfigLoader configLoader, Registry<Reloadable> registry) {
-        this.dataPath = dataPath;
-        this.configLoader = configLoader;
+	@Inject
+	public SettingsProvider(@Named("dataPath") Path dataPath, DefaultConfigurationLoader defaultConfigurationLoader, Registry<Reloadable> registry) {
+		this.dataPath = dataPath;
+		this.defaultConfigurationLoader = defaultConfigurationLoader;
 
-        registry.register(this);
-    }
+		registry.register(this);
+	}
 
-    @Override
-    public Settings get() {
-        if (settings != null) return settings;
-        
-        load();
+	@Override
+	public Settings get() {
+		if (settings != null) return settings;
 
-        return settings;
-    }
+		load();
 
-    @Override
-    public void reload() {
-        load();
-    }
+		return settings;
+	}
 
-    private void load() {
-        settings = configLoader.load(dataPath.resolve("settings"), Settings.class);
-    }
+	@Override
+	public void reload() {
+		load();
+	}
+
+	private void load() {
+		settings = defaultConfigurationLoader.load(dataPath.resolve("settings"), Settings.class);
+	}
 }

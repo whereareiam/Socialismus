@@ -5,8 +5,8 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.socialismus.adapter.config.dynamic.ChatsConfig;
-import me.whereareiam.socialismus.adapter.config.management.ConfigLoader;
-import me.whereareiam.socialismus.adapter.config.management.ConfigManager;
+import me.whereareiam.socialismus.adapter.config.management.DefaultConfigurationLoader;
+import me.whereareiam.socialismus.adapter.config.management.DefaultConfigurationManager;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.Reloadable;
 import me.whereareiam.socialismus.api.input.registry.Registry;
@@ -24,20 +24,20 @@ import java.util.stream.Stream;
 @Singleton
 public class ChatsProvider implements Provider<List<Chat>>, Reloadable {
 	private final Path dataPath;
-	private final ConfigLoader configLoader;
+	private final DefaultConfigurationLoader defaultConfigurationLoader;
 	private final ConfigurationType configurationType;
 	private List<Chat> chats;
 
 	@Inject
 	public ChatsProvider(
 			@Named("chatPath") Path dataPath,
-			ConfigLoader configLoader,
-			ConfigManager configManager,
+			DefaultConfigurationLoader defaultConfigurationLoader,
+			DefaultConfigurationManager defaultConfigurationManager,
 			Registry<Reloadable> registry
 	) {
 		this.dataPath = dataPath;
-		this.configLoader = configLoader;
-		this.configurationType = configManager.getConfigurationType();
+		this.defaultConfigurationLoader = defaultConfigurationLoader;
+		this.configurationType = defaultConfigurationManager.getConfigurationType();
 
 		registry.register(this);
 	}
@@ -82,7 +82,7 @@ public class ChatsProvider implements Provider<List<Chat>>, Reloadable {
 	}
 
 	private List<Chat> addChatsFromConfig(Path path) {
-		ChatsConfig chatsConfig = configLoader.load(path, ChatsConfig.class);
+		ChatsConfig chatsConfig = defaultConfigurationLoader.load(path, ChatsConfig.class);
 		return chatsConfig.getChats().stream()
 				.filter(Chat::isEnabled)
 				.toList();
