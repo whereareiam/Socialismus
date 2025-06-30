@@ -4,12 +4,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.chat.ChatSyncBus;
-import me.whereareiam.socialismus.api.model.chat.ChatSyncPacket;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.SerializationService;
 import me.whereareiam.socialismus.api.output.resource.sync.SyncService;
 import me.whereareiam.socialismus.api.util.ComponentUtil;
+import me.whereareiam.socialismus.shared.Constants;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Singleton
 public class ChatNetworkBridge implements ChatSyncBus {
-	private static final String CHANNEL = "socialismus:chat";
+	private static final String CHANNEL = Constants.CHANNEL + ":chat";
 
 	private final SyncService sync;
 	private final SerializationService serializationService;
@@ -45,8 +45,8 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	@Override
 	public void publish(ChatMessage message) {
 		try {
-			message.setRemote(true);
-			String content = ComponentUtil.toString(message.getContent());
+			message.setOrigin(serverId);
+			String content = ComponentUtil.toLegacy(message.getContent());
 			ChatSyncPacket packet = new ChatSyncPacket(serverId, content, message);
 
 			byte[] data = serializationService.serialize(packet);

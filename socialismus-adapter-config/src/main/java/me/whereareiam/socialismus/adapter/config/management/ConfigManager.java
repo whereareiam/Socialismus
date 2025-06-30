@@ -16,13 +16,16 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import me.whereareiam.socialismus.adapter.config.deserializer.ComponentDeserializer;
 import me.whereareiam.socialismus.adapter.config.deserializer.RequirementDeserializer;
 import me.whereareiam.socialismus.adapter.config.deserializer.VersionDeserializer;
+import me.whereareiam.socialismus.adapter.config.serializer.ComponentSerializer;
 import me.whereareiam.socialismus.api.model.requirement.Requirement;
 import me.whereareiam.socialismus.api.output.DefaultConfig;
 import me.whereareiam.socialismus.api.output.config.ConfigurationManager;
 import me.whereareiam.socialismus.api.type.ConfigurationType;
 import me.whereareiam.socialismus.api.type.Version;
+import net.kyori.adventure.text.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -119,6 +122,9 @@ public class ConfigManager implements Provider<ObjectMapper>, ConfigurationManag
 
 		addDeserializer(Requirement.class, injector.getInstance(RequirementDeserializer.class));
 		addDeserializer(Version.class, injector.getInstance(VersionDeserializer.class));
+		addDeserializer(Component.class, injector.getInstance(ComponentDeserializer.class));
+
+		addSerializer(Component.class, injector.getInstance(ComponentSerializer.class));
 
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);

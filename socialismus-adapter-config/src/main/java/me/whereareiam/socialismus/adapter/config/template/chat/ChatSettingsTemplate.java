@@ -6,30 +6,35 @@ import me.whereareiam.socialismus.api.output.DefaultConfig;
 
 @Singleton
 public class ChatSettingsTemplate implements DefaultConfig<ChatSettings> {
-    @Override
-    public ChatSettings getDefault() {
-        ChatSettings chatSettings = new ChatSettings();
+	@Override
+	public ChatSettings getDefault() {
+		ChatSettings chatSettings = new ChatSettings();
 
-        // Default values
-        chatSettings.setNotifyNoChat(true);
-        chatSettings.setNotifyNoFormat(true);
-        chatSettings.setNotifyNoPlayers(false);
-        chatSettings.setNotifyNoNearbyPlayers(false);
+		// Default values
+		chatSettings.setNotifyNoChat(true);
+		chatSettings.setNotifyNoFormat(true);
+		chatSettings.setNotifyNoPlayers(false);
+		chatSettings.setNotifyNoNearbyPlayers(false);
 
-        ChatSettings.FallbackChatSettings fallback = new ChatSettings.FallbackChatSettings();
-        fallback.setEnabled(true);
-        fallback.setChatId("fallback");
+		ChatSettings.FallbackChatSettings fallback = new ChatSettings.FallbackChatSettings();
+		fallback.setEnabled(true);
+		fallback.setChatId("fallback");
 
-        chatSettings.setFallback(fallback);
+		chatSettings.setFallback(fallback);
 
-        ChatSettings.ChatHistorySettings history = new ChatSettings.ChatHistorySettings();
-        history.setFillerSize(100);
-        history.setHistorySize(1000);
-        history.setPermission("socialismus.admin");
-        history.setBypassPermission("socialismus.admin");
+		ChatSettings.ChatHistorySettings history = new ChatSettings.ChatHistorySettings();
+		history.setFillerSize(100);
+		history.setHistorySize(1000);
+		history.setPermission("socialismus.admin");
+		history.setBypassPermission("socialismus.admin");
 
-        chatSettings.setHistory(history);
+		chatSettings.setHistory(history);
 
-        return chatSettings;
-    }
+		ChatSettings.SynchronizationSettings synchronization = new ChatSettings.SynchronizationSettings();
+		synchronization.setEnabled(false);
+
+		chatSettings.setSynchronization(synchronization);
+
+		return chatSettings;
+	}
 }

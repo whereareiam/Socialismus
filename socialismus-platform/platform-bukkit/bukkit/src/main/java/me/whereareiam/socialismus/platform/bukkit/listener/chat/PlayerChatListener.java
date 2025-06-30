@@ -49,11 +49,11 @@ public class PlayerChatListener implements DynamicListener<AsyncPlayerChatEvent>
 						.collect(Collectors.toSet())
 		);
 
-		event.setFormat(ComponentUtil.toString(
+		event.setFormat(ComponentUtil.toLegacy(
 				formattedChatMessage.getFormat().replaceText(
 						chatBroadcaster.createClearReplacement(formattedChatMessage, player.getUniqueId())
 				), true
 		).replace("{message}", "%2$s"));
-		event.setMessage(ComponentUtil.toString(formattedChatMessage.getContent(), true));
+		event.setMessage(ComponentUtil.toLegacy(formattedChatMessage.getContent(), true));
 	}
 }

@@ -59,8 +59,8 @@ public class ChatMessage {
 	private boolean vanillaSending;
 
 	/**
-	 * Whether the message is sent from a remote source (e.g., another server).
+	 * Indicates if the message was sent from a remote source (e.g., another server).
 	 */
-	private boolean remote;
+	private String origin;
 }
 

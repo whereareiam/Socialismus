@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.api.type.SerializationType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Singleton
 public class SettingsTemplate implements DefaultConfig<Settings> {
@@ -20,6 +21,12 @@ public class SettingsTemplate implements DefaultConfig<Settings> {
 		// Default values
 		settings.setLevel(2);
 		settings.setSerializer(SerializationType.MINIMESSAGE);
+
+		Settings.Synchronization synchronization = new Settings.Synchronization();
+		synchronization.setEnabled(false);
+		synchronization.setIdentifier(UUID.randomUUID().toString());
+
+		settings.setSynchronization(synchronization);
 
 		Settings.Miscellaneous misc = new Settings.Miscellaneous();
 		misc.setDisableJoinNotification(true);
