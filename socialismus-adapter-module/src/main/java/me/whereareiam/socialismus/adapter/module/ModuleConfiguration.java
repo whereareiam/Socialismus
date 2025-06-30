@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.adapter.module;
 import com.google.inject.AbstractModule;
 import me.whereareiam.socialismus.adapter.module.provider.CacheServiceProvider;
 import me.whereareiam.socialismus.adapter.module.provider.DatabaseServiceProvider;
-import me.whereareiam.socialismus.adapter.module.provider.SyncServiceProvider;
+import me.whereareiam.socialismus.adapter.module.provider.sync.SyncServiceProvider;
 import me.whereareiam.socialismus.api.output.module.ModuleService;
 import me.whereareiam.socialismus.api.output.resource.CacheService;
 import me.whereareiam.socialismus.api.output.resource.DatabaseService;

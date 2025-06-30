@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.common.chat;
+package me.whereareiam.socialismus.common.chat.broadcast;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;

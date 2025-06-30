@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.listener.DynamicListener;
+import me.whereareiam.socialismus.common.SynchronizationService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
 
@@ -17,6 +18,7 @@ import java.util.Locale;
 public class PlayerLoginListener implements DynamicListener<PlayerLoginEvent> {
 	private final PlayerContainerService containerService;
 	private final PlatformInteractor interactor;
+	private final SynchronizationService syncService;
 
 	public void onEvent(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
@@ -30,6 +32,7 @@ public class PlayerLoginListener implements DynamicListener<PlayerLoginEvent> {
 				.interactor(interactor)
 				.build();
 
+		syncService.applyTo(dummyPlayer, null);
 		containerService.addPlayer(dummyPlayer);
 	}
 }

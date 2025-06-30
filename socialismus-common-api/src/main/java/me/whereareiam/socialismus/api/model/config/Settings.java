@@ -66,6 +66,9 @@ public class Settings {
 	public static class Synchronization {
 		private boolean enabled;
 		private String server;
+
+		// Option for Proxy servers to use the real server name instead of custom identifier
+		private boolean useRealServerName;
 	}
 
 	/**

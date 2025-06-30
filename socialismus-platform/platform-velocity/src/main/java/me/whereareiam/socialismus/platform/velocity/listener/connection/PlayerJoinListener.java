@@ -9,12 +9,14 @@ import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.listener.DynamicListener;
+import me.whereareiam.socialismus.common.SynchronizationService;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PlayerJoinListener implements DynamicListener<PlayerChooseInitialServerEvent> {
 	private final PlayerContainerService playerContainer;
 	private final PlatformInteractor interactor;
+	private final SynchronizationService syncService;
 
 	public void onEvent(PlayerChooseInitialServerEvent event) {
 		Player player = event.getPlayer();
@@ -29,6 +31,8 @@ public class PlayerJoinListener implements DynamicListener<PlayerChooseInitialSe
 				.interactor(interactor)
 				.build();
 
+
+		syncService.applyTo(dummyPlayer, event.getInitialServer().map(s -> s.getServerInfo().getName()).orElse(null));
 		playerContainer.addPlayer(dummyPlayer);
 	}
 }

@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.adapter.module.provider;
+package me.whereareiam.socialismus.adapter.module.provider.sync;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -17,8 +17,8 @@ public class SyncServiceProvider implements Provider<SyncService> {
 	@Override
 	public SyncService get() {
 		Object svc = registry.get(ResourceType.SYNC)
-				.orElseThrow(() -> new ProvisionException("No SyncService registered!"));
-        
+				.orElse(new DummySyncService());
+
 		if (!(svc instanceof SyncService))
 			throw new ProvisionException("Registered object is not a SyncService: " + svc.getClass());
 
