@@ -41,7 +41,7 @@ public class ChatMessage {
 	 * The actual content of the message as a Kyori Adventure Component.
 	 * Marked as transient as Components aren't serializable directly.
 	 */
-	private transient Component content;
+	private Component content;
 
 	/**
 	 * The chat channel this message belongs to.
