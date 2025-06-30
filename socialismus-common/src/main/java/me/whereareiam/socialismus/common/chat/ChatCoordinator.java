@@ -42,8 +42,6 @@ public class ChatCoordinator implements ChatCoordinationService {
 	}
 
 	private boolean isBroadcastable(ChatMessage chatMessage) {
-		System.out.println(chatMessage.getOrigin());
-		System.out.println(settings.get().getSynchronization().getServer());
 		if (chatMessage.getOrigin() != null
 				&& !chatMessage.getOrigin().equals(settings.get().getSynchronization().getServer()))
 			return true;
