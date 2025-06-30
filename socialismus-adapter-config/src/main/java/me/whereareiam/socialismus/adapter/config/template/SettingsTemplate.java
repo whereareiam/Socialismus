@@ -24,7 +24,7 @@ public class SettingsTemplate implements DefaultConfig<Settings> {
 
 		Settings.Synchronization synchronization = new Settings.Synchronization();
 		synchronization.setEnabled(false);
-		synchronization.setIdentifier(UUID.randomUUID().toString());
+		synchronization.setServer(UUID.randomUUID().toString());
 
 		settings.setSynchronization(synchronization);
 

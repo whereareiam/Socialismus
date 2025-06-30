@@ -22,7 +22,7 @@ public class PlayerJoinListener implements DynamicListener<PlayerChooseInitialSe
 		DummyPlayer dummyPlayer = DummyPlayer.builder()
 				.username(player.getUsername())
 				.uniqueId(player.getUniqueId())
-				.location(event.getInitialServer().map(s -> s.getServerInfo().getName()).orElse(null))
+				.server(event.getInitialServer().map(s -> s.getServerInfo().getName()).orElse(null))
 				.locale(player.getEffectiveLocale())
 				// helpers
 				.audience(player)

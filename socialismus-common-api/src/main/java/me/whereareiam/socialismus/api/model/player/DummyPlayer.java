@@ -33,7 +33,14 @@ public class DummyPlayer {
 	private final UUID uniqueId;
 
 	/**
-	 * The player's current location (world name, server name, or null)
+	 * The player's current server (null if not proxy or sync disabled).
+	 * Can be a server name or an identifier, if synchronization is enabled
+	 */
+	@Setter
+	private String server;
+
+	/**
+	 * The player's current location (world name or null)
 	 */
 	@Setter
 	private String location;

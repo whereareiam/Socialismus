@@ -65,7 +65,7 @@ public class Settings {
 	@ToString
 	public static class Synchronization {
 		private boolean enabled;
-		private String identifier;
+		private String server;
 	}
 
 	/**

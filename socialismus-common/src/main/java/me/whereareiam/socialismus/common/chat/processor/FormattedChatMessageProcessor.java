@@ -22,17 +22,11 @@ public class FormattedChatMessageProcessor implements WorkerProcessor<FormattedC
 	private final Provider<Settings> settings;
 
 	public FormattedChatMessage process(ChatMessage chatMessage) {
-		FormattedChatMessage formattedChatMessage = FormattedChatMessage.builder()
-				.id(chatMessage.getId())
-				.sender(chatMessage.getSender())
-				.recipients(chatMessage.getRecipients())
-				.content(chatMessage.getContent())
-				.chat(chatMessage.getChat())
-				.cancelled(chatMessage.isCancelled())
-				.vanillaSending(settings.get().getMisc().isVanillaSending())
-				.format(Component.empty())
-				.remote(chatMessage.isRemote())
-				.build();
+		FormattedChatMessage formattedChatMessage = FormattedChatMessage.from(
+				chatMessage,
+				Component.empty(),
+				settings.get().getMisc().isVanillaSending()
+		);
 
 		for (Worker<FormattedChatMessage> worker : workers) {
 			formattedChatMessage = worker.getFunction().apply(formattedChatMessage);

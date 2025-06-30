@@ -11,16 +11,16 @@ import me.whereareiam.socialismus.api.output.listener.DynamicListener;
 @Singleton
 @SuppressWarnings("UnstableApiUsage")
 public class ServerChangeListener implements DynamicListener<ServerPostConnectEvent> {
-    private final PlayerContainerService playerContainer;
+	private final PlayerContainerService playerContainer;
 
-    @Inject
-    public ServerChangeListener(PlayerContainerService playerContainer) {
-        this.playerContainer = playerContainer;
-    }
+	@Inject
+	public ServerChangeListener(PlayerContainerService playerContainer) {
+		this.playerContainer = playerContainer;
+	}
 
-    public void onEvent(ServerPostConnectEvent event) {
-        playerContainer.getPlayer(event.getPlayer().getUniqueId()).ifPresent(
-                player -> player.setLocation(event.getPlayer().getCurrentServer().map(ServerConnection::getServerInfo).map(ServerInfo::getName).orElse(null))
-        );
-    }
+	public void onEvent(ServerPostConnectEvent event) {
+		playerContainer.getPlayer(event.getPlayer().getUniqueId()).ifPresent(
+				player -> player.setServer(event.getPlayer().getCurrentServer().map(ServerConnection::getServerInfo).map(ServerInfo::getName).orElse(null))
+		);
+	}
 }

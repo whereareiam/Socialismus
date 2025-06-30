@@ -8,7 +8,6 @@ import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.SerializationService;
 import me.whereareiam.socialismus.api.output.resource.sync.SyncService;
-import me.whereareiam.socialismus.api.util.ComponentUtil;
 import me.whereareiam.socialismus.shared.Constants;
 
 import java.nio.charset.StandardCharsets;
@@ -46,10 +45,7 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	public void publish(ChatMessage message) {
 		try {
 			message.setOrigin(serverId);
-			String content = ComponentUtil.toLegacy(message.getContent());
-			ChatSyncPacket packet = new ChatSyncPacket(serverId, content, message);
-
-			byte[] data = serializationService.serialize(packet);
+			byte[] data = serializationService.serialize(message);
 			sync.publish(CHANNEL, data);
 
 			Logger.debug("Published chat message to sync channel: " + message.getId());
@@ -62,17 +58,15 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	public void startListening() {
 		sync.subscribe(CHANNEL, (channel, payload) -> {
 			try {
-				ChatSyncPacket packet = serializationService.deserialize(payload, ChatSyncPacket.class);
+				ChatMessage chatMessage = serializationService.deserialize(payload, ChatMessage.class);
 
-				if (serverId.equals(packet.getOrigin())) return;
+				if (serverId.equals(chatMessage.getOrigin())) return;
 
-				ChatMessage message = packet.getMessage();
-				message.setContent(ComponentUtil.toMiniMessage(packet.getContent()));
-				message.setRecipients(Set.of());
-				message.getSender().setInteractor(platformInteractor);
+				chatMessage.setRecipients(Set.of());
+				chatMessage.getSender().setInteractor(platformInteractor);
 
-				Logger.debug("Received chat message from sync channel: " + message.getId());
-				coordinator.coordinate(message);
+				Logger.debug("Received chat message from sync channel: " + chatMessage.getId());
+				coordinator.coordinate(chatMessage);
 			} catch (Exception ex) {
 				Logger.warn("Bad chat-sync packet: " + ex);
 			}
