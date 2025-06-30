@@ -11,5 +11,5 @@ public interface ChatSyncBus {
 	/**
 	 * Call once at startup to begin listening.
 	 */
-	void startListening();
+	void subscribe();
 }

@@ -55,21 +55,23 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	}
 
 	@Override
-	public void startListening() {
-		sync.subscribe(CHANNEL, (channel, payload) -> {
-			try {
-				ChatMessage chatMessage = serializationService.deserialize(payload, ChatMessage.class);
+	public void subscribe() {
+		sync.subscribe(CHANNEL, (channel, payload) -> handleEvent(payload));
+	}
 
-				if (serverId.equals(chatMessage.getOrigin())) return;
+	private void handleEvent(byte[] payload) {
+		try {
+			ChatMessage chatMessage = serializationService.deserialize(payload, ChatMessage.class);
 
-				chatMessage.setRecipients(Set.of());
-				chatMessage.getSender().setInteractor(platformInteractor);
+			if (serverId.equals(chatMessage.getOrigin())) return;
 
-				Logger.debug("Received chat message from sync channel: " + chatMessage.getId());
-				coordinator.coordinate(chatMessage);
-			} catch (Exception ex) {
-				Logger.warn("Bad chat-sync packet: " + ex);
-			}
-		});
+			chatMessage.setRecipients(Set.of());
+			chatMessage.getSender().setInteractor(platformInteractor);
+
+			Logger.debug("Received chat message from sync channel: " + chatMessage.getId());
+			coordinator.coordinate(chatMessage);
+		} catch (Exception ex) {
+			Logger.warn("Bad chat-sync packet: " + ex);
+		}
 	}
 }

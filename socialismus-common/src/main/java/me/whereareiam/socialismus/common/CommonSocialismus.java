@@ -46,7 +46,7 @@ public class CommonSocialismus {
 		injector.getInstance(ListenerRegistrar.class).registerListeners();
 
 		injector.getInstance(Updater.class).start();
-		injector.getInstance(ChatNetworkBridge.class).startListening();
+		injector.getInstance(ChatNetworkBridge.class).subscribe();
 
 		injector.getInstance(WelcomeBannerPrinter.class).print();
 
