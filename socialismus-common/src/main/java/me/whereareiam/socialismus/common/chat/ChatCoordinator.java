@@ -31,7 +31,6 @@ public class ChatCoordinator implements ChatCoordinationService {
 
 		EventUtil.callEvent(new ChatBroadcastEvent(formattedChatMessage, formattedChatMessage.isCancelled()), () -> {
 			formattedChatMessage.getSender().setLastChat(formattedChatMessage.getChat());
-			System.out.println(isBroadcastable(formattedChatMessage));
 			if (isBroadcastable(formattedChatMessage))
 				chatBroadcaster.broadcast(formattedChatMessage);
 
