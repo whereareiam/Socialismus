@@ -32,15 +32,12 @@ public class DefaultConfigurationManager implements ConfigurationManager {
 
 	@Override
 	public void addTemplate(Class<?> type, DefaultConfig<?> template) {
-		System.out.println("Adding template for class: " + type.getName());
 		templates.put(type, template);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> DefaultConfig<T> getTemplate(Class<T> type) {
-		System.out.println(templates);
-		System.out.println("Fetching template for class: " + type.getName());
 		return (DefaultConfig<T>) templates.get(type);
 	}
 }
