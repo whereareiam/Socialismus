@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.chat.ChatSyncBus;
+import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.model.config.Settings;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
@@ -24,10 +25,15 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	private final SerializationService serializationService;
 	private final ChatCoordinator coordinator;
 	private final PlatformInteractor platformInteractor;
+
 	private final Provider<Settings> settings;
+	private final Provider<ChatSettings> chatSettings;
 
 	@Override
 	public void publish(ChatMessage message) {
+		if (!chatSettings.get().getSynchronization().isEnabled())
+			return;
+
 		try {
 			message.setOrigin(serverId());
 			byte[] data = serializationService.serialize(message);
@@ -41,6 +47,9 @@ public class ChatNetworkBridge implements ChatSyncBus {
 
 	@Override
 	public void subscribe() {
+		if (!chatSettings.get().getSynchronization().isEnabled())
+			return;
+
 		sync.subscribe(CHANNEL, (channel, payload) -> handleEvent(payload));
 	}
 
