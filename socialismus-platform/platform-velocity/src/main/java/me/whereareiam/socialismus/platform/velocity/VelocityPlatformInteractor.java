@@ -33,6 +33,16 @@ public class VelocityPlatformInteractor implements PlatformInteractor {
 	}
 
 	@Override
+	public void broadcast(Component component, boolean silent) {
+		if (!silent) {
+			broadcast(component);
+			return;
+		}
+
+		proxyServer.getAllPlayers().forEach(player -> player.sendMessage(component));
+	}
+
+	@Override
 	public boolean areWithinRange(UUID player1, UUID player2, double range) {
 		// TODO: Sync
 
@@ -70,15 +80,5 @@ public class VelocityPlatformInteractor implements PlatformInteractor {
 	@Override
 	public Version getServerVersion() {
 		return Version.getLatest();
-	}
-
-	@Override
-	public String getServerIp() {
-		return proxyServer.getBoundAddress().getHostString();
-	}
-
-	@Override
-	public int getServerPort() {
-		return proxyServer.getBoundAddress().getPort();
 	}
 }

@@ -17,4 +17,14 @@ public class BukkitPlatformInteractor extends AbstractPlatformInteractor {
 	public void broadcast(Component component) {
 		audiences.get().all().sendMessage(component);
 	}
+
+	@Override
+	public void broadcast(Component component, boolean silent) {
+		if (silent) {
+			broadcast(component);
+			return;
+		}
+
+		audiences.get().all().sendMessage(component);
+	}
 }

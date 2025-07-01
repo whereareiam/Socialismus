@@ -75,14 +75,4 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 	public Version getServerVersion() {
 		return Version.of(Bukkit.getVersion());
 	}
-
-	@Override
-	public String getServerIp() {
-		return Bukkit.getIp();
-	}
-
-	@Override
-	public int getServerPort() {
-		return Bukkit.getPort();
-	}
 }
