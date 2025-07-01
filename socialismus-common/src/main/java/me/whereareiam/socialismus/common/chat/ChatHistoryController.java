@@ -3,28 +3,22 @@ package me.whereareiam.socialismus.common.chat;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.input.chat.ChatHistoryService;
 import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ChatHistoryController implements ChatHistoryService {
 	private final ChatHistoryContainerService chatHistoryContainer;
 	private final Provider<ChatSettings> chatSettings;
 	private final ChatBroadcaster chatBroadcaster;
-
-	@Inject
-	public ChatHistoryController(ChatHistoryContainerService chatHistoryContainer, Provider<ChatSettings> chatSettings, ChatBroadcaster chatBroadcaster, PlatformInteractor interactor) {
-		this.chatHistoryContainer = chatHistoryContainer;
-		this.chatSettings = chatSettings;
-		this.chatBroadcaster = chatBroadcaster;
-	}
 
 	@Override
 	public boolean removeMessage(int id) {
