@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.input.chat.ChatSyncBus;
+import me.whereareiam.socialismus.api.input.sync.ChatSyncBus;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.output.listener.DynamicListener;

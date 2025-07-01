@@ -12,13 +12,13 @@ import me.whereareiam.socialismus.api.output.command.CommandService;
 import me.whereareiam.socialismus.api.output.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.api.output.module.ModuleService;
 import me.whereareiam.socialismus.api.util.EventUtil;
-import me.whereareiam.socialismus.common.chat.ChatNetworkBridge;
 import me.whereareiam.socialismus.common.chat.worker.FormatSelector;
 import me.whereareiam.socialismus.common.chat.worker.chatmessage.ChatSelector;
 import me.whereareiam.socialismus.common.chat.worker.chatmessage.RecipientResolver;
 import me.whereareiam.socialismus.common.chat.worker.chatmessage.RecipientSelector;
 import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.printer.WelcomeBannerPrinter;
+import me.whereareiam.socialismus.common.sync.ChatNetworkBridge;
 
 public class CommonSocialismus {
 	private Injector injector;

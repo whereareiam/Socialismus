@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.api.event.chathistory;
+package me.whereareiam.socialismus.api.input.event.chat.history;
 
 import lombok.Getter;
 

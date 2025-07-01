@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.api.input.chat;
+package me.whereareiam.socialismus.api.input.sync;
 
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 
