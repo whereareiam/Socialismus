@@ -9,7 +9,7 @@
 [![SpigotMC Downloads](https://img.shields.io/spiget/downloads/113119?&label=SpigotMC%20Downloads)](https://www.spigotmc.org/resources/113119/)
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/aeIrNw73?&label=Modrinth%20Downloads)](https://modrinth.com/project/aeIrNw73)
 
-![Discord](https://discord.com/api/guilds/856839365938118698/widget.png?style=banner2)
+[![Discord](https://discord.com/api/guilds/856839365938118698/widget.png?style=banner2)](https://discord.arcadeya.com/)
 
 # Official modules
 
