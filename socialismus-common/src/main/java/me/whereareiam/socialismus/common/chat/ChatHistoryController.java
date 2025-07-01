@@ -8,6 +8,7 @@ import me.whereareiam.socialismus.api.input.chat.ChatHistoryService;
 import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import net.kyori.adventure.text.Component;
 
@@ -19,6 +20,7 @@ public class ChatHistoryController implements ChatHistoryService {
 	private final ChatHistoryContainerService chatHistoryContainer;
 	private final Provider<ChatSettings> chatSettings;
 	private final ChatBroadcaster chatBroadcaster;
+	private final PlatformInteractor interactor;
 
 	@Override
 	public boolean removeMessage(int id) {
@@ -54,9 +56,8 @@ public class ChatHistoryController implements ChatHistoryService {
 			filler = filler.append(Component.newline());
 
 		Component finalFiller = filler;
-		chatHistoryContainer.getMessages().forEach(m -> {
-			m.getSender().sendMessage(finalFiller);
-			chatBroadcaster.broadcast(m);
-		});
+		interactor.broadcast(finalFiller, true);
+		chatHistoryContainer.getMessages()
+				.forEach(chatBroadcaster::broadcast);
 	}
 }
