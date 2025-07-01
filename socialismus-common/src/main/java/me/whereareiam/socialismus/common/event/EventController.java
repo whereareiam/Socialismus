@@ -45,10 +45,30 @@ public class EventController implements EventManager {
 		listeners.values().forEach(list -> list.removeIf(listener -> listener.getListener().equals(eventListener)));
 	}
 
+	private void collectEventTypes(Class<?> clazz, Set<Class<?>> types) {
+		if (clazz == null || !Event.class.isAssignableFrom(clazz)) {
+			return;
+		}
+
+		types.add(clazz);
+		collectEventTypes(clazz.getSuperclass(), types);
+
+		for (Class<?> iface : clazz.getInterfaces()) {
+			collectEventTypes(iface, types);
+		}
+	}
+
 	@Override
 	public void call(Event event) {
-		List<RegisteredListener> eventListeners = listeners.get(event.getClass());
-		if (eventListeners == null) return;
+		Set<Class<?>> eventTypes = new HashSet<>();
+		collectEventTypes(event.getClass(), eventTypes);
+
+		List<RegisteredListener> eventListeners = eventTypes.stream()
+				.flatMap(type -> listeners.getOrDefault(type, Collections.emptyList()).stream())
+				.sorted(Comparator.comparing(RegisteredListener::getOrder))
+				.toList();
+
+		if (eventListeners.isEmpty()) return;
 
 		for (RegisteredListener listener : eventListeners) {
 			executor.submit(() -> {
