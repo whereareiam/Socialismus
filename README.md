@@ -1,8 +1,17 @@
 ![Header](.github/assets/v2/Header.png)
 
-# Official modules
+# Information
 
-![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml) ![Downloads](https://pluginbadges.glitch.me/api/v1/dl/downloads-limegreen.svg?spigot=113119&github=whereareiam%2FSocialismus&style=flat) ![release](https://img.shields.io/github/v/release/whereareiam/Socialismus)
+![release](https://img.shields.io/github/v/release/whereareiam/Socialismus)
+![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml)
+
+[![GitHub Downloads](https://img.shields.io/github/downloads/whereareiam/Socialismus/total?&label=GitHub%20Downloads)](https://github.com/OWNER/REPO/releases)
+[![SpigotMC Downloads](https://img.shields.io/spiget/downloads/113119?&label=SpigotMC%20Downloads)](https://www.spigotmc.org/resources/113119/)
+[![Modrinth Downloads](https://img.shields.io/modrinth/dt/aeIrNw73?&label=Modrinth%20Downloads)](https://modrinth.com/project/aeIrNw73)
+
+![Discord](https://discord.com/api/guilds/856839365938118698/widget.png?style=banner2)
+
+# Official modules
 
 > If you've developed a module for Socialismus and would like to have it featured on the Unofficial Modules list, please
 > submit an issue for review.
