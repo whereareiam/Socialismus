@@ -23,6 +23,15 @@ public interface PlatformInteractor {
 	 */
 	void broadcast(Component component);
 
+	/**
+	 * Broadcasts a message to all online players, with an option to suppress
+	 * the message in the console.
+	 *
+	 * @param component The message to broadcast using Adventure's Component system
+	 * @param silent    If true, the message will not be logged in the console
+	 */
+	void broadcast(Component component, boolean silent);
+
 	Position getEyePosition(DummyPlayer dummyPlayer);
 
 	/**
@@ -74,18 +83,4 @@ public interface PlatformInteractor {
 	 * @return The server version information
 	 */
 	Version getServerVersion();
-
-	/**
-	 * Gets the server's IP address.
-	 *
-	 * @return The server's IP address as a String
-	 */
-	String getServerIp();
-
-	/**
-	 * Gets the server's port.
-	 *
-	 * @return The server's port as an integer
-	 */
-	int getServerPort();
 }

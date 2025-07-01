@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.common.chat;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.input.chat.ChatHistoryService;
 import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
@@ -14,17 +15,12 @@ import net.kyori.adventure.text.Component;
 import java.util.List;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ChatHistoryController implements ChatHistoryService {
 	private final ChatHistoryContainerService chatHistoryContainer;
 	private final Provider<ChatSettings> chatSettings;
 	private final ChatBroadcaster chatBroadcaster;
-
-	@Inject
-	public ChatHistoryController(ChatHistoryContainerService chatHistoryContainer, Provider<ChatSettings> chatSettings, ChatBroadcaster chatBroadcaster, PlatformInteractor interactor) {
-		this.chatHistoryContainer = chatHistoryContainer;
-		this.chatSettings = chatSettings;
-		this.chatBroadcaster = chatBroadcaster;
-	}
+	private final PlatformInteractor interactor;
 
 	@Override
 	public boolean removeMessage(int id) {
@@ -60,9 +56,8 @@ public class ChatHistoryController implements ChatHistoryService {
 			filler = filler.append(Component.newline());
 
 		Component finalFiller = filler;
-		chatHistoryContainer.getMessages().forEach(m -> {
-			m.getSender().sendMessage(finalFiller);
-			chatBroadcaster.broadcast(m);
-		});
+		interactor.broadcast(finalFiller, true);
+		chatHistoryContainer.getMessages()
+				.forEach(chatBroadcaster::broadcast);
 	}
 }
