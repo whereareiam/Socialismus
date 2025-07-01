@@ -8,6 +8,7 @@ import me.whereareiam.socialismus.adapter.config.management.DefaultConfiguration
 import me.whereareiam.socialismus.api.Reloadable;
 import me.whereareiam.socialismus.api.input.registry.Registry;
 import me.whereareiam.socialismus.api.model.config.Settings;
+import me.whereareiam.socialismus.shared.Constants;
 
 import java.nio.file.Path;
 
@@ -42,5 +43,6 @@ public class SettingsProvider implements Provider<Settings>, Reloadable {
 
 	private void load() {
 		settings = defaultConfigurationLoader.load(dataPath.resolve("settings"), Settings.class);
+		Constants.IDENTIFIER = settings.getSynchronization().getServer();
 	}
 }

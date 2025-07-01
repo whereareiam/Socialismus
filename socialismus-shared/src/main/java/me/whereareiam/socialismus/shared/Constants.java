@@ -4,6 +4,7 @@ public final class Constants {
 	public static final String NAME = "@name@";
 	public static final String VERSION = "@version@";
 	public static final String CHANNEL = "socialismus";
+	public static String IDENTIFIER = "";
 
 	public static final class BStats {
 		public static final int BUKKIT_ID = 19855;

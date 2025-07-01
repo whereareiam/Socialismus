@@ -1,23 +1,19 @@
 package me.whereareiam.socialismus.common.chat.broadcast;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.api.model.config.Settings;
+import me.whereareiam.socialismus.shared.Constants;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ChatBroadcastPolicy {
-	private final Provider<Settings> settings;
 
 	public boolean allows(FormattedChatMessage msg) {
-		var sync = settings.get().getSynchronization();
-
 		// 1) Cross‐server relay
 		if (msg.getOrigin() != null
-				&& !msg.getOrigin().equals(sync.getServer())) {
+				&& !msg.getOrigin().equals(Constants.IDENTIFIER)) {
 			return true;
 		}
 

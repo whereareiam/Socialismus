@@ -4,12 +4,17 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.api.event.chathistory.ChatHistoryRemoveByAmountEvent;
+import me.whereareiam.socialismus.api.event.chathistory.ChatHistoryRemoveByIdEvent;
+import me.whereareiam.socialismus.api.event.chathistory.ChatHistoryRemoveByPlayerEvent;
 import me.whereareiam.socialismus.api.input.chat.ChatHistoryService;
 import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
+import me.whereareiam.socialismus.api.util.EventUtil;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
+import me.whereareiam.socialismus.shared.Constants;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
@@ -25,7 +30,8 @@ public class ChatHistoryController implements ChatHistoryService {
 	@Override
 	public boolean removeMessage(int id) {
 		boolean removed = chatHistoryContainer.removeMessage(id);
-		if (removed) sendChatHistory();
+		if (removed)
+			EventUtil.callEvent(new ChatHistoryRemoveByIdEvent(Constants.IDENTIFIER, id), this::sendChatHistory);
 
 		return removed;
 	}
@@ -33,7 +39,8 @@ public class ChatHistoryController implements ChatHistoryService {
 	@Override
 	public int removeMessages(int amount) {
 		int count = chatHistoryContainer.removeMessages(amount);
-		if (count > 0) sendChatHistory();
+		if (count > 0)
+			EventUtil.callEvent(new ChatHistoryRemoveByAmountEvent(Constants.IDENTIFIER, amount), this::sendChatHistory);
 
 		return count;
 	}
@@ -45,7 +52,8 @@ public class ChatHistoryController implements ChatHistoryService {
 		int count = messages.size();
 		messages.forEach(message -> chatHistoryContainer.removeMessage(message.getId()));
 
-		if (count > 0) sendChatHistory();
+		if (count > 0)
+			EventUtil.callEvent(new ChatHistoryRemoveByPlayerEvent(Constants.IDENTIFIER, username), this::sendChatHistory);
 
 		return count;
 	}
