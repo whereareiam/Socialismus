@@ -41,6 +41,7 @@ public class SettingsTemplate implements DefaultConfig<Settings> {
 		Settings.Updater updater = new Settings.Updater();
 		updater.setCheckForUpdates(true);
 		updater.setWarnAboutUpdates(true);
+		updater.setWarnAboutLocalBuilds(true);
 		updater.setWarnAboutDevBuilds(true);
 		updater.setInterval(1);
 
