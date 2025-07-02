@@ -23,7 +23,7 @@ public class UpdateProviderRegistry {
 		this.github = github;
 	}
 
-	public UpdateProvider by(UpdateSpecification p) {
+	public UpdateProvider by(UpdateSpecification.Spec p) {
 		return switch (p.getProvider()) {
 			case MODRINTH -> modrinth;
 			case SPIGOT -> spigot;

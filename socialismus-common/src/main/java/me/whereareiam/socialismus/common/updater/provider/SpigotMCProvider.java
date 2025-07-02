@@ -16,7 +16,7 @@ public class SpigotMCProvider implements UpdateProvider {
 	private static final String UPDATE_URL = "https://api.spigotmc.org/legacy/update.php?resource=";
 
 	@Override
-	public Optional<String> fetchLatest(UpdateSpecification spec) throws IOException {
+	public Optional<String> fetchLatest(UpdateSpecification.Spec spec) throws IOException {
 		URL url = new URL(UPDATE_URL + spec.getId());
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
 			String version = in.readLine();
@@ -25,7 +25,7 @@ public class SpigotMCProvider implements UpdateProvider {
 	}
 
 	@Override
-	public List<String> fetchRecentUpdates(UpdateSpecification spec, int limit) throws IOException {
+	public List<String> fetchRecentUpdates(UpdateSpecification.Spec spec, int limit) throws IOException {
 		return fetchLatest(spec)
 				.map(List::of)
 				.orElse(List.of());

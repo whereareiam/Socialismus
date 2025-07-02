@@ -25,17 +25,17 @@ public class GitHubProvider implements UpdateProvider {
 	private static final int DEFAULT_UPDATE_LIMIT = 30;
 
 	@Override
-	public Optional<String> fetchLatest(UpdateSpecification spec) throws IOException {
+	public Optional<String> fetchLatest(UpdateSpecification.Spec spec) throws IOException {
 		String api = "https://api.github.com/repos/" + spec.getId() + "/releases/latest";
 		String json = request(api);
 		JsonObject obj = gson.fromJson(json, JsonObject.class);
-        
+
 		return Optional.ofNullable(obj.get("tag_name"))
 				.map(JsonElement::getAsString);
 	}
 
 	@Override
-	public List<String> fetchRecentUpdates(UpdateSpecification spec, int limit) throws IOException {
+	public List<String> fetchRecentUpdates(UpdateSpecification.Spec spec, int limit) throws IOException {
 		String api = "https://api.github.com/repos/" + spec.getId() + "/commits?per_page=" + limit;
 		String json = request(api);
 		JsonArray arr = gson.fromJson(json, JsonArray.class);

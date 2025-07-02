@@ -11,12 +11,12 @@ public interface UpdateProvider {
 	 * @return the newest version string for this module OR empty() if
 	 * the provider is temporarily unreachable.
 	 */
-	Optional<String> fetchLatest(UpdateSpecification spec) throws IOException;
+	Optional<String> fetchLatest(UpdateSpecification.Spec spec) throws IOException;
 
 	/**
 	 * Fetches the identifiers of the most recent updates
 	 * (e.g. commit SHAs, pre-release tags, whatever counts as “updates”)
 	 * up to the given limit.
 	 */
-	List<String> fetchRecentUpdates(UpdateSpecification spec, int limit) throws IOException;
+	List<String> fetchRecentUpdates(UpdateSpecification.Spec spec, int limit) throws IOException;
 }

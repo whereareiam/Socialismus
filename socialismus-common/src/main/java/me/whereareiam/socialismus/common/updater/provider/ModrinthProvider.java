@@ -22,7 +22,7 @@ public class ModrinthProvider implements UpdateProvider {
 	private final Gson gson = new Gson();
 
 	@Override
-	public Optional<String> fetchLatest(UpdateSpecification spec) throws IOException {
+	public Optional<String> fetchLatest(UpdateSpecification.Spec spec) throws IOException {
 		URL url = URI.create("https://api.modrinth.com/v2/project/"
 				+ spec.getId() + "/version").toURL();
 
@@ -37,7 +37,7 @@ public class ModrinthProvider implements UpdateProvider {
 	}
 
 	@Override
-	public List<String> fetchRecentUpdates(UpdateSpecification spec, int limit) throws IOException {
+	public List<String> fetchRecentUpdates(UpdateSpecification.Spec spec, int limit) throws IOException {
 		URL url = URI.create("https://api.modrinth.com/v2/project/"
 				+ spec.getId()
 				+ "/version?limit=" + limit).toURL();
