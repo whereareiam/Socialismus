@@ -60,6 +60,11 @@ public class Module {
 	private List<ResourceRequirement> requirements = List.of();
 
 	/**
+	 * Updater configuration for this module.
+	 */
+	private UpdateSpecification updater;
+
+	/**
 	 * The main class path of the module
 	 */
 	private String main;

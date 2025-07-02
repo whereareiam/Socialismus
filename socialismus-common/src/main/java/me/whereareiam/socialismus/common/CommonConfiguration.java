@@ -17,10 +17,12 @@ import me.whereareiam.socialismus.api.input.requirement.RequirementEvaluatorServ
 import me.whereareiam.socialismus.api.input.requirement.RequirementValidation;
 import me.whereareiam.socialismus.api.input.serializer.ComponentService;
 import me.whereareiam.socialismus.api.input.sync.ChatSyncBus;
+import me.whereareiam.socialismus.api.input.updater.UpdateProvider;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.model.serializer.SerializerContent;
 import me.whereareiam.socialismus.api.output.integration.Integration;
+import me.whereareiam.socialismus.api.type.module.ProviderType;
 import me.whereareiam.socialismus.api.type.requirement.RequirementType;
 import me.whereareiam.socialismus.api.util.EventUtil;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
@@ -38,6 +40,9 @@ import me.whereareiam.socialismus.common.requirement.RequirementRegistry;
 import me.whereareiam.socialismus.common.requirement.validation.*;
 import me.whereareiam.socialismus.common.serializer.ComponentSerializer;
 import me.whereareiam.socialismus.common.sync.ChatNetworkBridge;
+import me.whereareiam.socialismus.common.updater.provider.GitHubProvider;
+import me.whereareiam.socialismus.common.updater.provider.ModrinthProvider;
+import me.whereareiam.socialismus.common.updater.provider.SpigotMCProvider;
 
 import java.util.Set;
 
@@ -48,6 +53,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(EventManager.class).to(EventController.class);
 		bind(EventUtil.class).asEagerSingleton();
 
+		// Services
 		bind(ChatCoordinationService.class).to(ChatCoordinator.class);
 		bind(ChatContainerService.class).to(ChatContainer.class);
 		bind(PlayerContainerService.class).to(PlayerContainer.class);
@@ -55,6 +61,24 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ChatHistoryService.class).to(ChatHistoryController.class);
 		bind(ChatSyncBus.class).to(ChatNetworkBridge.class);
 
+		// Updater
+		bind(UpdateProvider.class).annotatedWith(Names.named(ProviderType.MODRINTH.toString()))
+				.to(ModrinthProvider.class);
+		bind(UpdateProvider.class).annotatedWith(Names.named(ProviderType.GITHUB.toString()))
+				.to(GitHubProvider.class);
+		bind(UpdateProvider.class).annotatedWith(Names.named(ProviderType.SPIGOT.toString()))
+				.to(SpigotMCProvider.class);
+
+		// Requirements
+		bind(PermissionRequirementValidation.class).asEagerSingleton();
+		bind(WorldRequirementValidation.class).asEagerSingleton();
+		bind(ServerRequirementValidation.class).asEagerSingleton();
+		bind(PlaceholderRequirementValidation.class).asEagerSingleton();
+		bind(ChatRequirementValidation.class).asEagerSingleton();
+		bind(new TypeLiteral<ExtendedRegistry<RequirementType, RequirementValidation>>() {}).to(RequirementRegistry.class);
+		bind(RequirementEvaluatorService.class).to(RequirementEvaluator.class);
+
+		// Other
 		bind(new TypeLiteral<WorkerProcessor<ChatMessage>>() {}).to(ChatMessageProcessor.class);
 		bind(new TypeLiteral<WorkerProcessor<FormattedChatMessage>>() {}).to(FormattedChatMessageProcessor.class);
 
@@ -66,13 +90,5 @@ public class CommonConfiguration extends AbstractModule {
 
 		bind(ComponentService.class).to(ComponentSerializer.class);
 		bind(new TypeLiteral<WorkerProcessor<SerializerContent>>() {}).to(ComponentSerializer.class);
-
-		bind(PermissionRequirementValidation.class).asEagerSingleton();
-		bind(WorldRequirementValidation.class).asEagerSingleton();
-		bind(ServerRequirementValidation.class).asEagerSingleton();
-		bind(PlaceholderRequirementValidation.class).asEagerSingleton();
-		bind(ChatRequirementValidation.class).asEagerSingleton();
-		bind(new TypeLiteral<ExtendedRegistry<RequirementType, RequirementValidation>>() {}).to(RequirementRegistry.class);
-		bind(RequirementEvaluatorService.class).to(RequirementEvaluator.class);
 	}
 }

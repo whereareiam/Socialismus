@@ -72,8 +72,8 @@ public class Settings {
 	}
 
 	/**
-	 * Configuration for the plugin's update checker.
-	 * Controls update notifications and checking behavior.
+	 * Configuration for the plugin's updater checker.
+	 * Controls updater notifications and checking behavior.
 	 */
 	@Getter
 	@Setter
@@ -85,9 +85,14 @@ public class Settings {
 		private boolean checkForUpdates;
 
 		/**
-		 * Whether to show update notifications
+		 * Whether to show updater notifications
 		 */
 		private boolean warnAboutUpdates;
+
+		/**
+		 * Whether to warn about local builds
+		 */
+		private boolean warnAboutLocalBuilds;
 
 		/**
 		 * Whether to warn about development builds
