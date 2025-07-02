@@ -107,6 +107,7 @@ public class ModuleManager implements ModuleService {
 								.supportedPlatforms(module.getSupportedPlatforms())
 								.supportedVersions(module.getSupportedVersions())
 								.dependencies(module.getDependencies())
+								.updater(module.getUpdater())
 								.main(module.getMain())
 								.build());
 					}
