@@ -6,7 +6,7 @@ import me.whereareiam.socialismus.api.type.module.ProviderType;
 
 @Getter
 @Setter
-@SuperBuilder(toBuilder = true)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateSpecification {
@@ -24,6 +24,8 @@ public class UpdateSpecification {
 	@Setter
 	@ToString
 	@SuperBuilder
+	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class Spec {
 		private ProviderType provider;
 		private String id;
