@@ -8,7 +8,6 @@ import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.sync.ChatSyncBus;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.api.model.config.Settings;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.SerializationService;
 import me.whereareiam.socialismus.api.output.resource.sync.SyncService;
@@ -27,8 +26,14 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	private final ChatCoordinator coordinator;
 	private final PlatformInteractor platformInteractor;
 
-	private final Provider<Settings> settings;
 	private final Provider<ChatSettings> chatSettings;
+
+	public void initialize() {
+		if (!chatSettings.get().getSynchronization().isEnabled())
+			return;
+
+		subscribe();
+	}
 
 	@Override
 	public void publish(ChatMessage message) {

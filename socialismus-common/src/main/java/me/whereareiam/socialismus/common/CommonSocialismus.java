@@ -18,7 +18,6 @@ import me.whereareiam.socialismus.common.chat.worker.chatmessage.RecipientResolv
 import me.whereareiam.socialismus.common.chat.worker.chatmessage.RecipientSelector;
 import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.printer.WelcomeBannerPrinter;
-import me.whereareiam.socialismus.common.sync.ChatNetworkBridge;
 
 public class CommonSocialismus {
 	private Injector injector;
@@ -46,7 +45,7 @@ public class CommonSocialismus {
 		injector.getInstance(ListenerRegistrar.class).registerListeners();
 
 		injector.getInstance(Updater.class).start();
-		injector.getInstance(ChatNetworkBridge.class).subscribe();
+		injector.getInstance(SynchronizationService.class).initialize();
 
 		injector.getInstance(WelcomeBannerPrinter.class).print();
 
