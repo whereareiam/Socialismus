@@ -10,78 +10,117 @@ import me.whereareiam.socialismus.api.model.scheduler.RunnableTask;
 import me.whereareiam.socialismus.api.output.Scheduler;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class VelocityScheduler implements Scheduler {
-    private final VelocitySocialismus socialismus;
-    private final com.velocitypowered.api.scheduler.Scheduler scheduler;
-    private final Map<String, Map<Integer, ScheduledTask>> tasks = new HashMap<>();
+	private final VelocitySocialismus socialismus;
+	private final com.velocitypowered.api.scheduler.Scheduler velocityScheduler;
+	private final Map<String, Map<Integer, ScheduledTask>> tasks = new ConcurrentHashMap<>();
 
-    @Inject
-    public VelocityScheduler(VelocitySocialismus socialismus, ProxyServer proxyServer) {
-        this.socialismus = socialismus;
-        this.scheduler = proxyServer.getScheduler();
-    }
+	private static final AtomicInteger ID_GENERATOR = new AtomicInteger(1);
 
-    @Override
-    public void schedule(RunnableTask runnableTask) {
-        ScheduledTask task = scheduler.buildTask(socialismus, runnableTask.getRunnable()).schedule();
-        tasks.put(runnableTask.getModule(), Map.of(runnableTask.getId(), task));
-    }
+	@Inject
+	public VelocityScheduler(
+			VelocitySocialismus socialismus,
+			ProxyServer proxyServer
+	) {
+		this.socialismus = socialismus;
+		this.velocityScheduler = proxyServer.getScheduler();
+	}
 
-    @Override
-    public void schedule(DelayedRunnableTask runnableTask) {
-        ScheduledTask task = scheduler.buildTask(socialismus,
-                runnableTask.getRunnable()).delay(Duration.ofMillis(runnableTask.getDelay())
-        ).schedule();
-        tasks.put(runnableTask.getModule(), Map.of(runnableTask.getId(), task));
-    }
+	private int ensureId(RunnableTask task) {
+		int existing = task.getId();
+		if (existing <= 0) {
+			int id = ID_GENERATOR.getAndIncrement();
+			task.setId(id);
+			return id;
+		}
 
-    @Override
-    public void schedule(PeriodicalRunnableTask runnableTask) {
-        ScheduledTask task = scheduler.buildTask(socialismus,
-                runnableTask.getRunnable()).repeat(Duration.ofMillis(runnableTask.getDelay())
-        ).schedule();
+		return existing;
+	}
 
-        tasks.put(runnableTask.getModule(), Map.of(runnableTask.getId(), task));
-    }
+	@Override
+	public void schedule(RunnableTask runnableTask) {
+		int id = ensureId(runnableTask);
 
-    @Override
-    public void schedule(RunnableTask runnableTask, boolean async) {
-        schedule(runnableTask);
-    }
+		ScheduledTask task = velocityScheduler
+				.buildTask(socialismus, runnableTask.getRunnable())
+				.schedule();
 
-    @Override
-    public void schedule(DelayedRunnableTask runnableTask, boolean async) {
-        schedule(runnableTask);
-    }
+		tasks
+				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
+				.put(id, task);
+	}
 
-    @Override
-    public void schedule(PeriodicalRunnableTask runnableTask, boolean async) {
-        schedule(runnableTask);
-    }
+	@Override
+	public void schedule(DelayedRunnableTask runnableTask) {
+		int id = ensureId(runnableTask);
 
-    @Override
-    public void cancel(RunnableTask runnableTask) {
-        if (tasks.containsKey(runnableTask.getModule()) && tasks.get(runnableTask.getModule()).containsKey(runnableTask.getId())) {
-            tasks.get(runnableTask.getModule()).get(runnableTask.getId()).cancel();
-            tasks.get(runnableTask.getModule()).remove(runnableTask.getId());
-        }
-    }
+		ScheduledTask task = velocityScheduler
+				.buildTask(socialismus, runnableTask.getRunnable())
+				.delay(Duration.ofMillis(runnableTask.getDelay()))
+				.schedule();
 
-    @Override
-    public void cancel(DelayedRunnableTask runnableTask) {
-        cancel((RunnableTask) runnableTask);
-    }
+		tasks
+				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
+				.put(id, task);
+	}
 
-    @Override
-    public void cancelByModule(String module) {
-        if (tasks.containsKey(module)) {
-            tasks.get(module).values().forEach(ScheduledTask::cancel);
-            tasks.remove(module);
-        }
-    }
+	@Override
+	public void schedule(PeriodicalRunnableTask runnableTask) {
+		int id = ensureId(runnableTask);
+
+		ScheduledTask task = velocityScheduler
+				.buildTask(socialismus, runnableTask.getRunnable())
+				.delay(Duration.ofMillis(runnableTask.getDelay()))
+				.repeat(Duration.ofMillis(runnableTask.getPeriod()))
+				.schedule();
+
+		tasks
+				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
+				.put(id, task);
+	}
+
+	@Override
+	public void schedule(RunnableTask runnableTask, boolean async) {
+		schedule(runnableTask);
+	}
+
+	@Override
+	public void schedule(DelayedRunnableTask runnableTask, boolean async) {
+		schedule(runnableTask);
+	}
+
+	@Override
+	public void schedule(PeriodicalRunnableTask runnableTask, boolean async) {
+		schedule(runnableTask);
+	}
+
+	@Override
+	public void cancel(RunnableTask runnableTask) {
+		Map<Integer, ScheduledTask> moduleTasks = tasks.get(runnableTask.getModule());
+		if (moduleTasks != null) {
+			Integer id = runnableTask.getId();
+			ScheduledTask task = moduleTasks.remove(id);
+			if (task != null)
+				task.cancel();
+			if (moduleTasks.isEmpty())
+				tasks.remove(runnableTask.getModule());
+		}
+	}
+
+	@Override
+	public void cancel(DelayedRunnableTask runnableTask) {
+		cancel((RunnableTask) runnableTask);
+	}
+
+	@Override
+	public void cancelByModule(String module) {
+		Map<Integer, ScheduledTask> moduleTasks = tasks.remove(module);
+		if (moduleTasks != null)
+			moduleTasks.values().forEach(ScheduledTask::cancel);
+	}
 }
-
