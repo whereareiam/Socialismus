@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.api.model.scheduler;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -21,12 +22,19 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class RunnableTask {
-		/** Unique identifier for the task */
-		private final int id;
+	/**
+	 * Unique identifier for the task
+	 */
+	@Setter
+	private int id;
 
-		/** Name of the module that created this task */
-		private final String module;
+	/**
+	 * Name of the module that created this task
+	 */
+	private final String module;
 
-		/** The actual task to be executed */
-		private final Runnable runnable;
+	/**
+	 * The actual task to be executed
+	 */
+	private final Runnable runnable;
 }

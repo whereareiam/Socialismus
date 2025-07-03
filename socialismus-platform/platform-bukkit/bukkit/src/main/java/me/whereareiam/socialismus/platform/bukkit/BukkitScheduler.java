@@ -10,96 +10,119 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class BukkitScheduler implements Scheduler {
-    private static final long MS_TO_TICKS = 20L;
-    private final Plugin plugin;
-    private final Map<String, Map<Integer, BukkitTask>> tasks = new HashMap<>();
+	private final Plugin plugin;
+	private final Map<String, Map<Integer, BukkitTask>> tasks = new ConcurrentHashMap<>();
 
-    @Inject
-    public BukkitScheduler(Plugin plugin) {
-        this.plugin = plugin;
-    }
+	private static final AtomicInteger ID_GENERATOR = new AtomicInteger(1);
+	private static final long MS_TO_TICKS = 20L;
 
-    @Override
-    public void schedule(RunnableTask runnableTask) {
-        schedule(runnableTask, false);
-    }
+	@Inject
+	public BukkitScheduler(Plugin plugin) {
+		this.plugin = plugin;
+	}
 
-    @Override
-    public void schedule(DelayedRunnableTask runnableTask) {
-        schedule(runnableTask, false);
-    }
+	private int ensureId(RunnableTask task) {
+		int existing = task.getId();
+		if (existing <= 0) {
+			int generated = ID_GENERATOR.getAndIncrement();
+			task.setId(generated);
+			return generated;
+		}
 
-    @Override
-    public void schedule(PeriodicalRunnableTask runnableTask) {
-        schedule(runnableTask, false);
-    }
+		return existing;
+	}
 
-    @Override
-    public void schedule(RunnableTask runnableTask, boolean async) {
-        BukkitTask task;
-        if (async) {
-            task = Bukkit.getScheduler().runTaskAsynchronously(plugin, runnableTask.getRunnable());
-        } else {
-            task = Bukkit.getScheduler().runTask(plugin, runnableTask.getRunnable());
-        }
+	@Override
+	public void schedule(RunnableTask runnableTask) {
+		schedule(runnableTask, false);
+	}
 
-        tasks.put(runnableTask.getModule(), Map.of(runnableTask.getId(), task));
-    }
+	@Override
+	public void schedule(DelayedRunnableTask runnableTask) {
+		schedule(runnableTask, false);
+	}
 
-    @Override
-    public void schedule(DelayedRunnableTask runnableTask, boolean async) {
-        BukkitTask task;
-        long delayInTicks = runnableTask.getDelay() / MS_TO_TICKS;
+	@Override
+	public void schedule(PeriodicalRunnableTask runnableTask) {
+		schedule(runnableTask, false);
+	}
 
-        if (async) {
-            task = Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnableTask.getRunnable(), delayInTicks);
-        } else {
-            task = Bukkit.getScheduler().runTaskLater(plugin, runnableTask.getRunnable(), delayInTicks);
-        }
+	@Override
+	public void schedule(RunnableTask runnableTask, boolean async) {
+		int id = ensureId(runnableTask);
+		BukkitTask task = async
+				? Bukkit.getScheduler().runTaskAsynchronously(plugin, runnableTask.getRunnable())
+				: Bukkit.getScheduler().runTask(plugin, runnableTask.getRunnable());
 
-        tasks.put(runnableTask.getModule(), Map.of(runnableTask.getId(), task));
-    }
+		tasks
+				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
+				.put(id, task);
+	}
 
-    @Override
-    public void schedule(PeriodicalRunnableTask runnableTask, boolean async) {
-        BukkitTask task;
+	@Override
+	public void schedule(DelayedRunnableTask runnableTask, boolean async) {
+		int id = ensureId(runnableTask);
+		long delayInTicks = runnableTask.getDelay() / MS_TO_TICKS;
 
-        long delayInTicks = runnableTask.getDelay() / MS_TO_TICKS;
-        long periodInTicks = runnableTask.getPeriod() / MS_TO_TICKS;
+		BukkitTask task = async
+				? Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnableTask.getRunnable(), delayInTicks)
+				: Bukkit.getScheduler().runTaskLater(plugin, runnableTask.getRunnable(), delayInTicks);
 
-        if (async) {
-            task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnableTask.getRunnable(), delayInTicks, periodInTicks);
-        } else {
-            task = Bukkit.getScheduler().runTaskTimer(plugin, runnableTask.getRunnable(), delayInTicks, periodInTicks);
-        }
+		tasks
+				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
+				.put(id, task);
+	}
 
-        tasks.put(runnableTask.getModule(), Map.of(runnableTask.getId(), task));
-    }
+	@Override
+	public void schedule(PeriodicalRunnableTask runnableTask, boolean async) {
+		int id = ensureId(runnableTask);
+		long delayInTicks = runnableTask.getDelay() / MS_TO_TICKS;
+		long periodInTicks = runnableTask.getPeriod() / MS_TO_TICKS;
 
-    @Override
-    public void cancel(RunnableTask runnableTask) {
-        if (tasks.containsKey(runnableTask.getModule()) && tasks.get(runnableTask.getModule()).containsKey(runnableTask.getId())) {
-            tasks.get(runnableTask.getModule()).get(runnableTask.getId()).cancel();
-            tasks.get(runnableTask.getModule()).remove(runnableTask.getId());
-        }
-    }
+		BukkitTask task = async
+				? Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,
+				runnableTask.getRunnable(),
+				delayInTicks,
+				periodInTicks)
+				: Bukkit.getScheduler().runTaskTimer(plugin,
+				runnableTask.getRunnable(),
+				delayInTicks,
+				periodInTicks);
 
-    @Override
-    public void cancel(DelayedRunnableTask runnableTask) {
-        cancel((RunnableTask) runnableTask);
-    }
+		tasks
+				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
+				.put(id, task);
+	}
 
-    @Override
-    public void cancelByModule(String module) {
-        if (tasks.containsKey(module)) {
-            tasks.get(module).values().forEach(BukkitTask::cancel);
-            tasks.remove(module);
-        }
-    }
+	@Override
+	public void cancel(RunnableTask runnableTask) {
+		Map<Integer, BukkitTask> moduleTasks = tasks.get(runnableTask.getModule());
+		if (moduleTasks != null) {
+			Integer id = runnableTask.getId();
+			BukkitTask t = moduleTasks.remove(id);
+			if (t != null)
+				t.cancel();
+			if (moduleTasks.isEmpty())
+				tasks.remove(runnableTask.getModule());
+		}
+	}
+
+	@Override
+	public void cancel(DelayedRunnableTask runnableTask) {
+		cancel((RunnableTask) runnableTask);
+	}
+
+	@Override
+	public void cancelByModule(String module) {
+		Map<Integer, BukkitTask> moduleTasks = tasks.remove(module);
+		if (moduleTasks != null) {
+			moduleTasks.values().forEach(BukkitTask::cancel);
+		}
+	}
 }
-
