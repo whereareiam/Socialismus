@@ -36,6 +36,9 @@
 - [Swapper](https://github.com/whereareiam/Swapper) *[WIP]* - The message magician! Transform words into emojis,
   phrases,
   or anything you fancy. Perfect for adding a touch of surprise to your chat.
+- [Roomster](https://github.com/whereareiam/Roomster) *[WIP]* - The group-chat guru! Create dedicated chat rooms, manage
+  invites, and give
+  your community a space for focused discussion.
 - [Bridger](https://github.com/whereareiam/Bridger) *[WIP]* - The connection expert! Seamlessly link your server with
   Discord using DiscordSRV and similar plugins.
 - [Colorizer](https://github.com/whereareiam/Colorizer) *[WIP]* - The chat colorist! Allow players to select chat color
