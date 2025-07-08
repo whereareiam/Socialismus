@@ -11,6 +11,7 @@ import me.whereareiam.socialismus.api.output.command.CommandCooldown;
 import me.whereareiam.socialismus.api.output.command.CommandService;
 import me.whereareiam.socialismus.command.executor.*;
 import me.whereareiam.socialismus.command.listener.CommandCooldownListener;
+import me.whereareiam.socialismus.command.provider.CrossPlayerProvider;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.annotations.AnnotationParser;
 import org.incendo.cloud.execution.postprocessor.CommandPostprocessor;
@@ -27,97 +28,102 @@ import java.util.stream.Stream;
 
 @Singleton
 public class CommandProcessor implements CommandService {
-    private final Injector injector;
-    private final Provider<CommandManager<DummyPlayer>> commandManager;
-    private final AnnotationParser<DummyPlayer> annotationParser;
+	private final Injector injector;
+	private final Provider<CommandManager<DummyPlayer>> commandManager;
+	private final AnnotationParser<DummyPlayer> annotationParser;
 
-    private final Map<String, String> translations = new HashMap<>();
+	private final Map<String, String> translations = new HashMap<>();
 
-    @Inject
-    public CommandProcessor(Injector injector, Provider<CommandManager<DummyPlayer>> commandManager, Provider<Map<String, CommandEntity>> commands) {
-        this.injector = injector;
-        this.commandManager = commandManager;
-        this.annotationParser = new AnnotationParser<>(commandManager.get(), DummyPlayer.class);
+	@Inject
+	public CommandProcessor(
+			Injector injector,
+			Provider<CommandManager<DummyPlayer>> commandManager,
+			Provider<Map<String, CommandEntity>> commands
+	) {
+		this.injector = injector;
+		this.commandManager = commandManager;
+		this.annotationParser = new AnnotationParser<>(commandManager.get(), DummyPlayer.class);
 
-        annotationParser.stringProcessor(injector.getInstance(CommandTranslator.class).getProcessor());
-        annotationParser.registerBuilderModifier(
-                CommandCooldown.class,
-                ((annotation, builder) -> {
-                    CommandEntity entity = commands.get().get(annotation.value().split("\\.")[1]);
-                    if (entity == null || !entity.getCooldown().isEnabled()) return builder;
+		annotationParser.stringProcessor(injector.getInstance(CommandTranslator.class).getProcessor());
+		annotationParser.registerBuilderModifier(
+				CommandCooldown.class,
+				((annotation, builder) -> {
+					CommandEntity entity = commands.get().get(annotation.value().split("\\.")[1]);
+					if (entity == null || !entity.getCooldown().isEnabled()) return builder;
 
-                    Cooldown<DummyPlayer> cooldown = Cooldown.of(
-                            DurationFunction.constant(Duration.ofSeconds(entity.getCooldown().getDuration())),
-                            CooldownGroup.named(entity.getCooldown().getGroup())
-                    );
+					Cooldown<DummyPlayer> cooldown = Cooldown.of(
+							DurationFunction.constant(Duration.ofSeconds(entity.getCooldown().getDuration())),
+							CooldownGroup.named(entity.getCooldown().getGroup())
+					);
 
-                    return builder.apply(cooldown);
-                })
-        );
+					return builder.apply(cooldown);
+				})
+		);
+		annotationParser.parse(injector.getInstance(CrossPlayerProvider.class));
 
-        CooldownBuilderModifier.install(annotationParser);
+		CooldownBuilderModifier.install(annotationParser);
 
-        commandManager.get().registerCommandPostProcessor(createCooldownManager());
-    }
+		commandManager.get().registerCommandPostProcessor(createCooldownManager());
+	}
 
-    @Override
-    public void registerCommands() {
-        CommandManager<DummyPlayer> commandManager = this.commandManager.get();
+	@Override
+	public void registerCommands() {
+		CommandManager<DummyPlayer> commandManager = this.commandManager.get();
 
-        commandManager.rootCommands().forEach(commandManager::deleteRootCommand);
-        Stream.of(injector.getInstance(MainCommand.class),
-                injector.getInstance(HelpCommand.class),
-                injector.getInstance(DebugCommand.class),
-                injector.getInstance(ReloadCommand.class),
-                injector.getInstance(ClearCommand.class)
-        ).forEach(this::registerCommand);
-    }
+		commandManager.rootCommands().forEach(commandManager::deleteRootCommand);
+		Stream.of(injector.getInstance(MainCommand.class),
+				injector.getInstance(HelpCommand.class),
+				injector.getInstance(DebugCommand.class),
+				injector.getInstance(ReloadCommand.class),
+				injector.getInstance(ClearCommand.class)
+		).forEach(this::registerCommand);
+	}
 
-    private CommandPostprocessor<DummyPlayer> createCooldownManager() {
-        CooldownRepository<DummyPlayer> repository = CooldownRepository.mapping(
-                DummyPlayer::getUniqueId,
-                CooldownRepository.forMap(new HashMap<>())
-        );
+	private CommandPostprocessor<DummyPlayer> createCooldownManager() {
+		CooldownRepository<DummyPlayer> repository = CooldownRepository.mapping(
+				DummyPlayer::getUniqueId,
+				CooldownRepository.forMap(new HashMap<>())
+		);
 
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(); // Will cause a leak if shutdown is executed by PlugMan or similar tools
-        CooldownConfiguration<DummyPlayer> configuration = CooldownConfiguration.<DummyPlayer>builder()
-                .repository(repository)
-                .addActiveCooldownListener(injector.getInstance(CommandCooldownListener.class))
-                .addCreationListener(new ScheduledCleanupCreationListener<>(executorService, repository))
-                .build();
+		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(); // Will cause a leak if shutdown is executed by PlugMan or similar tools
+		CooldownConfiguration<DummyPlayer> configuration = CooldownConfiguration.<DummyPlayer>builder()
+				.repository(repository)
+				.addActiveCooldownListener(injector.getInstance(CommandCooldownListener.class))
+				.addCreationListener(new ScheduledCleanupCreationListener<>(executorService, repository))
+				.build();
 
-        CooldownManager<DummyPlayer> cooldownManager = CooldownManager.cooldownManager(
-                configuration
-        );
+		CooldownManager<DummyPlayer> cooldownManager = CooldownManager.cooldownManager(
+				configuration
+		);
 
-        return cooldownManager.createPostprocessor();
-    }
+		return cooldownManager.createPostprocessor();
+	}
 
-    @Override
-    public void registerCommand(CommandBase command) {
-        translations.putAll(command.getTranslations());
-        annotationParser.parse(command);
-    }
+	@Override
+	public void registerCommand(CommandBase command) {
+		translations.putAll(command.getTranslations());
+		annotationParser.parse(command);
+	}
 
-    @Override
-    public void registerTranslation(String key, String value) {
-        translations.put(key, value);
-    }
+	@Override
+	public void registerTranslation(String key, String value) {
+		translations.put(key, value);
+	}
 
-    @Override
-    public int getCommandCount() {
-        return commandManager.get().commands().size();
-    }
+	@Override
+	public int getCommandCount() {
+		return commandManager.get().commands().size();
+	}
 
-    @Override
-    public String getTranslation(String key) {
-        return translations.get(key);
-    }
+	@Override
+	public String getTranslation(String key) {
+		return translations.get(key);
+	}
 
-    @Override
-    public Map<String, String> getTranslations() {
-        return translations;
-    }
+	@Override
+	public Map<String, String> getTranslations() {
+		return translations;
+	}
 }
 
 
