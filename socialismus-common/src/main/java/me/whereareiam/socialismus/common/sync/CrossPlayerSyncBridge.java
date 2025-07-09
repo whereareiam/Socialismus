@@ -37,19 +37,11 @@ public final class CrossPlayerSyncBridge implements EventListener {
 
 	@SocialisticEvent
 	public void onDummyPlayerAdd(DummyPlayerAddedEvent event) {
-		System.out.println("Add: " + SET_KEY);
-		System.out.println("Add: " + event.getDummyPlayer().getUsername());
-		System.out.println(">>> CacheService impl = "
-				+ cache.getClass().getName()
-				+ "@" + System.identityHashCode(cache));
-
 		cache.add(SET_KEY, event.getDummyPlayer().getUsername());
-		System.out.println(cache.get(SET_KEY));
 	}
 
 	@SocialisticEvent
 	public void onDummyPlayerRemove(DummyPlayerRemovedEvent event) {
-		System.out.println("Remove: " + event.getDummyPlayer().getUsername());
 		cache.remove(SET_KEY, event.getDummyPlayer().getUsername());
 	}
 }
