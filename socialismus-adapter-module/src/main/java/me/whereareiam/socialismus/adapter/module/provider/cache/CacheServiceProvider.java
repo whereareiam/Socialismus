@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.adapter.module.provider;
+package me.whereareiam.socialismus.adapter.module.provider.cache;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -17,10 +17,11 @@ public class CacheServiceProvider implements Provider<CacheService> {
 	@Override
 	public CacheService get() {
 		Object svc = registry.get(ResourceType.CACHE)
-				.orElseThrow(() -> new ProvisionException("No CacheService registered!"));
+				.orElse(new DummyCacheService());
 
-		if (!(svc instanceof CacheService))
+		if (!(svc instanceof CacheService)) {
 			throw new ProvisionException("Registered object is not a CacheService: " + svc.getClass());
+		}
 
 		return (CacheService) svc;
 	}

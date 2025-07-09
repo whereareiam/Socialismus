@@ -5,6 +5,7 @@ import me.whereareiam.socialismus.api.model.position.Position;
 import me.whereareiam.socialismus.api.type.Version;
 import net.kyori.adventure.text.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,6 +33,12 @@ public interface PlatformInteractor {
 	 */
 	void broadcast(Component component, boolean silent);
 
+	/**
+	 * Gets the eye position of a player.
+	 *
+	 * @param dummyPlayer The dummy player instance
+	 * @return The eye position of the player as a Position object
+	 */
 	Position getEyePosition(DummyPlayer dummyPlayer);
 
 	/**
@@ -69,6 +76,13 @@ public interface PlatformInteractor {
 	 * @return true if the dummy player has the permission, false otherwise
 	 */
 	boolean hasPermission(DummyPlayer dummyPlayer, String permission);
+
+	/**
+	 * Gets a list of all online players' usernames.
+	 *
+	 * @return A list of usernames of online players
+	 */
+	List<String> getOnlinePlayers();
 
 	/**
 	 * Gets the current number of online players.

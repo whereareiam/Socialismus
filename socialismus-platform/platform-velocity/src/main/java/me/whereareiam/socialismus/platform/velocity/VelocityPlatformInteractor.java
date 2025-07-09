@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.platform.velocity;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
@@ -10,6 +11,7 @@ import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.type.Version;
 import net.kyori.adventure.text.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Singleton
@@ -70,6 +72,13 @@ public class VelocityPlatformInteractor implements PlatformInteractor {
 				.getPlayer(dummyPlayer.getUniqueId())
 				.map(value -> value.hasPermission(permission))
 				.orElse(false);
+	}
+
+	@Override
+	public List<String> getOnlinePlayers() {
+		return proxyServer.getAllPlayers().stream()
+				.map(Player::getUsername)
+				.toList();
 	}
 
 	@Override

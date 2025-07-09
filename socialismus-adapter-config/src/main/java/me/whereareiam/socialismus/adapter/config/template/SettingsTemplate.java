@@ -25,6 +25,8 @@ public class SettingsTemplate implements DefaultConfig<Settings> {
 		Settings.Synchronization synchronization = new Settings.Synchronization();
 		synchronization.setEnabled(false);
 		synchronization.setServer(UUID.randomUUID().toString());
+		synchronization.setUseRealServerName(false);
+		synchronization.setCrossPlayerSync(true);
 
 		settings.setSynchronization(synchronization);
 

@@ -19,7 +19,7 @@ import java.util.Set;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ChatNetworkBridge implements ChatSyncBus {
-	private static final String CHANNEL = Constants.CHANNEL + ":chat";
+	private static final String CHANNEL = Constants.Channels.CHAT;
 
 	private final SyncService sync;
 	private final SerializationService serializationService;

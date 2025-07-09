@@ -41,7 +41,7 @@ public class CommonSocialismus {
 		injector.getInstance(ChatMessages.class);
 		injector.getInstance(ChatSettings.class);
 
-		injector.getInstance(CommandService.class).registerCommands();
+		injector.getInstance(CommandService.class).initialize();
 		injector.getInstance(ModuleService.class).loadModules();
 		injector.getInstance(ListenerRegistrar.class).registerListeners();
 

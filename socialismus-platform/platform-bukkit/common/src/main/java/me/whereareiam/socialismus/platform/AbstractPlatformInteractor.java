@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
@@ -64,6 +65,13 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 		if (player == null) return false;
 
 		return player.hasPermission(permission);
+	}
+
+	@Override
+	public List<String> getOnlinePlayers() {
+		return Bukkit.getOnlinePlayers().stream()
+				.map(Player::getName)
+				.toList();
 	}
 
 	@Override

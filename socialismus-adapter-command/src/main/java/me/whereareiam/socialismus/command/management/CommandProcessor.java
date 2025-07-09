@@ -67,7 +67,7 @@ public class CommandProcessor implements CommandService {
 	}
 
 	@Override
-	public void registerCommands() {
+	public void initialize() {
 		CommandManager<DummyPlayer> commandManager = this.commandManager.get();
 
 		commandManager.rootCommands().forEach(commandManager::deleteRootCommand);

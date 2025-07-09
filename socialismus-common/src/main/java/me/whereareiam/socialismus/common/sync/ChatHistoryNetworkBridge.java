@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ChatHistoryNetworkBridge implements EventListener, ChatHistorySyncBus {
-	private static final String CHANNEL = Constants.CHANNEL + ":chat-history";
+	private static final String CHANNEL = Constants.Channels.CHAT_HISTORY;
 
 	private final SyncService sync;
 	private final SerializationService serializationService;
