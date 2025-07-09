@@ -49,6 +49,6 @@ public class CommandsProvider implements Provider<Map<String, CommandEntity>>, R
 
 	@Override
 	public void register(Map<String, CommandEntity> commands) {
-		this.commands.put(commands.keySet().iterator().next(), commands.values().iterator().next());
+		this.commands.putAll(commands);
 	}
 }

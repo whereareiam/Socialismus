@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.command.management;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.model.CommandEntity;
 import me.whereareiam.socialismus.api.output.command.CommandService;
 import org.incendo.cloud.annotations.string.PatternReplacingStringProcessor;
@@ -15,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class CommandTranslator {
 	private static final Pattern COMMAND_PATTERN = Pattern.compile("%command\\.(.*)");
 	private static final Pattern PERMISSION_PATTERN = Pattern.compile("%permission\\.(.*)");
@@ -23,12 +25,6 @@ public class CommandTranslator {
 
 	private final Provider<Map<String, CommandEntity>> commands;
 	private final CommandService commandService;
-
-	@Inject
-	public CommandTranslator(Provider<Map<String, CommandEntity>> commands, CommandService commandService) {
-		this.commands = commands;
-		this.commandService = commandService;
-	}
 
 	public PatternReplacingStringProcessor getProcessor() {
 		Map<Pattern, Function<CommandEntity, String>> patternFunctionMap = new HashMap<>();
