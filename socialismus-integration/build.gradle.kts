@@ -1,6 +1,5 @@
 subprojects {
     dependencies {
-        "implementation"(project(":socialismus-common-api"))
-        "implementation"(project(":socialismus-shared"))
+        "compileOnly"(project(":socialismus-common-api"))
     }
 }
