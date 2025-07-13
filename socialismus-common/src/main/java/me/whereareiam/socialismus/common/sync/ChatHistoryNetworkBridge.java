@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.event.EventListener;
 import me.whereareiam.socialismus.api.input.event.EventManager;
@@ -17,7 +18,6 @@ import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.output.SerializationService;
 import me.whereareiam.socialismus.api.output.resource.sync.SyncService;
 import me.whereareiam.socialismus.common.chat.ChatHistoryController;
-import me.whereareiam.socialismus.shared.Constants;
 
 import java.util.HashMap;
 import java.util.Map;

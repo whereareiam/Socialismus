@@ -2,10 +2,10 @@ package me.whereareiam.socialismus.platform;
 
 import com.google.inject.AbstractModule;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.output.LoggingHelper;
 import me.whereareiam.socialismus.api.output.PlatformClassLoader;
 import me.whereareiam.socialismus.integration.bstats.Metrics;
-import me.whereareiam.socialismus.shared.Constants;
 import org.bukkit.plugin.Plugin;
 
 @RequiredArgsConstructor

@@ -5,10 +5,10 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.socialismus.adapter.config.management.DefaultConfigurationLoader;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.Reloadable;
 import me.whereareiam.socialismus.api.input.registry.Registry;
 import me.whereareiam.socialismus.api.model.config.Settings;
-import me.whereareiam.socialismus.shared.Constants;
 
 import java.nio.file.Path;
 

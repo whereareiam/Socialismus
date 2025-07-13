@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.input.chat.ChatHistoryService;
 import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.api.input.event.chat.history.ChatHistoryRemoveByAmountEvent;
@@ -15,7 +16,6 @@ import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.util.EventUtil;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
-import me.whereareiam.socialismus.shared.Constants;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;

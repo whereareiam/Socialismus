@@ -5,6 +5,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.AnsiColor;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.updater.UpdateProvider;
 import me.whereareiam.socialismus.api.model.config.Settings;
@@ -13,7 +14,6 @@ import me.whereareiam.socialismus.api.model.scheduler.PeriodicalRunnableTask;
 import me.whereareiam.socialismus.api.output.Scheduler;
 import me.whereareiam.socialismus.api.output.module.ModuleService;
 import me.whereareiam.socialismus.api.type.module.ProviderType;
-import me.whereareiam.socialismus.shared.Constants;
 
 import java.io.IOException;
 import java.util.List;

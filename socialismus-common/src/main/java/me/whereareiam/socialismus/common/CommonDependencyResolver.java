@@ -2,8 +2,8 @@ package me.whereareiam.socialismus.common;
 
 import com.alessiodp.libby.Library;
 import com.alessiodp.libby.relocation.Relocation;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.input.DependencyResolver;
-import me.whereareiam.socialismus.shared.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -10,6 +10,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import jakarta.inject.Inject;
 import lombok.Getter;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.type.PluginType;
 import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.common.CommonSocialismus;
@@ -18,7 +19,6 @@ import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
 import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
 import me.whereareiam.socialismus.integration.papiproxybridge.PAPIProxyBridgeIntegration;
 import me.whereareiam.socialismus.platform.velocity.inject.VelocityInjector;
-import me.whereareiam.socialismus.shared.Constants;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;

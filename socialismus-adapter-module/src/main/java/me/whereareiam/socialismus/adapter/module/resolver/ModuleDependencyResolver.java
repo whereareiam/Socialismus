@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.adapter.module.resolver;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.model.module.InternalModule;
 import me.whereareiam.socialismus.api.model.module.ModuleDependency;
@@ -10,7 +11,6 @@ import me.whereareiam.socialismus.api.output.integration.Integration;
 import me.whereareiam.socialismus.api.output.module.ModuleService;
 import me.whereareiam.socialismus.api.type.module.DependencyType;
 import me.whereareiam.socialismus.api.type.module.ModuleState;
-import me.whereareiam.socialismus.shared.Constants;
 
 import java.util.Set;
 import java.util.regex.Pattern;

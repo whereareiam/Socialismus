@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.common.sync;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
 import me.whereareiam.socialismus.api.input.event.EventListener;
 import me.whereareiam.socialismus.api.input.event.EventManager;
@@ -11,7 +12,6 @@ import me.whereareiam.socialismus.api.input.event.player.DummyPlayerAddedEvent;
 import me.whereareiam.socialismus.api.input.event.player.DummyPlayerRemovedEvent;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.output.resource.CacheService;
-import me.whereareiam.socialismus.shared.Constants;
 
 import java.util.Set;
 

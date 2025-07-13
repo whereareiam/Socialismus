@@ -12,8 +12,6 @@ allprojects {
 }
 
 subprojects {
-    if (project.name == "socialismus-shared") return@subprojects
-
     repositories {
         mavenCentral()
         maven("https://jitpack.io")
@@ -26,6 +24,5 @@ subprojects {
 
         // general
         "compileOnly"(rootProject.libs.guice)
-        "compileOnly"(project(":socialismus-shared"))
     }
 }
