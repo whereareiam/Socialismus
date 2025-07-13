@@ -24,7 +24,8 @@ public final class CrossPlayerProvider {
 
 	@Suggestions("crossPlayers")
 	public Collection<String> suggestCrossPlayers() {
-		if (!settings.get().getSynchronization().isCrossPlayerSync())
+		Settings.Synchronization synchronization = settings.get().getSynchronization();
+		if (!synchronization.isEnabled() || !synchronization.isCrossPlayerSync())
 			return interactor.getOnlinePlayers();
 
 		final CacheService cache = this.cache.get();
