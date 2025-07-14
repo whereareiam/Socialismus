@@ -38,7 +38,7 @@ adventure-platform-bukkit = "4.4.0"
 # cloud
 cloud-core = "2.0.0"
 cloud-cooldown = "1.0.0-rc.1"
-cloud-paper = "2.0.0-beta.10"
+cloud-paper = "2.0.0-beta.11"
 cloud-velocity = "2.0.0-beta.10"
 cloud-minecraft-extras = "2.0.0-beta.10"
 
