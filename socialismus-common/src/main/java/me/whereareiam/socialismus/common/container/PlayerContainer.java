@@ -40,11 +40,15 @@ public class PlayerContainer implements PlayerContainerService {
 
 	@Override
 	public Optional<DummyPlayer> getPlayer(String username) {
+		if (username == null || username.isEmpty()) return Optional.empty();
+
 		return players.values().stream().filter(player -> player.getUsername().equals(username)).findFirst();
 	}
 
 	@Override
 	public Optional<DummyPlayer> getPlayer(UUID uniqueId) {
+		if (uniqueId == null) return Optional.empty();
+
 		return Optional.ofNullable(players.get(uniqueId));
 	}
 
