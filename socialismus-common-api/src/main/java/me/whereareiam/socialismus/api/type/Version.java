@@ -9,6 +9,10 @@ import java.util.Comparator;
  */
 public enum Version {
 	/**
+	 * Represents an unknown or unrecognized version
+	 */
+	UNKNOWN,
+	/**
 	 * Represents an unsupported or invalid version
 	 */
 	UNSUPPORTED,

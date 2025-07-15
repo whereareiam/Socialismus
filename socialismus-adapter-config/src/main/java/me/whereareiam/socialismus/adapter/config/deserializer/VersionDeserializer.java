@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.type.Version;
 
@@ -13,30 +14,30 @@ import java.io.IOException;
 
 @Singleton
 public class VersionDeserializer extends JsonDeserializer<Version> {
-    private final PlatformInteractor interactor;
+	private final PlatformInteractor interactor;
 
-    @Inject
-    public VersionDeserializer(PlatformInteractor interactor) {
-        this.interactor = interactor;
-    }
+	@Inject
+	public VersionDeserializer(PlatformInteractor interactor) {
+		this.interactor = interactor;
+	}
 
-    @Override
-    public Version deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
-        JsonNode node = parser.getCodec().readTree(parser);
-        String value = node.asText();
+	@Override
+	public Version deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
+		JsonNode node = parser.getCodec().readTree(parser);
+		String value = node.asText();
 
-        if (value.equals(Version.UNSUPPORTED.toString())) {
-            throw new IOException("Unsupported version: " + value);
-        }
+		if (value.equals(Version.UNSUPPORTED.toString())) {
+			throw new IOException("Unsupported version: " + value);
+		}
 
-        if ("ALL".equalsIgnoreCase(value)) {
-            return interactor.getServerVersion();
-        }
+		if ("ALL".equalsIgnoreCase(value)) {
+			return Constants.SERVER_VERSION;
+		}
 
-        try {
-            return Version.valueOf(value);
-        } catch (IllegalArgumentException e) {
-            throw new IOException("Invalid version value: " + value, e);
-        }
-    }
+		try {
+			return Version.valueOf(value);
+		} catch (IllegalArgumentException e) {
+			throw new IOException("Invalid version value: " + value, e);
+		}
+	}
 }

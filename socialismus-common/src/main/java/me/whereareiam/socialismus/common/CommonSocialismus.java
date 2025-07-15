@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.common;
 
 import com.google.inject.Injector;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.Serializer;
 import me.whereareiam.socialismus.api.input.event.plugin.PluginInitializedEvent;
@@ -8,6 +9,7 @@ import me.whereareiam.socialismus.api.input.serializer.ComponentService;
 import me.whereareiam.socialismus.api.model.chat.ChatMessages;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.output.LoggingHelper;
+import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.command.CommandService;
 import me.whereareiam.socialismus.api.output.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.api.output.module.ModuleService;
@@ -27,6 +29,7 @@ public class CommonSocialismus {
 		injector = CommonInjector.getInjector();
 
 		// Static helpers
+		Constants.SERVER_VERSION = injector.getInstance(PlatformInteractor.class).getServerVersion();
 		Logger.init(injector.getInstance(LoggingHelper.class));
 		Serializer.init(injector.getInstance(ComponentService.class));
 	}

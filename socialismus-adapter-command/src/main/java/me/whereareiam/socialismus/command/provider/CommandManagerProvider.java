@@ -1,9 +1,10 @@
 package me.whereareiam.socialismus.command.provider;
 
 import com.google.inject.Provider;
+import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.model.config.Settings;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.type.PlatformType;
 import me.whereareiam.socialismus.api.type.Version;
 import me.whereareiam.socialismus.command.management.CommandExceptionHandler;
@@ -11,18 +12,12 @@ import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.exception.*;
 import org.incendo.cloud.minecraft.extras.MinecraftExceptionHandler;
 
+@RequiredArgsConstructor
 public abstract class CommandManagerProvider implements Provider<CommandManager<DummyPlayer>> {
 	protected final Provider<Settings> settings;
-	private final PlatformInteractor interactor;
 	private final CommandExceptionHandler exceptionHandler;
 
 	private CommandManager<DummyPlayer> commandManager;
-
-	public CommandManagerProvider(CommandExceptionHandler exceptionHandler, Provider<Settings> settings, PlatformInteractor interactor) {
-		this.exceptionHandler = exceptionHandler;
-		this.settings = settings;
-		this.interactor = interactor;
-	}
 
 	@Override
 	public CommandManager<DummyPlayer> get() {
@@ -31,7 +26,7 @@ public abstract class CommandManagerProvider implements Provider<CommandManager<
 		commandManager = switch (PlatformType.getType()) {
 			case BUKKIT, SPIGOT -> createLegacyPaperCommandManager();
 			case FOLIA, PAPER -> {
-				if ((interactor.getServerVersion().isAtLeast(Version.V_1_20_5) && settings.get().getMisc().isAllowBrigadierCommands()) || interactor.getServerVersion().isAtLeast(Version.V_1_20_5))
+				if ((Constants.SERVER_VERSION.isAtLeast(Version.V_1_20_5) && settings.get().getMisc().isAllowBrigadierCommands()) || Constants.SERVER_VERSION.isAtLeast(Version.V_1_20_5))
 					yield createPaperCommandManager();
 				yield createLegacyPaperCommandManager();
 			}

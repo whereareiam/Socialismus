@@ -1,9 +1,13 @@
 package me.whereareiam.socialismus.api;
 
+import me.whereareiam.socialismus.api.type.Version;
+
 public final class Constants {
 	public static final String NAME = "@name@";
 	public static final String VERSION = "@version@";
+
 	public static String IDENTIFIER = "";
+	public static Version SERVER_VERSION = Version.UNKNOWN;
 
 	public static final class Channels {
 		public static final String NAME = "socialismus";

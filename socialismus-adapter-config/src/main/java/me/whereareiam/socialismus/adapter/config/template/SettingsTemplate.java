@@ -1,12 +1,14 @@
 package me.whereareiam.socialismus.adapter.config.template;
 
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.model.Event;
 import me.whereareiam.socialismus.api.model.config.Settings;
 import me.whereareiam.socialismus.api.output.DefaultConfig;
 import me.whereareiam.socialismus.api.type.EventPriority;
 import me.whereareiam.socialismus.api.type.PlatformType;
 import me.whereareiam.socialismus.api.type.SerializationType;
+import me.whereareiam.socialismus.api.type.Version;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,11 +84,17 @@ public class SettingsTemplate implements DefaultConfig<Settings> {
 
 		Event event = Event.builder().register(true).priority(EventPriority.LOWEST).build();
 
-		priorities.put("org.bukkit.event.player.PlayerLoginEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerJoinEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerQuitEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerChangedWorldEvent", event);
 		priorities.put("io.papermc.paper.event.player.AsyncChatEvent", event);
+
+		if (Constants.SERVER_VERSION.isAtLeast(Version.V_1_21_6)) {
+			priorities.put("io.papermc.paper.event.connection.configuration.PlayerConnectionInitialConfigureEvent", event);
+			return priorities;
+		}
+
+		priorities.put("org.bukkit.event.player.PlayerLoginEvent", event);
 
 		return priorities;
 	}

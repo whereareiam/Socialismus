@@ -3,8 +3,8 @@ package me.whereareiam.socialismus.common;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.type.PlatformType;
 import me.whereareiam.socialismus.api.type.PluginType;
 import me.whereareiam.socialismus.api.type.Version;
@@ -12,11 +12,9 @@ import me.whereareiam.socialismus.api.type.Version;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class IntegrityChecker {
-	private final PlatformInteractor interactor;
-
 	public boolean checkIntegrity() {
 		PluginType pluginType = PluginType.getExactType();
-		Version currentVersion = interactor.getServerVersion();
+		Version currentVersion = Constants.SERVER_VERSION;
 
 		return switch (pluginType) {
 			case PAPER -> checkPaperIntegrity(currentVersion);
