@@ -13,10 +13,11 @@ import me.whereareiam.socialismus.common.chat.ChatMessageFactory;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import me.whereareiam.socialismus.platform.paper.renderer.SocialismusRenderer;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -27,34 +28,44 @@ public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
 	private final ChatMessageFactory chatMessageFactory;
 	private final ChatBroadcaster chatBroadcaster;
 
+	@Override
 	public void onEvent(AsyncChatEvent event) {
-		Player player = event.getPlayer();
-		Set<Audience> recipients = event.viewers();
-		Component content = event.message();
+		Player sender = event.getPlayer();
+		Set<Audience> nonPlayerAudiences = event.viewers().stream()
+				.filter(aud -> !(aud instanceof Player))
+				.collect(Collectors.toSet());
+
+		Set<UUID> playerRecipientUuids = event.viewers().stream()
+				.filter(aud -> aud instanceof Player)
+				.map(aud -> ((Player) aud).getUniqueId())
+				.collect(Collectors.toSet());
 
 		ChatMessage chatMessage = chatMessageFactory.createChatMessage(
-				player.getUniqueId(),
-				recipients.stream()
-						.filter(c -> !(c.getClass().getName().equals("com.destroystokyo.paper.console.TerminalConsoleCommandSender")))
-						.map(audience -> ((Player) audience).getUniqueId())
-						.collect(Collectors.toSet()),
-				content
+				sender.getUniqueId(),
+				playerRecipientUuids,
+				event.message()
 		);
 		chatSyncBus.publish(chatMessage);
-		FormattedChatMessage formattedChatMessage = chatCoordinator.coordinate(chatMessage);
 
-		if (formattedChatMessage == null || formattedChatMessage.isCancelled() || !formattedChatMessage.isVanillaSending()) {
+		FormattedChatMessage formatted = chatCoordinator.coordinate(chatMessage);
+		if (formatted == null
+				|| formatted.isCancelled()
+				|| !formatted.isVanillaSending()) {
 			event.setCancelled(true);
 			return;
 		}
 
 		event.viewers().clear();
-		event.viewers().addAll(
-				formattedChatMessage.getRecipients().stream()
-						.map(recipient -> player.getServer().getPlayer(recipient.getUniqueId()))
-						.collect(Collectors.toSet())
-		);
 
-		event.renderer(new SocialismusRenderer(formattedChatMessage, chatBroadcaster));
+		Set<Audience> newPlayerViewers = formatted.getRecipients().stream()
+				.map(rec -> sender.getServer().getPlayer(rec.getUniqueId()))
+				.filter(Objects::nonNull)
+				.collect(Collectors.toSet());
+		event.viewers().addAll(newPlayerViewers);
+
+		event.viewers().addAll(nonPlayerAudiences);
+
+		event.renderer(new SocialismusRenderer(formatted, chatBroadcaster));
 	}
+
 }
