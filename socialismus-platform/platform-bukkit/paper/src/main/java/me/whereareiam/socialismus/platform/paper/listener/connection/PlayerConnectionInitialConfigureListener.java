@@ -1,31 +1,34 @@
 package me.whereareiam.socialismus.platform.paper.listener.connection;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import io.papermc.paper.event.connection.configuration.PlayerConnectionInitialConfigureEvent;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.listener.DynamicListener;
 import me.whereareiam.socialismus.common.SynchronizationService;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerLoginEvent;
+import net.kyori.adventure.audience.Audience;
 
 @Singleton
+@SuppressWarnings("UnstableApiUsage")
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
-public class PlayerLoginListener implements DynamicListener<PlayerLoginEvent> {
+public class PlayerConnectionInitialConfigureListener implements DynamicListener<PlayerConnectionInitialConfigureEvent> {
 	private final PlayerContainerService containerService;
 	private final PlatformInteractor interactor;
 	private final SynchronizationService syncService;
 
-	public void onEvent(PlayerLoginEvent event) {
-		Player player = event.getPlayer();
+	public void onEvent(PlayerConnectionInitialConfigureEvent event) {
+		PlayerProfile playerProfile = event.getConnection().getProfile();
+		Audience audience = event.getConnection().getAudience();
 
 		DummyPlayer dummyPlayer = DummyPlayer.builder()
-				.username(player.getName())
-				.uniqueId(player.getUniqueId())
+				.username(playerProfile.getName())
+				.uniqueId(playerProfile.getId())
 				// helpers
-				.audience(player)
+				.audience(audience)
 				.interactor(interactor)
 				.build();
 
