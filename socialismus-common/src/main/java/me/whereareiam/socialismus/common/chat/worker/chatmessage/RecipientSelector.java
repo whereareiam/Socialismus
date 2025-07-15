@@ -13,11 +13,14 @@ import me.whereareiam.socialismus.api.model.chat.ChatMessages;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
+import me.whereareiam.socialismus.api.model.serializer.SerializerContent;
+import me.whereareiam.socialismus.api.model.serializer.SerializerPlaceholder;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.type.chat.Participants;
 import me.whereareiam.socialismus.api.util.EventUtil;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,8 +66,15 @@ public class RecipientSelector {
 					.filter(recipient -> checkRequirements(chat, recipient))
 					.collect(Collectors.toSet());
 
-			if (recipients.isEmpty() && settings.get().isNotifyNoNearbyPlayers())
-				sender.sendMessage(Serializer.serialize(sender, messages.get().getNoNearbyPlayers()));
+			if (recipients.size() <= 1 && settings.get().isNotifyNoNearbyPlayers()) {
+				sender.sendMessage(Serializer.serialize(new SerializerContent(sender, List.of(new SerializerPlaceholder(
+						"{radius}",
+						String.valueOf(chat.getParameters().getRadius()))),
+						messages.get().getNoNearbyPlayers())
+				));
+				chatMessage.setCancelled(true);
+				return chatMessage;
+			}
 		} else {
 			recipients = recipients.stream()
 					.filter(recipient -> checkRequirements(chat, recipient))
@@ -76,8 +86,10 @@ public class RecipientSelector {
 		Logger.debug("Recipients before: " + oldRecipients + ", after: " + event.getNewRecipients().size());
 
 		if (recipients.isEmpty()) chatMessage.setCancelled(true);
-		if (recipients.isEmpty() && settings.get().isNotifyNoPlayers() && chat.getParameters().getType().isGlobal())
+		if (recipients.size() <= 1 && settings.get().isNotifyNoPlayers() && chat.getParameters().getType().isGlobal()) {
 			sender.sendMessage(Serializer.serialize(sender, messages.get().getNoPlayers()));
+			chatMessage.setCancelled(true);
+		}
 
 		return chatMessage;
 	}
