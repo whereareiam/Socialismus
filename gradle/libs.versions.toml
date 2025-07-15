@@ -17,9 +17,9 @@ ormlite = "6.1"
 jedis = "6.0.0"
 
 # platform api versions
-velocity = "3.3.0-SNAPSHOT"
-spigot = "1.21-R0.1-SNAPSHOT"
-paper = "1.21-R0.1-SNAPSHOT"
+velocity = "3.4.0-SNAPSHOT"
+spigot = "1.21.7-R0.1-SNAPSHOT"
+paper = "1.21.7-R0.1-SNAPSHOT"
 
 # platform integrations
 placeholderAPI = "2.11.6"
