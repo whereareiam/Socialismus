@@ -27,6 +27,7 @@ public class PlayerJoinListener implements DynamicListener<PlayerJoinEvent> {
 						dummyPlayer.toBuilder()
 								.location(player.getWorld().getName())
 								.locale(player.locale())
+								.audience(player)
 								.build()
 				).orElse(null)
 		);
