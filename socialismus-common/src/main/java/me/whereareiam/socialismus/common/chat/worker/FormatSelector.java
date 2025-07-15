@@ -14,10 +14,6 @@ import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.type.chat.Participants;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 @Singleton
 public class FormatSelector {
 	private final RequirementEvaluator requirementEvaluator;
@@ -43,51 +39,45 @@ public class FormatSelector {
 		workerProcessor.addWorker(new Worker<>(this::formatChat, 1, true, false));
 	}
 
-	private FormattedChatMessage formatChat(FormattedChatMessage formattedChatMessage) {
-		Logger.debug("Formatting chat message for user " + formattedChatMessage.getSender().getUsername());
+	private FormattedChatMessage formatChat(FormattedChatMessage msg) {
+		Logger.debug("Formatting chat message for user " + msg.getSender().getUsername());
 
-		ChatFormat chatFormat = formattedChatMessage.getChat().getFormats().get(formattedChatMessage.getChat().getFormats().size() - 1);
-		if (chatFormat == null || !checkRequirements(chatFormat, formattedChatMessage)) {
-			notifyAboutAbsentFormat(formattedChatMessage);
-			formattedChatMessage.setCancelled(true);
+		ChatFormat chosen = selectFormat(msg);
 
-			return formattedChatMessage;
+		if (chosen == null) {
+			notifyAboutAbsentFormat(msg);
+			msg.setCancelled(true);
+			return msg;
 		}
 
-		Logger.debug("Selected format: " + chatFormat);
-		formattedChatMessage.setFormat(Serializer.serialize(
-				formattedChatMessage.getSender(),
-				chatFormat.getFormat()
-		));
-
-		return formattedChatMessage;
+		Logger.debug("Selected format: " + chosen);
+		msg.setFormat(Serializer.serialize(msg.getSender(), chosen.getFormat()));
+		return msg;
 	}
 
-	private boolean checkRequirements(ChatFormat chatFormat, FormattedChatMessage formattedChatMessage) {
-		if (chatFormat.getRequirements().get(Participants.SENDER) == null) return true;
-		if (!requirementEvaluator.check(chatFormat.getRequirements().get(Participants.SENDER), formattedChatMessage.getSender()))
-			chatFormat = getAlternativeChatFormat(chatFormat, formattedChatMessage);
-
-		return chatFormat != null;
-	}
-
-	private ChatFormat getAlternativeChatFormat(ChatFormat chatFormat, FormattedChatMessage formattedChatMessage) {
-		List<ChatFormat> formats = new ArrayList<>(formattedChatMessage.getChat().getFormats());
-		Collections.reverse(formats);
-
-		formats.remove(chatFormat);
-		for (ChatFormat alternativeChat : formats)
-			if (checkRequirements(alternativeChat, formattedChatMessage))
-				return alternativeChat;
-
+	private ChatFormat selectFormat(FormattedChatMessage msg) {
+		for (ChatFormat format : msg.getChat().getFormats().reversed()) {
+			if (isAllowed(format, msg))
+				return format;
+		}
 		return null;
 	}
 
-	private void notifyAboutAbsentFormat(FormattedChatMessage formattedChatMessage) {
+	private boolean isAllowed(ChatFormat format, FormattedChatMessage msg) {
+		if (format.getRequirements() == null) return true;
+		if (format.getRequirements().get(Participants.SENDER) == null) return true;
+
+		return requirementEvaluator.check(
+				format.getRequirements().get(Participants.SENDER),
+				msg.getSender()
+		);
+	}
+
+	private void notifyAboutAbsentFormat(FormattedChatMessage msg) {
 		if (!chatSettings.get().isNotifyNoFormat()) return;
 
-		formattedChatMessage.getSender().sendMessage(
-				Serializer.serialize(formattedChatMessage.getSender(), chatMessages.get().getNoChatMatch())
+		msg.getSender().sendMessage(
+				Serializer.serialize(msg.getSender(), chatMessages.get().getNoChatMatch())
 		);
 	}
 }

@@ -39,8 +39,6 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 
 	@Override
 	public boolean areWithinRange(UUID player1, UUID player2, double range) {
-		// TODO: Sync
-
 		Player p1 = Bukkit.getPlayer(player1);
 		Player p2 = Bukkit.getPlayer(player2);
 		if (p1 == null || p2 == null) return false;
