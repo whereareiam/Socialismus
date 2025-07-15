@@ -55,6 +55,8 @@
 - [SocialismusRedis](https://github.com/whereareiam/SocialismusRedis) - The resource provider! Enables caching and
   synchronization features for other modules using Redis.
 
+- [SocialismusChannelizer](https://github.com/whereareiam/SocialismusChannelizer) - The resource provider! Enables synchronization feature for other modules using BungeeCord channels.
+
 ## Premium modules
 
 - ChatterPlus *[WIP]* - Same as Chatter, but with AI capabilities.
