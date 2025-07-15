@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 subprojects {
     plugins.apply(rootProject.libs.plugins.shadow.get().pluginId)
-    
+
     if (project.name != "common") {
         dependencies {
             "implementation"(project(":socialismus-platform:platform-bukkit:common"))
@@ -19,5 +19,9 @@ subprojects {
                 )
             )
         }
+    }
+
+    repositories {
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
 }
