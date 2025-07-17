@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.Serializer;
 import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
 import me.whereareiam.socialismus.api.model.CommandEntity;
@@ -12,7 +11,7 @@ import me.whereareiam.socialismus.api.model.chat.ChatMessages;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.util.ComponentUtil;
+import me.whereareiam.socialismus.api.type.BroadcastTarget;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -31,7 +30,12 @@ public class ChatBroadcaster {
 	private final Provider<Map<String, CommandEntity>> commands;
 
 	public void broadcast(FormattedChatMessage chatMessage) {
-		Logger.info("[%s] %s: %s", chatMessage.getChat().getId().toUpperCase(), chatMessage.getSender().getUsername(), ComponentUtil.toLegacy(chatMessage.getContent(), true));
+		chatMessage.getSender().getInteractor().broadcast(
+				chatMessage.getFormat()
+						.replaceText(createMessageReplacement(chatMessage.getContent()))
+						.replaceText(createClearReplacement(chatMessage, chatMessage.getSender().getUniqueId())),
+				BroadcastTarget.CONSOLE
+		);
 
 		chatMessage.getRecipients().forEach(recipient ->
 				recipient.sendMessage(
