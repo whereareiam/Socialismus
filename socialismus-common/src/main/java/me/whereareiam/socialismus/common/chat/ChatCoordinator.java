@@ -35,10 +35,11 @@ public class ChatCoordinator implements ChatCoordinationService {
 	public void coordinate(FormattedChatMessage formatted) {
 		if (formatted.isCancelled()) return;
 
-		ChatMessage processed = chatMessageProcessor.process(formatted);
+		FormattedChatMessage processed = (FormattedChatMessage) chatMessageProcessor.process(formatted);
+		processed.setFormat(formatted.getFormat());
 
 		if (processed.isCancelled()) return;
-		broadcastAndStore((FormattedChatMessage) processed);
+		broadcastAndStore(processed);
 	}
 
 	private void broadcastAndStore(FormattedChatMessage msg) {

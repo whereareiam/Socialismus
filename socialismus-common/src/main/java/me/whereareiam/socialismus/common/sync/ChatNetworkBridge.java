@@ -14,6 +14,7 @@ import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.SerializationService;
 import me.whereareiam.socialismus.api.output.resource.sync.SyncService;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
+import net.kyori.adventure.text.Component;
 
 import java.util.Set;
 
@@ -29,6 +30,8 @@ public class ChatNetworkBridge implements ChatSyncBus {
 
 	private final Provider<ChatSettings> chatSettings;
 
+	private final Component emptyComponent = Component.empty();
+
 	public void initialize() {
 		if (!chatSettings.get().getSynchronization().isEnabled())
 			return;
@@ -37,7 +40,7 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	}
 
 	@Override
-	public void publish(ChatMessage message) {
+	public void publish(FormattedChatMessage message) {
 		if (!chatSettings.get().getSynchronization().isEnabled())
 			return;
 
@@ -62,19 +65,21 @@ public class ChatNetworkBridge implements ChatSyncBus {
 
 	private void handleEvent(byte[] payload) {
 		try {
-			ChatMessage base = serializationService.deserialize(payload, ChatMessage.class);
+			FormattedChatMessage message = serializationService.deserialize(payload, FormattedChatMessage.class);
 
-			if (Constants.IDENTIFIER.equals(base.getOrigin())) return;
+			if (Constants.IDENTIFIER.equals(message.getOrigin())) return;
 
-			base.setRecipients(Set.of());
-			base.getSender().setInteractor(platformInteractor);
+			message.setRecipients(Set.of());
+			message.getSender().setInteractor(platformInteractor);
 
-			if (base instanceof FormattedChatMessage fm) {
-				coordinator.coordinate(fm);
+			if (message.getFormat() != null
+					&& !message.getFormat().equals(emptyComponent)
+					&& chatSettings.get().getSynchronization().isPreserveFormat()) {
+				coordinator.coordinate(message);
 				return;
 			}
 
-			coordinator.coordinate(base);
+			coordinator.coordinate((ChatMessage) message);
 		} catch (Exception ex) {
 			Logger.warn("Bad chat-sync packet: " + ex);
 		}
