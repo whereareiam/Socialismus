@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.position.Position;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
+import me.whereareiam.socialismus.api.type.BroadcastTarget;
 import me.whereareiam.socialismus.api.type.Version;
 import net.kyori.adventure.text.Component;
 
@@ -30,24 +31,16 @@ public class VelocityPlatformInteractor implements PlatformInteractor {
 	}
 
 	@Override
-	public void broadcast(Component component) {
-		proxyServer.sendMessage(component);
-	}
-
-	@Override
-	public void broadcast(Component component, boolean silent) {
-		if (!silent) {
-			broadcast(component);
-			return;
+	public void broadcast(Component component, BroadcastTarget target) {
+		switch (target) {
+			case ALL -> proxyServer.sendMessage(component);
+			case PLAYERS -> proxyServer.getAllPlayers().forEach(player -> player.sendMessage(component));
+			case CONSOLE -> proxyServer.getConsoleCommandSource().sendMessage(component);
 		}
-
-		proxyServer.getAllPlayers().forEach(player -> player.sendMessage(component));
 	}
 
 	@Override
 	public boolean areWithinRange(UUID player1, UUID player2, double range) {
-		// TODO: Sync
-
 		return proxyServer.getPlayer(player1)
 				.flatMap(p1 -> proxyServer.getPlayer(player2)
 						.flatMap(p2 -> p1.getCurrentServer()

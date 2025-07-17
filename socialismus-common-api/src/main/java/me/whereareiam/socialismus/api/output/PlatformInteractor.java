@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.api.output;
 
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.model.position.Position;
+import me.whereareiam.socialismus.api.type.BroadcastTarget;
 import me.whereareiam.socialismus.api.type.Version;
 import net.kyori.adventure.text.Component;
 
@@ -18,20 +19,19 @@ import java.util.UUID;
  */
 public interface PlatformInteractor {
 	/**
-	 * Broadcasts a message to all online players.
+	 * Broadcasts a message to the specified target(s).
 	 *
-	 * @param component The message to broadcast using Adventure's Component system
+	 * @param component The message to broadcast
+	 * @param target    Where to send it: ALL (players+console), PLAYERS, or CONSOLE.
 	 */
-	void broadcast(Component component);
+	void broadcast(Component component, BroadcastTarget target);
 
 	/**
-	 * Broadcasts a message to all online players, with an option to suppress
-	 * the message in the console.
-	 *
-	 * @param component The message to broadcast using Adventure's Component system
-	 * @param silent    If true, the message will not be logged in the console
+	 * Shorthand for broadcast(component, ALL);
 	 */
-	void broadcast(Component component, boolean silent);
+	default void broadcast(Component component) {
+		broadcast(component, BroadcastTarget.ALL);
+	}
 
 	/**
 	 * Gets the eye position of a player.
