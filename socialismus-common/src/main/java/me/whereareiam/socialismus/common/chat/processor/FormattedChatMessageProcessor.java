@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.model.config.Settings;
 import net.kyori.adventure.text.Component;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 
 @Getter
@@ -41,7 +42,7 @@ public class FormattedChatMessageProcessor implements WorkerProcessor<FormattedC
 	public void addWorker(Worker<FormattedChatMessage> worker) {
 		if (workers.stream().noneMatch(w -> w.getPriority() == worker.getPriority())) {
 			workers.add(worker);
-			workers.sort((a, b) -> Integer.compare(b.getPriority(), a.getPriority()));
+			workers.sort(Comparator.comparingInt(Worker::getPriority));
 		}
 	}
 
