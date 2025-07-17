@@ -72,8 +72,12 @@ public class MessagesTemplate implements DefaultConfig<Messages> {
 				" ",
 				"<white>  Java version: <yellow>{javaVersion}</yellow>",
 				"<white>  Operating system: <yellow>{os}</yellow>",
+				" ",
+				"<white>  Modules: ",
+				"{modules}",
 				" "
 		));
+		debugCommand.setModuleFormat("<dark_gray>   - <hover:show_text:\"<white>Made by {authors}\"><green>{name}</green> <gray>[{version}]</gray></hover>");
 
 		commandMessages.setDebugCommand(debugCommand);
 
