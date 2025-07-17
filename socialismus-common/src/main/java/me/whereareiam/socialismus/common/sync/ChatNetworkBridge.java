@@ -9,6 +9,7 @@ import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.sync.ChatSyncBus;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.SerializationService;
 import me.whereareiam.socialismus.api.output.resource.sync.SyncService;
@@ -61,15 +62,19 @@ public class ChatNetworkBridge implements ChatSyncBus {
 
 	private void handleEvent(byte[] payload) {
 		try {
-			ChatMessage chatMessage = serializationService.deserialize(payload, ChatMessage.class);
+			ChatMessage base = serializationService.deserialize(payload, ChatMessage.class);
 
-			if (Constants.IDENTIFIER.equals(chatMessage.getOrigin())) return;
+			if (Constants.IDENTIFIER.equals(base.getOrigin())) return;
 
-			chatMessage.setRecipients(Set.of());
-			chatMessage.getSender().setInteractor(platformInteractor);
+			base.setRecipients(Set.of());
+			base.getSender().setInteractor(platformInteractor);
 
-			Logger.debug("Received chat message from sync channel: " + chatMessage.getId());
-			coordinator.coordinate(chatMessage);
+			if (base instanceof FormattedChatMessage fm) {
+				coordinator.coordinate(fm);
+				return;
+			}
+
+			coordinator.coordinate(base);
 		} catch (Exception ex) {
 			Logger.warn("Bad chat-sync packet: " + ex);
 		}

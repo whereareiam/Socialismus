@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.common.chat.worker.chatmessage;
+package me.whereareiam.socialismus.common.chat.worker.base;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;

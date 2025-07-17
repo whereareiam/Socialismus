@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.common.chat.worker.chatmessage;
+package me.whereareiam.socialismus.common.chat.worker.base;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -49,6 +49,11 @@ public class ChatSelector {
 	}
 
 	public ChatMessage selectChat(ChatMessage chatMessage) {
+		if (chatMessage.getChat() != null) {
+			Logger.debug("Chat already selected for user " + chatMessage.getSender().getUsername());
+			return chatMessage;
+		}
+
 		Logger.debug("Selecting chat for user " + chatMessage.getSender().getUsername());
 		String symbol = selectSymbol(chatMessage);
 

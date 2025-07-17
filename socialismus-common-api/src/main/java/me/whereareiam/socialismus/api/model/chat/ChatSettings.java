@@ -106,6 +106,7 @@ public class ChatSettings {
 	@ToString
 	public static class SynchronizationSettings {
 		private boolean enabled;
+		private boolean preserveFormat;
 		private boolean clearHistory;
 	}
 }

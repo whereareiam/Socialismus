@@ -1,7 +1,8 @@
-package me.whereareiam.socialismus.common.chat.worker.chatmessage;
+package me.whereareiam.socialismus.common.chat.worker.base;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.WorkerProcessor;
 import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
 import me.whereareiam.socialismus.api.input.event.chat.recipient.RecipientsResolvedEvent;
@@ -16,12 +17,13 @@ public class RecipientResolver {
 	@Inject
 	public RecipientResolver(WorkerProcessor<ChatMessage> workerProcessor, PlayerContainerService playerContainer) {
 		this.playerContainer = playerContainer;
-		workerProcessor.addWorker(new Worker<>(this::resolveRecipients, 0, true, false));
+		workerProcessor.addWorker(new Worker<>(this::resolveRecipients, 75, true, false));
 	}
 
 	private ChatMessage resolveRecipients(ChatMessage chatMessage) {
 		if (!chatMessage.getRecipients().isEmpty()) return chatMessage;
 
+		Logger.debug("Resolving recipients for chat message from %s", chatMessage.getSender().getUsername());
 		EventUtil.callEvent(new RecipientsResolvedEvent(chatMessage, chatMessage.isCancelled()),
 				() -> chatMessage.setRecipients(playerContainer.getPlayers())
 		);

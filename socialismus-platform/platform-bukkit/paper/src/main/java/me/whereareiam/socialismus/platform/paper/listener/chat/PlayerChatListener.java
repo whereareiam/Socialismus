@@ -45,7 +45,6 @@ public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
 				playerRecipientUuids,
 				event.message()
 		);
-		chatSyncBus.publish(chatMessage);
 
 		FormattedChatMessage formatted = chatCoordinator.coordinate(chatMessage);
 		if (formatted == null

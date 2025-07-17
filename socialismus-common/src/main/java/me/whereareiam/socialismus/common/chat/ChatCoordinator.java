@@ -23,20 +23,33 @@ public class ChatCoordinator implements ChatCoordinationService {
 	private final ChatBroadcaster chatBroadcaster;
 	private final ChatBroadcastPolicy policy;
 
-	public FormattedChatMessage coordinate(ChatMessage chatMessage) {
-		chatMessage = chatMessageProcessor.process(chatMessage);
-		if (chatMessage.isCancelled()) return FormattedChatMessage.builder().cancelled(true).build();
+	public FormattedChatMessage coordinate(ChatMessage raw) {
+		raw = chatMessageProcessor.process(raw);
+		if (raw.isCancelled()) return FormattedChatMessage.builder().cancelled(true).build();
 
-		FormattedChatMessage formattedChatMessage = formattedChatMessageProcessor.process(chatMessage);
+		FormattedChatMessage formatted = formattedChatMessageProcessor.process(raw);
+		broadcastAndStore(formatted);
+		return formatted;
+	}
 
-		EventUtil.callEvent(new ChatBroadcastEvent(formattedChatMessage, formattedChatMessage.isCancelled()), () -> {
-			formattedChatMessage.getSender().setLastChat(formattedChatMessage.getChat());
-			if (policy.allows(formattedChatMessage))
-				chatBroadcaster.broadcast(formattedChatMessage);
+	public void coordinate(FormattedChatMessage formatted) {
+		if (formatted.isCancelled()) return;
 
-			chatHistoryContainer.addMessage(formattedChatMessage.getId(), formattedChatMessage);
-		});
+		ChatMessage processed = chatMessageProcessor.process(formatted);
 
-		return formattedChatMessage;
+		if (processed.isCancelled()) return;
+		broadcastAndStore((FormattedChatMessage) processed);
+	}
+
+	private void broadcastAndStore(FormattedChatMessage msg) {
+		EventUtil.callEvent(
+				new ChatBroadcastEvent(msg, msg.isCancelled()),
+				() -> {
+					msg.getSender().setLastChat(msg.getChat());
+					if (policy.allows(msg))
+						chatBroadcaster.broadcast(msg);
+					chatHistoryContainer.addMessage(msg.getId(), msg);
+				}
+		);
 	}
 }

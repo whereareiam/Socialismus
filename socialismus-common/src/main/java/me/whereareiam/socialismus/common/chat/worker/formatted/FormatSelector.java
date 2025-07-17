@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.common.chat.worker;
+package me.whereareiam.socialismus.common.chat.worker.formatted;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -36,7 +36,7 @@ public class FormatSelector {
 		// init configs
 		chatMessages.get();
 
-		workerProcessor.addWorker(new Worker<>(this::formatChat, 1, true, false));
+		workerProcessor.addWorker(new Worker<>(this::formatChat, 0, true, false));
 	}
 
 	private FormattedChatMessage formatChat(FormattedChatMessage msg) {
