@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.input.sync.ChatSyncBus;
+import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.api.output.listener.DynamicListener;
@@ -12,6 +13,7 @@ import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatMessageFactory;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import me.whereareiam.socialismus.platform.paper.renderer.SocialismusRenderer;
+import com.google.inject.Provider;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
 
@@ -23,10 +25,11 @@ import java.util.stream.Collectors;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
-	private final ChatSyncBus chatSyncBus;
-	private final ChatCoordinator chatCoordinator;
-	private final ChatMessageFactory chatMessageFactory;
-	private final ChatBroadcaster chatBroadcaster;
+        private final ChatSyncBus chatSyncBus;
+        private final ChatCoordinator chatCoordinator;
+        private final ChatMessageFactory chatMessageFactory;
+        private final ChatBroadcaster chatBroadcaster;
+        private final Provider<ChatSettings> chatSettings;
 
 	@Override
 	public void onEvent(AsyncChatEvent event) {
@@ -40,14 +43,19 @@ public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
 				.map(aud -> ((Player) aud).getUniqueId())
 				.collect(Collectors.toSet());
 
-		ChatMessage chatMessage = chatMessageFactory.createChatMessage(
-				sender.getUniqueId(),
-				playerRecipientUuids,
-				event.message()
-		);
-		chatSyncBus.publish(chatMessage);
+                ChatMessage chatMessage = chatMessageFactory.createChatMessage(
+                                sender.getUniqueId(),
+                                playerRecipientUuids,
+                                event.message()
+                );
 
-		FormattedChatMessage formatted = chatCoordinator.coordinate(chatMessage);
+                FormattedChatMessage formatted = chatCoordinator.coordinate(chatMessage);
+
+                if (chatSettings.get().getSynchronization().isPreFormatMessages()) {
+                        chatSyncBus.publish(formatted);
+                } else {
+                        chatSyncBus.publish(chatMessage);
+                }
 		if (formatted == null
 				|| formatted.isCancelled()
 				|| !formatted.isVanillaSending()) {

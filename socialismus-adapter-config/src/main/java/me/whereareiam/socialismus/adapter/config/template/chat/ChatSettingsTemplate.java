@@ -30,10 +30,11 @@ public class ChatSettingsTemplate implements DefaultConfig<ChatSettings> {
 
 		chatSettings.setHistory(history);
 
-		ChatSettings.SynchronizationSettings synchronization = new ChatSettings.SynchronizationSettings();
-		synchronization.setEnabled(false);
+                ChatSettings.SynchronizationSettings synchronization = new ChatSettings.SynchronizationSettings();
+                synchronization.setEnabled(false);
+                synchronization.setPreFormatMessages(false);
 
-		chatSettings.setSynchronization(synchronization);
+                chatSettings.setSynchronization(synchronization);
 
 		return chatSettings;
 	}

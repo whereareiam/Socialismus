@@ -101,11 +101,18 @@ public class ChatSettings {
 		private String bypassPermission;
 	}
 
-	@Getter
-	@Setter
-	@ToString
-	public static class SynchronizationSettings {
-		private boolean enabled;
-		private boolean clearHistory;
-	}
+        @Getter
+        @Setter
+        @ToString
+        public static class SynchronizationSettings {
+                private boolean enabled;
+                private boolean clearHistory;
+                /**
+                 * When enabled, chat messages are fully formatted on the origin
+                 * server before being synchronized. This allows placeholder
+                 * integrations that rely on the sender being present to work
+                 * correctly on other servers.
+                 */
+                private boolean preFormatMessages;
+        }
 }
