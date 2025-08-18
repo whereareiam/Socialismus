@@ -57,6 +57,7 @@ public class Module {
 	 * List of resource requirements for this module
 	 * (e.g., database)
 	 */
+	@Builder.Default
 	private List<ResourceRequirement> requirements = List.of();
 
 	/**

@@ -13,7 +13,8 @@ import me.whereareiam.socialismus.api.input.registry.Registry;
 import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.chat.InternalChat;
-import me.whereareiam.socialismus.api.type.chat.ChatType;
+import me.whereareiam.socialismus.api.type.chat.TriggerType;
+import me.whereareiam.socialismus.api.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.api.util.EventUtil;
 
 import java.util.*;
@@ -72,9 +73,9 @@ public class ChatContainer implements ChatContainerService, Reloadable {
 	@Override
 	public boolean hasChatBySymbol(String symbol) {
 		return chats.values().stream()
-				.filter(chat -> !chat.getParameters().getType().equals(ChatType.CUSTOM))
-				.anyMatch(chat -> (symbol.isEmpty() && chat.getParameters().getSymbol().isEmpty())
-						|| chat.getParameters().getSymbol().equals(symbol)
+				.filter(chat -> chat.getTriggers() != null)
+				.anyMatch(chat -> chat.getTriggers().stream()
+						.anyMatch(t -> t.getType() == TriggerType.SYMBOL && symbol.equals(((SymbolChatTrigger) t).getSymbol()))
 				);
 	}
 
@@ -88,11 +89,9 @@ public class ChatContainer implements ChatContainerService, Reloadable {
 	@Override
 	public List<InternalChat> getChatBySymbol(String symbol) {
 		return chats.values().stream()
-				.filter(chat -> !chat.getParameters().getType().equals(ChatType.CUSTOM))
 				.filter(chat -> !chat.getId().equals(chatSettings.get().getFallback().getChatId()))
-				.filter(chat -> (symbol.isEmpty() && chat.getParameters().getSymbol().isEmpty())
-						|| chat.getParameters().getSymbol().equals(symbol)
-				)
+				.filter(chat -> chat.getTriggers() != null && chat.getTriggers().stream()
+						.anyMatch(t -> t.getType() == TriggerType.SYMBOL && symbol.equals(((SymbolChatTrigger) t).getSymbol())))
 				.sorted(Comparator.comparingInt(Chat::getPriority).reversed())
 				.toList();
 	}

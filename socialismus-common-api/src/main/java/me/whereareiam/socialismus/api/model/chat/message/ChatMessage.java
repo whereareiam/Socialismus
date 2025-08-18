@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.api.model.chat.message;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.api.model.chat.Chat;
+import me.whereareiam.socialismus.api.model.chat.ChatTrigger;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import net.kyori.adventure.text.Component;
 
@@ -47,6 +48,11 @@ public class ChatMessage {
 	 * The chat channel this message belongs to.
 	 */
 	private Chat chat;
+
+	/**
+	 * The trigger that routed this message into a chat (if any).
+	 */
+	private ChatTrigger trigger;
 
 	/**
 	 * Whether the message has been cancelled and should not be processed.

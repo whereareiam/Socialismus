@@ -4,12 +4,12 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.adapter.config.dynamic.ChatsConfig;
 import me.whereareiam.socialismus.api.model.chat.Chat;
 import me.whereareiam.socialismus.api.model.chat.ChatFormat;
-import me.whereareiam.socialismus.api.model.chat.ChatParameters;
+import me.whereareiam.socialismus.api.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.api.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.api.model.requirement.type.PermissionRequirement;
 import me.whereareiam.socialismus.api.output.DefaultConfig;
-import me.whereareiam.socialismus.api.type.chat.ChatType;
 import me.whereareiam.socialismus.api.type.chat.Participants;
+import me.whereareiam.socialismus.api.type.chat.TriggerType;
 import me.whereareiam.socialismus.api.type.requirement.RequirementConditionType;
 import me.whereareiam.socialismus.api.type.requirement.RequirementOperatorType;
 import me.whereareiam.socialismus.api.type.requirement.RequirementType;
@@ -29,10 +29,13 @@ public class ChatTemplate implements DefaultConfig<ChatsConfig> {
 				"fallback",
 				0,
 				true,
-				new ChatParameters(
-						ChatType.GLOBAL,
-						"",
-						0
+				List.of(
+						SymbolChatTrigger.builder()
+								.type(TriggerType.SYMBOL)
+								.symbol("")
+								.strip(true)
+								.radius(0)
+								.build()
 				),
 				List.of(
 						new ChatFormat(
@@ -47,10 +50,13 @@ public class ChatTemplate implements DefaultConfig<ChatsConfig> {
 				"local",
 				0,
 				true,
-				new ChatParameters(
-						ChatType.LOCAL,
-						"",
-						200
+				List.of(
+						SymbolChatTrigger.builder()
+								.type(TriggerType.SYMBOL)
+								.symbol("")
+								.strip(true)
+								.radius(200)
+								.build()
 				),
 				List.of(
 						new ChatFormat(
@@ -99,10 +105,13 @@ public class ChatTemplate implements DefaultConfig<ChatsConfig> {
 				"global",
 				1,
 				true,
-				new ChatParameters(
-						ChatType.GLOBAL,
-						"!",
-						0
+				List.of(
+						SymbolChatTrigger.builder()
+								.type(TriggerType.SYMBOL)
+								.symbol("!")
+								.strip(true)
+								.radius(0)
+								.build()
 				),
 				List.of(
 						new ChatFormat(

@@ -37,9 +37,9 @@ public class Chat {
 	private boolean enabled;
 
 	/**
-	 * Parameters controlling chat behavior
+	 * Triggers that route messages into this chat and may carry per-trigger radius.
 	 */
-	private ChatParameters parameters;
+	private List<ChatTrigger> triggers;
 
 	/**
 	 * List of formatting rules for the chat
