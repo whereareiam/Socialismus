@@ -45,7 +45,7 @@ public class ChatNetworkBridge implements ChatSyncBus {
 			return;
 
 		try {
-			message.setOrigin(Constants.IDENTIFIER);
+			message.setOrigin(Constants.Synchronization.IDENTIFIER);
 			byte[] data = serializationService.serialize(message);
 			sync.publish(CHANNEL, data);
 
@@ -67,7 +67,7 @@ public class ChatNetworkBridge implements ChatSyncBus {
 		try {
 			FormattedChatMessage message = serializationService.deserialize(payload, FormattedChatMessage.class);
 
-			if (Constants.IDENTIFIER.equals(message.getOrigin())) return;
+			if (Constants.Synchronization.IDENTIFIER.equals(message.getOrigin())) return;
 
 			message.setRecipients(Set.of());
 			message.getSender().setInteractor(platformInteractor);

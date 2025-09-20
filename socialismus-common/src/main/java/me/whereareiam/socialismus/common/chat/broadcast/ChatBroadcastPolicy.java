@@ -13,7 +13,7 @@ public class ChatBroadcastPolicy {
 	public boolean allows(FormattedChatMessage msg) {
 		// 1) Cross‐server relay
 		if (msg.getOrigin() != null
-				&& !msg.getOrigin().equals(Constants.IDENTIFIER)) {
+				&& !msg.getOrigin().equals(Constants.Synchronization.IDENTIFIER)) {
 			return true;
 		}
 

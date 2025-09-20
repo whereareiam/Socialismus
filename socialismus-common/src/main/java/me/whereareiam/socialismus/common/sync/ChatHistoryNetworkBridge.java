@@ -57,7 +57,7 @@ public class ChatHistoryNetworkBridge implements EventListener, ChatHistorySyncB
 		if (!chatSettings.get().getSynchronization().isEnabled())
 			return;
 
-		if (Constants.IDENTIFIER.equals(event.getOrigin()))
+		if (Constants.Synchronization.IDENTIFIER.equals(event.getOrigin()))
 			publish(event);
 	}
 
@@ -87,7 +87,7 @@ public class ChatHistoryNetworkBridge implements EventListener, ChatHistorySyncB
 		try {
 			ChatHistoryRemoveEvent event = serializationService.deserialize(payload, ChatHistoryRemoveEvent.class);
 
-			if (Constants.IDENTIFIER.equals(event.getOrigin()))
+			if (Constants.Synchronization.IDENTIFIER.equals(event.getOrigin()))
 				return;
 
 			Logger.debug("Received chat history event from sync channel");

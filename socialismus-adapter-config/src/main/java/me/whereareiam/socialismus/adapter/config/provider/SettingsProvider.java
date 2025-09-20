@@ -43,6 +43,9 @@ public class SettingsProvider implements Provider<Settings>, Reloadable {
 
 	private void load() {
 		settings = defaultConfigurationLoader.load(dataPath.resolve("settings"), Settings.class);
-		Constants.IDENTIFIER = settings.getSynchronization().getServer();
+
+		Constants.Synchronization.IDENTIFIER = settings.getSynchronization().getServer();
+		Constants.Synchronization.SYNCHRONIZATION = settings.getSynchronization().isEnabled();
+		Constants.Synchronization.CROSS_PLAYER_SYNC = settings.getSynchronization().isCrossPlayerSync();
 	}
 }

@@ -5,7 +5,6 @@ import com.google.inject.Provider;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.model.config.Settings;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
 import me.whereareiam.socialismus.api.output.resource.CacheService;
 import org.incendo.cloud.annotations.suggestion.Suggestions;
@@ -19,13 +18,11 @@ public final class CrossPlayerProvider {
 	private static final String SET_KEY = Constants.Channels.PLAYERS;
 
 	private final Provider<CacheService> cache;
-	private final Provider<Settings> settings;
 	private final PlatformInteractor interactor;
 
 	@Suggestions("crossPlayers")
 	public Collection<String> suggestCrossPlayers() {
-		Settings.Synchronization synchronization = settings.get().getSynchronization();
-		if (!synchronization.isEnabled() || !synchronization.isCrossPlayerSync())
+		if (!Constants.Synchronization.SYNCHRONIZATION || !Constants.Synchronization.CROSS_PLAYER_SYNC)
 			return interactor.getOnlinePlayers();
 
 		final CacheService cache = this.cache.get();

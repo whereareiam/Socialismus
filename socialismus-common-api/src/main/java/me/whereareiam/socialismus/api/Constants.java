@@ -6,7 +6,6 @@ public final class Constants {
 	public static final String NAME = "@name@";
 	public static final String VERSION = "@version@";
 
-	public static String IDENTIFIER = "";
 	public static Version SERVER_VERSION = Version.UNKNOWN;
 
 	public static final class Channels {
@@ -15,6 +14,12 @@ public final class Constants {
 		public static final String CHAT = NAME + ":chat";
 		public static final String CHAT_HISTORY = NAME + ":chat-history";
 		public static final String PLAYERS = NAME + ":players";
+	}
+
+	public static final class Synchronization {
+		public static String IDENTIFIER = "";
+		public static Boolean SYNCHRONIZATION;
+		public static Boolean CROSS_PLAYER_SYNC;
 	}
 
 	public static final class BStats {

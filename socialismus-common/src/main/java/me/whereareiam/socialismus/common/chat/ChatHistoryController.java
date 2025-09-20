@@ -39,7 +39,7 @@ public class ChatHistoryController implements ChatHistoryService {
 	@Override
 	public boolean removeMessage(int id, boolean callEvent) {
 		return processRemoval(() -> chatHistoryContainer.removeMessage(id),
-				() -> new ChatHistoryRemoveByIdEvent(Constants.IDENTIFIER, id), callEvent);
+				() -> new ChatHistoryRemoveByIdEvent(Constants.Synchronization.IDENTIFIER, id), callEvent);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class ChatHistoryController implements ChatHistoryService {
 	@Override
 	public int removeMessages(int amount, boolean callEvent) {
 		return processRemoval(() -> chatHistoryContainer.removeMessages(amount) > 0,
-				() -> new ChatHistoryRemoveByAmountEvent(Constants.IDENTIFIER, amount), callEvent) ? 1 : 0;
+				() -> new ChatHistoryRemoveByAmountEvent(Constants.Synchronization.IDENTIFIER, amount), callEvent) ? 1 : 0;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class ChatHistoryController implements ChatHistoryService {
 			messages.forEach(message -> chatHistoryContainer.removeMessage(message.getId()));
 
 			return count > 0;
-		}, () -> new ChatHistoryRemoveByPlayerEvent(Constants.IDENTIFIER, username), callEvent) ? 1 : 0;
+		}, () -> new ChatHistoryRemoveByPlayerEvent(Constants.Synchronization.IDENTIFIER, username), callEvent) ? 1 : 0;
 	}
 
 	private boolean processRemoval(

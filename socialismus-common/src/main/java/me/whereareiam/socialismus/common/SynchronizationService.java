@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.model.config.Settings;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.common.chat.worker.formatted.SynchronizationPublisher;
@@ -19,14 +20,13 @@ public class SynchronizationService {
 	private final Provider<Settings> settings;
 
 	public void initialize() {
-		var sync = settings.get().getSynchronization();
-		if (!sync.isEnabled()) return;
+		if (!Constants.Synchronization.SYNCHRONIZATION) return;
 
 		injector.getInstance(ChatNetworkBridge.class).initialize();
 
 		injector.getInstance(ChatHistoryNetworkBridge.class).initialize();
 
-		if (sync.isCrossPlayerSync())
+		if (Constants.Synchronization.CROSS_PLAYER_SYNC)
 			injector.getInstance(CrossPlayerSyncBridge.class).initialize();
 
 		injector.getInstance(SynchronizationPublisher.class);
@@ -34,13 +34,13 @@ public class SynchronizationService {
 
 	public void applyTo(DummyPlayer player, String actualServerName) {
 		var sync = settings.get().getSynchronization();
-		if (!sync.isEnabled()) return;
+		if (!Constants.Synchronization.SYNCHRONIZATION) return;
 
 		if (sync.isUseRealServerName() && actualServerName != null) {
 			player.setServer(actualServerName);
 			return;
 		}
 
-		player.setServer(sync.getServer());
+		player.setServer(Constants.Synchronization.IDENTIFIER);
 	}
 }

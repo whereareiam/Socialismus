@@ -32,7 +32,7 @@ public class SynchronizationPublisher {
 
 	private FormattedChatMessage publish(FormattedChatMessage msg) {
 		if (!chatSettings.get().getSynchronization().isEnabled()) return msg;
-		if (msg.getOrigin() != null && !msg.getOrigin().equals(Constants.IDENTIFIER)) return msg;
+		if (msg.getOrigin() != null && !msg.getOrigin().equals(Constants.Synchronization.IDENTIFIER)) return msg;
 
 		syncBus.publish(msg);
 		Logger.debug("Synced formatted chat #%s from %s",
