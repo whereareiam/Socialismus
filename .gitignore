@@ -4,6 +4,7 @@
 
 # Temporary files
 *build/
+*bin/
 
 # Gradle files
 .gradle
