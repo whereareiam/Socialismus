@@ -14,7 +14,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
  *
  * <p>This class uses Adventure API's component system for text formatting
  * and supports various serialization formats including legacy color codes
- * (both &amp; and \u00A7), MiniMessage format, and Gson.</p>
+ * (both &amp; and §) with hex color support, MiniMessage format, and Gson.</p>
  */
 @SuppressWarnings("unused")
 public class ComponentUtil {
@@ -31,16 +31,24 @@ public class ComponentUtil {
 	private static final MiniMessage MINI_MESSAGE_SERIALIZER = MiniMessage.miniMessage();
 
 	/**
-	 * Serializer for legacy format using ampersand (&amp;).
+	 * Serializer for legacy format using ampersand (&amp;) with hex color support.
+	 * Hex colors will be converted to the legacy hex format (&amp;x&amp;R&amp;R&amp;G&amp;G&amp;B&amp;B).
 	 */
 	@Getter
-	private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
+	private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
+			.hexColors()
+			.character('&')
+			.build();
 
 	/**
-	 * Serializer for legacy format using section symbol (§).
+	 * Serializer for legacy format using section symbol (§) with hex color support.
+	 * Hex colors will be converted to the legacy hex format (§x§R§R§G§G§B§B).
 	 */
 	@Getter
-	private static final LegacyComponentSerializer LEGACY_SECTION_SERIALIZER = LegacyComponentSerializer.legacySection();
+	private static final LegacyComponentSerializer LEGACY_SECTION_SERIALIZER = LegacyComponentSerializer.builder()
+			.hexColors()
+			.character('§')
+			.build();
 
 	/**
 	 * Standard Gson serializer for components.
@@ -66,20 +74,26 @@ public class ComponentUtil {
 
 	/**
 	 * Converts a component to legacy format using ampersand.
+	 * Hex colors will be converted to legacy hex format (&amp;x&amp;R&amp;R&amp;G&amp;G&amp;B&amp;B).
 	 *
 	 * @param component the component to convert
-	 * @return formatted string with ampersand color codes
+	 * @return formatted string with ampersand color codes (including hex colors)
 	 */
 	public static String toLegacy(Component component) {
 		return toLegacy(component, false);
 	}
 
 	/**
-	 * Converts a component to legacy format.
+	 * Converts a component to legacy format with hex color support.
+	 * Hex colors will be converted to legacy hex format:
+	 * <ul>
+	 *   <li>&amp;x&amp;R&amp;R&amp;G&amp;G&amp;B&amp;B when using ampersand</li>
+	 *   <li>§x§R§R§G§G§B§B when using section symbol</li>
+	 * </ul>
 	 *
 	 * @param component the component to convert
 	 * @param section   true to use section symbol (§), false for ampersand (&amp;)
-	 * @return formatted string with color codes
+	 * @return formatted string with color codes (including hex colors)
 	 */
 	public static String toLegacy(Component component, boolean section) {
 		if (section) return LEGACY_SECTION_SERIALIZER.serialize(component);
