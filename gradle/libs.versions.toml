@@ -4,13 +4,12 @@
 shadow = "8.3.8"
 
 # compile time processing
-lombok = "1.18.38"
+lombok = "1.18.42"
 
 # general
 guice = "7.0.0"
 libby = "2.0.1"
-jackson = "2.19.2"
-snakeyaml = "2.4"
+configura = "0.0.1"
 
 # resouces
 ormlite = "6.1"
@@ -25,7 +24,6 @@ paper = "1.21.7-R0.1-SNAPSHOT"
 placeholderAPI = "2.11.6"
 papiProxyBridge = "1.8.4"
 bStats = "3.1.0"
-valiobungee = "0.13.0"
 
 # adventure
 adventure = "4.24.0"
@@ -49,10 +47,10 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
+configura = { group = "me.whereareiam", name = "configura", version.ref = "configura" }
 
 # resources
 ormlite = { group = "com.j256.ormlite", name = "ormlite-core", version.ref = "ormlite" }
-jedis = { group = "redis.clients", name = "jedis", version.ref = "jedis" }
 
 # platform api
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
@@ -80,10 +78,6 @@ adventure-plain = { group = "net.kyori", name = "adventure-text-serializer-plain
 adventure-gson = { group = "net.kyori", name = "adventure-text-serializer-gson", version.ref = "adventure-gson" }
 adventure-platform-bukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventure-platform-bukkit" }
 
-# jackson
-jackson = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
-jackson-YAML = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
-
 # cloud
 cloud-core = { group = "org.incendo", name = "cloud-core", version.ref = "cloud-core" }
 cloud-annotations = { group = "org.incendo", name = "cloud-annotations", version.ref = "cloud-core" }
@@ -98,7 +92,6 @@ adventure = ["adventure", "adventure-minimessage", "adventure-legacy", "adventur
 bukkit = ["spigot", "adventure-platform-bukkit"]
 paper = ["paper"]
 velocity = ["velocity"]
-config = ["jackson", "jackson-YAML"]
 cloud = ["cloud-core", "cloud-annotations", "cloud-cooldowns", "cloud-minecraft-extras"]
 
 bStats = ["bStats", "bStats-bukkit", "bStats-velocity"]

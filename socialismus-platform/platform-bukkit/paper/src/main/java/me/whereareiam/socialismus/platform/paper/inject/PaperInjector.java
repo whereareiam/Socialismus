@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.platform.paper.inject;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import lombok.Getter;
-import me.whereareiam.socialismus.adapter.config.ConfigBinder;
 import me.whereareiam.socialismus.adapter.module.ModuleConfiguration;
 import me.whereareiam.socialismus.command.CommandConfiguration;
 import me.whereareiam.socialismus.common.CommonConfiguration;
@@ -20,8 +19,7 @@ public class PaperInjector {
 		Injector injector = Guice.createInjector(
 				new PaperInjectorConfiguration(plugin, dependencyResolver),
 				new PlatformCommonConfiguration(plugin),
-				new ConfigBinder(dataPath),
-				new CommonConfiguration(),
+				new CommonConfiguration(dataPath),
 				new CommandConfiguration(),
 				new ModuleConfiguration()
 		);

@@ -2,24 +2,24 @@ package me.whereareiam.socialismus.integration.bstats.chart;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.output.config.ConfigurationManager;
+import me.whereareiam.socialismus.api.output.config.ConfigurationTypeResolver;
 import org.bstats.charts.CustomChart;
 import org.bstats.charts.SimplePie;
 
 @Singleton
 public class ConfigTypeChart implements Chart {
-    private final ConfigurationManager configManager;
+	private final ConfigurationTypeResolver typeResolver;
 
-    @Inject
-    public ConfigTypeChart(ConfigurationManager configManager) {
-        this.configManager = configManager;
-    }
+	@Inject
+	public ConfigTypeChart(ConfigurationTypeResolver typeResolver) {
+		this.typeResolver = typeResolver;
+	}
 
-    public CustomChart getChart() {
-        return new SimplePie("configType", this::getData);
-    }
+	public CustomChart getChart() {
+		return new SimplePie("configType", this::getData);
+	}
 
-    private String getData() {
-        return configManager.getConfigurationType().name();
-    }
+	private String getData() {
+		return typeResolver.getConfigurationType().name();
+	}
 }

@@ -11,15 +11,13 @@ import java.nio.file.Path;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class VelocityDependencyResolver extends CommonDependencyResolver {
-	private final VelocityLibraryManager libraryManager;
-
 	public VelocityDependencyResolver(VelocitySocialismus velocitySocialismus, Logger logger, Path dataPath, PluginManager pluginManager) {
 		this.libraryManager = new VelocityLibraryManager(velocitySocialismus, logger, dataPath, pluginManager, ".libraries");
 	}
 
 	@Override
 	public void resolveDependencies() {
-		libraryManager.addMavenCentral();
+		super.resolveDependencies();
 
 		libraries.forEach(libraryManager::loadLibrary);
 		clearDependencies();

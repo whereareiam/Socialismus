@@ -2,6 +2,8 @@ package me.whereareiam.socialismus.api.model.requirement;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import me.whereareiam.configura.annotation.Polymorphic;
+import me.whereareiam.socialismus.api.model.requirement.type.*;
 import me.whereareiam.socialismus.api.type.requirement.RequirementConditionType;
 
 /**
@@ -20,14 +22,23 @@ import me.whereareiam.socialismus.api.type.requirement.RequirementConditionType;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
+@Polymorphic(
+		inferBy = {
+				@Polymorphic.Infer(field = "servers", target = ServerRequirement.class),
+				@Polymorphic.Infer(field = "worlds", target = WorldRequirement.class),
+				@Polymorphic.Infer(field = "chatIdentifiers", target = ChatRequirement.class),
+				@Polymorphic.Infer(field = "placeholders", target = PlaceholderRequirement.class),
+				@Polymorphic.Infer(field = "permissions", target = PermissionRequirement.class)
+		}
+)
 public class Requirement {
-    /**
-     * The type of condition to be checked
-     */
-    private RequirementConditionType condition;
+	/**
+	 * The type of condition to be checked
+	 */
+	private RequirementConditionType condition;
 
-    /**
-     * The expected value to compare against
-     */
-    private String expected;
+	/**
+	 * The expected value to compare against
+	 */
+	private String expected;
 }

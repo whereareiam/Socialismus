@@ -15,6 +15,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven("https://jitpack.io")
+        maven("https://maven.whereareiam.me/release")
     }
 
     dependencies {
@@ -24,5 +25,6 @@ subprojects {
 
         // general
         "compileOnly"(rootProject.libs.guice)
+        "compileOnly"(rootProject.libs.configura)
     }
 }

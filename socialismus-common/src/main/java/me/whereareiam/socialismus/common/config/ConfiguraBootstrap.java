@@ -1,0 +1,34 @@
+package me.whereareiam.socialismus.common.config;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import me.whereareiam.configura.Config;
+import me.whereareiam.configura.reader.ConfigReader;
+import me.whereareiam.configura.type.Format;
+import me.whereareiam.configura.writer.ConfigWriter;
+import me.whereareiam.socialismus.api.output.config.ConfigurationTypeResolver;
+import me.whereareiam.socialismus.api.type.ConfigurationType;
+import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.common.config.adapter.ComponentAdapter;
+import me.whereareiam.socialismus.common.config.adapter.VersionAdapter;
+import net.kyori.adventure.text.Component;
+
+@Singleton
+public class ConfiguraBootstrap {
+	@Inject
+	public ConfiguraBootstrap(ConfigurationTypeResolver resolver) {
+		// Resolve the preferred configuration format
+		ConfigurationType type = resolver.getConfigurationType();
+		Format format = (type == ConfigurationType.JSON) ? Format.JSON : Format.YAML;
+
+		// Configure global reader/writer with chosen format
+		ConfigReader reader = Config.reader(format);
+		ConfigWriter writer = Config.writer(format);
+		Config.setReader(reader);
+		Config.setWriter(writer);
+
+		// Register adapters
+		Config.registerAdapter(Version.class, VersionAdapter.class);
+		Config.registerAdapter(Component.class, ComponentAdapter.class);
+	}
+}

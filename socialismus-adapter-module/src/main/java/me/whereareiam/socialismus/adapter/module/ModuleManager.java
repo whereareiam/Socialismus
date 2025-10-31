@@ -5,11 +5,11 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import lombok.Getter;
 import lombok.Setter;
+import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.model.module.InternalModule;
 import me.whereareiam.socialismus.api.model.module.Module;
 import me.whereareiam.socialismus.api.model.module.ModuleDependency;
-import me.whereareiam.socialismus.api.output.config.ConfigurationLoader;
 import me.whereareiam.socialismus.api.output.module.ModuleService;
 import me.whereareiam.socialismus.api.type.module.DependencyType;
 import me.whereareiam.socialismus.api.type.module.ModuleState;
@@ -32,7 +32,6 @@ public class ModuleManager implements ModuleService {
 	private static final String MODULE_FILE = "module.json";
 
 	private final Path modulesPath;
-	private final ConfigurationLoader configurationLoader;
 	private final ModuleLifecycleController lifecycleController;
 
 	private List<InternalModule> modules = new ArrayList<>();
@@ -40,11 +39,9 @@ public class ModuleManager implements ModuleService {
 	@Inject
 	public ModuleManager(
 			@Named("modulesPath") Path modulesPath,
-			ConfigurationLoader configurationLoader,
 			ModuleLifecycleController moduleLifecycleController
 	) {
 		this.modulesPath = modulesPath;
-		this.configurationLoader = configurationLoader;
 		this.lifecycleController = moduleLifecycleController;
 	}
 
@@ -93,7 +90,7 @@ public class ModuleManager implements ModuleService {
 					}
 
 					try (InputStream stream = jarFile.getInputStream(entry)) {
-						Module module = configurationLoader.load(stream, Module.class);
+						Module module = Config.load(stream, Module.class);
 						if (!validateModule(module, file)) {
 							return;
 						}

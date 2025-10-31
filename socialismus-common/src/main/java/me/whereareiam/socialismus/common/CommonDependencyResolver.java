@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.common;
 
 import com.alessiodp.libby.Library;
+import com.alessiodp.libby.LibraryManager;
 import com.alessiodp.libby.relocation.Relocation;
 import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.input.DependencyResolver;
@@ -9,7 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CommonDependencyResolver implements DependencyResolver {
+	protected LibraryManager libraryManager;
 	protected final List<Library> libraries = new ArrayList<>();
+
+	@Override
+	public void resolveDependencies() {
+		libraryManager.addMavenCentral();
+		libraryManager.addRepository("https://maven.whereareiam.me/release");
+	}
 
 	@Override
 	public void loadLibraries() {
@@ -32,11 +40,16 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 				).build());
 
 		addDependency(Library.builder()
-				.groupId("org{}yaml")
-				.artifactId("snakeyaml")
-				.version(Constants.Dependency.SNAKEYAML)
+				.groupId("me.whereareiam")
+				.artifactId("configura")
+				.version(Constants.Dependency.CONFIGURA)
 				.resolveTransitiveDependencies(true)
 				.relocate(
+						Relocation.builder()
+								.pattern("com{}fasterxml{}jackson")
+								.relocatedPattern("me.whereareiam.socialismus.library.jackson")
+								.build()
+				).relocate(
 						Relocation.builder()
 								.pattern("org{}yaml{}snakeyaml")
 								.relocatedPattern("me.whereareiam.socialismus.library.snakeyaml")
@@ -49,8 +62,7 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 				.artifactId("jedis")
 				.version(Constants.Dependency.JEDIS)
 				.resolveTransitiveDependencies(true)
-				.build()
-		);
+				.build());
 
 		// Cloud libraries
 		addDependency(Library.builder()
@@ -70,36 +82,6 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 				.artifactId("cloud-annotations")
 				.version(Constants.Dependency.CLOUD)
 				.build());
-
-		// Jackson libraries
-		addDependency(Library.builder()
-				.groupId("com{}fasterxml{}jackson{}core")
-				.artifactId("jackson-databind")
-				.version(Constants.Dependency.JACKSON)
-				.resolveTransitiveDependencies(true)
-				.relocate(
-						Relocation.builder()
-								.pattern("com{}fasterxml{}jackson")
-								.relocatedPattern("me.whereareiam.socialismus.library.jackson")
-								.build()
-				).build());
-
-		addDependency(Library.builder()
-				.groupId("com{}fasterxml{}jackson{}dataformat")
-				.artifactId("jackson-dataformat-yaml")
-				.version(Constants.Dependency.JACKSON)
-				.resolveTransitiveDependencies(true)
-				.relocate(
-						Relocation.builder()
-								.pattern("com{}fasterxml{}jackson")
-								.relocatedPattern("me.whereareiam.socialismus.library.jackson")
-								.build()
-				).relocate(
-						Relocation.builder()
-								.pattern("org{}yaml{}snakeyaml")
-								.relocatedPattern("me.whereareiam.socialismus.library.snakeyaml")
-								.build()
-				).build());
 	}
 
 	@Override

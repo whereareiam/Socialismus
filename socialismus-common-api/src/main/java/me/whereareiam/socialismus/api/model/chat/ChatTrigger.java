@@ -5,7 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import me.whereareiam.configura.annotation.Polymorphic;
 import me.whereareiam.socialismus.api.type.chat.TriggerType;
+import me.whereareiam.socialismus.api.model.chat.trigger.CommandChatTrigger;
+import me.whereareiam.socialismus.api.model.chat.trigger.RegexChatTrigger;
+import me.whereareiam.socialismus.api.model.chat.trigger.SymbolChatTrigger;
 
 /**
  * Describes a trigger that can route a message into a chat.
@@ -18,6 +22,15 @@ import me.whereareiam.socialismus.api.type.chat.TriggerType;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
+@Polymorphic(
+    discriminator = "type",
+    mappings = {
+        @Polymorphic.Type(value = "SYMBOL", target = SymbolChatTrigger.class),
+        @Polymorphic.Type(value = "REGEX", target = RegexChatTrigger.class),
+        @Polymorphic.Type(value = "COMMAND", target = CommandChatTrigger.class)
+    },
+    defaultValue = "SYMBOL"
+)
 public class ChatTrigger {
     /**
      * Trigger kind.

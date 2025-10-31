@@ -8,15 +8,13 @@ import me.whereareiam.socialismus.common.CommonDependencyResolver;
 import org.bukkit.plugin.Plugin;
 
 public class BukkitDependencyResolver extends CommonDependencyResolver {
-	private final BukkitLibraryManager libraryManager;
-
 	public BukkitDependencyResolver(Plugin plugin) {
 		this.libraryManager = new BukkitLibraryManager(plugin, ".libraries");
 	}
 
 	@Override
 	public void resolveDependencies() {
-		libraryManager.addMavenCentral();
+		super.resolveDependencies();
 		libraryManager.addJitPack();
 
 		libraries.forEach(libraryManager::loadLibrary);
