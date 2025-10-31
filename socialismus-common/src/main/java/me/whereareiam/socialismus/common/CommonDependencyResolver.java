@@ -16,7 +16,7 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 	@Override
 	public void resolveDependencies() {
 		libraryManager.addMavenCentral();
-		libraryManager.addRepository("https://maven.whereareiam.me/release");
+		libraryManager.addRepository("https://maven.whereareiam.me/development");
 	}
 
 	@Override
