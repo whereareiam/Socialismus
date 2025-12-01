@@ -3,43 +3,52 @@ package me.whereareiam.socialismus.platform.bukkit.mapper;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.model.player.DummyCommandPlayer;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.socialismus.platform.bukkit.actor.console.BukkitSocialismusCommandConsole;
+import me.whereareiam.socialismus.platform.bukkit.actor.player.BukkitSocialismusCommandPlayer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.cloud.SenderMapper;
 
-import javax.annotation.Nonnull;
-import java.util.Optional;
-
 @Singleton
-public class CommandSenderMapper implements SenderMapper<CommandSender, DummyPlayer> {
-    private final PlayerContainerService playerContainer;
-    private final Provider<BukkitAudiences> audiences;
+public class CommandSenderMapper implements SenderMapper<CommandSender, Actor> {
+	private final Provider<BukkitAudiences> audiences;
 
-    @Inject
-    public CommandSenderMapper(PlayerContainerService playerContainer, Provider<BukkitAudiences> audiences) {
-        this.playerContainer = playerContainer;
-        this.audiences = audiences;
-    }
+	@Inject
+	public CommandSenderMapper(Provider<BukkitAudiences> audiences) {
+		this.audiences = audiences;
+	}
 
-    @Override
-    public @NonNull DummyPlayer map(@NonNull CommandSender source) {
-        if (source instanceof ConsoleCommandSender)
-            return DummyCommandPlayer.builder().commandSender(source).audience(audiences.get().sender(source)).build();
+	@Override
+	public @NonNull Actor map(@NonNull CommandSender source) {
+		BukkitAudiences bukkitAudiences = audiences.get();
+		
+		if (source instanceof ConsoleCommandSender consoleSender)
+			return new BukkitSocialismusCommandConsole(consoleSender, source, bukkitAudiences);
 
-        Optional<DummyPlayer> dummyPlayer = playerContainer.getPlayer(source.getName());
-        if (dummyPlayer.isPresent())
-            return DummyCommandPlayer.from(dummyPlayer.get(), source);
+		if (source instanceof Player player)
+			return new BukkitSocialismusCommandPlayer(player, source, bukkitAudiences);
 
-        throw new NullPointerException("A player with the name " + source.getName() + " was not found");
-    }
+		throw new UnsupportedOperationException("Unsupported command sender type: " + source.getClass().getName());
+	}
 
-    @Override
-    public @Nonnull CommandSender reverse(final @Nonnull DummyPlayer dummyPlayer) {
-        return (CommandSender) ((DummyCommandPlayer) dummyPlayer).getCommandSender();
-    }
+	@Override
+	public @NonNull CommandSender reverse(@NonNull Actor actor) {
+		// Only command-context types are supported for reverse mapping
+		if (actor instanceof BukkitSocialismusCommandPlayer commandPlayer)
+			return commandPlayer.getCommandSender();
+
+		if (actor instanceof BukkitSocialismusCommandConsole commandConsole)
+			return commandConsole.getCommandSender();
+
+		// If base types are passed, it means they were created outside command context
+		throw new UnsupportedOperationException(
+				"Cannot reverse map base Actor types to CommandSender. " +
+						"Base Actor types are for non-command contexts only. " +
+						"Actor was not created by CommandSenderMapper."
+		);
+	}
 }

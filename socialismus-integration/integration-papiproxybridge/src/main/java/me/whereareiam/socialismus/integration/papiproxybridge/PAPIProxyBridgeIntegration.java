@@ -2,10 +2,10 @@ package me.whereareiam.socialismus.integration.papiproxybridge;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.input.registry.Registry;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.output.integration.Integration;
 import me.whereareiam.socialismus.output.integration.PlaceholderResolverIntegration;
+import me.whereareiam.socialismus.registry.Registry;
 import net.william278.papiproxybridge.api.PlaceholderAPI;
 
 @Singleton
@@ -21,10 +21,8 @@ public class PAPIProxyBridgeIntegration implements PlaceholderResolverIntegratio
     }
 
     @Override
-    public String format(DummyPlayer dummyPlayer, String content) {
-        if (dummyPlayer.getUniqueId() == null) return content;
-
-        return ((PlaceholderAPI) placeholderAPI).formatPlaceholders(content, dummyPlayer.getUniqueId()).getNow(content);
+    public String format(SocialismusPlayer socialismusPlayer, String content) {
+	    return ((PlaceholderAPI) placeholderAPI).formatPlaceholders(content, socialismusPlayer.getUniqueId()).getNow(content);
     }
 
     @Override

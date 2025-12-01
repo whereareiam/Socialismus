@@ -4,8 +4,8 @@ import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.input.registry.Registry;
 import me.whereareiam.socialismus.output.integration.Integration;
+import me.whereareiam.socialismus.registry.Registry;
 
 @Singleton
 public class bStatsIntegration implements Integration {

@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.platform.paper;
 
-import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.common.IntegrityChecker;
 import me.whereareiam.socialismus.input.event.plugin.PluginBootstrappedEvent;
@@ -11,6 +10,7 @@ import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegrati
 import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPIIntegration;
 import me.whereareiam.socialismus.platform.BukkitLoggingHelper;
 import me.whereareiam.socialismus.platform.paper.inject.PaperInjector;
+import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.util.EventUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 
 		new PaperInjector(this, dependencyResolver, dataPath);
 
-		// Core bootstrap (mirrors Intercept's bootstrapped event)
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
 
 		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())

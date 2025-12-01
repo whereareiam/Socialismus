@@ -11,17 +11,17 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.common.IntegrityChecker;
 import me.whereareiam.socialismus.input.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.input.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.input.event.plugin.PluginShutdownEvent;
-import me.whereareiam.socialismus.util.EventUtil;
 import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
 import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
 import me.whereareiam.socialismus.integration.papiproxybridge.PAPIProxyBridgeIntegration;
 import me.whereareiam.socialismus.platform.velocity.inject.VelocityInjector;
+import me.whereareiam.socialismus.type.PluginType;
+import me.whereareiam.socialismus.util.EventUtil;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -68,7 +68,6 @@ public class VelocitySocialismus {
 				dataPath
 		);
 
-		// Core bootstrap (mirrors Intercept's bootstrapped event)
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
 
 		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())

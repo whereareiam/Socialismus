@@ -3,8 +3,8 @@ package me.whereareiam.socialismus.platform.paper.inject;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.input.DependencyResolver;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
 import me.whereareiam.socialismus.output.PlatformInteractor;
 import me.whereareiam.socialismus.output.Scheduler;
 import me.whereareiam.socialismus.output.listener.ListenerRegistrar;
@@ -31,6 +31,6 @@ public class PaperInjectorConfiguration extends AbstractModule {
 		bind(Scheduler.class).to(PaperScheduler.class);
 		bind(ListenerRegistrar.class).to(PaperListenerRegistrar.class);
 		bind(PlatformInteractor.class).to(PaperPlatformInteractor.class);
-		bind(new TypeLiteral<CommandManager<DummyPlayer>>() {}).toProvider(PaperCommandManagerProvider.class);
+		bind(new TypeLiteral<CommandManager<Actor>>() {}).toProvider(PaperCommandManagerProvider.class);
 	}
 }

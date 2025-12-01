@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.input.requirement;
 
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 
 /**
@@ -17,8 +17,8 @@ public interface RequirementEvaluatorService {
      * Checks if a player meets the requirements specified in a requirement group.
      *
      * @param group the requirement group to evaluate
-     * @param dummyPlayer the player to check against the requirements
+     * @param player the player to check against the requirements
      * @return true if the player meets all requirements, false otherwise
      */
-    boolean check(RequirementGroup group, DummyPlayer dummyPlayer);
+    boolean check(RequirementGroup group, SocialismusPlayer player);
 }

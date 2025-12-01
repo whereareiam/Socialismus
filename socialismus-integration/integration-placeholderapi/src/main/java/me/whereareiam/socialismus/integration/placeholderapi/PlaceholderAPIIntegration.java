@@ -3,10 +3,10 @@ package me.whereareiam.socialismus.integration.placeholderapi;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.whereareiam.socialismus.input.registry.Registry;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.output.integration.Integration;
 import me.whereareiam.socialismus.output.integration.PlaceholderResolverIntegration;
+import me.whereareiam.socialismus.registry.Registry;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -20,10 +20,8 @@ public class PlaceholderAPIIntegration implements PlaceholderResolverIntegration
     }
 
     @Override
-    public String format(DummyPlayer dummyPlayer, String content) {
-        if (dummyPlayer.getUniqueId() == null) return content;
-
-        OfflinePlayer player = Bukkit.getOfflinePlayer(dummyPlayer.getUniqueId());
+    public String format(SocialismusPlayer socialismusPlayer, String content) {
+	    OfflinePlayer player = Bukkit.getOfflinePlayer(socialismusPlayer.getUniqueId());
 
         return PlaceholderAPI.setPlaceholders(player, content);
     }

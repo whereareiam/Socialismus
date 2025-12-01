@@ -4,10 +4,10 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatTrigger;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import net.kyori.adventure.text.Component;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Represents a chat message in the Socialismus chat system.
@@ -31,12 +31,12 @@ public class ChatMessage {
 	/**
 	 * The player who sent the message.
 	 */
-	private final DummyPlayer sender;
+	private final SocialismusPlayer sender;
 
 	/**
 	 * Set of players who should receive this message.
 	 */
-	private Set<DummyPlayer> recipients;
+	private Collection<SocialismusPlayer> recipients;
 
 	/**
 	 * The actual content of the message as a Kyori Adventure Component.

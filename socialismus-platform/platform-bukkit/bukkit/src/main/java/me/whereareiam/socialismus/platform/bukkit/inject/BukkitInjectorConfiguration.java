@@ -3,8 +3,8 @@ package me.whereareiam.socialismus.platform.bukkit.inject;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.input.DependencyResolver;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
 import me.whereareiam.socialismus.output.PlatformInteractor;
 import me.whereareiam.socialismus.output.Scheduler;
 import me.whereareiam.socialismus.output.listener.ListenerRegistrar;
@@ -30,6 +30,6 @@ public class BukkitInjectorConfiguration extends AbstractModule {
 		bind(Scheduler.class).to(BukkitScheduler.class);
 		bind(ListenerRegistrar.class).to(BukkitListenerRegistrar.class);
 		bind(PlatformInteractor.class).to(BukkitPlatformInteractor.class);
-		bind(new TypeLiteral<CommandManager<DummyPlayer>>() {}).toProvider(BukkitCommandManagerProvider.class);
+		bind(new TypeLiteral<CommandManager<Actor>>() {}).toProvider(BukkitCommandManagerProvider.class);
 	}
 }

@@ -5,14 +5,14 @@ import com.google.inject.TypeLiteral;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.ProxyServer;
+import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.input.DependencyResolver;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.integration.bstats.Metrics;
 import me.whereareiam.socialismus.output.LoggingHelper;
 import me.whereareiam.socialismus.output.PlatformClassLoader;
 import me.whereareiam.socialismus.output.PlatformInteractor;
 import me.whereareiam.socialismus.output.Scheduler;
 import me.whereareiam.socialismus.output.listener.ListenerRegistrar;
-import me.whereareiam.socialismus.integration.bstats.Metrics;
 import me.whereareiam.socialismus.platform.velocity.*;
 import me.whereareiam.socialismus.platform.velocity.listener.VelocityListenerRegistrar;
 import org.incendo.cloud.CommandManager;
@@ -45,7 +45,7 @@ public class VelocityInjectorConfiguration extends AbstractModule {
         bind(ListenerRegistrar.class).to(VelocityListenerRegistrar.class);
         bind(PlatformInteractor.class).to(VelocityPlatformInteractor.class);
         bind(PlatformClassLoader.class).to(VelocityClassLoader.class);
-        bind(new TypeLiteral<CommandManager<DummyPlayer>>() {}).toProvider(VelocityCommandManagerProvider.class);
+        bind(new TypeLiteral<CommandManager<Actor>>() {}).toProvider(VelocityCommandManagerProvider.class);
 
         bind(Metrics.class).to(VelocityMetrics.class);
     }

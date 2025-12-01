@@ -6,14 +6,13 @@ import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.input.sync.ChatSyncBus;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.output.PlatformInteractor;
 import me.whereareiam.socialismus.output.SerializationService;
 import me.whereareiam.socialismus.output.resource.sync.SyncService;
-import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import net.kyori.adventure.text.Component;
 
 import java.util.Set;
@@ -26,7 +25,6 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	private final SyncService sync;
 	private final SerializationService serializationService;
 	private final ChatCoordinator coordinator;
-	private final PlatformInteractor platformInteractor;
 
 	private final Provider<ChatSettings> chatSettings;
 
@@ -70,7 +68,6 @@ public class ChatNetworkBridge implements ChatSyncBus {
 			if (Constants.Synchronization.IDENTIFIER.equals(message.getOrigin())) return;
 
 			message.setRecipients(Set.of());
-			message.getSender().setInteractor(platformInteractor);
 
 			if (message.getFormat() != null
 					&& !message.getFormat().equals(emptyComponent)

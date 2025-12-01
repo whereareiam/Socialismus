@@ -5,10 +5,10 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
-import me.whereareiam.socialismus.input.registry.Registry;
-import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.common.config.provider.DefaultConfigProvider;
 import me.whereareiam.socialismus.common.config.template.chat.ChatMessagesTemplate;
+import me.whereareiam.socialismus.model.chat.ChatMessages;
+import me.whereareiam.socialismus.registry.Registry;
 
 import java.nio.file.Path;
 

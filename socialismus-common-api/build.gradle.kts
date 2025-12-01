@@ -54,6 +54,7 @@ tasks.register<Copy>("processSources") {
             .replace("@cloudPaperVersion@", rootProject.libs.versions.cloud.paper.get())
             .replace("@cloudVelocityVersion@", rootProject.libs.versions.cloud.velocity.get())
             .replace("@cloudMinecraftExtrasVersion@", rootProject.libs.versions.cloud.minecraft.extras.get())
+            .replace("@brigadierVersion@", rootProject.libs.versions.brigadier.get())
     }
 }
 

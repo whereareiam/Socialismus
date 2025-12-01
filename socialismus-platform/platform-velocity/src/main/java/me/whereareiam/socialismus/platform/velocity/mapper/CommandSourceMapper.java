@@ -1,44 +1,44 @@
 package me.whereareiam.socialismus.platform.velocity.mapper;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
-import me.whereareiam.socialismus.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.model.player.DummyCommandPlayer;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.socialismus.platform.velocity.actor.console.VelocitySocialismusCommandConsole;
+import me.whereareiam.socialismus.platform.velocity.actor.player.VelocitySocialismusCommandPlayer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.cloud.SenderMapper;
 
-import javax.annotation.Nonnull;
-import java.util.Optional;
-
 @Singleton
-public class CommandSourceMapper implements SenderMapper<CommandSource, DummyPlayer> {
-    private final PlayerContainerService playerContainer;
+public class CommandSourceMapper implements SenderMapper<CommandSource, Actor> {
 
-    @Inject
-    public CommandSourceMapper(PlayerContainerService playerContainer) {
-        this.playerContainer = playerContainer;
-    }
+	@Override
+	public @NonNull Actor map(@NonNull CommandSource source) {
+		// Handle console sender
+		if (source instanceof ConsoleCommandSource consoleCommandSource)
+			return new VelocitySocialismusCommandConsole(consoleCommandSource, source);
 
-    @Override
-    public @NonNull DummyPlayer map(@NonNull CommandSource source) {
-        if (source instanceof ConsoleCommandSource) {
-            return DummyCommandPlayer.builder().commandSender(source).audience(source).build();
-        }
+		if (source instanceof Player player)
+			return new VelocitySocialismusCommandPlayer(player, source);
 
-        Player player = (Player) source;
-        Optional<DummyPlayer> dummyPlayer = playerContainer.getPlayer(player.getUniqueId());
-        if (dummyPlayer.isPresent())
-            return DummyCommandPlayer.from(dummyPlayer.get(), source);
+		throw new UnsupportedOperationException("Unsupported command source type: " + source.getClass().getName());
+	}
 
-        throw new NullPointerException("A player with the name " + player.getUsername() + " was not found");
-    }
+	@Override
+	public @NonNull CommandSource reverse(@NonNull Actor actor) {
+		// Only command-context types are supported for reverse mapping
+		if (actor instanceof VelocitySocialismusCommandPlayer commandPlayer)
+			return commandPlayer.getCommandSource();
 
-    @Override
-    public @Nonnull CommandSource reverse(final @Nonnull DummyPlayer dummyPlayer) {
-        return (CommandSource) ((DummyCommandPlayer) dummyPlayer).getCommandSender();
-    }
+		if (actor instanceof VelocitySocialismusCommandConsole commandConsole)
+			return commandConsole.getCommandSource();
+
+		// If base types are passed, it means they were created outside command context
+		throw new UnsupportedOperationException(
+				"Cannot reverse map base Actor types to CommandSource. " +
+						"Base Actor types are for non-command contexts only. " +
+						"Actor was not created by CommandSourceMapper."
+		);
+	}
 }

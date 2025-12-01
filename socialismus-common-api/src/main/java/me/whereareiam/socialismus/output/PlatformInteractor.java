@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.output;
 
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.type.BroadcastTarget;
 import me.whereareiam.socialismus.type.Version;
@@ -17,6 +17,7 @@ import java.util.UUID;
  * <p>This interface abstracts platform-specific implementations (e.g., Bukkit, Velocity)
  * to ensure consistent behavior across different server platforms.</p>
  */
+@SuppressWarnings("unused")
 public interface PlatformInteractor {
 	/**
 	 * Broadcasts a message to the specified target(s).
@@ -36,10 +37,10 @@ public interface PlatformInteractor {
 	/**
 	 * Gets the eye position of a player.
 	 *
-	 * @param dummyPlayer The dummy player instance
+	 * @param player The Socialismus player instance
 	 * @return The eye position of the player as a Position object
 	 */
-	Position getEyePosition(DummyPlayer dummyPlayer);
+	Position getEyePosition(SocialismusPlayer player);
 
 	/**
 	 * Checks if two players are within a specified range of each other.
@@ -54,10 +55,10 @@ public interface PlatformInteractor {
 	/**
 	 * Gets the position of a player.
 	 *
-	 * @param dummyPlayer The dummy player instance
+	 * @param player The Socialismus player instance
 	 * @return An array of doubles representing the player's position (x, y, z)
 	 */
-	Position getPosition(DummyPlayer dummyPlayer);
+	Position getPosition(SocialismusPlayer player);
 
 	/**
 	 * Checks if a player has a specific permission.
@@ -69,13 +70,13 @@ public interface PlatformInteractor {
 	boolean hasPermission(String username, String permission);
 
 	/**
-	 * Checks if a dummy player has a specific permission.
+	 * Checks if a Socialismus player has a specific permission.
 	 *
-	 * @param dummyPlayer The dummy player instance
+	 * @param player The Socialismus player instance
 	 * @param permission  The permission to check
-	 * @return true if the dummy player has the permission, false otherwise
+	 * @return true if the Socialismus player has the permission, false otherwise
 	 */
-	boolean hasPermission(DummyPlayer dummyPlayer, String permission);
+	boolean hasPermission(SocialismusPlayer player, String permission);
 
 	/**
 	 * Gets a list of all online players' usernames.

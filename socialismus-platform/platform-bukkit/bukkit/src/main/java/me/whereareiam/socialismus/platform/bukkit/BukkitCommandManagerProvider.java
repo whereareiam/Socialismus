@@ -3,10 +3,9 @@ package me.whereareiam.socialismus.platform.bukkit;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.model.config.Settings;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
-import me.whereareiam.socialismus.command.management.CommandExceptionHandler;
+import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.command.CommandManagerProvider;
+import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.platform.bukkit.mapper.CommandSenderMapper;
 import org.bukkit.plugin.Plugin;
 import org.incendo.cloud.CommandManager;
@@ -23,19 +22,18 @@ public class BukkitCommandManagerProvider extends CommandManagerProvider {
 
 	@Inject
 	public BukkitCommandManagerProvider(
-			CommandExceptionHandler exceptionHandler,
 			Provider<Settings> settings,
 			Plugin plugin,
 			CommandSenderMapper commandSenderMapper
 	) {
-		super(settings, exceptionHandler);
+		super(settings);
 		this.plugin = plugin;
 		this.commandSenderMapper = commandSenderMapper;
 	}
 
 	@Override
-	protected CommandManager<DummyPlayer> createLegacyPaperCommandManager() {
-		LegacyPaperCommandManager<DummyPlayer> commandManager = new LegacyPaperCommandManager<>(
+	protected CommandManager<Actor> createLegacyCommandManager() {
+		LegacyPaperCommandManager<Actor> commandManager = new LegacyPaperCommandManager<>(
 				plugin,
 				ExecutionCoordinator.asyncCoordinator(),
 				commandSenderMapper
@@ -48,12 +46,12 @@ public class BukkitCommandManagerProvider extends CommandManagerProvider {
 	}
 
 	@Override
-	protected CommandManager<DummyPlayer> createPaperCommandManager() {
-		return createLegacyPaperCommandManager();
+	protected CommandManager<Actor> createPaperCommandManager() {
+		return createLegacyCommandManager();
 	}
 
 	@Override
-	protected CommandManager<DummyPlayer> createVelocityCommandManager() {
-		throw new UnsupportedOperationException("VelocityCommandManager is not supported on Paper");
+	protected CommandManager<Actor> createVelocityCommandManager() {
+		throw new UnsupportedOperationException("VelocityCommandManager is not supported on Bukkit");
 	}
 }

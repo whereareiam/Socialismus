@@ -11,9 +11,9 @@ import me.whereareiam.commandant.model.CommandDefinition;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
-import me.whereareiam.socialismus.input.registry.Registry;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.registry.Registry;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.annotation.specifier.Range;
@@ -48,7 +48,7 @@ public class HelpCommand implements Reloadable {
 	}
 
 	@Definition("help")
-	@Command("intercept help [page]")
+	@Command("socialismus help [page]")
 	public void command(@NotNull Actor sender, @Argument("page") @Default("1") @Range(min = "1") int page) {
 		// Get help message
 		String helpMessage = getHelpBuilder().build(getFilteredCommands(sender), page);

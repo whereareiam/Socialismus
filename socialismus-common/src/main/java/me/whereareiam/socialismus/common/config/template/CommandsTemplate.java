@@ -1,81 +1,90 @@
 package me.whereareiam.socialismus.common.config.template;
 
 import com.google.inject.Singleton;
+import me.whereareiam.commandant.model.CommandDefinition;
 import me.whereareiam.configura.TemplateProvider;
-import me.whereareiam.socialismus.model.CommandEntity;
 import me.whereareiam.socialismus.model.config.Commands;
 
 import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class CommandsTemplate implements TemplateProvider<Commands> {
 	@Override
 	public Commands supply(Commands commands) {
 		// Default values
-		CommandEntity main = CommandEntity.builder()
+		CommandDefinition main = CommandDefinition.builder()
 				.enabled(true)
 				.aliases(List.of("socialismus", "social"))
 				.permission("")
 				.description("Main command")
 				.usage("{alias}")
-				.cooldown(CommandEntity.Cooldown.builder()
+				.cooldown(CommandDefinition.Cooldown.builder()
 						.enabled(true)
 						.duration(2)
 						.group("global")
 						.build()
 				).build();
 
-		CommandEntity help = CommandEntity.builder()
+		CommandDefinition help = CommandDefinition.builder()
 				.enabled(true)
 				.aliases(List.of("help"))
 				.permission("")
 				.description("Help command")
 				.usage("{command} {alias} [page]")
-				.cooldown(CommandEntity.Cooldown.builder()
+				.cooldown(CommandDefinition.Cooldown.builder()
 						.enabled(true)
 						.duration(2)
 						.group("global")
 						.build()
-				).build();
+				)
+				.arguments(Map.of(
+						"page", "Page"
+				))
+				.build();
 
-		CommandEntity debug = CommandEntity.builder()
+		CommandDefinition debug = CommandDefinition.builder()
 				.enabled(true)
 				.aliases(List.of("debug"))
 				.permission("socialismus.admin")
 				.description("Debug command")
 				.usage("{command} {alias}")
-				.cooldown(CommandEntity.Cooldown.builder()
+				.cooldown(CommandDefinition.Cooldown.builder()
 						.enabled(true)
 						.duration(2)
 						.group("global")
 						.build()
 				).build();
 
-		CommandEntity reload = CommandEntity.builder()
+		CommandDefinition reload = CommandDefinition.builder()
 				.enabled(true)
 				.aliases(List.of("reload"))
 				.permission("socialismus.admin")
 				.description("Reload command")
 				.usage("{command} {alias}")
-				.cooldown(CommandEntity.Cooldown.builder()
+				.cooldown(CommandDefinition.Cooldown.builder()
 						.enabled(true)
 						.duration(2)
 						.group("global")
 						.build()
 				).build();
 
-		CommandEntity clear = CommandEntity.builder()
+		CommandDefinition clear = CommandDefinition.builder()
 				.enabled(true)
 				.aliases(List.of("clear", "clearchat"))
 				.permission("socialismus.admin")
 				.description("Clear command")
 				.usage("{command} {alias} [context]")
-				.cooldown(CommandEntity.Cooldown.builder()
+				.cooldown(CommandDefinition.Cooldown.builder()
 						.enabled(true)
 						.duration(2)
 						.group("global")
 						.build()
-				).build();
+				)
+				.arguments(Map.of(
+						"context", "Context"
+				))
+				.build();
 
 		commands.getCommands().put("main", main);
 		commands.getCommands().put("help", help);

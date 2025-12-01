@@ -7,9 +7,9 @@ import lombok.ToString;
 import me.whereareiam.socialismus.input.event.base.CancellableEvent;
 import me.whereareiam.socialismus.input.event.base.Event;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Event that is fired when a new set of recipients is selected for a chat message.
@@ -35,7 +35,7 @@ public class RecipientsSelectedEvent implements Event, CancellableEvent {
     /**
      * The newly selected set of recipients for the message
      */
-    private final Set<DummyPlayer> newRecipients;
+    private final Collection<SocialismusPlayer> newRecipients;
 
     /**
      * Flag indicating whether the recipient selection has been cancelled

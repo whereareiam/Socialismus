@@ -11,12 +11,12 @@ import me.whereareiam.commandant.registration.CommandRegistrar;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.Player;
 import me.whereareiam.keystone.serializer.SerializerEngine;
+import me.whereareiam.socialismus.CommandService;
 import me.whereareiam.socialismus.command.executor.*;
 import me.whereareiam.socialismus.command.suggestion.CrossPlayerProvider;
 import me.whereareiam.socialismus.command.suggestion.PlayerSuggestionProvider;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.output.command.CommandService;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.annotations.AnnotationParser;
 import org.jetbrains.annotations.NotNull;
@@ -129,7 +129,7 @@ public class DefaultCommandService implements CommandService {
 	private @NotNull String resolveRootCommand(@NotNull Function<String, CommandDefinition> definitionLookup) {
 		CommandDefinition definition = definitionLookup.apply("main");
 		if (definition == null || definition.getAliases() == null || definition.getAliases().isEmpty())
-			return "intercept";
+			return "socialismus";
 
 		return definition.getAliases().getFirst();
 	}

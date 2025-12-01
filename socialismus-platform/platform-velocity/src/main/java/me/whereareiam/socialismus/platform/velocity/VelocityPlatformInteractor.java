@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.output.PlatformInteractor;
 import me.whereareiam.socialismus.type.BroadcastTarget;
@@ -21,12 +21,12 @@ public class VelocityPlatformInteractor implements PlatformInteractor {
 	private final ProxyServer proxyServer;
 
 	@Override
-	public Position getPosition(DummyPlayer dummyPlayer) {
+	public Position getPosition(SocialismusPlayer player) {
 		throw new UnsupportedOperationException("Velocity does not support getting player position directly.");
 	}
 
 	@Override
-	public Position getEyePosition(DummyPlayer dummyPlayer) {
+	public Position getEyePosition(SocialismusPlayer player) {
 		throw new UnsupportedOperationException("Velocity does not support getting player eye position directly.");
 	}
 
@@ -60,9 +60,9 @@ public class VelocityPlatformInteractor implements PlatformInteractor {
 	}
 
 	@Override
-	public boolean hasPermission(DummyPlayer dummyPlayer, String permission) {
+	public boolean hasPermission(SocialismusPlayer player, String permission) {
 		return proxyServer
-				.getPlayer(dummyPlayer.getUniqueId())
+				.getPlayer(player.getUniqueId())
 				.map(value -> value.hasPermission(permission))
 				.orElse(false);
 	}

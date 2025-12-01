@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.common.requirement;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.input.registry.ExtendedRegistry;
 import me.whereareiam.socialismus.input.requirement.RequirementValidation;
+import me.whereareiam.socialismus.registry.ExtendedRegistry;
 import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 import java.util.HashMap;

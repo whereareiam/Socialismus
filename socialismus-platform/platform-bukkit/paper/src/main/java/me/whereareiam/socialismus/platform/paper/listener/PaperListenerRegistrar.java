@@ -4,26 +4,20 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import io.papermc.paper.event.connection.configuration.PlayerConnectionInitialConfigureEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.common.CommonListenerRegistrar;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.output.listener.DynamicListener;
-import me.whereareiam.socialismus.type.Version;
-import me.whereareiam.socialismus.common.CommonListenerRegistrar;
 import me.whereareiam.socialismus.platform.listener.activity.PlayerWorldChangeListener;
 import me.whereareiam.socialismus.platform.listener.connection.PlayerQuitListener;
 import me.whereareiam.socialismus.platform.paper.listener.chat.PlayerChatListener;
-import me.whereareiam.socialismus.platform.paper.listener.connection.PlayerConnectionInitialConfigureListener;
 import me.whereareiam.socialismus.platform.paper.listener.connection.PlayerJoinListener;
-import me.whereareiam.socialismus.platform.paper.listener.connection.PlayerLoginListener;
 import me.whereareiam.socialismus.platform.util.BukkitUtil;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -48,19 +42,11 @@ public class PaperListenerRegistrar extends CommonListenerRegistrar {
 	}
 
 	@Override
-	@SuppressWarnings("UnstableApiUsage")
 	public void registerListeners() {
 		registerListener(AsyncChatEvent.class, injector.getInstance(PlayerChatListener.class));
 		registerListener(PlayerChangedWorldEvent.class, injector.getInstance(PlayerWorldChangeListener.class));
 		registerListener(PlayerQuitEvent.class, injector.getInstance(PlayerQuitListener.class));
 		registerListener(PlayerJoinEvent.class, injector.getInstance(PlayerJoinListener.class));
-
-		if (Constants.SERVER_VERSION.isAtLeast(Version.V_1_21_6)) {
-			registerListener(PlayerConnectionInitialConfigureEvent.class, injector.getInstance(PlayerConnectionInitialConfigureListener.class));
-			return;
-		}
-
-		registerListener(PlayerLoginEvent.class, injector.getInstance(PlayerLoginListener.class));
 	}
 
 	@Override

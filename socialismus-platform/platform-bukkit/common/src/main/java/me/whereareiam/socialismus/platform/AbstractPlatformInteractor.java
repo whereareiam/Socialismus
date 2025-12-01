@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.platform;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.output.PlatformInteractor;
 import me.whereareiam.socialismus.type.Version;
@@ -16,8 +16,8 @@ import java.util.UUID;
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 	@Override
-	public Position getPosition(DummyPlayer dummyPlayer) {
-		Player player = Bukkit.getPlayer(dummyPlayer.getUniqueId());
+	public Position getPosition(SocialismusPlayer socialismusPlayer) {
+		Player player = Bukkit.getPlayer(socialismusPlayer.getUniqueId());
 		if (player == null)
 			return null;
 
@@ -27,8 +27,8 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 	}
 
 	@Override
-	public Position getEyePosition(DummyPlayer dummyPlayer) {
-		Player player = Bukkit.getPlayer(dummyPlayer.getUniqueId());
+	public Position getEyePosition(SocialismusPlayer socialismusPlayer) {
+		Player player = Bukkit.getPlayer(socialismusPlayer.getUniqueId());
 		if (player == null)
 			return null;
 
@@ -58,8 +58,8 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 	}
 
 	@Override
-	public boolean hasPermission(DummyPlayer dummyPlayer, String permission) {
-		Player player = Bukkit.getPlayer(dummyPlayer.getUniqueId());
+	public boolean hasPermission(SocialismusPlayer socialismusPlayer, String permission) {
+		Player player = Bukkit.getPlayer(socialismusPlayer.getUniqueId());
 		if (player == null) return false;
 
 		return player.hasPermission(permission);

@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.common.provider;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Reloadable;
-import me.whereareiam.socialismus.input.registry.Registry;
+import me.whereareiam.socialismus.registry.Registry;
 
 import java.util.HashSet;
 import java.util.Set;

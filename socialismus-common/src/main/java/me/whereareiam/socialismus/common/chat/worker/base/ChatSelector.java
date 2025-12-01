@@ -5,7 +5,8 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.AllArgsConstructor;
 import me.whereareiam.socialismus.Logger;
-import me.whereareiam.socialismus.api.Serializer;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.input.WorkerProcessor;
 import me.whereareiam.socialismus.input.container.ChatContainerService;
 import me.whereareiam.socialismus.input.event.chat.ChatResolvedEvent;
@@ -20,7 +21,6 @@ import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.util.EventUtil;
-import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import net.kyori.adventure.text.TextReplacementConfig;
 
 import java.util.Comparator;

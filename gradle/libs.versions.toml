@@ -43,6 +43,9 @@ cloud-velocity = "2.0.0-beta.13"
 cloud-cooldown = "1.0.0-rc.1"
 cloud-minecraft-extras = "2.0.0-beta.13"
 
+# brigadier
+brigadier = "1.0.18"
+
 [libraries]
 
 # compile time processing
@@ -94,6 +97,9 @@ cloud-cooldowns = { group = "org.incendo", name = "cloud-processors-cooldown", v
 cloud-paper = { group = "org.incendo", name = "cloud-paper", version.ref = "cloud-paper" }
 cloud-velocity = { group = "org.incendo", name = "cloud-velocity", version.ref = "cloud-velocity" }
 cloud-minecraft-extras = { group = "org.incendo", name = "cloud-minecraft-extras", version.ref = "cloud-minecraft-extras" }
+
+# brigadier
+brigadier = { group = "com.mojang", name = "brigadier", version.ref = "brigadier" }
 
 [bundles]
 

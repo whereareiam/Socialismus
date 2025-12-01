@@ -2,6 +2,9 @@ package me.whereareiam.socialismus.command.suggestion;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.incendo.cloud.annotations.suggestion.Suggestions;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.suggestion.Suggestion;
@@ -38,7 +41,7 @@ public class PlayerSuggestionProvider {
 	) {
 		String lowerInput = input.toLowerCase();
 		return playerRegistry.getPlayers().stream()
-				.map(InterceptPlayer::getUsername)
+				.map(SocialismusPlayer::getUsername)
 				.filter(username -> username.toLowerCase().startsWith(lowerInput))
 				.map(Suggestion::suggestion)
 				.collect(Collectors.toList());

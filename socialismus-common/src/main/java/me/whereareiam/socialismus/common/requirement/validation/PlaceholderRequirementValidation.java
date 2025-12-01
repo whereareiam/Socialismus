@@ -3,13 +3,13 @@ package me.whereareiam.socialismus.common.requirement.validation;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Logger;
-import me.whereareiam.socialismus.input.registry.ExtendedRegistry;
 import me.whereareiam.socialismus.input.requirement.RequirementValidation;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.type.PlaceholderRequirement;
 import me.whereareiam.socialismus.output.integration.Integration;
 import me.whereareiam.socialismus.output.integration.PlaceholderResolverIntegration;
+import me.whereareiam.socialismus.registry.ExtendedRegistry;
 import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 import java.util.List;
@@ -30,13 +30,13 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
 	}
 
 	@Override
-	public boolean check(Requirement requirement, DummyPlayer dummyPlayer) {
+	public boolean check(Requirement requirement, SocialismusPlayer player) {
 		PlaceholderResolverIntegration resolver = findPlaceholderResolverIntegration();
 		if (resolver == null || !(requirement instanceof PlaceholderRequirement pr))
 			return false;
 
-		Logger.debug("Checking placeholder requirement for player " + dummyPlayer.getUsername());
-		return checkCondition(pr, resolver, dummyPlayer);
+		Logger.debug("Checking placeholder requirement for player " + player.getUsername());
+		return checkCondition(pr, resolver, player);
 	}
 
 	private PlaceholderResolverIntegration findPlaceholderResolverIntegration() {
@@ -47,12 +47,12 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
 				.orElse(null);
 	}
 
-	private boolean checkCondition(PlaceholderRequirement pr, PlaceholderResolverIntegration resolver, DummyPlayer dummyPlayer) {
+	private boolean checkCondition(PlaceholderRequirement pr, PlaceholderResolverIntegration resolver, SocialismusPlayer player) {
 		List<String> placeholders = pr.getPlaceholders();
 		String[] expectedValues = pr.getExpected().split("\\|");
 
 		for (String placeholder : placeholders) {
-			String resolvedPlaceholder = resolver.format(dummyPlayer, placeholder);
+			String resolvedPlaceholder = resolver.format(player, placeholder);
 
 			for (String expected : expectedValues) {
 				boolean result = switch (pr.getCondition()) {
@@ -70,13 +70,13 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
 				};
 
 				if (result) {
-					Logger.debug("Found matching condition for player " + dummyPlayer.getUsername());
+					Logger.debug("Found matching condition for player " + player.getUsername());
 					return true;
 				}
 			}
 		}
 
-		Logger.debug("No matching conditions found for player " + dummyPlayer.getUsername());
+		Logger.debug("No matching conditions found for player " + player.getUsername());
 		return false;
 	}
 

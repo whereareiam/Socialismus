@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.common.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.input.container.PlayerContainerService;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import net.kyori.adventure.text.Component;
 
 import java.util.Objects;
@@ -15,26 +15,26 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class ChatMessageFactory {
-    private final PlayerContainerService playerContainer;
+    private final PlayerRegistry playerRegistry;
 
     @Inject
-    public ChatMessageFactory(PlayerContainerService playerContainer) {
-        this.playerContainer = playerContainer;
+    public ChatMessageFactory(PlayerRegistry playerRegistry) {
+        this.playerRegistry = playerRegistry;
     }
 
     public ChatMessage createChatMessage(UUID sender, Set<UUID> recipients, Component component) {
         final Random random = new Random();
 
-        DummyPlayer dummyPlayer = playerContainer.getPlayer(sender).orElse(null);
-        Set<DummyPlayer> dummyRecipients = recipients.stream()
-                .map(recipient -> playerContainer.getPlayer(recipient).orElse(null))
+	    SocialismusPlayer player = playerRegistry.getPlayerData(sender).orElse(null);
+        Set<SocialismusPlayer> socialismusRecipients = recipients.stream()
+                .map(recipient -> playerRegistry.getPlayerData(recipient).orElse(null))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
         return ChatMessage.builder()
                 .id(random.nextInt())
-                .sender(dummyPlayer)
-                .recipients(dummyRecipients)
+                .sender(player)
+                .recipients(socialismusRecipients)
                 .content(component)
                 .cancelled(false)
                 .vanillaSending(false)

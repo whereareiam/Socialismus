@@ -4,13 +4,14 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.model.CommandEntity;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.commandant.model.CommandDefinition;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.output.PlatformInteractor;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.type.BroadcastTarget;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -23,14 +24,15 @@ import java.util.UUID;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ChatBroadcaster {
-	private final PlayerContainerService playerContainer;
+	private final PlayerRegistry playerRegistry;
+	private final PlatformInteractor platformInteractor;
 
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<ChatMessages> chatMessages;
-	private final Provider<Map<String, CommandEntity>> commands;
+	private final Provider<Map<String, CommandDefinition>> commands;
 
 	public void broadcast(FormattedChatMessage chatMessage) {
-		chatMessage.getSender().getInteractor().broadcast(
+		platformInteractor.broadcast(
 				chatMessage.getFormat()
 						.replaceText(createMessageReplacement(chatMessage.getContent()))
 						.replaceText(createClearReplacement(chatMessage, chatMessage.getSender().getUniqueId())),
@@ -54,8 +56,8 @@ public class ChatBroadcaster {
 	}
 
 	public TextReplacementConfig createClearReplacement(FormattedChatMessage formattedChatMessage, UUID recipientUniqueId) {
-		DummyPlayer sender = formattedChatMessage.getSender();
-		Optional<DummyPlayer> recipient = playerContainer.getPlayer(recipientUniqueId);
+		SocialismusPlayer sender = formattedChatMessage.getSender();
+		Optional<SocialismusPlayer> recipient = playerRegistry.getPlayerData(recipientUniqueId);
 
 		if (recipient.isPresent()
 				&& recipient.get().hasPermission(chatSettings.get().getHistory().getPermission())

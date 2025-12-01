@@ -1,15 +1,14 @@
 package me.whereareiam.socialismus.integration.packetevents;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.input.registry.Registry;
 import me.whereareiam.socialismus.output.integration.Integration;
+import me.whereareiam.socialismus.registry.Registry;
 
 @Singleton
 public class PacketEventsIntegration implements Integration {
     @Inject
-    public PacketEventsIntegration(Registry<Integration> registry, Injector injector) {
+    public PacketEventsIntegration(Registry<Integration> registry) {
         if (!isAvailable()) return;
 
         registry.register(this);

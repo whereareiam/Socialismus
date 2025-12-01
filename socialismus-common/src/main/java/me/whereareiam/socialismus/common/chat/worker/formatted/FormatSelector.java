@@ -4,7 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Logger;
-import me.whereareiam.socialismus.api.Serializer;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.input.WorkerProcessor;
 import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
@@ -12,7 +13,6 @@ import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.type.chat.Participants;
-import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 
 @Singleton
 public class FormatSelector {

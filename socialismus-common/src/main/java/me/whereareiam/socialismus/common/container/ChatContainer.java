@@ -9,12 +9,12 @@ import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.input.container.ChatContainerService;
 import me.whereareiam.socialismus.input.event.chat.ChatAddedEvent;
 import me.whereareiam.socialismus.input.event.chat.ChatUpdatedEvent;
-import me.whereareiam.socialismus.input.registry.Registry;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.InternalChat;
-import me.whereareiam.socialismus.type.chat.TriggerType;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
+import me.whereareiam.socialismus.registry.Registry;
+import me.whereareiam.socialismus.type.chat.TriggerType;
 import me.whereareiam.socialismus.util.EventUtil;
 
 import java.util.*;

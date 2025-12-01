@@ -30,13 +30,17 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 
 		settings.setSynchronization(synchronization);
 
+		Settings.Commands commands = new Settings.Commands();
+		commands.setUseAsyncCompletions(true);
+		commands.setUseBrigadier(false);
+
+		settings.setCommands(commands);
+
 		Settings.Miscellaneous misc = new Settings.Miscellaneous();
 		misc.setDisableJoinNotification(true);
 		misc.setDisableQuitNotification(true);
 		misc.setAllowLegacyParsing(false);
-		misc.setAllowBrigadierCommands(false);
 		misc.setVanillaSending(true);
-		misc.setCommandsPerPage(7);
 
 		settings.setMisc(misc);
 

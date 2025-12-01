@@ -6,19 +6,18 @@ import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.output.listener.DynamicListener;
 import me.whereareiam.socialismus.common.SynchronizationService;
+import me.whereareiam.socialismus.output.listener.DynamicListener;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 
 @Singleton
-@SuppressWarnings("UnstableApiUsage")
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class ServerChangeListener implements DynamicListener<ServerPostConnectEvent> {
-	private final PlayerContainerService playerContainer;
+	private final PlayerRegistry playerRegistry;
 	private final SynchronizationService syncService;
 
 	public void onEvent(ServerPostConnectEvent event) {
-		playerContainer.getPlayer(event.getPlayer().getUniqueId()).ifPresent(
+		playerRegistry.getPlayerData(event.getPlayer().getUniqueId()).ifPresent(
 				player -> syncService.applyTo(
 						player,
 						event.getPlayer().getCurrentServer()

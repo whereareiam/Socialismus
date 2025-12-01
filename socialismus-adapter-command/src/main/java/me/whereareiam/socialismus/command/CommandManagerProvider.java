@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.command;
 
 import com.google.inject.Provider;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.config.Settings;
-import me.whereareiam.socialismus.model.player.DummyPlayer;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.Version;
 import org.incendo.cloud.CommandManager;
@@ -13,7 +13,7 @@ import org.incendo.cloud.CommandManager;
 public abstract class CommandManagerProvider implements Provider<CommandManager<Actor>> {
 	protected final Provider<Settings> settings;
 
-	private CommandManager<DummyPlayer> commandManager;
+	private CommandManager<Actor> commandManager;
 
 	@Override
 	public CommandManager<Actor> get() {
@@ -34,9 +34,9 @@ public abstract class CommandManagerProvider implements Provider<CommandManager<
 		return commandManager;
 	}
 
-	protected abstract CommandManager<DummyPlayer> createLegacyCommandManager();
+	protected abstract CommandManager<Actor> createLegacyCommandManager();
 
-	protected abstract CommandManager<DummyPlayer> createPaperCommandManager();
+	protected abstract CommandManager<Actor> createPaperCommandManager();
 
-	protected abstract CommandManager<DummyPlayer> createVelocityCommandManager();
+	protected abstract CommandManager<Actor> createVelocityCommandManager();
 }

@@ -97,5 +97,15 @@ public class BukkitDependencyResolver extends CommonDependencyResolver {
 						.relocatedPattern("me.whereareiam.socialismus.library")
 						.build())
 				.build());
+
+		// Brigadier is needed for cloud-brigadier compilation (transitive dependency of cloud-paper)
+		// Note: This is compileOnly in build.gradle.kts, but included here for consistency
+		// It will be transitively included by cloud-paper at runtime if needed
+		addDependency(Library.builder()
+				.groupId("com{}mojang")
+				.artifactId("brigadier")
+				.version(Constants.Dependency.BRIGADIER)
+				.resolveTransitiveDependencies(true)
+				.build());
 	}
 }

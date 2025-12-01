@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.model.requirement;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.configura.annotation.Polymorphic;
-import me.whereareiam.socialismus.api.model.requirement.type.*;
 import me.whereareiam.socialismus.model.requirement.type.*;
 import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
 

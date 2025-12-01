@@ -5,8 +5,11 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.commandant.annotation.Definition;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Reloadable;
-import me.whereareiam.socialismus.api.Serializer;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.model.config.message.CommandMessages;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.annotations.Command;
@@ -29,9 +32,9 @@ public class ReloadCommand {
 	}
 
 	@Definition("reload")
-	@Command("intercept reload")
+	@Command("socialismus reload")
 	public void command(@NotNull Actor sender) {
-		Messages.Commands.Reload reload = messagesProvider.get().getCommands().getReload();
+		CommandMessages.ReloadCommand reload = messagesProvider.get().getCommands().getReloadCommand();
 
 		try {
 			// Reload all registered reloadable components
@@ -39,14 +42,14 @@ public class ReloadCommand {
 			for (Reloadable reloadable : reloadables)
 				reloadable.reload();
 
-			reload = messagesProvider.get().getCommands().getReload();
+			reload = messagesProvider.get().getCommands().getReloadCommand();
 
-			Component component = Serializer.serialize(sender, reload.getSuccess());
+			Component component = Serializer.serialize(sender, reload.getReloaded());
 			sender.sendMessage(component);
 		} catch (Exception e) {
 			Component component = Serializer.serialize(SerializerContent.builder()
 					.receiver(sender)
-					.message(reload.getError())
+					.message(reload.getException())
 					.placeholder("error", e.getMessage())
 					.build());
 			sender.sendMessage(component);

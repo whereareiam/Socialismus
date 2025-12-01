@@ -6,11 +6,11 @@ import com.google.inject.name.Named;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Logger;
 import me.whereareiam.socialismus.Reloadable;
-import me.whereareiam.socialismus.input.registry.Registry;
-import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.common.config.dynamic.ChatsConfig;
 import me.whereareiam.socialismus.common.config.provider.DefaultConfigProvider;
 import me.whereareiam.socialismus.common.config.template.chat.ChatTemplate;
+import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.registry.Registry;
 
 import java.io.IOException;
 import java.nio.file.Files;

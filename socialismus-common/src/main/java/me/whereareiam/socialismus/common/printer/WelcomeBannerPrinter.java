@@ -3,15 +3,15 @@ package me.whereareiam.socialismus.common.printer;
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.AnsiColor;
+import me.whereareiam.socialismus.CommandService;
 import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.common.container.ChatContainer;
+import me.whereareiam.socialismus.common.provider.IntegrationProvider;
 import me.whereareiam.socialismus.output.LoggingHelper;
-import me.whereareiam.socialismus.output.command.CommandService;
 import me.whereareiam.socialismus.output.resource.ResourceRegistry;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.ResourceType;
-import me.whereareiam.socialismus.common.container.ChatContainer;
-import me.whereareiam.socialismus.common.provider.IntegrationProvider;
 
 import java.util.ArrayList;
 import java.util.List;

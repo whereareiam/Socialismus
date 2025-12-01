@@ -47,6 +47,11 @@ public class Settings {
 	private Updater updater;
 
 	/**
+	 * Command configuration
+	 */
+	private Commands commands;
+
+	/**
 	 * Miscellaneous plugin settings
 	 */
 	private Miscellaneous misc;
@@ -116,6 +121,24 @@ public class Settings {
 	}
 
 	/**
+	 * Command configuration for the plugin.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Commands {
+		/**
+		 * Whether to use modern Brigadier-based command system (Paper 1.20.5+)
+		 */
+		private boolean useBrigadier;
+
+		/**
+		 * Whether to register asynchronous completions when available
+		 */
+		private boolean useAsyncCompletions;
+	}
+
+	/**
 	 * Miscellaneous plugin configuration options.
 	 * Controls various plugin behaviors and features.
 	 */
@@ -137,11 +160,6 @@ public class Settings {
 		 * Whether to allow legacy message parsing
 		 */
 		private boolean allowLegacyParsing;
-
-		/**
-		 * Whether to enable Brigadier command system
-		 */
-		private boolean allowBrigadierCommands;
 
 		/**
 		 * Whether to use vanilla message sending
