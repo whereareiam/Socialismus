@@ -119,6 +119,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(SerializationService.class).to(SerializationServiceAdapter.class);
 		bind(EventManager.class).to(EventController.class);
 		bind(EventUtil.class).asEagerSingleton();
+		bind(Socialismus.class).asEagerSingleton();
 		bind(ChatCoordinationService.class).to(ChatCoordinator.class);
 		bind(ChatContainerService.class).to(ChatContainer.class);
 		bind(PlayerContainerService.class).to(PlayerContainer.class);

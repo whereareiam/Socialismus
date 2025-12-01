@@ -13,8 +13,11 @@ import lombok.Getter;
 import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.type.PluginType;
 import me.whereareiam.socialismus.common.CommonInjector;
-import me.whereareiam.socialismus.common.CommonSocialismus;
 import me.whereareiam.socialismus.common.IntegrityChecker;
+import me.whereareiam.socialismus.api.input.event.plugin.PluginBootstrappedEvent;
+import me.whereareiam.socialismus.api.input.event.plugin.PluginReadyEvent;
+import me.whereareiam.socialismus.api.input.event.plugin.PluginShutdownEvent;
+import me.whereareiam.socialismus.api.util.EventUtil;
 import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
 import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
 import me.whereareiam.socialismus.integration.papiproxybridge.PAPIProxyBridgeIntegration;
@@ -34,8 +37,6 @@ import java.nio.file.Path;
 		}
 )
 public class VelocitySocialismus {
-	private final CommonSocialismus commonSocialismus = new CommonSocialismus();
-
 	private final ProxyServer proxyServer;
 	private final PluginContainer pluginContainer;
 	@Getter
@@ -67,7 +68,8 @@ public class VelocitySocialismus {
 				dataPath
 		);
 
-		commonSocialismus.onLoad();
+		// Core bootstrap (mirrors Intercept's bootstrapped event)
+		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
 
 		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
 			throw new RuntimeException("Integrity check failed, plugin will be disabled");
@@ -76,11 +78,13 @@ public class VelocitySocialismus {
 		CommonInjector.getInjector().getInstance(PacketEventsIntegration.class);
 		CommonInjector.getInjector().getInstance(bStatsIntegration.class);
 
-		commonSocialismus.onEnable();
+		// Signal that the plugin is ready for normal operation
+		EventUtil.callEvent(new PluginReadyEvent(), () -> {});
 	}
 
 	@Subscribe
 	public void onProxyShutdownEvent(ProxyShutdownEvent event) {
-		commonSocialismus.onDisable();
+		// Signal shutdown so common core can clean up
+		EventUtil.callEvent(new PluginShutdownEvent(), () -> {});
 	}
 }

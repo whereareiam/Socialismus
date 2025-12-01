@@ -1,9 +1,17 @@
 package me.whereareiam.socialismus.common;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.Serializer;
+import me.whereareiam.socialismus.api.input.event.EventListener;
+import me.whereareiam.socialismus.api.input.event.EventManager;
+import me.whereareiam.socialismus.api.input.event.base.SocialisticEvent;
+import me.whereareiam.socialismus.api.input.event.plugin.PluginBootstrappedEvent;
+import me.whereareiam.socialismus.api.input.event.plugin.PluginReadyEvent;
+import me.whereareiam.socialismus.api.input.event.plugin.PluginShutdownEvent;
 import me.whereareiam.socialismus.api.input.event.plugin.PluginInitializedEvent;
 import me.whereareiam.socialismus.api.input.serializer.ComponentService;
 import me.whereareiam.socialismus.api.model.chat.ChatMessages;
@@ -22,19 +30,37 @@ import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.printer.WelcomeBannerPrinter;
 import me.whereareiam.socialismus.common.updater.UpdateScheduler;
 
-public class CommonSocialismus {
-	private Injector injector;
+/**
+ * Core lifecycle coordinator for the Socialismus plugin.
+ * <p>
+ * This class mirrors the Intercept startup structure by reacting to
+ * high-level lifecycle events instead of being called directly from
+ * platform entrypoints.
+ */
+@Singleton
+public final class Socialismus implements EventListener {
+	private final Injector injector;
 
-	public void onLoad() {
-		injector = CommonInjector.getInjector();
+	@Inject
+	public Socialismus(
+			Injector injector,
+			EventManager eventManager
+	) {
+		this.injector = injector;
 
-		// Static helpers
+		// Register this listener once the event system is available
+		eventManager.register(this);
+	}
+
+	@SocialisticEvent
+	public void onPluginBootstrapped(PluginBootstrappedEvent event) {
 		Constants.SERVER_VERSION = injector.getInstance(PlatformInteractor.class).getServerVersion();
 		Logger.init(injector.getInstance(LoggingHelper.class));
 		Serializer.init(injector.getInstance(ComponentService.class));
 	}
 
-	public void onEnable() {
+	@SocialisticEvent
+	public void onPluginReady(PluginReadyEvent event) {
 		// Initialize all component before first event is triggered, leads to faster response time
 		injector.getInstance(ChatContainer.class);
 		injector.getInstance(RecipientResolver.class);
@@ -56,7 +82,10 @@ public class CommonSocialismus {
 		EventUtil.callEvent(new PluginInitializedEvent(), () -> {});
 	}
 
-	public void onDisable() {
-
+	@SocialisticEvent
+	public void onPluginShutdown(PluginShutdownEvent event) {
+		// Currently no explicit shutdown logic
 	}
 }
+
+

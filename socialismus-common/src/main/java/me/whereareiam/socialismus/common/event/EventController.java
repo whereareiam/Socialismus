@@ -4,10 +4,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.input.event.EventListener;
 import me.whereareiam.socialismus.api.input.event.EventManager;
-import me.whereareiam.socialismus.api.input.event.base.CancellableEvent;
-import me.whereareiam.socialismus.api.input.event.base.Event;
-import me.whereareiam.socialismus.api.input.event.base.EventOrder;
-import me.whereareiam.socialismus.api.input.event.base.SocialisticEvent;
+import me.whereareiam.socialismus.api.input.event.base.*;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -46,16 +43,14 @@ public class EventController implements EventManager {
 	}
 
 	private void collectEventTypes(Class<?> clazz, Set<Class<?>> types) {
-		if (clazz == null || !Event.class.isAssignableFrom(clazz)) {
+		if (clazz == null || !Event.class.isAssignableFrom(clazz))
 			return;
-		}
 
 		types.add(clazz);
 		collectEventTypes(clazz.getSuperclass(), types);
 
-		for (Class<?> iface : clazz.getInterfaces()) {
+		for (Class<?> iface : clazz.getInterfaces())
 			collectEventTypes(iface, types);
-		}
 	}
 
 	@Override
@@ -70,20 +65,79 @@ public class EventController implements EventManager {
 
 		if (eventListeners.isEmpty()) return;
 
-		for (RegisteredListener listener : eventListeners) {
-			executor.submit(() -> {
-				try {
-					listener.getMethod().invoke(listener.getListener(), event);
-				} catch (Exception e) {
-					Logger.severe("Failed to call event " + event.getClass().getSimpleName() + " for listener " + listener.getListener().getClass().getSimpleName());
-					e.printStackTrace();
-				}
-			});
+		boolean synchronous = event instanceof SynchronousEvent;
 
-			if (event instanceof CancellableEvent && ((CancellableEvent) event).isCancelled()) {
-				Logger.debug("Event " + event.getClass().getSimpleName() + " was cancelled");
+		for (RegisteredListener listener : eventListeners) {
+			if (synchronous) {
+				executeSynchronously(listener, event);
+			} else {
+				executeAsynchronously(listener, event);
+			}
+
+			if (isCancelled(event)) {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Executes an event listener synchronously on the current thread.
+	 *
+	 * @param listener The listener to execute
+	 * @param event    The event to pass to the listener
+	 */
+	private void executeSynchronously(RegisteredListener listener, Event event) {
+		try {
+			listener.getMethod().invoke(listener.getListener(), event);
+		} catch (Exception e) {
+			logExecutionError(event, listener, e);
+		}
+	}
+
+	/**
+	 * Executes an event listener asynchronously on a separate thread.
+	 *
+	 * @param listener The listener to execute
+	 * @param event    The event to pass to the listener
+	 */
+	private void executeAsynchronously(RegisteredListener listener, Event event) {
+		executor.submit(() -> {
+			try {
+				listener.getMethod().invoke(listener.getListener(), event);
+			} catch (Exception e) {
+				logExecutionError(event, listener, e);
+			}
+		});
+	}
+
+	/**
+	 * Checks if the event is cancelled.
+	 *
+	 * @param event The event to check
+	 * @return true if the event is cancelled, false otherwise
+	 */
+	private boolean isCancelled(Event event) {
+		if (!(event instanceof CancellableEvent cancellableEvent))
+			return false;
+
+		if (cancellableEvent.isCancelled()) {
+			Logger.debug("Event " + event.getClass().getSimpleName() + " was cancelled");
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Logs an error that occurred during event execution.
+	 *
+	 * @param event    The event that was being processed
+	 * @param listener The listener that failed
+	 * @param e        The exception that occurred
+	 */
+	private void logExecutionError(Event event, RegisteredListener listener, Exception e) {
+		Logger.severe("Failed to call event " + event.getClass().getSimpleName() +
+				" for listener " + listener.getListener().getClass().getSimpleName());
+		e.printStackTrace();
 	}
 }
