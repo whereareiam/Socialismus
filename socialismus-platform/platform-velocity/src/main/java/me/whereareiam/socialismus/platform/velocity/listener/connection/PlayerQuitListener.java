@@ -3,8 +3,8 @@ package me.whereareiam.socialismus.platform.velocity.listener.connection;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.output.listener.DynamicListener;
+import me.whereareiam.socialismus.input.container.PlayerContainerService;
+import me.whereareiam.socialismus.output.listener.DynamicListener;
 
 @Singleton
 public class PlayerQuitListener implements DynamicListener<DisconnectEvent> {

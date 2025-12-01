@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.platform.bukkit;
 import com.alessiodp.libby.BukkitLibraryManager;
 import com.alessiodp.libby.Library;
 import com.alessiodp.libby.relocation.Relocation;
-import me.whereareiam.socialismus.api.Constants;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.CommonDependencyResolver;
 import org.bukkit.plugin.Plugin;
 

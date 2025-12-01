@@ -4,11 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.commandant.annotation.Definition;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
+import me.whereareiam.keystone.Actor;
 import org.incendo.cloud.annotations.Command;
-import org.incendo.cloud.annotations.Command;
-import org.incendo.cloud.annotations.CommandDescription;
-import org.incendo.cloud.annotations.Permission;
 import org.jetbrains.annotations.NotNull;
 
 @Singleton

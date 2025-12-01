@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.integration.bstats.chart;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.type.PlatformType;
+import me.whereareiam.socialismus.type.PlatformType;
 import org.bstats.charts.CustomChart;
 import org.bstats.charts.SimplePie;
 

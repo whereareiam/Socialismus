@@ -1,41 +1,40 @@
 package me.whereareiam.socialismus.common;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
+import com.google.inject.*;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
-import me.whereareiam.socialismus.api.Reloadable;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.input.chat.ChatCoordinationService;
-import me.whereareiam.socialismus.api.input.chat.ChatHistoryService;
-import me.whereareiam.socialismus.api.input.container.ChatContainerService;
-import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.input.event.EventManager;
-import me.whereareiam.socialismus.api.input.registry.ExtendedRegistry;
-import me.whereareiam.socialismus.api.input.registry.Registry;
-import me.whereareiam.socialismus.api.input.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.api.input.requirement.RequirementValidation;
-import me.whereareiam.socialismus.api.input.serializer.ComponentService;
-import me.whereareiam.socialismus.api.input.sync.ChatSyncBus;
-import me.whereareiam.socialismus.api.input.updater.UpdateProvider;
-import me.whereareiam.socialismus.api.model.CommandEntity;
-import me.whereareiam.socialismus.api.model.chat.Chat;
-import me.whereareiam.socialismus.api.model.chat.ChatMessages;
-import me.whereareiam.socialismus.api.model.chat.ChatSettings;
-import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.api.model.config.Settings;
-import me.whereareiam.socialismus.api.model.config.message.Messages;
-import me.whereareiam.socialismus.api.model.serializer.SerializerContent;
-import me.whereareiam.socialismus.api.output.SerializationService;
-import me.whereareiam.socialismus.api.output.config.ConfigurationTypeResolver;
-import me.whereareiam.socialismus.api.output.integration.Integration;
-import me.whereareiam.socialismus.api.type.module.ProviderType;
-import me.whereareiam.socialismus.api.type.requirement.RequirementType;
-import me.whereareiam.socialismus.api.util.EventUtil;
+import me.whereareiam.keystone.serializer.SerializerEngine;
+import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.input.WorkerProcessor;
+import me.whereareiam.socialismus.input.chat.ChatCoordinationService;
+import me.whereareiam.socialismus.input.chat.ChatHistoryService;
+import me.whereareiam.socialismus.input.container.ChatContainerService;
+import me.whereareiam.socialismus.input.container.ChatHistoryContainerService;
+import me.whereareiam.socialismus.input.container.PlayerContainerService;
+import me.whereareiam.socialismus.input.event.EventManager;
+import me.whereareiam.socialismus.input.registry.ExtendedRegistry;
+import me.whereareiam.socialismus.input.registry.Registry;
+import me.whereareiam.socialismus.input.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.input.requirement.RequirementValidation;
+import me.whereareiam.socialismus.input.serializer.ComponentService;
+import me.whereareiam.socialismus.input.sync.ChatSyncBus;
+import me.whereareiam.socialismus.input.updater.UpdateProvider;
+import me.whereareiam.socialismus.model.CommandEntity;
+import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.model.chat.ChatMessages;
+import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.model.serializer.SerializerContent;
+import me.whereareiam.socialismus.output.SerializationService;
+import me.whereareiam.socialismus.output.config.ConfigurationTypeResolver;
+import me.whereareiam.socialismus.output.integration.Integration;
+import me.whereareiam.socialismus.type.module.ProviderType;
+import me.whereareiam.socialismus.type.requirement.RequirementType;
+import me.whereareiam.socialismus.util.EventUtil;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatHistoryController;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
@@ -164,6 +163,11 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ComponentService.class).to(ComponentSerializer.class);
 		bind(new TypeLiteral<WorkerProcessor<SerializerContent>>() {
 		}).to(ComponentSerializer.class);
+	}
+
+	@Inject
+	void initializeSerializationHelper(Provider<SerializerEngine> serializerProvider) {
+		Serializer.initialize(serializerProvider);
 	}
 
 	@Provides

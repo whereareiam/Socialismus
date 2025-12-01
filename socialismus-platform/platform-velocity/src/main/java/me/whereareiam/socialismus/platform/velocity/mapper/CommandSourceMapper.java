@@ -5,9 +5,9 @@ import com.google.inject.Singleton;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.model.player.DummyCommandPlayer;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
+import me.whereareiam.socialismus.input.container.PlayerContainerService;
+import me.whereareiam.socialismus.model.player.DummyCommandPlayer;
+import me.whereareiam.socialismus.model.player.DummyPlayer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.cloud.SenderMapper;
 

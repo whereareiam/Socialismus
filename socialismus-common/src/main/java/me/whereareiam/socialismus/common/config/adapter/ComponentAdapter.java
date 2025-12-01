@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.common.config.adapter;
 
 import me.whereareiam.configura.TypeAdapter;
-import me.whereareiam.socialismus.api.util.ComponentUtil;
+import me.whereareiam.socialismus.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
 
 public class ComponentAdapter implements TypeAdapter<Component> {

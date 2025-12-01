@@ -1,9 +1,9 @@
 package me.whereareiam.socialismus.common.config.provider;
 
 import com.google.inject.Provider;
-import me.whereareiam.socialismus.api.Reloadable;
-import me.whereareiam.socialismus.api.input.registry.Registry;
-import me.whereareiam.socialismus.api.output.config.ConfigProvider;
+import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.input.registry.Registry;
+import me.whereareiam.socialismus.output.config.ConfigProvider;
 
 import java.nio.file.Path;
 

@@ -2,16 +2,16 @@ package me.whereareiam.socialismus.common.config.template.chat;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.TemplateProvider;
-import me.whereareiam.socialismus.api.model.chat.Chat;
-import me.whereareiam.socialismus.api.model.chat.ChatFormat;
-import me.whereareiam.socialismus.api.model.chat.trigger.SymbolChatTrigger;
-import me.whereareiam.socialismus.api.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.api.model.requirement.type.PermissionRequirement;
-import me.whereareiam.socialismus.api.type.chat.Participants;
-import me.whereareiam.socialismus.api.type.chat.TriggerType;
-import me.whereareiam.socialismus.api.type.requirement.RequirementConditionType;
-import me.whereareiam.socialismus.api.type.requirement.RequirementOperatorType;
-import me.whereareiam.socialismus.api.type.requirement.RequirementType;
+import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.model.chat.ChatFormat;
+import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
+import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.socialismus.model.requirement.type.PermissionRequirement;
+import me.whereareiam.socialismus.type.chat.Participants;
+import me.whereareiam.socialismus.type.chat.TriggerType;
+import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
+import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
+import me.whereareiam.socialismus.type.requirement.RequirementType;
 import me.whereareiam.socialismus.common.config.dynamic.ChatsConfig;
 
 import java.util.HashMap;

@@ -3,8 +3,8 @@ package me.whereareiam.socialismus.common.chat.broadcast;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})

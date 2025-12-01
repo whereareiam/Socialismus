@@ -2,13 +2,13 @@ package me.whereareiam.socialismus.common.config.template;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.TemplateProvider;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.model.Event;
-import me.whereareiam.socialismus.api.model.config.Settings;
-import me.whereareiam.socialismus.api.type.EventPriority;
-import me.whereareiam.socialismus.api.type.PlatformType;
-import me.whereareiam.socialismus.api.type.SerializationType;
-import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.model.Event;
+import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.type.EventPriority;
+import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.SerializationType;
+import me.whereareiam.socialismus.type.Version;
 
 import java.util.HashMap;
 import java.util.Map;

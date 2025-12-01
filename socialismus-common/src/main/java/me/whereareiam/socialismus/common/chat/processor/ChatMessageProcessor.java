@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.common.chat.processor;
 
 import com.google.inject.Singleton;
 import lombok.Getter;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.input.WorkerProcessor;
+import me.whereareiam.socialismus.model.Worker;
+import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 
 import java.util.Comparator;
 import java.util.LinkedList;

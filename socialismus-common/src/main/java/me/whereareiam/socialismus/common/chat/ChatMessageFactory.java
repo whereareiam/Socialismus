@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.common.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
+import me.whereareiam.socialismus.input.container.PlayerContainerService;
+import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.model.player.DummyPlayer;
 import net.kyori.adventure.text.Component;
 
 import java.util.Objects;

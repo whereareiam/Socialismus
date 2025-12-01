@@ -4,16 +4,15 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.Provider;
 import me.whereareiam.commandant.annotation.Definition;
-import me.whereareiam.socialismus.api.Constants;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.model.config.message.Messages;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.module.ModuleService;
-import me.whereareiam.socialismus.api.type.PlatformType;
-import me.whereareiam.socialismus.api.type.PluginType;
+import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.output.module.ModuleService;
+import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.PluginType;
 import org.incendo.cloud.annotations.Command;
-import org.incendo.cloud.annotations.CommandDescription;
-import org.incendo.cloud.annotations.Permission;
 
 import java.util.stream.Collectors;
 

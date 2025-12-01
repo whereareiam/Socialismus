@@ -1,9 +1,9 @@
 package me.whereareiam.socialismus.adapter.module.resolver;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.model.module.InternalModule;
-import me.whereareiam.socialismus.api.type.PlatformType;
+import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.model.module.InternalModule;
+import me.whereareiam.socialismus.type.PlatformType;
 
 @Singleton
 public class ModulePlatformResolver implements ModuleResolver {

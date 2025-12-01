@@ -5,9 +5,9 @@ import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.output.resource.DatabaseService;
-import me.whereareiam.socialismus.api.output.resource.ResourceRegistry;
-import me.whereareiam.socialismus.api.type.ResourceType;
+import me.whereareiam.socialismus.output.resource.DatabaseService;
+import me.whereareiam.socialismus.output.resource.ResourceRegistry;
+import me.whereareiam.socialismus.type.ResourceType;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})

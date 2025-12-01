@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.adapter.module.provider.cache;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.output.resource.CacheService;
+import me.whereareiam.socialismus.output.resource.CacheService;
 
 import java.time.Duration;
 import java.util.Optional;

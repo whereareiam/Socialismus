@@ -27,5 +27,6 @@ subprojects {
         "compileOnly"(rootProject.libs.guice)
         "compileOnly"(rootProject.libs.configura)
         "compileOnly"(rootProject.libs.commandant)
+        "compileOnly"(rootProject.libs.keystone)
     }
 }

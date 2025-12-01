@@ -2,10 +2,10 @@ package me.whereareiam.socialismus.platform;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.model.position.Position;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.model.position.Position;
+import me.whereareiam.socialismus.output.PlatformInteractor;
+import me.whereareiam.socialismus.type.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

@@ -2,13 +2,13 @@ package me.whereareiam.socialismus.common.chat.worker.base;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.input.event.chat.recipient.RecipientsResolvedEvent;
-import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.api.util.EventUtil;
+import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.input.WorkerProcessor;
+import me.whereareiam.socialismus.input.container.PlayerContainerService;
+import me.whereareiam.socialismus.input.event.chat.recipient.RecipientsResolvedEvent;
+import me.whereareiam.socialismus.model.Worker;
+import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.util.EventUtil;
 
 @Singleton
 public class RecipientResolver {

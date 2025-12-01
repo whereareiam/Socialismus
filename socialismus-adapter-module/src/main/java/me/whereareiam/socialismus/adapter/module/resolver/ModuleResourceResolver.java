@@ -2,10 +2,10 @@ package me.whereareiam.socialismus.adapter.module.resolver;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.model.module.InternalModule;
-import me.whereareiam.socialismus.api.output.resource.ResourceRegistry;
-import me.whereareiam.socialismus.api.output.resource.ResourceRequirement;
+import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.model.module.InternalModule;
+import me.whereareiam.socialismus.output.resource.ResourceRegistry;
+import me.whereareiam.socialismus.output.resource.ResourceRequirement;
 
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ModuleResourceResolver implements ModuleResolver {

@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.integration.bstats.chart;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.input.container.ChatContainerService;
+import me.whereareiam.socialismus.input.container.ChatContainerService;
 import org.bstats.charts.CustomChart;
 import org.bstats.charts.SimplePie;
 

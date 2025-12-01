@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.common.config.template.chat;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.TemplateProvider;
-import me.whereareiam.socialismus.api.model.chat.ChatMessages;
+import me.whereareiam.socialismus.model.chat.ChatMessages;
 
 @Singleton
 public class ChatMessagesTemplate implements TemplateProvider<ChatMessages> {

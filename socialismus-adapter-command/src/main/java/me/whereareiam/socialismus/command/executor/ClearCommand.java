@@ -5,20 +5,18 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.commandant.annotation.Definition;
-import me.whereareiam.socialismus.api.Logger;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.input.chat.ChatHistoryService;
-import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.api.model.chat.ChatSettings;
-import me.whereareiam.socialismus.api.model.config.message.Messages;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
+import me.whereareiam.socialismus.input.chat.ChatHistoryService;
+import me.whereareiam.socialismus.input.container.ChatHistoryContainerService;
+import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.output.PlatformInteractor;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
-import org.incendo.cloud.annotations.Argument;
-import org.incendo.cloud.annotations.Command;
-import org.incendo.cloud.annotations.CommandDescription;
-import org.incendo.cloud.annotations.Permission;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = @Inject)
@@ -32,16 +30,16 @@ public class ClearCommand {
 
 	@Definition("clear")
 	@Command("socialismus clear [context]")
-	public void command(DummyPlayer dummyPlayer, @Argument("context") String context) {
+	public void command(Actor actor, @Argument("context") String context) {
 		if (context == null) {
-			handleNumericContext(dummyPlayer, chatSettings.get().getHistory().getHistorySize());
+			handleNumericContext(actor, chatSettings.get().getHistory().getHistorySize());
 			return;
 		}
 
 		try {
-			handleCommand(dummyPlayer, context);
+			handleCommand(actor, context);
 		} catch (NumberFormatException e) {
-			handleNonNumericContext(dummyPlayer, context);
+			handleNonNumericContext(actor, context);
 		}
 	}
 

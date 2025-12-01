@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.platform.util;
 import org.bukkit.event.EventPriority;
 
 public class BukkitUtil {
-	public static EventPriority of(me.whereareiam.socialismus.api.type.EventPriority priority) {
+	public static EventPriority of(me.whereareiam.socialismus.type.EventPriority priority) {
 		return switch (priority) {
 			case LOWEST -> EventPriority.LOWEST;
 			case LOW -> EventPriority.LOW;

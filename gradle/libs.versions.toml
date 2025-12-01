@@ -10,6 +10,8 @@ lombok = "1.18.42"
 guice = "7.0.0"
 libby = "2.0.1"
 configura = "dev-a76adc6"
+attache = "dev-5fad19f"
+keystone = "dev-697f401"
 commandant = "dev-5f99bce"
 
 # resouces
@@ -49,7 +51,12 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 configura = { group = "me.whereareiam", name = "configura", version.ref = "configura" }
+keystone = { group = "me.whereareiam", name = "keystone", version.ref = "keystone" }
 commandant = { group = "me.whereareiam", name = "commandant", version.ref = "commandant" }
+
+# attache
+attache-paper = { group = "me.whereareiam", name = "attache-paper", version.ref = "attache" }
+attache-common = { group = "me.whereareiam", name = "attache-common", version.ref = "attache" }
 
 # resources
 ormlite = { group = "com.j256.ormlite", name = "ormlite-core", version.ref = "ormlite" }

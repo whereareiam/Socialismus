@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.configura.Config;
-import me.whereareiam.socialismus.api.Reloadable;
-import me.whereareiam.socialismus.api.input.registry.Registry;
-import me.whereareiam.socialismus.api.model.CommandEntity;
-import me.whereareiam.socialismus.api.model.config.Commands;
+import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.input.registry.Registry;
+import me.whereareiam.socialismus.model.CommandEntity;
+import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.common.config.template.CommandsTemplate;
 
 import java.nio.file.Path;

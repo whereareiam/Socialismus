@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.platform;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.output.PlatformClassLoader;
+import me.whereareiam.socialismus.output.PlatformClassLoader;
 import org.bukkit.plugin.Plugin;
 
 @Singleton

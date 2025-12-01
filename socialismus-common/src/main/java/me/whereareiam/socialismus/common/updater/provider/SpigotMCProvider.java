@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.common.updater.provider;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.input.updater.UpdateProvider;
-import me.whereareiam.socialismus.api.model.module.UpdateSpecification;
+import me.whereareiam.socialismus.input.updater.UpdateProvider;
+import me.whereareiam.socialismus.model.module.UpdateSpecification;
 
 import java.io.BufferedReader;
 import java.io.IOException;

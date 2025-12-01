@@ -1,17 +1,17 @@
 package me.whereareiam.socialismus.platform.paper;
 
-import me.whereareiam.socialismus.api.type.PluginType;
+import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.common.IntegrityChecker;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginBootstrappedEvent;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginReadyEvent;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginShutdownEvent;
+import me.whereareiam.socialismus.input.event.plugin.PluginBootstrappedEvent;
+import me.whereareiam.socialismus.input.event.plugin.PluginReadyEvent;
+import me.whereareiam.socialismus.input.event.plugin.PluginShutdownEvent;
 import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
 import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
 import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPIIntegration;
 import me.whereareiam.socialismus.platform.BukkitLoggingHelper;
 import me.whereareiam.socialismus.platform.paper.inject.PaperInjector;
-import me.whereareiam.socialismus.api.util.EventUtil;
+import me.whereareiam.socialismus.util.EventUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;

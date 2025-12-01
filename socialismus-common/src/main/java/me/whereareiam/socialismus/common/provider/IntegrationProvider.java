@@ -2,8 +2,8 @@ package me.whereareiam.socialismus.common.provider;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.input.registry.Registry;
-import me.whereareiam.socialismus.api.output.integration.Integration;
+import me.whereareiam.socialismus.input.registry.Registry;
+import me.whereareiam.socialismus.output.integration.Integration;
 
 import java.util.HashSet;
 import java.util.Set;

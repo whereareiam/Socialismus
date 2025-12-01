@@ -2,14 +2,14 @@ package me.whereareiam.socialismus.common.printer;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.AnsiColor;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.output.LoggingHelper;
-import me.whereareiam.socialismus.api.output.command.CommandService;
-import me.whereareiam.socialismus.api.output.resource.ResourceRegistry;
-import me.whereareiam.socialismus.api.type.PlatformType;
-import me.whereareiam.socialismus.api.type.PluginType;
-import me.whereareiam.socialismus.api.type.ResourceType;
+import me.whereareiam.socialismus.AnsiColor;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.output.LoggingHelper;
+import me.whereareiam.socialismus.output.command.CommandService;
+import me.whereareiam.socialismus.output.resource.ResourceRegistry;
+import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.PluginType;
+import me.whereareiam.socialismus.type.ResourceType;
 import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.provider.IntegrationProvider;
 

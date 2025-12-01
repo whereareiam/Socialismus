@@ -2,8 +2,8 @@ package me.whereareiam.socialismus.common.config.template;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.TemplateProvider;
-import me.whereareiam.socialismus.api.model.CommandEntity;
-import me.whereareiam.socialismus.api.model.config.Commands;
+import me.whereareiam.socialismus.model.CommandEntity;
+import me.whereareiam.socialismus.model.config.Commands;
 
 import java.util.List;
 

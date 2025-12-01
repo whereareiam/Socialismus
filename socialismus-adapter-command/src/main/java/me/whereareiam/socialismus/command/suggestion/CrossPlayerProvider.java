@@ -4,9 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.resource.CacheService;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.output.PlatformInteractor;
+import me.whereareiam.socialismus.output.resource.CacheService;
 import org.incendo.cloud.annotations.suggestion.Suggestions;
 
 import java.util.Collection;

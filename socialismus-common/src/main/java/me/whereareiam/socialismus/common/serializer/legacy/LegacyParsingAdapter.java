@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.common.serializer.legacy;
 
 import lombok.experimental.UtilityClass;
-import me.whereareiam.socialismus.api.type.SerializationType;
-import me.whereareiam.socialismus.api.util.ComponentUtil;
+import me.whereareiam.socialismus.type.SerializationType;
+import me.whereareiam.socialismus.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
 
 /**

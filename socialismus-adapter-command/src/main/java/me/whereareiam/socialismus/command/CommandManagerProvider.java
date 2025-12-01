@@ -2,13 +2,12 @@ package me.whereareiam.socialismus.command;
 
 import com.google.inject.Provider;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.model.config.Settings;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.type.PlatformType;
-import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.Version;
 import org.incendo.cloud.CommandManager;
-import org.incendo.cloud.exception.*;
 
 @RequiredArgsConstructor
 public abstract class CommandManagerProvider implements Provider<CommandManager<Actor>> {

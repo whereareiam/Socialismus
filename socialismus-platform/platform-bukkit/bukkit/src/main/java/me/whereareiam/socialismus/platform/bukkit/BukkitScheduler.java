@@ -2,10 +2,10 @@ package me.whereareiam.socialismus.platform.bukkit;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.model.scheduler.DelayedRunnableTask;
-import me.whereareiam.socialismus.api.model.scheduler.PeriodicalRunnableTask;
-import me.whereareiam.socialismus.api.model.scheduler.RunnableTask;
-import me.whereareiam.socialismus.api.output.Scheduler;
+import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
+import me.whereareiam.socialismus.model.scheduler.PeriodicalRunnableTask;
+import me.whereareiam.socialismus.model.scheduler.RunnableTask;
+import me.whereareiam.socialismus.output.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;

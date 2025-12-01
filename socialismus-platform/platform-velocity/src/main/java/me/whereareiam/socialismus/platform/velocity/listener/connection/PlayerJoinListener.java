@@ -5,10 +5,10 @@ import com.google.inject.Singleton;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import com.velocitypowered.api.proxy.Player;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.listener.DynamicListener;
+import me.whereareiam.socialismus.input.container.PlayerContainerService;
+import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.output.PlatformInteractor;
+import me.whereareiam.socialismus.output.listener.DynamicListener;
 import me.whereareiam.socialismus.common.SynchronizationService;
 
 @Singleton

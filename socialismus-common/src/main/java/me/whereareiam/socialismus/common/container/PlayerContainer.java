@@ -1,12 +1,12 @@
 package me.whereareiam.socialismus.common.container;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.input.event.player.DummyPlayerAddedEvent;
-import me.whereareiam.socialismus.api.input.event.player.DummyPlayerRemovedEvent;
-import me.whereareiam.socialismus.api.input.event.player.DummyPlayerUpdatedEvent;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.util.EventUtil;
+import me.whereareiam.socialismus.input.container.PlayerContainerService;
+import me.whereareiam.socialismus.input.event.player.DummyPlayerAddedEvent;
+import me.whereareiam.socialismus.input.event.player.DummyPlayerRemovedEvent;
+import me.whereareiam.socialismus.input.event.player.DummyPlayerUpdatedEvent;
+import me.whereareiam.socialismus.model.player.DummyPlayer;
+import me.whereareiam.socialismus.util.EventUtil;
 
 import java.util.HashSet;
 import java.util.Optional;

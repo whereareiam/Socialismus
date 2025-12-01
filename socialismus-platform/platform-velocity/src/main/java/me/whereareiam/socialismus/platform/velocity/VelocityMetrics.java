@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.platform.velocity;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Constants;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.integration.bstats.Metrics;
 import me.whereareiam.socialismus.integration.bstats.chart.*;
 

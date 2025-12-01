@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.platform.velocity;
 import com.alessiodp.libby.Library;
 import com.alessiodp.libby.VelocityLibraryManager;
 import com.velocitypowered.api.plugin.PluginManager;
-import me.whereareiam.socialismus.api.Constants;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.CommonDependencyResolver;
 import org.slf4j.Logger;
 

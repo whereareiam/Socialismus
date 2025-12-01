@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.input.updater.UpdateProvider;
-import me.whereareiam.socialismus.api.model.module.UpdateSpecification;
+import me.whereareiam.socialismus.input.updater.UpdateProvider;
+import me.whereareiam.socialismus.model.module.UpdateSpecification;
 
 import java.io.IOException;
 import java.io.InputStream;

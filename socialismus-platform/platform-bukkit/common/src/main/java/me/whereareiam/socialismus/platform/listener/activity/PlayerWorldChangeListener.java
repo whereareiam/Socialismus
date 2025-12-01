@@ -2,8 +2,8 @@ package me.whereareiam.socialismus.platform.listener.activity;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.output.listener.DynamicListener;
+import me.whereareiam.socialismus.input.container.PlayerContainerService;
+import me.whereareiam.socialismus.output.listener.DynamicListener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 
 @Singleton
