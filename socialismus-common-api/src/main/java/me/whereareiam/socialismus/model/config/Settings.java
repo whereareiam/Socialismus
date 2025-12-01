@@ -147,11 +147,6 @@ public class Settings {
 		 * Whether to use vanilla message sending
 		 */
 		private boolean vanillaSending;
-
-		/**
-		 * Number of commands to display per page
-		 */
-		private int commandsPerPage;
 	}
 
 	/**

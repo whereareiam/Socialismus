@@ -3,6 +3,9 @@ package me.whereareiam.socialismus.model.config.message;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.whereareiam.commandant.model.message.ExceptionMessages;
+import me.whereareiam.commandant.model.message.HelpMessages;
+import me.whereareiam.commandant.model.message.PaginationMessages;
 
 import java.util.List;
 import java.util.Map;
@@ -27,34 +30,9 @@ public class CommandMessages {
 	private String cancelled;
 
 	/**
-	 * Message shown when a player lacks permission.
+	 * Exception messages from Commandant.
 	 */
-	private String noPermission;
-
-	/**
-	 * Message shown when a command execution encounters an error.
-	 */
-	private String executionError;
-
-	/**
-	 * Message shown for invalid command syntax.
-	 */
-	private String invalidSyntax;
-
-	/**
-	 * Message shown when a boolean argument is invalid.
-	 */
-	private String invalidSyntaxBoolean;
-
-	/**
-	 * Message shown when a numeric argument is invalid.
-	 */
-	private String invalidSyntaxNumber;
-
-	/**
-	 * Message shown when a string argument is invalid.
-	 */
-	private String invalidSyntaxString;
+	private ExceptionMessages exceptions;
 
 	/**
 	 * Map of custom argument-related messages.
@@ -67,14 +45,14 @@ public class CommandMessages {
 	private Format format;
 
 	/**
-	 * Pagination settings for multi-page command outputs.
+	 * Pagination configuration from Commandant.
 	 */
-	private Pagination pagination;
+	private PaginationMessages pagination;
 
 	/**
-	 * Help command messages and format.
+	 * Help command formatting configuration from Commandant.
 	 */
-	private HelpCommand helpCommand;
+	private HelpMessages help;
 
 	/**
 	 * Debug command messages and format.
@@ -112,67 +90,6 @@ public class CommandMessages {
 		 * Format for optional arguments.
 		 */
 		private String optionalArgument;
-	}
-
-	/**
-	 * Configuration for command output pagination.
-	 */
-	@Getter
-	@Setter
-	@ToString
-	public static class Pagination {
-		/**
-		 * Whether to show pagination for single pages.
-		 */
-		private boolean showPaginationIfOnePage;
-
-		/**
-		 * Pagination display format.
-		 */
-		private String format;
-
-		/**
-		 * Whether to show previous page button on first page.
-		 */
-		private boolean showPreviousEvenIfFirst;
-
-		/**
-		 * Format for previous page button.
-		 */
-		private String previousTagFormat;
-
-		/**
-		 * Whether to show next page button on last page.
-		 */
-		private boolean showNextEvenIfLast;
-
-		/**
-		 * Format for next page button.
-		 */
-		private String nextTagFormat;
-	}
-
-	/**
-	 * Configuration for help command messages.
-	 */
-	@Getter
-	@Setter
-	@ToString
-	public static class HelpCommand {
-		/**
-		 * Help command output format.
-		 */
-		private List<String> format;
-
-		/**
-		 * Format for individual command entries.
-		 */
-		private String commandFormat;
-
-		/**
-		 * Message shown when no commands are available.
-		 */
-		private String noCommands;
 	}
 
 	/**
