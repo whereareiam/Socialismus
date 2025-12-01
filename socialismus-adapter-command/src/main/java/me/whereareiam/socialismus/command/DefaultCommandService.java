@@ -8,16 +8,21 @@ import me.whereareiam.commandant.Commandant;
 import me.whereareiam.commandant.model.CommandDefinition;
 import me.whereareiam.commandant.model.message.ExceptionMessages;
 import me.whereareiam.commandant.registration.CommandRegistrar;
-import me.whereareiam.socialismus.model.config.Commands;
-import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.output.command.CommandService;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.keystone.Player;
+import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.command.executor.*;
 import me.whereareiam.socialismus.command.suggestion.CrossPlayerProvider;
 import me.whereareiam.socialismus.command.suggestion.PlayerSuggestionProvider;
+import me.whereareiam.socialismus.model.config.Commands;
+import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.output.command.CommandService;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.annotations.AnnotationParser;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -32,6 +37,9 @@ public class DefaultCommandService implements CommandService {
 	private final Provider<Commands> commandsProvider;
 	private final Provider<CommandManager<Actor>> commandManagerProvider;
 	private final Injector injector;
+
+	private final Map<String, CommandDefinition> registeredDefinitions = new HashMap<>();
+	private CommandRegistrar<Actor> registrar;
 
 	@Inject
 	public DefaultCommandService(
@@ -50,6 +58,38 @@ public class DefaultCommandService implements CommandService {
 		initialize();
 	}
 
+	@Override
+	public void registerCommand(@NotNull String key, @NotNull CommandDefinition definition, @NotNull Class<?> commandClass) {
+		if (registrar == null) throw new IllegalStateException("CommandService has not been initialized yet. Commands can only be registered after plugin initialization.");
+
+		// Register the definition
+		registeredDefinitions.put(key, definition);
+
+		// Instantiate and register the command class
+		Object instance = injector.getInstance(commandClass);
+		registrar.register(instance);
+	}
+
+	@Override
+	public void registerCommands(@NotNull Map<String, CommandDefinition> definitions, @NotNull Class<?>... commandClasses) {
+		if (registrar == null) throw new IllegalStateException("CommandService has not been initialized yet. Commands can only be registered after plugin initialization.");
+
+		// Register all definitions first
+		registeredDefinitions.putAll(definitions);
+
+		// Instantiate command classes through dependency injection
+		Object[] instances = new Object[commandClasses.length];
+		for (int i = 0; i < commandClasses.length; i++)
+			instances[i] = injector.getInstance(commandClasses[i]);
+
+		registrar.register(instances);
+	}
+
+	@Override
+	public int getCommandCount() {
+		return commandManagerProvider.get().commands().size();
+	}
+
 	public void initialize() {
 		CommandManager<Actor> commandManager = commandManagerProvider.get();
 		Function<String, CommandDefinition> definitionLookup = this::lookupDefinition;
@@ -57,7 +97,7 @@ public class DefaultCommandService implements CommandService {
 		// Register suggestion providers first using the real command manager
 		registerSuggestionProviders(commandManager);
 
-		CommandRegistrar<Actor> registrar = Commandant.createAnnotationRegistrar(
+		this.registrar = Commandant.createAnnotationRegistrar(
 				commandManager,
 				this::resolveCooldownKey,
 				Actor.class,
@@ -70,6 +110,11 @@ public class DefaultCommandService implements CommandService {
 	}
 
 	private CommandDefinition lookupDefinition(@NotNull String key) {
+		// First check registered definitions from external API users
+		CommandDefinition registered = registeredDefinitions.get(key);
+		if (registered != null) return registered;
+		
+		// Fall back to config file definitions
 		Commands commands = commandsProvider.get();
 		return commands.getCommands().get(key);
 	}

@@ -1,5 +1,8 @@
 package me.whereareiam.socialismus.output.command;
 
+import me.whereareiam.commandant.model.CommandDefinition;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 
 /**
@@ -9,27 +12,6 @@ import java.util.Map;
  */
 public interface CommandService {
 	/**
-	 * Registers a single command in the command system.
-	 *
-	 * @param command the command to register
-	 */
-	void registerCommand(CommandBase command);
-
-	/**
-	 * Registers all configured commands in the command system.
-	 * This method should be called during plugin initialization.
-	 */
-	void initialize();
-
-	/**
-	 * Registers a translation key-value pair for command messages.
-	 *
-	 * @param key   the translation key
-	 * @param value the translated message
-	 */
-	void registerTranslation(String key, String value);
-
-	/**
 	 * Gets the total number of registered commands.
 	 *
 	 * @return the number of registered commands
@@ -37,17 +19,29 @@ public interface CommandService {
 	int getCommandCount();
 
 	/**
-	 * Retrieves a translation for the specified key.
+	 * Registers a command with its definition from external API users (e.g., modules).
+	 * The command class should contain Cloud annotations (@Command, @Definition, etc.)
+	 * that define the command structure. The instance will be created through dependency injection.
+	 * <p>
+	 * The definition key must match the value in the {@link @Definition} annotation on the
+	 * command class or method.
 	 *
-	 * @param key the translation key to look up
-	 * @return the translated message
+	 * @param key the key that matches the @Definition annotation value
+	 * @param definition the CommandDefinition for this command
+	 * @param commandClass the class containing Cloud annotations to register as a command
 	 */
-	String getTranslation(String key);
+	void registerCommand(@NotNull String key, @NotNull CommandDefinition definition, @NotNull Class<?> commandClass);
 
 	/**
-	 * Gets all registered translations.
+	 * Registers multiple commands with their definitions from external API users (e.g., modules).
+	 * Each command class should contain Cloud annotations (@Command, @Definition, etc.)
+	 * that define the command structure. Instances will be created through dependency injection.
+	 * <p>
+	 * The definition keys will be extracted from the {@link @Definition} annotations on the
+	 * command classes or methods. If the annotation is present on both, the method-level value takes precedence.
 	 *
-	 * @return a map of translation keys to their translated messages
+	 * @param definitions map of definition keys to CommandDefinition objects
+	 * @param commandClasses classes containing Cloud annotations to register as commands
 	 */
-	Map<String, String> getTranslations();
+	void registerCommands(@NotNull Map<String, CommandDefinition> definitions, @NotNull Class<?>... commandClasses);
 }

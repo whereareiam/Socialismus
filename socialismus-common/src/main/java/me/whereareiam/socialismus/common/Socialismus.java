@@ -5,7 +5,6 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.Logger;
-import me.whereareiam.socialismus.api.Serializer;
 import me.whereareiam.socialismus.input.event.EventListener;
 import me.whereareiam.socialismus.input.event.EventManager;
 import me.whereareiam.socialismus.input.event.base.SocialisticEvent;
@@ -13,9 +12,9 @@ import me.whereareiam.socialismus.input.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.input.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.input.event.plugin.PluginShutdownEvent;
 import me.whereareiam.socialismus.input.event.plugin.PluginInitializedEvent;
-import me.whereareiam.socialismus.input.serializer.ComponentService;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.output.LoggingHelper;
 import me.whereareiam.socialismus.output.PlatformInteractor;
 import me.whereareiam.socialismus.output.command.CommandService;
@@ -56,7 +55,9 @@ public final class Socialismus implements EventListener {
 	public void onPluginBootstrapped(PluginBootstrappedEvent event) {
 		Constants.SERVER_VERSION = injector.getInstance(PlatformInteractor.class).getServerVersion();
 		Logger.init(injector.getInstance(LoggingHelper.class));
-		Serializer.init(injector.getInstance(ComponentService.class));
+
+		// Load settings early
+		injector.getInstance(Settings.class);
 	}
 
 	@SocialisticEvent
@@ -70,7 +71,7 @@ public final class Socialismus implements EventListener {
 		injector.getInstance(ChatMessages.class);
 		injector.getInstance(ChatSettings.class);
 
-		injector.getInstance(CommandService.class).initialize();
+		injector.getInstance(CommandService.class);
 		injector.getInstance(ModuleService.class).loadModules();
 		injector.getInstance(ListenerRegistrar.class).registerListeners();
 
