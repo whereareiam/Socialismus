@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import me.whereareiam.keystone.Player;
 import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,7 @@ import java.util.UUID;
  */
 @Getter
 @ToString
+@SuppressWarnings("unused")
 public abstract class SocialismusPlayer implements Player {
 	/**
 	 * The player's unique identifier
@@ -135,4 +137,31 @@ public abstract class SocialismusPlayer implements Player {
 		// Default implementation: no-op for platforms that don't support server
 		// Overridden in Velocity-specific implementations
 	}
+
+	/**
+	 * Gets the position of this player.
+	 * This is backend-specific (Bukkit/Paper) and returns null on proxy servers.
+	 *
+	 * @return The player's position, or null if not applicable
+	 */
+	@Nullable
+	public abstract Position getPosition();
+
+	/**
+	 * Gets the eye position of this player.
+	 * This is backend-specific (Bukkit/Paper) and returns null on proxy servers.
+	 *
+	 * @return The player's eye position, or null if not applicable
+	 */
+	@Nullable
+	public abstract Position getEyePosition();
+
+	/**
+	 * Checks if this player is within a specified range of another player.
+	 *
+	 * @param other The other player to check distance against
+	 * @param range The maximum distance to check
+	 * @return true if players are within range, false otherwise
+	 */
+	public abstract boolean isWithinRange(@NotNull SocialismusPlayer other, double range);
 }

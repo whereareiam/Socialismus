@@ -15,7 +15,6 @@ import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.output.PlatformInteractor;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -29,20 +28,17 @@ public class RecipientSelector {
 	private final RequirementEvaluator requirementEvaluator;
 	private final Provider<ChatSettings> settingsProvider;
 	private final Provider<ChatMessages> messagesProvider;
-	private final PlatformInteractor interactor;
 
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<ChatMessage> workerProcessor,
 			RequirementEvaluator requirementEvaluator,
 			Provider<ChatSettings> settings,
-			Provider<ChatMessages> messages,
-			PlatformInteractor interactor
+			Provider<ChatMessages> messages
 	) {
 		this.requirementEvaluator = requirementEvaluator;
 		this.settingsProvider = settings;
 		this.messagesProvider = messages;
-		this.interactor = interactor;
 
 		workerProcessor.addWorker(new Worker<>(this::selectRecipients, 100, true, false));
 	}
@@ -133,7 +129,7 @@ public class RecipientSelector {
 	}
 
 	private boolean isWithinRadius(SocialismusPlayer sender, SocialismusPlayer recipient, double radius) {
-		return interactor.areWithinRange(sender.getUniqueId(), recipient.getUniqueId(), radius);
+		return sender.isWithinRange(recipient, radius);
 	}
 
 	private void sendNoNearbyPlayersMessage(SocialismusPlayer sender, int radius, ChatMessages messages) {

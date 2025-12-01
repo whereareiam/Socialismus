@@ -2,9 +2,11 @@ package me.whereareiam.socialismus.platform.bukkit.actor.player;
 
 import lombok.Getter;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.model.position.Position;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,6 +89,31 @@ public abstract class AbstractBukkitSocialismusPlayer extends SocialismusPlayer 
 	@Override
 	public void setLocation(@Nullable String location) {
 		this.location = location;
+	}
+
+	@Override
+	@Nullable
+	public Position getPosition() {
+		Location loc = bukkitPlayer.getLocation();
+		return new Position(loc.getX(), loc.getY(), loc.getZ());
+	}
+
+	@Override
+	@Nullable
+	public Position getEyePosition() {
+		Location loc = bukkitPlayer.getEyeLocation();
+		return new Position(loc.getX(), loc.getY(), loc.getZ());
+	}
+
+	@Override
+	public boolean isWithinRange(@NotNull SocialismusPlayer other, double range) {
+		if (!(other instanceof AbstractBukkitSocialismusPlayer otherBukkit)) return false;
+		Player otherPlayer = otherBukkit.getBukkitPlayer();
+
+		// Check if both players are in the same world before measuring distance
+		if (!bukkitPlayer.getWorld().equals(otherPlayer.getWorld())) return false;
+		
+		return bukkitPlayer.getLocation().distanceSquared(otherPlayer.getLocation()) <= range * range;
 	}
 }
 

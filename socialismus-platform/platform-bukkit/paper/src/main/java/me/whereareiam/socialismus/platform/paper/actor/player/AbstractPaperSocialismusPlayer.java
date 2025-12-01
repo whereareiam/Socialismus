@@ -2,8 +2,10 @@ package me.whereareiam.socialismus.platform.paper.actor.player;
 
 import lombok.Getter;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.model.position.Position;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +20,7 @@ public abstract class AbstractPaperSocialismusPlayer extends SocialismusPlayer {
 	 * The underlying Bukkit actor instance
 	 */
 	@NotNull
-	private final Player bukkitPlayer;
+	private final Player paperPlayer;
 
 	/**
 	 * The player's current location (world name).
@@ -30,31 +32,31 @@ public abstract class AbstractPaperSocialismusPlayer extends SocialismusPlayer {
 	/**
 	 * Creates a new AbstractPaperSocialismusPlayer wrapping a Bukkit actor.
 	 *
-	 * @param bukkitPlayer The Bukkit actor to wrap
+	 * @param paperPlayer The Bukkit actor to wrap
 	 */
-	protected AbstractPaperSocialismusPlayer(@NotNull Player bukkitPlayer) {
+	protected AbstractPaperSocialismusPlayer(@NotNull Player paperPlayer) {
 		super(
-				bukkitPlayer.getUniqueId(),
-				bukkitPlayer.getName()
+				paperPlayer.getUniqueId(),
+				paperPlayer.getName()
 		);
-		this.bukkitPlayer = bukkitPlayer;
-		this.location = bukkitPlayer.getWorld().getName();
+		this.paperPlayer = paperPlayer;
+		this.location = paperPlayer.getWorld().getName();
 	}
 
 	@Override
 	public void sendMessage(@NotNull Component message) {
-		bukkitPlayer.sendMessage(message);
+		paperPlayer.sendMessage(message);
 	}
 
 	@Override
 	public boolean hasPermission(@NotNull String permission) {
-		return bukkitPlayer.hasPermission(permission);
+		return paperPlayer.hasPermission(permission);
 	}
 
 	@Override
 	@NotNull
 	public Audience getAudience() {
-		return bukkitPlayer;
+		return paperPlayer;
 	}
 
 	@Override
@@ -65,7 +67,7 @@ public abstract class AbstractPaperSocialismusPlayer extends SocialismusPlayer {
 			return location;
 		}
 		// Fallback to getting it directly from the player
-		return bukkitPlayer.getWorld().getName();
+		return paperPlayer.getWorld().getName();
 	}
 
 	@Override
@@ -78,6 +80,31 @@ public abstract class AbstractPaperSocialismusPlayer extends SocialismusPlayer {
 	@Override
 	public void setLocation(@Nullable String location) {
 		this.location = location;
+	}
+
+	@Override
+	@Nullable
+	public Position getPosition() {
+		Location loc = paperPlayer.getLocation();
+		return new Position(loc.getX(), loc.getY(), loc.getZ());
+	}
+
+	@Override
+	@Nullable
+	public Position getEyePosition() {
+		Location loc = paperPlayer.getEyeLocation();
+		return new Position(loc.getX(), loc.getY(), loc.getZ());
+	}
+
+	@Override
+	public boolean isWithinRange(@NotNull SocialismusPlayer other, double range) {
+		if (!(other instanceof AbstractPaperSocialismusPlayer otherPaper)) return false;
+		Player otherPlayer = otherPaper.getPaperPlayer();
+
+		// Check if both players are in the same world before measuring distance
+		if (!paperPlayer.getWorld().equals(otherPlayer.getWorld())) return false;
+
+		return paperPlayer.getLocation().distanceSquared(otherPlayer.getLocation()) <= range * range;
 	}
 }
 

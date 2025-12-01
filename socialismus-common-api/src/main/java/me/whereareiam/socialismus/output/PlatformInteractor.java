@@ -1,13 +1,10 @@
 package me.whereareiam.socialismus.output;
 
-import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.type.BroadcastTarget;
 import me.whereareiam.socialismus.type.Version;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Interface for platform-specific interactions in the Socialismus plugin system.
@@ -35,32 +32,6 @@ public interface PlatformInteractor {
 	}
 
 	/**
-	 * Gets the eye position of a player.
-	 *
-	 * @param player The Socialismus player instance
-	 * @return The eye position of the player as a Position object
-	 */
-	Position getEyePosition(SocialismusPlayer player);
-
-	/**
-	 * Checks if two players are within a specified range of each other.
-	 *
-	 * @param player1 UUID of the first player
-	 * @param player2 UUID of the second player
-	 * @param range   The maximum distance to check
-	 * @return true if players are within range, false otherwise
-	 */
-	boolean areWithinRange(UUID player1, UUID player2, double range);
-
-	/**
-	 * Gets the position of a player.
-	 *
-	 * @param player The Socialismus player instance
-	 * @return An array of doubles representing the player's position (x, y, z)
-	 */
-	Position getPosition(SocialismusPlayer player);
-
-	/**
 	 * Checks if a player has a specific permission.
 	 *
 	 * @param username   The player's username
@@ -68,15 +39,6 @@ public interface PlatformInteractor {
 	 * @return true if the player has the permission, false otherwise
 	 */
 	boolean hasPermission(String username, String permission);
-
-	/**
-	 * Checks if a Socialismus player has a specific permission.
-	 *
-	 * @param player The Socialismus player instance
-	 * @param permission  The permission to check
-	 * @return true if the Socialismus player has the permission, false otherwise
-	 */
-	boolean hasPermission(SocialismusPlayer player, String permission);
 
 	/**
 	 * Gets a list of all online players' usernames.

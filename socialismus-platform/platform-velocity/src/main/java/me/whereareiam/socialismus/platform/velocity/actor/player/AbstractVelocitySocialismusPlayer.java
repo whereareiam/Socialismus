@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.platform.velocity.actor.player;
 
 import lombok.Getter;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.model.position.Position;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import com.velocitypowered.api.proxy.Player;
@@ -83,6 +84,31 @@ public abstract class AbstractVelocitySocialismusPlayer extends SocialismusPlaye
 	@Override
 	public void setServer(@Nullable String server) {
 		this.server = server;
+	}
+
+	@Override
+	@Nullable
+	public Position getPosition() {
+		// Velocity does not support getting player position directly
+		return null;
+	}
+
+	@Override
+	@Nullable
+	public Position getEyePosition() {
+		// Velocity does not support getting player eye position directly
+		return null;
+	}
+
+	@Override
+	public boolean isWithinRange(@NotNull SocialismusPlayer other, double range) {
+		// On Velocity, we can only check if players are on the same server
+		// For actual distance checking, we'd need backend server information
+		// Note: range parameter is ignored on proxy servers
+		String thisServer = this.getServer();
+		String otherServer = other.getServer();
+		
+		return thisServer != null && thisServer.equals(otherServer);
 	}
 }
 
