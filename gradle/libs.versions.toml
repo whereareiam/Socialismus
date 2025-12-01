@@ -10,6 +10,7 @@ lombok = "1.18.42"
 guice = "7.0.0"
 libby = "2.0.1"
 configura = "dev-a76adc6"
+commandant = "dev-5f99bce"
 
 # resouces
 ormlite = "6.1"
@@ -35,9 +36,9 @@ adventure-platform-bukkit = "4.4.1"
 
 # cloud
 cloud-core = "2.0.0"
-cloud-cooldown = "1.0.0-rc.1"
 cloud-paper = "2.0.0-beta.13"
 cloud-velocity = "2.0.0-beta.13"
+cloud-cooldown = "1.0.0-rc.1"
 cloud-minecraft-extras = "2.0.0-beta.13"
 
 [libraries]
@@ -48,6 +49,7 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 configura = { group = "me.whereareiam", name = "configura", version.ref = "configura" }
+commandant = { group = "me.whereareiam", name = "commandant", version.ref = "commandant" }
 
 # resources
 ormlite = { group = "com.j256.ormlite", name = "ormlite-core", version.ref = "ormlite" }

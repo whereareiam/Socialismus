@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.command.provider;
+package me.whereareiam.socialismus.command.suggestion;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;

@@ -8,7 +8,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import me.whereareiam.socialismus.api.model.config.Settings;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.command.management.CommandExceptionHandler;
-import me.whereareiam.socialismus.command.provider.CommandManagerProvider;
+import me.whereareiam.socialismus.command.CommandManagerProvider;
 import me.whereareiam.socialismus.platform.velocity.mapper.CommandSourceMapper;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.execution.ExecutionCoordinator;

@@ -3,29 +3,26 @@ package me.whereareiam.socialismus.command.executor;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import lombok.RequiredArgsConstructor;
+import me.whereareiam.commandant.annotation.Definition;
 import me.whereareiam.socialismus.api.Logger;
 import me.whereareiam.socialismus.api.Serializer;
 import me.whereareiam.socialismus.api.input.chat.ChatHistoryService;
 import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.api.model.CommandEntity;
 import me.whereareiam.socialismus.api.model.chat.ChatSettings;
 import me.whereareiam.socialismus.api.model.config.message.Messages;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.command.CommandBase;
-import me.whereareiam.socialismus.api.output.command.CommandCooldown;
+import org.incendo.cloud.annotations.Argument;
+import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.CommandDescription;
 import org.incendo.cloud.annotations.Permission;
 
-import java.util.Map;
-
 @Singleton
-public class ClearCommand extends CommandBase {
-	private static final String COMMAND_NAME = "clear";
-	private final Provider<Map<String, CommandEntity>> commands;
-
+@RequiredArgsConstructor(onConstructor_ = @Inject)
+public class ClearCommand {
 	private final Provider<Messages> messages;
 	private final Provider<ChatSettings> chatSettings;
 
@@ -33,29 +30,9 @@ public class ClearCommand extends CommandBase {
 	private final ChatHistoryContainerService containerService;
 	private final PlatformInteractor interactor;
 
-	@Inject
-	public ClearCommand(
-			Provider<Map<String, CommandEntity>> commands,
-			Provider<Messages> messages,
-			Provider<ChatSettings> chatSettings,
-			ChatHistoryService chatHistory,
-			ChatHistoryContainerService containerService,
-			PlatformInteractor interactor
-	) {
-		super(COMMAND_NAME);
-		this.commands = commands;
-		this.messages = messages;
-		this.chatSettings = chatSettings;
-		this.chatHistory = chatHistory;
-		this.containerService = containerService;
-		this.interactor = interactor;
-	}
-
-	@Command("%command." + COMMAND_NAME)
-	@CommandDescription("%description." + COMMAND_NAME)
-	@CommandCooldown("%cooldown." + COMMAND_NAME)
-	@Permission("%permission." + COMMAND_NAME)
-	public void onCommand(DummyPlayer dummyPlayer, @Argument(value = "context") String context) {
+	@Definition("clear")
+	@Command("socialismus clear [context]")
+	public void command(DummyPlayer dummyPlayer, @Argument("context") String context) {
 		if (context == null) {
 			handleNumericContext(dummyPlayer, chatSettings.get().getHistory().getHistorySize());
 			return;
@@ -141,10 +118,5 @@ public class ClearCommand extends CommandBase {
 		} else {
 			dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, failureMessage));
 		}
-	}
-
-	@Override
-	public CommandEntity getCommandEntity() {
-		return commands.get().get(COMMAND_NAME);
 	}
 }

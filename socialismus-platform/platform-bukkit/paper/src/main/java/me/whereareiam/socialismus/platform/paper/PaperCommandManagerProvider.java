@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.api.model.config.Settings;
 import me.whereareiam.socialismus.api.model.player.DummyPlayer;
 import me.whereareiam.socialismus.command.management.CommandExceptionHandler;
-import me.whereareiam.socialismus.command.provider.CommandManagerProvider;
+import me.whereareiam.socialismus.command.CommandManagerProvider;
 import me.whereareiam.socialismus.platform.paper.mapper.CommandSenderMapper;
 import me.whereareiam.socialismus.platform.paper.mapper.CommandSourceStackMapper;
 import org.bukkit.plugin.Plugin;

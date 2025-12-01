@@ -5,8 +5,8 @@ repositories {
 dependencies {
     "compileOnly"(project(":socialismus-common-api"))
 
-    "compileOnly"(libs.bundles.cloud)
-    "compileOnly"(libs.cloud.paper)
-    "compileOnly"(libs.cloud.velocity)
-    "annotationProcessor"(libs.cloud.core)
+    "compileOnly"(libs.cloud.core)
+    "compileOnly"(libs.cloud.annotations)
+    "compileOnly"(libs.cloud.cooldowns)
+    "compileOnly"(libs.cloud.minecraft.extras)
 }

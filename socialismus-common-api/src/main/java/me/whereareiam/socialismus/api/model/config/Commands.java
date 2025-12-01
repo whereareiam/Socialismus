@@ -1,27 +1,25 @@
 package me.whereareiam.socialismus.api.model.config;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
-import me.whereareiam.socialismus.api.model.CommandEntity;
+import me.whereareiam.commandant.model.CommandDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Configuration model for managing command configurations in the Socialismus plugin.
- * Stores a mapping of command names to their respective {@link CommandEntity} configurations.
- *
- * <p>This class is used to load and maintain command configurations from the config file.
- * Each command is identified by its name and associated with a {@link CommandEntity}
- * that defines its properties such as aliases, permissions, and cooldowns.</p>
+ * Configuration for command definitions.
+ * Stores a mapping of command names to their respective CommandDefinition configurations.
  */
 @Getter
+@Setter
 @ToString
 public class Commands {
-    /**
-     * Map of command names to their configuration entities.
-     * Key: command name
-     * Value: command configuration entity
-     */
-    private Map<String, CommandEntity> commands = new HashMap<>();
+	/**
+	 * Map of command names to their CommandDefinition configurations.
+	 * Key: command name (e.g., "help", "reload")
+	 * Value: CommandDefinition with aliases, permissions, descriptions, etc.
+	 */
+	private Map<String, CommandDefinition> commands = new HashMap<>();
 }
