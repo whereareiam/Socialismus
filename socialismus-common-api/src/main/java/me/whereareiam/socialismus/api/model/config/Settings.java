@@ -1,9 +1,10 @@
 package me.whereareiam.socialismus.api.model.config;
 
-import com.google.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.whereareiam.configura.annotation.PostProcess;
+import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.model.Event;
 import me.whereareiam.socialismus.api.type.SerializationType;
 
@@ -24,7 +25,6 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-@Singleton
 public class Settings {
 	/**
 	 * Debug level for logging
@@ -55,6 +55,15 @@ public class Settings {
 	 * Event listener configurations
 	 */
 	private Listeners listeners;
+
+	@PostProcess
+	public void applySynchronizationConstants() {
+		if (synchronization == null) return;
+
+		Constants.Synchronization.IDENTIFIER = synchronization.getServer();
+		Constants.Synchronization.SYNCHRONIZATION = synchronization.isEnabled();
+		Constants.Synchronization.CROSS_PLAYER_SYNC = synchronization.isCrossPlayerSync();
+	}
 
 	/**
 	 * Synchronization settings for the plugin.

@@ -17,7 +17,6 @@ public abstract class ConfigProvider<T> implements Reloadable {
 
 		ensureTemplatesRegistered();
 		value = load();
-		finish(value);
 		return value;
 	}
 
@@ -25,7 +24,6 @@ public abstract class ConfigProvider<T> implements Reloadable {
 	public void reload() {
 		ensureTemplatesRegistered();
 		value = load();
-		finish(value);
 	}
 
 	private void ensureTemplatesRegistered() {
@@ -43,12 +41,6 @@ public abstract class ConfigProvider<T> implements Reloadable {
 	 * Override to register templates before the first load. Default is no-op.
 	 */
 	protected void registerTemplate() {
-	}
-
-	/**
-	 * Override to run logic after a successful load. Default is no-op.
-	 */
-	protected void finish(T loaded) {
 	}
 }
 

@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.configura.Config;
-import me.whereareiam.socialismus.api.Constants;
 import me.whereareiam.socialismus.api.Reloadable;
 import me.whereareiam.socialismus.api.input.registry.Registry;
 import me.whereareiam.socialismus.api.model.config.Settings;
@@ -27,12 +26,5 @@ public class SettingsProvider extends DefaultConfigProvider<Settings> {
 	@Override
 	protected void registerTemplate() {
 		Config.registerTemplate(SettingsTemplate.class);
-	}
-
-	@Override
-	protected void finish(Settings settings) {
-		Constants.Synchronization.IDENTIFIER = settings.getSynchronization().getServer();
-		Constants.Synchronization.SYNCHRONIZATION = settings.getSynchronization().isEnabled();
-		Constants.Synchronization.CROSS_PLAYER_SYNC = settings.getSynchronization().isCrossPlayerSync();
 	}
 }
