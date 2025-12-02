@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.common.provider;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import me.whereareiam.keystone.Serializers;
 import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * Creates a SerializerEngine configured with Messages prefix and default settings.
  * Returns a singleton instance.
  */
+@Singleton
 public class SerializerEngineProvider implements Provider<SerializerEngine>, Reloadable {
 	private final Provider<Messages> messagesProvider;
 	private final Provider<Settings> settingsProvider;
