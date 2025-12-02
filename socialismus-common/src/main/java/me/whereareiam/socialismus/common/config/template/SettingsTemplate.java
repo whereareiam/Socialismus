@@ -7,7 +7,6 @@ import me.whereareiam.socialismus.model.Event;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.type.EventPriority;
 import me.whereareiam.socialismus.type.PlatformType;
-import me.whereareiam.socialismus.type.SerializationType;
 import me.whereareiam.socialismus.type.Version;
 
 import java.util.HashMap;
@@ -20,7 +19,11 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 	public Settings supply(Settings settings) {
 		// Default values
 		settings.setLevel(2);
-		settings.setSerializer(SerializationType.MINIMESSAGE);
+
+		Settings.Serialization serialization = new Settings.Serialization();
+		serialization.setType("MINIMESSAGE");
+		serialization.setEnableLegacyColors(false);
+		settings.setSerialization(serialization);
 
 		Settings.Synchronization synchronization = new Settings.Synchronization();
 		synchronization.setEnabled(false);
@@ -36,13 +39,12 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 
 		settings.setCommands(commands);
 
-		Settings.Miscellaneous misc = new Settings.Miscellaneous();
-		misc.setDisableJoinNotification(true);
-		misc.setDisableQuitNotification(true);
-		misc.setAllowLegacyParsing(false);
-		misc.setVanillaSending(true);
+	Settings.Miscellaneous misc = new Settings.Miscellaneous();
+	misc.setDisableJoinNotification(true);
+	misc.setDisableQuitNotification(true);
+	misc.setVanillaSending(true);
 
-		settings.setMisc(misc);
+	settings.setMisc(misc);
 
 		Settings.Updater updater = new Settings.Updater();
 		updater.setCheckForUpdates(true);

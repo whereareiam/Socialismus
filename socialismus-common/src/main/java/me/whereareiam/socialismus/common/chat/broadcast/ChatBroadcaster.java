@@ -5,10 +5,10 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Serializer;
-import me.whereareiam.commandant.model.CommandDefinition;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.output.PlatformInteractor;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
@@ -17,7 +17,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,7 +28,7 @@ public class ChatBroadcaster {
 
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<ChatMessages> chatMessages;
-	private final Provider<Map<String, CommandDefinition>> commands;
+	private final Provider<Commands> commands;
 
 	public void broadcast(FormattedChatMessage chatMessage) {
 		platformInteractor.broadcast(
@@ -66,9 +65,9 @@ public class ChatBroadcaster {
 					.matchLiteral("{clear}")
 					.replacement(Serializer.serialize(sender, chatMessages.get().getClearFormat().getFormat())
 							.clickEvent(ClickEvent.runCommand(
-									"/" + commands.get().get("clear").getUsage()
-											.replace("{command}", commands.get().get("main").getAliases().get(0))
-											.replace("{alias}", commands.get().get("clear").getAliases().get(0))
+									"/" + commands.get().getCommands().get("clear").getUsage()
+											.replace("{command}", commands.get().getCommands().get("main").getAliases().get(0))
+											.replace("{alias}", commands.get().getCommands().get("clear").getAliases().get(0))
 											.replace("[context]", String.valueOf(formattedChatMessage.getId()))))
 					)
 					.build();

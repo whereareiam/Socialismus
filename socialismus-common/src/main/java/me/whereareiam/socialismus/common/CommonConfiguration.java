@@ -25,6 +25,7 @@ import me.whereareiam.socialismus.common.event.EventController;
 import me.whereareiam.socialismus.common.player.DefaultPlayerRegistry;
 import me.whereareiam.socialismus.common.provider.IntegrationProvider;
 import me.whereareiam.socialismus.common.provider.ReloadableProvider;
+import me.whereareiam.socialismus.common.provider.SerializerEngineProvider;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.common.requirement.RequirementRegistry;
 import me.whereareiam.socialismus.common.requirement.validation.*;
@@ -76,6 +77,8 @@ public class CommonConfiguration extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		requestInjection(this);
+
 		// Configuration
 		bind(ConfigurationTypeResolver.class)
 				.to(FileSystemConfigurationTypeResolver.class)
@@ -105,6 +108,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ChatMessages.class).toProvider(ChatMessagesProvider.class);
 
 		// Services
+		bind(SerializerEngine.class).toProvider(SerializerEngineProvider.class);
 		bind(SerializationService.class).to(SerializationServiceAdapter.class);
 		bind(EventManager.class).to(EventController.class);
 		bind(EventUtil.class).asEagerSingleton();

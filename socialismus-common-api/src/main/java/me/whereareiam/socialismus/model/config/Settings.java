@@ -6,7 +6,6 @@ import lombok.ToString;
 import me.whereareiam.configura.annotation.PostProcess;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.Event;
-import me.whereareiam.socialismus.type.SerializationType;
 
 import java.util.Map;
 
@@ -32,9 +31,9 @@ public class Settings {
 	private int level;
 
 	/**
-	 * Type of serialization to use for messages
+	 * Serialization configuration for message formatting.
 	 */
-	private SerializationType serializer;
+	private Serialization serialization;
 
 	/**
 	 * Synchronization settings for the plugin.
@@ -179,5 +178,28 @@ public class Settings {
 		 * Map of event name to event configuration
 		 */
 		private Map<String, Event> events;
+	}
+
+	/**
+	 * Serialization configuration for message formatting.
+	 * Controls how messages are serialized and formatted.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Serialization {
+		/**
+		 * Serializer adapter ID/type to use.
+		 * Available options: "MINIMESSAGE", "GSON", "LEGACY_AMPERSAND", "LEGACY_SECTION", "PLAIN"
+		 * Default: "MINIMESSAGE"
+		 */
+		private String type = "MINIMESSAGE";
+
+		/**
+		 * Whether to enable legacy color code parsing (& and § codes).
+		 * When enabled, legacy codes in input will be converted to the target adapter format.
+		 * Default: false
+		 */
+		private boolean enableLegacyColors = false;
 	}
 }
