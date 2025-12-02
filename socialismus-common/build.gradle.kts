@@ -3,11 +3,11 @@ repositories {
 }
 
 dependencies {
-    "compileOnly"(project(":socialismus-common-api"))
+    "compileOnly"(project(":socialismus-api"))
     "compileOnly"(libs.bundles.adventure)
     
     // test dependencies
-    "testImplementation"(project(":socialismus-common-api"))
+    "testImplementation"(project(":socialismus-api"))
     "testImplementation"(libs.bundles.adventure)
 }
 

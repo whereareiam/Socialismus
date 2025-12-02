@@ -1,3 +1,3 @@
 dependencies {
-    "compileOnly"(project(":socialismus-common-api"))
+    "compileOnly"(project(":socialismus-api"))
 }

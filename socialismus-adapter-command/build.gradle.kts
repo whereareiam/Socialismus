@@ -3,7 +3,7 @@ repositories {
 }
 
 dependencies {
-    "compileOnly"(project(":socialismus-common-api"))
+    "compileOnly"(project(":socialismus-api"))
 
     "compileOnly"(libs.cloud.core)
     "compileOnly"(libs.cloud.annotations)
