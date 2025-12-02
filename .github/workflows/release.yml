@@ -20,8 +20,52 @@ jobs:
           echo "name=$(grep 'rootProject.name' settings.gradle.kts | awk -F "=" '{print $2}' | tr -d ' \"\n')" >> $GITHUB_OUTPUT
           echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
 
-  build:
+  test:
     needs: prepare
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+          check-latest: true
+
+      - name: Run tests
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: ./gradlew test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test results
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/tests/test/
+
+      - name: Test summary
+        if: always()
+        run: |
+          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          find . -name "TEST-*.xml" -type f | while read file; do
+            suite=$(grep -oP 'name="\K[^"]+' "$file" | head -1)
+            tests=$(grep -oP 'tests="\K[^"]+' "$file" | head -1)
+            failures=$(grep -oP 'failures="\K[^"]+' "$file" | head -1)
+            errors=$(grep -oP 'errors="\K[^"]+' "$file" | head -1)
+            echo "- **$suite**: $tests tests, $failures failures, $errors errors" >> $GITHUB_STEP_SUMMARY
+          done
+
+  build:
+    needs: [prepare, test]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -69,7 +113,7 @@ jobs:
             output/${{ needs.prepare.outputs.name }}-VELOCITY-${{ needs.prepare.outputs.version }}.jar
 
   publish:
-    needs: prepare
+    needs: [prepare, test]
     runs-on: ubuntu-latest
     permissions:
       contents: read
