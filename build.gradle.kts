@@ -32,6 +32,14 @@ subprojects {
         "compileOnly"(rootProject.libs.commandant)
         "compileOnly"(rootProject.libs.keystone)
         "implementation"(rootProject.libs.attache.common)
+
+        // test
+        "testImplementation"(rootProject.libs.configura)
+        "testImplementation"(rootProject.libs.commandant)
+        "testImplementation"(rootProject.libs.keystone)
+        "testImplementation"(rootProject.libs.guice)
+        "testImplementation"(rootProject.libs.bundles.testing)
+        "testRuntimeOnly"(rootProject.libs.junit.platform)
     }
 
     extensions.configure<PublishingExtension> {

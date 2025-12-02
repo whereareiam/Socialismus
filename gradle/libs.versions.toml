@@ -15,6 +15,10 @@ configura = "dev-a76adc6"
 keystone = "dev-697f401"
 commandant = "dev-5f99bce"
 
+# testing
+junit = "6.0.0"
+mockito = "5.20.0"
+
 # resouces
 ormlite = "6.1"
 jedis = "6.0.0"
@@ -99,6 +103,12 @@ cloud-minecraft-extras = { group = "org.incendo", name = "cloud-minecraft-extras
 # brigadier
 brigadier = { group = "com.mojang", name = "brigadier", version.ref = "brigadier" }
 
+# testing
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
+junit-platform = { group = "org.junit.platform", name = "junit-platform-launcher" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-junit = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito" }
+
 [bundles]
 
 adventure = ["adventure", "adventure-minimessage", "adventure-legacy", "adventure-plain", "adventure-gson"]
@@ -106,6 +116,7 @@ bukkit = ["spigot", "adventure-platform-bukkit"]
 paper = ["paper"]
 velocity = ["velocity"]
 cloud = ["cloud-core", "cloud-annotations", "cloud-cooldowns", "cloud-minecraft-extras"]
+testing = ["junit-jupiter", "mockito-core", "mockito-junit"]
 
 bStats = ["bStats", "bStats-bukkit", "bStats-velocity"]
 bStats-bukkit = ["bStats", "bStats-bukkit"]
