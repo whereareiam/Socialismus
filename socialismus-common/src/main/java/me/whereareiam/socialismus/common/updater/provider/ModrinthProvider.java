@@ -1,61 +1,60 @@
 package me.whereareiam.socialismus.common.updater.provider;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.inject.Singleton;
+import lombok.Data;
+import me.whereareiam.configura.Config;
+import me.whereareiam.configura.reader.ConfigReader;
+import me.whereareiam.configura.type.Format;
 import me.whereareiam.socialismus.input.updater.UpdateProvider;
-import me.whereareiam.socialismus.model.module.UpdateSpecification;
+import me.whereareiam.socialismus.model.update.UpdateSource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ModrinthProvider implements UpdateProvider {
-	private final Gson gson = new Gson();
+	private static final ConfigReader JSON_READER = Config.reader(Format.JSON);
 
 	@Override
-	public Optional<String> fetchLatest(UpdateSpecification.Spec spec) throws IOException {
+	public Optional<String> fetchLatest(UpdateSource source) throws IOException {
 		URL url = URI.create("https://api.modrinth.com/v2/project/"
-				+ spec.getId() + "/version").toURL();
+				+ source.getId() + "/version").toURL();
 
-		try (InputStream in = url.openStream();
-		     Reader r = new InputStreamReader(in)) {
-			JsonArray arr = gson.fromJson(r, JsonArray.class);
-			return Optional.ofNullable(arr.get(0))
-					.map(e -> e.getAsJsonObject()
-							.get("version_number")
-							.getAsString());
+		try (InputStream in = url.openStream()) {
+			ModrinthVersionList versionList = JSON_READER.decode(in, ModrinthVersionList.class);
+			return versionList.versions.isEmpty()
+					? Optional.empty()
+					: Optional.ofNullable(versionList.versions.get(0).version_number);
 		}
 	}
 
 	@Override
-	public List<String> fetchRecentUpdates(UpdateSpecification.Spec spec, int limit) throws IOException {
+	public List<String> fetchRecentUpdates(UpdateSource source, int limit) throws IOException {
 		URL url = URI.create("https://api.modrinth.com/v2/project/"
-				+ spec.getId()
+				+ source.getId()
 				+ "/version?limit=" + limit).toURL();
 
-		try (InputStream in = url.openStream();
-		     Reader r = new InputStreamReader(in)) {
-
-			JsonArray arr = gson.fromJson(r, JsonArray.class);
-			List<String> versions = new ArrayList<>(arr.size());
-			for (JsonElement e : arr) {
-				versions.add(
-						e.getAsJsonObject()
-								.get("version_number")
-								.getAsString()
-				);
-			}
-			return versions;
+		try (InputStream in = url.openStream()) {
+			ModrinthVersionList versionList = JSON_READER.decode(in, ModrinthVersionList.class);
+			return versionList.versions.stream()
+					.map(v -> v.version_number)
+					.collect(Collectors.toList());
 		}
 	}
 
+	@Data
+	private static class ModrinthVersionList {
+		private List<ModrinthVersion> versions = new ArrayList<>();
+	}
+
+	@Data
+	private static class ModrinthVersion {
+		private String version_number;
+	}
 }

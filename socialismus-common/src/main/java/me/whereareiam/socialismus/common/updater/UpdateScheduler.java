@@ -3,16 +3,17 @@ package me.whereareiam.socialismus.common.updater;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.AnsiColor;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.input.updater.UpdateProvider;
 import me.whereareiam.socialismus.model.config.Settings;
-import me.whereareiam.socialismus.model.module.UpdateSpecification;
 import me.whereareiam.socialismus.model.scheduler.PeriodicalRunnableTask;
+import me.whereareiam.socialismus.model.update.UpdateConfiguration;
+import me.whereareiam.socialismus.model.update.UpdateSource;
 import me.whereareiam.socialismus.output.Scheduler;
-import me.whereareiam.socialismus.output.module.ModuleService;
+import me.whereareiam.socialismus.registry.Registry;
 import me.whereareiam.socialismus.type.module.ProviderType;
 
 import java.io.IOException;
@@ -20,20 +21,20 @@ import java.util.List;
 import java.util.Locale;
 
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = @Inject)
-public final class UpdateScheduler {
+public final class UpdateScheduler implements Reloadable {
 	private static final long MS_PER_HOUR = 3_600_000L;
 	private static final int BRANCH_UPDATE_LIMIT = 50;
+	private static final String UPDATER_MODULE = "main";
 
 	/**
 	 * Core plugin: release via Modrinth, dev via GitHub
 	 */
-	private static final UpdateSpecification CORE_SPEC = UpdateSpecification.builder()
-			.release(UpdateSpecification.Spec.builder()
+	private static final UpdateConfiguration CORE_SPEC = UpdateConfiguration.builder()
+			.release(UpdateSource.builder()
 					.provider(ProviderType.MODRINTH)
 					.id("socialismus")
 					.build())
-			.dev(UpdateSpecification.Spec.builder()
+			.dev(UpdateSource.builder()
 					.provider(ProviderType.GITHUB)
 					.id("whereareiam/Socialismus")
 					.build())
@@ -41,46 +42,50 @@ public final class UpdateScheduler {
 
 	private final Provider<Settings> settings;
 	private final Scheduler scheduler;
-	private final ModuleService moduleService;
 	private final UpdateProviderRegistry providers;
+
+	@Inject
+	public UpdateScheduler(
+			Provider<Settings> settings,
+			Scheduler scheduler,
+			UpdateProviderRegistry providers,
+			Registry<Reloadable> reloadableRegistry
+	) {
+		this.settings = settings;
+		this.scheduler = scheduler;
+		this.providers = providers;
+
+		reloadableRegistry.register(this);
+	}
 
 	public void start() {
 		var cfg = settings.get().getUpdater();
-		if (!cfg.isCheckForUpdates() || cfg.getInterval() <= 0) return;
+		if (!cfg.isCheckForUpdates() || cfg.getInterval() <= 0) {
+			Logger.debug("Update checking is disabled");
+			return;
+		}
 
 		scheduler.schedule(
 				PeriodicalRunnableTask.builder()
 						.period(cfg.getInterval() * MS_PER_HOUR)
 						.runnable(this::runOnce)
-						.module("main")
+						.module(UPDATER_MODULE)
 						.delay(0)
 						.build(),
 				true
 		);
+
+		Logger.debug("Update scheduler started with interval: %d hours", cfg.getInterval());
 	}
 
 	private void runOnce() {
-		var cfg = settings.get().getUpdater();
-
-		// Core plugin
-		checkEntry("Socialismus", Constants.VERSION, CORE_SPEC, cfg);
-
-		// Every module that has an UpdateSpecification
-		moduleService.getModules().stream()
-				.map(m -> new Object[]{m.getName(), m.getVersion(), m.getUpdater()})
-				.filter(t -> t[2] != null)
-				.forEach(t -> checkEntry(
-						(String) t[0],
-						(String) t[1],
-						(UpdateSpecification) t[2],
-						cfg
-				));
+		checkEntry("Socialismus", Constants.VERSION, CORE_SPEC, settings.get().getUpdater());
 	}
 
 	private void checkEntry(
 			String name,
 			String current,
-			UpdateSpecification spec,
+			UpdateConfiguration spec,
 			Settings.Updater cfg
 	) {
 		// nothing configured?
@@ -140,13 +145,13 @@ public final class UpdateScheduler {
 			String version,
 			String name,
 			UpdateProvider provider,
-			UpdateSpecification.Spec spec
+			UpdateSource source
 	) {
 		String prefix = version.substring(version.lastIndexOf('-') + 1)
 				.toLowerCase(Locale.ROOT);
 
 		try {
-			List<String> updates = provider.fetchRecentUpdates(spec, BRANCH_UPDATE_LIMIT);
+			List<String> updates = provider.fetchRecentUpdates(source, BRANCH_UPDATE_LIMIT);
 			int behind = 0;
 			for (String id : updates) {
 				if (id.toLowerCase(Locale.ROOT).startsWith(prefix)) break;
@@ -191,5 +196,11 @@ public final class UpdateScheduler {
 		}
 
 		return 0;
+	}
+
+	@Override
+	public void reload() {
+		scheduler.cancelByModule(UPDATER_MODULE);
+		start();
 	}
 }

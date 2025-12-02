@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.model.module;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import me.whereareiam.socialismus.model.update.UpdateConfiguration;
 import me.whereareiam.socialismus.output.resource.ResourceRequirement;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.Version;
@@ -63,7 +64,7 @@ public class Module {
 	/**
 	 * Updater configuration for this module.
 	 */
-	private UpdateSpecification updater;
+	private UpdateConfiguration updater;
 
 	/**
 	 * The main class path of the module
