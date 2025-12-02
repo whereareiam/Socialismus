@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.buildconfig)
+    `java-library`
 }
 
 repositories {
@@ -7,9 +8,12 @@ repositories {
 }
 
 dependencies {
-    "compileOnly"(libs.bundles.adventure)
-    "compileOnly"(libs.attache.common)
     "compileOnly"(libs.ormlite)
+    "api"(rootProject.libs.guice)
+    "api"(rootProject.libs.annotations)
+    "api"(rootProject.libs.configura)
+    "api"(rootProject.libs.commandant)
+    "api"(rootProject.libs.keystone)
 }
 
 buildConfig {

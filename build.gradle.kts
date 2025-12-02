@@ -31,6 +31,7 @@ subprojects {
         "compileOnly"(rootProject.libs.configura)
         "compileOnly"(rootProject.libs.commandant)
         "compileOnly"(rootProject.libs.keystone)
+        "compileOnly"(rootProject.libs.bundles.adventure)
         "implementation"(rootProject.libs.attache.common)
 
         // test
