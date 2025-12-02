@@ -3,13 +3,13 @@ package me.whereareiam.socialismus;
 import me.whereareiam.socialismus.type.Version;
 
 public final class Constants {
-	public static final String NAME = "@name@";
-	public static final String VERSION = "@version@";
+	public static final String NAME = BuildConfig.NAME;
+	public static final String VERSION = BuildConfig.VERSION;
 
 	public static Version SERVER_VERSION = Version.UNKNOWN;
 
 	public static final class Channels {
-		public static final String NAME = "socialismus";
+		public static final String NAME = BuildConfig.NAME.toLowerCase();
 
 		public static final String CHAT = NAME + ":chat";
 		public static final String CHAT_HISTORY = NAME + ":chat-history";
@@ -28,17 +28,17 @@ public final class Constants {
 	}
 
 	public static final class Dependency {
-		public static final String GUICE = "@guiceVersion@";
-		public static final String CONFIGURA = "@configuraVersion@";
-		public static final String JEDIS = "@jedisVersion@";
-		public static final String ADVENTURE = "@adventureVersion@";
-		public static final String ADVENTURE_BUKKIT = "@adventureBukkitVersion@";
+		public static final String GUICE = BuildConfig.GUICE;
+		public static final String CONFIGURA = BuildConfig.CONFIGURA;
+		public static final String JEDIS = BuildConfig.JEDIS;
+		public static final String ADVENTURE = BuildConfig.ADVENTURE_MINIMESSAGE;
+		public static final String ADVENTURE_BUKKIT = BuildConfig.ADVENTURE_PLATFORM_BUKKIT;
 
-		public static final String CLOUD = "@cloudVersion@";
-		public static final String CLOUD_COOLDOWN = "@cloudCooldownVersion@";
-		public static final String CLOUD_PAPER = "@cloudPaperVersion@";
-		public static final String CLOUD_VELOCITY = "@cloudVelocityVersion@";
-		public static final String CLOUD_MINECRAFT_EXTRAS = "@cloudMinecraftExtrasVersion@";
-		public static final String BRIGADIER = "@brigadierVersion@";
+		public static final String CLOUD = BuildConfig.CLOUD_CORE;
+		public static final String CLOUD_COOLDOWN = BuildConfig.CLOUD_COOLDOWN;
+		public static final String CLOUD_PAPER = BuildConfig.CLOUD_PAPER;
+		public static final String CLOUD_VELOCITY = BuildConfig.CLOUD_VELOCITY;
+		public static final String CLOUD_MINECRAFT_EXTRAS = BuildConfig.CLOUD_MINECRAFT_EXTRAS;
+		public static final String BRIGADIER = BuildConfig.BRIGADIER;
 	}
 }
