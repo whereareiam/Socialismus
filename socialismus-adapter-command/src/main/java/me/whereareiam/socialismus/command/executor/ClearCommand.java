@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.commandant.annotation.Definition;
 import me.whereareiam.keystone.Actor;
+import me.whereareiam.keystone.Player;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.Serializer;
@@ -103,7 +104,7 @@ public class ClearCommand {
 
 	private void sendResponse(@NotNull Actor actor, int count, String successMessage, String failureMessage) {
 		if (count > 0) {
-			Logger.info("Deleted %s messages from chat history by %s", count, actor.getClass().getSimpleName());
+			Logger.info("Deleted %s messages from chat history by %s", count, resolveActorIdentifier(actor));
 			actor.sendMessage(Serializer.serialize(SerializerContent.builder()
 					.receiver(actor)
 					.message(successMessage)
@@ -118,7 +119,7 @@ public class ClearCommand {
 
 	private void sendResponse(@NotNull Actor actor, boolean removed, String successMessage, String failureMessage, int id) {
 		if (removed) {
-			Logger.info("Deleted message from chat history by %s", actor.getClass().getSimpleName());
+			Logger.info("Deleted message from chat history by %s", resolveActorIdentifier(actor));
 			actor.sendMessage(Serializer.serialize(actor, successMessage));
 			return;
 		}
@@ -129,5 +130,13 @@ public class ClearCommand {
 				.placeholder("{id}", String.valueOf(id))
 				.build())
 		);
+	}
+
+	private String resolveActorIdentifier(@NotNull Actor actor) {
+		if (actor instanceof Player) {
+			return ((Player) actor).getUsername();
+		}
+
+		return actor.getClass().getSimpleName();
 	}
 }
