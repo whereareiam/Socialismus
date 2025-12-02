@@ -1,5 +1,4 @@
 plugins {
-    id("maven-publish")
     alias(libs.plugins.buildconfig)
 }
 
@@ -39,11 +38,12 @@ java {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            groupId = "me.whereareiam"
-            artifactId = rootProject.name
-            version = rootProject.version.toString()
-
             from(components["java"])
+            artifactId = "socialismus-api"
+            pom {
+                name.set("socialismus-api")
+                description.set("Public API for Socialismus - Minecraft chat management plugin")
+            }
         }
     }
 }

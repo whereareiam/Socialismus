@@ -1,6 +1,0 @@
-jdk:
-  - openjdk21
-install:
-  - ./gradlew publishToMavenLocal -x test
-env:
-  VERSION: ${GIT_BRANCH}-${GIT_COMMIT::10}

@@ -2,8 +2,10 @@ defaultTasks("shadowJar")
 
 allprojects {
     version = (System.getenv("VERSION") ?: "dev")
+    group = "me.whereareiam"
 
     apply(plugin = "java")
+    apply(plugin = "maven-publish")
 
     tasks.withType<JavaCompile> {
         sourceCompatibility = JavaVersion.VERSION_17.toString()
@@ -14,7 +16,6 @@ allprojects {
 subprojects {
     repositories {
         mavenCentral()
-        maven("https://jitpack.io")
         maven("https://maven.whereareiam.me/release")
         maven("https://maven.whereareiam.me/development")
     }
@@ -31,5 +32,20 @@ subprojects {
         "compileOnly"(rootProject.libs.commandant)
         "compileOnly"(rootProject.libs.keystone)
         "implementation"(rootProject.libs.attache.common)
+    }
+
+    extensions.configure<PublishingExtension> {
+        repositories {
+            maven {
+                val realm = (System.getenv("PUBLISH_REALM")
+                    ?: if ((System.getenv("VERSION") ?: "dev").contains("dev", true)) "development" else "release")
+                    .lowercase()
+                url = uri("https://maven.whereareiam.me/$realm")
+                credentials {
+                    username = System.getenv("PUBLISH_USER") ?: ""
+                    password = System.getenv("PUBLISH_TOKEN") ?: ""
+                }
+            }
+        }
     }
 }

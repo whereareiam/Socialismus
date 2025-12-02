@@ -5,7 +5,23 @@ on:
     types: [ created ]
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.details.outputs.name }}
+      version: ${{ steps.details.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract project details
+        id: details
+        run: |
+          echo "name=$(grep 'rootProject.name' settings.gradle.kts | awk -F "=" '{print $2}' | tr -d ' \"\n')" >> $GITHUB_OUTPUT
+          echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
   build:
+    needs: prepare
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -25,32 +41,53 @@ jobs:
           distribution: 'temurin'
           check-latest: true
 
-      - name: Extract project details
-        id: project_details
-        run: |
-          echo "NAME=$(grep 'rootProject.name' settings.gradle.kts | awk -F "=" '{print $2}' | tr -d ' \"\n')" >> $GITHUB_ENV
-          echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
       - name: Build project
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
         run: ./gradlew build shadowJar
 
       - name: Create output directory
         run: mkdir output
 
       - name: Move API
-        run: mv socialismus-common-api/build/libs/socialismus-common-api-${{ env.VERSION }}.jar output/${{ env.NAME }}-API-${{ env.VERSION }}.jar
+        run: mv socialismus-common-api/build/libs/socialismus-common-api-${{ needs.prepare.outputs.version }}.jar output/${{ needs.prepare.outputs.name }}-API-${{ needs.prepare.outputs.version }}.jar
 
       - name: Move platform jars
         run: |
-          mv build/libs/${{ env.NAME }}-${{ env.VERSION }}-PAPER.jar output/${{ env.NAME }}-PAPER-${{ env.VERSION }}.jar
-          mv build/libs/${{ env.NAME }}-${{ env.VERSION }}-BUKKIT.jar output/${{ env.NAME }}-BUKKIT-${{ env.VERSION }}.jar
-          mv build/libs/${{ env.NAME }}-${{ env.VERSION }}-VELOCITY.jar output/${{ env.NAME }}-VELOCITY-${{ env.VERSION }}.jar
+          mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}-PAPER.jar output/${{ needs.prepare.outputs.name }}-PAPER-${{ needs.prepare.outputs.version }}.jar
+          mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}-BUKKIT.jar output/${{ needs.prepare.outputs.name }}-BUKKIT-${{ needs.prepare.outputs.version }}.jar
+          mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}-VELOCITY.jar output/${{ needs.prepare.outputs.name }}-VELOCITY-${{ needs.prepare.outputs.version }}.jar
+
       - name: Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            output/${{ env.NAME }}-API-${{ env.VERSION }}.jar
-            output/${{ env.NAME }}-PAPER-${{ env.VERSION }}.jar
-            output/${{ env.NAME }}-BUKKIT-${{ env.VERSION }}.jar
-            output/${{ env.NAME }}-VELOCITY-${{ env.VERSION }}.jar
+            output/${{ needs.prepare.outputs.name }}-API-${{ needs.prepare.outputs.version }}.jar
+            output/${{ needs.prepare.outputs.name }}-PAPER-${{ needs.prepare.outputs.version }}.jar
+            output/${{ needs.prepare.outputs.name }}-BUKKIT-${{ needs.prepare.outputs.version }}.jar
+            output/${{ needs.prepare.outputs.name }}-VELOCITY-${{ needs.prepare.outputs.version }}.jar
+
+  publish:
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+          check-latest: true
+
+      - name: Publish API to Maven repository
+        env:
+          PUBLISH_USER: ${{ secrets.PUBLISH_USER }}
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+          PUBLISH_REALM: release
+        run: ./gradlew --no-daemon publish
