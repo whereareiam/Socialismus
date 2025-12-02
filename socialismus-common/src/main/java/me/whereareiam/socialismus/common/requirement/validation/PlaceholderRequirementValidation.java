@@ -4,11 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Logger;
 import me.whereareiam.socialismus.input.requirement.RequirementValidation;
+import me.whereareiam.socialismus.integration.Integration;
+import me.whereareiam.socialismus.integration.PlaceholderIntegration;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.type.PlaceholderRequirement;
-import me.whereareiam.socialismus.output.integration.Integration;
-import me.whereareiam.socialismus.output.integration.PlaceholderResolverIntegration;
 import me.whereareiam.socialismus.registry.ExtendedRegistry;
 import me.whereareiam.socialismus.type.requirement.RequirementType;
 
@@ -31,7 +31,7 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
 
 	@Override
 	public boolean check(Requirement requirement, SocialismusPlayer player) {
-		PlaceholderResolverIntegration resolver = findPlaceholderResolverIntegration();
+		PlaceholderIntegration resolver = findPlaceholderIntegration();
 		if (resolver == null || !(requirement instanceof PlaceholderRequirement pr))
 			return false;
 
@@ -39,20 +39,21 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
 		return checkCondition(pr, resolver, player);
 	}
 
-	private PlaceholderResolverIntegration findPlaceholderResolverIntegration() {
+	private PlaceholderIntegration findPlaceholderIntegration() {
 		return integrations.stream()
-				.filter(integration -> integration instanceof PlaceholderResolverIntegration)
-				.map(integration -> (PlaceholderResolverIntegration) integration)
+				.filter(integration -> integration instanceof PlaceholderIntegration)
+				.filter(Integration::isAvailable)
+				.map(integration -> (PlaceholderIntegration) integration)
 				.findFirst()
 				.orElse(null);
 	}
 
-	private boolean checkCondition(PlaceholderRequirement pr, PlaceholderResolverIntegration resolver, SocialismusPlayer player) {
+	private boolean checkCondition(PlaceholderRequirement pr, PlaceholderIntegration resolver, SocialismusPlayer player) {
 		List<String> placeholders = pr.getPlaceholders();
 		String[] expectedValues = pr.getExpected().split("\\|");
 
 		for (String placeholder : placeholders) {
-			String resolvedPlaceholder = resolver.format(player, placeholder);
+			String resolvedPlaceholder = resolver.resolve(player.getUniqueId(), placeholder);
 
 			for (String expected : expectedValues) {
 				boolean result = switch (pr.getCondition()) {

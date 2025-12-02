@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.output.integration;
+package me.whereareiam.socialismus.integration;
 
 /**
  * Base interface for all plugin integrations in the Socialismus plugin.

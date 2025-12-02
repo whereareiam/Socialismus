@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.integration.packetevents;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.output.integration.Integration;
+import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.registry.Registry;
 
 @Singleton

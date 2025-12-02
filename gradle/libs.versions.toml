@@ -9,6 +9,7 @@ lombok = "1.18.42"
 
 # general
 guice = "7.0.0"
+annotations = "26.0.1"
 attache = "dev-6254018"
 configura = "dev-a76adc6"
 keystone = "dev-697f401"
@@ -53,6 +54,7 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
+annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
 configura = { group = "me.whereareiam", name = "configura", version.ref = "configura" }
 keystone = { group = "me.whereareiam", name = "keystone", version.ref = "keystone" }
 commandant = { group = "me.whereareiam", name = "commandant", version.ref = "commandant" }
