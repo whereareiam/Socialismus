@@ -11,11 +11,11 @@ tasks.withType<ShadowJar> {
 }
 
 dependencies {
-    "implementation"(project(":socialismus-integration:integration-papiproxybridge"))
+	"implementation"(project(":socialismus-integration:integration-papiproxybridge"))
 
-    "compileOnly"(libs.bundles.velocity)
-    "compileOnly"(libs.cloud.velocity)
-    "annotationProcessor"(libs.velocity)
-    "implementation"(rootProject.libs.libby.velocity)
-    "implementation"(rootProject.libs.bundles.bStats.velocity)
+	"compileOnly"(libs.bundles.velocity)
+	"compileOnly"(libs.cloud.velocity)
+	"annotationProcessor"(libs.velocity)
+	"implementation"(rootProject.libs.attache.velocity)
+	"implementation"(rootProject.libs.bundles.bStats.velocity)
 }

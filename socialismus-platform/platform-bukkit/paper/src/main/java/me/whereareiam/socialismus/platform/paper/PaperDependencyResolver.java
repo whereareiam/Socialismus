@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.platform.paper;
 
-import com.alessiodp.libby.Library;
-import com.alessiodp.libby.PaperLibraryManager;
+import me.whereareiam.attache.model.Library;
+import me.whereareiam.attache.platform.paper.PaperLibraryManager;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.CommonDependencyResolver;
 import org.bukkit.plugin.Plugin;
@@ -15,7 +15,7 @@ public class PaperDependencyResolver extends CommonDependencyResolver {
 	public void resolveDependencies() {
 		super.resolveDependencies();
 
-		libraries.forEach(libraryManager::loadLibrary);
+		libraryManager.loadLibraries(libraries);
 		clearDependencies();
 	}
 

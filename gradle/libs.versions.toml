@@ -8,9 +8,8 @@ lombok = "1.18.42"
 
 # general
 guice = "7.0.0"
-libby = "2.0.1"
+attache = "dev-6254018"
 configura = "dev-a76adc6"
-attache = "dev-5fad19f"
 keystone = "dev-697f401"
 commandant = "dev-5f99bce"
 
@@ -58,7 +57,9 @@ keystone = { group = "me.whereareiam", name = "keystone", version.ref = "keyston
 commandant = { group = "me.whereareiam", name = "commandant", version.ref = "commandant" }
 
 # attache
+attache-bukkit = { group = "me.whereareiam", name = "attache-bukkit", version.ref = "attache" }
 attache-paper = { group = "me.whereareiam", name = "attache-paper", version.ref = "attache" }
+attache-velocity = { group = "me.whereareiam", name = "attache-velocity", version.ref = "attache" }
 attache-common = { group = "me.whereareiam", name = "attache-common", version.ref = "attache" }
 
 # resources
@@ -75,12 +76,6 @@ papiProxyBridge = { group = "net.william278", name = "papiproxybridge", version.
 bStats = { group = "org.bstats", name = "bstats-base", version.ref = "bStats" }
 bStats-velocity = { group = "org.bstats", name = "bstats-velocity", version.ref = "bStats" }
 bStats-bukkit = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bStats" }
-
-# libby
-libby-core = { group = "com.github.whereareiam.libby", name = "libby-core", version.ref = "libby" }
-libby-bukkit = { group = "com.github.whereareiam.libby", name = "libby-bukkit", version.ref = "libby" }
-libby-paper = { group = "com.github.whereareiam.libby", name = "libby-paper", version.ref = "libby" }
-libby-velocity = { group = "com.github.whereareiam.libby", name = "libby-velocity", version.ref = "libby" }
 
 # adventure
 adventure = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }

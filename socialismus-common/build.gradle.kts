@@ -4,7 +4,5 @@ repositories {
 
 dependencies {
     "compileOnly"(project(":socialismus-common-api"))
-    "implementation"(libs.libby.core)
-
     "compileOnly"(libs.bundles.adventure)
 }

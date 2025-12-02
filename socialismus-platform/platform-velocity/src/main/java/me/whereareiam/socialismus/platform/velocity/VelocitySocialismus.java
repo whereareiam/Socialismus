@@ -56,7 +56,7 @@ public class VelocitySocialismus {
 		PluginType.setPluginType(PluginType.VELOCITY);
 		VelocityLoggingHelper.setLogger(logger);
 
-		VelocityDependencyResolver dependencyResolver = new VelocityDependencyResolver(this, logger, dataPath, proxyServer.getPluginManager());
+		VelocityDependencyResolver dependencyResolver = new VelocityDependencyResolver(proxyServer, pluginContainer, logger, dataPath);
 		dependencyResolver.loadLibraries();
 		dependencyResolver.resolveDependencies();
 
