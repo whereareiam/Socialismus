@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.common;
 import me.whereareiam.attache.LibraryManager;
 import me.whereareiam.attache.model.Library;
 import me.whereareiam.attache.model.Relocation;
+import me.whereareiam.attache.type.VerbosityMode;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.input.DependencyResolver;
 
@@ -15,6 +16,8 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 
 	@Override
 	public void resolveDependencies() {
+		libraryManager.setVerbosityMode(VerbosityMode.QUIET);
+
 		libraryManager.addMavenCentral();
 		libraryManager.addRepository("https://maven.whereareiam.me/release");
 		libraryManager.addRepository("https://maven.whereareiam.me/development");

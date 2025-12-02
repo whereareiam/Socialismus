@@ -55,6 +55,13 @@ public class ChatBroadcaster {
 	}
 
 	public TextReplacementConfig createClearReplacement(FormattedChatMessage formattedChatMessage, UUID recipientUniqueId) {
+		// Handle non-player viewers (console, command blocks, etc.)
+		if (recipientUniqueId == null)
+			return TextReplacementConfig.builder()
+					.matchLiteral("{clear}")
+					.replacement(Component.empty())
+					.build();
+		
 		SocialismusPlayer sender = formattedChatMessage.getSender();
 		Optional<SocialismusPlayer> recipient = playerRegistry.getPlayerData(recipientUniqueId);
 

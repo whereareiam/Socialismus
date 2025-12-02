@@ -74,7 +74,6 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 
 		Event event = Event.builder().register(true).priority(EventPriority.LOWEST).build();
 
-		priorities.put("org.bukkit.event.player.PlayerLoginEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerJoinEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerQuitEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerChangedWorldEvent", event);
@@ -97,8 +96,6 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 			priorities.put("io.papermc.paper.event.connection.configuration.PlayerConnectionInitialConfigureEvent", event);
 			return priorities;
 		}
-
-		priorities.put("org.bukkit.event.player.PlayerLoginEvent", event);
 
 		return priorities;
 	}
