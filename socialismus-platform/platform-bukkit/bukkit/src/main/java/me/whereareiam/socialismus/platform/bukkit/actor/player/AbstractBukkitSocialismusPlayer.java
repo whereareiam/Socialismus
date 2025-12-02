@@ -1,40 +1,27 @@
 package me.whereareiam.socialismus.platform.bukkit.actor.player;
 
 import lombok.Getter;
-import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.position.Position;
+import me.whereareiam.socialismus.platform.AbstractBukkitPlayerBase;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Abstract base class for all Bukkit SocialismusPlayer implementations.
- * Provides common functionality for wrapping Bukkit Players.
+ * Provides Bukkit-specific functionality for wrapping Bukkit Players and
+ * integrates with Adventure via {@link BukkitAudiences}.
+ * <p>
+ * Shared Bukkit-only player logic lives in {@link AbstractBukkitPlayerBase}.
  */
 @Getter
-public abstract class AbstractBukkitSocialismusPlayer extends SocialismusPlayer {
-	/**
-	 * The underlying Bukkit player instance
-	 */
-	@NotNull
-	private final Player bukkitPlayer;
-	
+public abstract class AbstractBukkitSocialismusPlayer extends AbstractBukkitPlayerBase {
 	/**
 	 * The BukkitAudiences instance for Adventure API support
 	 */
 	@NotNull
 	private final BukkitAudiences audiences;
-
-	/**
-	 * The player's current location (world name).
-	 * This is backend-specific and can be updated when the player changes worlds.
-	 */
-	@Nullable
-	private String location;
 
 	/**
 	 * Creates a new AbstractBukkitSocialismusPlayer wrapping a Bukkit player.
@@ -43,13 +30,8 @@ public abstract class AbstractBukkitSocialismusPlayer extends SocialismusPlayer 
 	 * @param audiences    The BukkitAudiences instance for Adventure API support
 	 */
 	protected AbstractBukkitSocialismusPlayer(@NotNull Player bukkitPlayer, @NotNull BukkitAudiences audiences) {
-		super(
-				bukkitPlayer.getUniqueId(),
-				bukkitPlayer.getName()
-		);
-		this.bukkitPlayer = bukkitPlayer;
+		super(bukkitPlayer);
 		this.audiences = audiences;
-		this.location = bukkitPlayer.getWorld().getName();
 	}
 
 	@Override
@@ -67,53 +49,4 @@ public abstract class AbstractBukkitSocialismusPlayer extends SocialismusPlayer 
 	public Audience getAudience() {
 		return audiences.player(bukkitPlayer);
 	}
-
-	@Override
-	@Nullable
-	public String getLocation() {
-		// Return cached location, or get it from the player if available
-		if (location != null) {
-			return location;
-		}
-		// Fallback to getting it directly from the player
-		return bukkitPlayer.getWorld().getName();
-	}
-
-	@Override
-	@Nullable
-	public String getServer() {
-		// Not applicable on backend servers
-		return null;
-	}
-
-	@Override
-	public void setLocation(@Nullable String location) {
-		this.location = location;
-	}
-
-	@Override
-	@Nullable
-	public Position getPosition() {
-		Location loc = bukkitPlayer.getLocation();
-		return new Position(loc.getX(), loc.getY(), loc.getZ());
-	}
-
-	@Override
-	@Nullable
-	public Position getEyePosition() {
-		Location loc = bukkitPlayer.getEyeLocation();
-		return new Position(loc.getX(), loc.getY(), loc.getZ());
-	}
-
-	@Override
-	public boolean isWithinRange(@NotNull SocialismusPlayer other, double range) {
-		if (!(other instanceof AbstractBukkitSocialismusPlayer otherBukkit)) return false;
-		Player otherPlayer = otherBukkit.getBukkitPlayer();
-
-		// Check if both players are in the same world before measuring distance
-		if (!bukkitPlayer.getWorld().equals(otherPlayer.getWorld())) return false;
-		
-		return bukkitPlayer.getLocation().distanceSquared(otherPlayer.getLocation()) <= range * range;
-	}
 }
-
