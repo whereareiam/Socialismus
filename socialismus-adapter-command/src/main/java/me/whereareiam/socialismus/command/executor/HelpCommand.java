@@ -11,9 +11,9 @@ import me.whereareiam.commandant.model.CommandDefinition;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
-import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import me.whereareiam.socialismus.registry.base.Registry;
+import me.whereareiam.socialismus.service.CommandService;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.annotation.specifier.Range;
@@ -28,22 +28,23 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class HelpCommand implements Reloadable {
-	private final Provider<Commands> commandsProvider;
 	private final Provider<Messages> messagesProvider;
 	private final Provider<CommandManager<Actor>> commandManagerProvider;
+	private final CommandService commandService;
 
 	private HelpBuilder<Actor> helpBuilder;
+	private Map<String, String> cachedArgumentDescriptions;
 
 	@Inject
 	public HelpCommand(
-			@NotNull Provider<Commands> commandsProvider,
 			@NotNull Provider<Messages> messagesProvider,
 			@NotNull Provider<CommandManager<Actor>> commandManagerProvider,
+			@NotNull CommandService commandService,
 			@NotNull Registry<Reloadable> reloadableRegistry
 	) {
-		this.commandsProvider = commandsProvider;
 		this.messagesProvider = messagesProvider;
 		this.commandManagerProvider = commandManagerProvider;
+		this.commandService = commandService;
 		reloadableRegistry.register(this);
 	}
 
@@ -70,7 +71,7 @@ public class HelpCommand implements Reloadable {
 
 			helpBuilder = Help.create(
 					messages.getCommands().getHelp(),
-					collectArgumentDescriptions(),
+					getArgumentDescriptions(),
 					Pagination.create(messages.getCommands().getPagination()),
 					messages.getCommands().getHelp().getCommandsPerPage(),
 					true
@@ -80,8 +81,18 @@ public class HelpCommand implements Reloadable {
 	}
 
 	@NotNull
+	private Map<String, String> getArgumentDescriptions() {
+		// Cache argument descriptions to avoid rebuilding on every help builder creation
+		if (cachedArgumentDescriptions == null)
+			cachedArgumentDescriptions = collectArgumentDescriptions();
+
+		return cachedArgumentDescriptions;
+	}
+
+	@NotNull
 	private Map<String, String> collectArgumentDescriptions() {
-		return commandsProvider.get().getCommands().values().stream()
+		// Collect from all registered definitions (core + modules)
+		return commandService.getRegisteredDefinitions().values().stream()
 				.map(CommandDefinition::getArguments)
 				.filter(map -> map != null && !map.isEmpty())
 				.flatMap(map -> map.entrySet().stream())
@@ -111,5 +122,6 @@ public class HelpCommand implements Reloadable {
 	@Override
 	public void reload() {
 		helpBuilder = null;
+		cachedArgumentDescriptions = null;
 	}
 }

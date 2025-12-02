@@ -20,6 +20,15 @@ public interface CommandService {
 	int getCommandCount();
 
 	/**
+	 * Gets all registered command definitions from modules and core.
+	 * This includes both config-based commands and programmatically registered commands.
+	 *
+	 * @return map of definition keys to CommandDefinition objects
+	 */
+	@NotNull
+	Map<String, CommandDefinition> getRegisteredDefinitions();
+
+	/**
 	 * Registers a command with its definition from external API users (e.g., modules).
 	 * The command class should contain Cloud annotations (@Command, @Definition, etc.)
 	 * that define the command structure. The instance will be created through dependency injection.

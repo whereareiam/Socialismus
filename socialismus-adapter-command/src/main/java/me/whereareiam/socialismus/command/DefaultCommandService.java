@@ -112,6 +112,20 @@ public class DefaultCommandService implements CommandService {
 		return commandManagerProvider.get().commands().size();
 	}
 
+	@Override
+	@NotNull
+	public Map<String, CommandDefinition> getRegisteredDefinitions() {
+		// Combine config-based and programmatically registered definitions
+		Map<String, CommandDefinition> allDefinitions = new HashMap<>(registeredDefinitions);
+		
+		// Add config-based definitions (if not already overridden by registered ones)
+		Commands commands = commandsProvider.get();
+		if (commands != null && commands.getCommands() != null)
+			commands.getCommands().forEach(allDefinitions::putIfAbsent);
+		
+		return allDefinitions;
+	}
+
 	public void initialize() {
 		CommandManager<Actor> commandManager = commandManagerProvider.get();
 		Function<String, CommandDefinition> definitionLookup = this::lookupDefinition;
