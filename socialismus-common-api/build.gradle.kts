@@ -39,10 +39,10 @@ publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
-            artifactId = "socialismus-api"
+            artifactId = "Socialismus"
             pom {
-                name.set("socialismus-api")
-                description.set("Public API for Socialismus - Minecraft chat management plugin")
+                name.set("Socialismus")
+                description.set("Public API for Socialismus - Minecraft communication management plugin")
             }
         }
     }
