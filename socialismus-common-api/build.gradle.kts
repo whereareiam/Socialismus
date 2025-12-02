@@ -1,5 +1,6 @@
 plugins {
     id("maven-publish")
+    alias(libs.plugins.buildconfig)
 }
 
 repositories {
@@ -8,8 +9,26 @@ repositories {
 
 dependencies {
     "compileOnly"(libs.bundles.adventure)
-    "compileOnly"(libs.libby.core)
+    "compileOnly"(libs.attache.common)
     "compileOnly"(libs.ormlite)
+}
+
+buildConfig {
+    packageName("me.whereareiam.socialismus")
+
+    // Add basic project info
+    buildConfigField("String", "NAME", "\"${rootProject.name}\"")
+    buildConfigField("String", "VERSION", "\"${rootProject.version}\"")
+
+    // Automatically expose all versions from the version catalog
+    val catalog = rootProject.extensions.getByType<VersionCatalogsExtension>().named("libs")
+    catalog.versionAliases.forEach { alias ->
+        val version = catalog.findVersion(alias).get().toString()
+        // Convert alias to valid Java constant name (e.g., "adventure-platform-bukkit" -> "ADVENTURE_PLATFORM_BUKKIT")
+        // Replace both dashes and dots with underscores
+        val fieldName = alias.replace("-", "_").replace(".", "_").uppercase()
+        buildConfigField("String", fieldName, "\"$version\"")
+    }
 }
 
 java {
@@ -35,29 +54,4 @@ tasks.withType<Javadoc> {
         title = "Socialismus API"
         windowTitle = "Socialismus API"
     }
-}
-
-tasks.register<Copy>("processSources") {
-    from("src/main/java")
-    into(layout.buildDirectory.dir("processed-src").get().asFile)
-    include("**/*.java")
-    filter { line ->
-        line.replace("@name@", rootProject.name)
-            .replace("@version@", rootProject.version.toString().uppercase())
-            .replace("@guiceVersion@", rootProject.libs.versions.guice.get())
-            .replace("@configuraVersion@", rootProject.libs.versions.configura.get())
-            .replace("@jedisVersion@", rootProject.libs.versions.jedis.get())
-            .replace("@adventureVersion@", rootProject.libs.versions.adventure.minimessage.get())
-            .replace("@adventureBukkitVersion@", rootProject.libs.versions.adventure.platform.bukkit.get())
-            .replace("@cloudVersion@", rootProject.libs.versions.cloud.core.get())
-            .replace("@cloudCooldownVersion@", rootProject.libs.versions.cloud.cooldown.get())
-            .replace("@cloudPaperVersion@", rootProject.libs.versions.cloud.paper.get())
-            .replace("@cloudVelocityVersion@", rootProject.libs.versions.cloud.velocity.get())
-            .replace("@cloudMinecraftExtrasVersion@", rootProject.libs.versions.cloud.minecraft.extras.get())
-    }
-}
-
-tasks.named<JavaCompile>("compileJava") {
-    dependsOn("processSources")
-    source = fileTree(layout.buildDirectory.dir("processed-src").get().asFile)
 }

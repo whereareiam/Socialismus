@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.common.config.dynamic;
 
 import lombok.Getter;
-import me.whereareiam.socialismus.api.model.chat.Chat;
+import me.whereareiam.socialismus.model.chat.Chat;
 
 import java.util.ArrayList;
 import java.util.List;

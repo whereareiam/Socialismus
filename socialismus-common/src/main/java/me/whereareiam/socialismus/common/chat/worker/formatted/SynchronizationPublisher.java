@@ -3,13 +3,13 @@ package me.whereareiam.socialismus.common.chat.worker.formatted;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.input.sync.ChatSyncBus;
-import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.model.chat.ChatSettings;
-import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.Worker;
+import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 
 @Singleton
 public class SynchronizationPublisher {

@@ -1,10 +1,11 @@
 package me.whereareiam.socialismus.common;
 
-import com.alessiodp.libby.Library;
-import com.alessiodp.libby.LibraryManager;
-import com.alessiodp.libby.relocation.Relocation;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.input.DependencyResolver;
+import me.whereareiam.attache.LibraryManager;
+import me.whereareiam.attache.model.Library;
+import me.whereareiam.attache.model.Relocation;
+import me.whereareiam.attache.type.VerbosityMode;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.service.DependencyResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,10 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 
 	@Override
 	public void resolveDependencies() {
+		libraryManager.setVerbosityMode(VerbosityMode.QUIET);
+
 		libraryManager.addMavenCentral();
+		libraryManager.addRepository("https://maven.whereareiam.me/release");
 		libraryManager.addRepository("https://maven.whereareiam.me/development");
 	}
 
@@ -27,16 +31,16 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 				.artifactId("guice")
 				.version(Constants.Dependency.GUICE)
 				.resolveTransitiveDependencies(true)
-				.relocate(
+				.relocations(List.of(
 						Relocation.builder()
 								.pattern("com{}google{}inject")
 								.relocatedPattern("me.whereareiam.socialismus.library.guice")
-								.build()
-				).relocate(
+								.build(),
 						Relocation.builder()
 								.pattern("com{}google{}common")
 								.relocatedPattern("me.whereareiam.socialismus.library.guava")
 								.build()
+						)
 				).build());
 
 		addDependency(Library.builder()
@@ -44,17 +48,31 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 				.artifactId("configura")
 				.version(Constants.Dependency.CONFIGURA)
 				.resolveTransitiveDependencies(true)
-				.relocate(
+				.relocations(List.of(
 						Relocation.builder()
 								.pattern("com{}fasterxml{}jackson")
 								.relocatedPattern("me.whereareiam.socialismus.library.jackson")
-								.build()
-				).relocate(
+								.build(),
 						Relocation.builder()
 								.pattern("org{}yaml{}snakeyaml")
 								.relocatedPattern("me.whereareiam.socialismus.library.snakeyaml")
 								.build()
+						)
 				).build());
+
+		addDependency(Library.builder()
+				.groupId("me.whereareiam")
+				.artifactId("keystone")
+				.version(Constants.Dependency.KEYSTONE)
+				.resolveTransitiveDependencies(true)
+				.build());
+
+		addDependency(Library.builder()
+				.groupId("me.whereareiam")
+				.artifactId("commandant")
+				.version(Constants.Dependency.COMMANDANT)
+				.resolveTransitiveDependencies(true)
+				.build());
 
 		// Jedis
 		addDependency(Library.builder()

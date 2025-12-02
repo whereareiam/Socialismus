@@ -3,10 +3,10 @@ package me.whereareiam.socialismus.platform.paper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
-import me.whereareiam.socialismus.api.model.scheduler.DelayedRunnableTask;
-import me.whereareiam.socialismus.api.model.scheduler.PeriodicalRunnableTask;
-import me.whereareiam.socialismus.api.model.scheduler.RunnableTask;
-import me.whereareiam.socialismus.api.output.Scheduler;
+import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
+import me.whereareiam.socialismus.model.scheduler.PeriodicalRunnableTask;
+import me.whereareiam.socialismus.model.scheduler.RunnableTask;
+import me.whereareiam.socialismus.service.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 

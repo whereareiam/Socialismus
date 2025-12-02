@@ -7,7 +7,7 @@ import me.whereareiam.configura.Config;
 import me.whereareiam.configura.reader.ConfigReader;
 import me.whereareiam.configura.type.Format;
 import me.whereareiam.configura.writer.ConfigWriter;
-import me.whereareiam.socialismus.api.output.SerializationService;
+import me.whereareiam.socialismus.service.SerializationService;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})

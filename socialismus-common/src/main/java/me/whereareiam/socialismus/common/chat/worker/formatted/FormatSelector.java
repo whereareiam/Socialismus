@@ -3,16 +3,16 @@ package me.whereareiam.socialismus.common.chat.worker.formatted;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.model.chat.ChatFormat;
-import me.whereareiam.socialismus.api.model.chat.ChatMessages;
-import me.whereareiam.socialismus.api.model.chat.ChatSettings;
-import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.api.type.chat.Participants;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.Worker;
+import me.whereareiam.socialismus.model.chat.ChatFormat;
+import me.whereareiam.socialismus.model.chat.ChatMessages;
+import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.type.chat.Participants;
 
 @Singleton
 public class FormatSelector {

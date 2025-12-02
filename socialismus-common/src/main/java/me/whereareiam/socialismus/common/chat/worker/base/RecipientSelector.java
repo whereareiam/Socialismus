@@ -3,28 +3,24 @@ package me.whereareiam.socialismus.common.chat.worker.base;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.input.WorkerProcessor;
-import me.whereareiam.socialismus.api.input.event.chat.recipient.RecipientsSelectedEvent;
-import me.whereareiam.socialismus.api.model.Worker;
-import me.whereareiam.socialismus.api.model.chat.Chat;
-import me.whereareiam.socialismus.api.model.chat.ChatMessages;
-import me.whereareiam.socialismus.api.model.chat.ChatSettings;
-import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.model.serializer.SerializerContent;
-import me.whereareiam.socialismus.api.model.serializer.SerializerPlaceholder;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.type.PlatformType;
-import me.whereareiam.socialismus.api.type.chat.Participants;
-import me.whereareiam.socialismus.api.util.EventUtil;
+import me.whereareiam.keystone.model.SerializerContent;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
+import me.whereareiam.socialismus.event.chat.recipient.RecipientsSelectedEvent;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.Worker;
+import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.model.chat.ChatMessages;
+import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.chat.Participants;
+import me.whereareiam.socialismus.util.EventUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -32,20 +28,17 @@ public class RecipientSelector {
 	private final RequirementEvaluator requirementEvaluator;
 	private final Provider<ChatSettings> settingsProvider;
 	private final Provider<ChatMessages> messagesProvider;
-	private final PlatformInteractor interactor;
 
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<ChatMessage> workerProcessor,
 			RequirementEvaluator requirementEvaluator,
 			Provider<ChatSettings> settings,
-			Provider<ChatMessages> messages,
-			PlatformInteractor interactor
+			Provider<ChatMessages> messages
 	) {
 		this.requirementEvaluator = requirementEvaluator;
 		this.settingsProvider = settings;
 		this.messagesProvider = messages;
-		this.interactor = interactor;
 
 		workerProcessor.addWorker(new Worker<>(this::selectRecipients, 100, true, false));
 	}
@@ -57,13 +50,13 @@ public class RecipientSelector {
 		}
 
 		final Chat chat = chatMessage.getChat();
-		final DummyPlayer sender = chatMessage.getSender();
+		final SocialismusPlayer sender = chatMessage.getSender();
 		final ChatSettings settings = settingsProvider.get();
 		final ChatMessages messages = messagesProvider.get();
 
 		final int beforeCount = chatMessage.getRecipients().size();
 
-		Set<DummyPlayer> recipients = chatMessage.getRecipients();
+		Collection<SocialismusPlayer> recipients = chatMessage.getRecipients();
 
 		final int radius = determineRadius(chatMessage, chat);
 
@@ -89,7 +82,7 @@ public class RecipientSelector {
 		RecipientsSelectedEvent event = new RecipientsSelectedEvent(chatMessage, recipients, chatMessage.isCancelled());
 		EventUtil.callEvent(event, () -> chatMessage.setRecipients(event.getNewRecipients()));
 
-		Set<DummyPlayer> finalRecipients = event.getNewRecipients();
+		Collection<SocialismusPlayer> finalRecipients = event.getNewRecipients();
 		Logger.debug("Recipients before: " + beforeCount + ", after: " + finalRecipients.size());
 
 		if (finalRecipients.isEmpty()) {
@@ -120,7 +113,7 @@ public class RecipientSelector {
 		return 0;
 	}
 
-	private boolean meetsRecipientRequirements(Chat chat, DummyPlayer recipient) {
+	private boolean meetsRecipientRequirements(Chat chat, SocialismusPlayer recipient) {
 		if (chat.getRequirements() == null) return true;
 		var req = chat.getRequirements().get(Participants.RECIPIENT);
 		if (req == null) return true;
@@ -128,22 +121,24 @@ public class RecipientSelector {
 		return requirementEvaluator.check(req, recipient);
 	}
 
-	private boolean isInSameRealm(DummyPlayer sender, DummyPlayer recipient) {
+	private boolean isInSameRealm(SocialismusPlayer sender, SocialismusPlayer recipient) {
 		if (PlatformType.isProxy())
 			return Objects.equals(recipient.getServer(), sender.getServer());
 
 		return Objects.equals(recipient.getLocation(), sender.getLocation());
 	}
 
-	private boolean isWithinRadius(DummyPlayer sender, DummyPlayer recipient, double radius) {
-		return interactor.areWithinRange(sender.getUniqueId(), recipient.getUniqueId(), radius);
+	private boolean isWithinRadius(SocialismusPlayer sender, SocialismusPlayer recipient, double radius) {
+		return sender.isWithinRange(recipient, radius);
 	}
 
-	private void sendNoNearbyPlayersMessage(DummyPlayer sender, int radius, ChatMessages messages) {
-		List<SerializerPlaceholder> placeholders = new ArrayList<>(1);
-		placeholders.add(new SerializerPlaceholder("{radius}", String.valueOf(radius)));
+	private void sendNoNearbyPlayersMessage(SocialismusPlayer sender, int radius, ChatMessages messages) {
 		sender.sendMessage(Serializer.serialize(
-				new SerializerContent(sender, placeholders, messages.getNoNearbyPlayers())
+				SerializerContent.builder()
+						.receiver(sender)
+						.message(messages.getNoNearbyPlayers())
+						.placeholder("{radius}", String.valueOf(radius))
+						.build()
 		));
 	}
 }

@@ -2,10 +2,10 @@ package me.whereareiam.socialismus.common;
 
 import com.google.inject.Provider;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.model.config.Settings;
-import me.whereareiam.socialismus.api.output.listener.ListenerRegistrar;
-import me.whereareiam.socialismus.api.type.EventPriority;
+import me.whereareiam.socialismus.listener.ListenerRegistrar;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.type.EventPriority;
 
 @RequiredArgsConstructor
 public abstract class CommonListenerRegistrar implements ListenerRegistrar {

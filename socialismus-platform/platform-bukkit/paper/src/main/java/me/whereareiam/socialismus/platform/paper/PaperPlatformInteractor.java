@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.platform.paper;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.type.BroadcastTarget;
+import me.whereareiam.socialismus.type.BroadcastTarget;
 import me.whereareiam.socialismus.platform.AbstractPlatformInteractor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

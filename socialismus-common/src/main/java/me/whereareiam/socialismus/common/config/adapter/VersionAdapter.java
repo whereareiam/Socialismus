@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.common.config.adapter;
 
 import me.whereareiam.configura.TypeAdapter;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.type.Version;
 
 public class VersionAdapter implements TypeAdapter<Version> {
 	@Override

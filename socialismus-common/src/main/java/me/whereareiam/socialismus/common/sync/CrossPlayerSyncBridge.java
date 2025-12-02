@@ -3,21 +3,21 @@ package me.whereareiam.socialismus.common.sync;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.input.event.EventListener;
-import me.whereareiam.socialismus.api.input.event.EventManager;
-import me.whereareiam.socialismus.api.input.event.base.SocialisticEvent;
-import me.whereareiam.socialismus.api.input.event.player.DummyPlayerAddedEvent;
-import me.whereareiam.socialismus.api.input.event.player.DummyPlayerRemovedEvent;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.resource.CacheService;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.event.EventListener;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.SocialisticEvent;
+import me.whereareiam.socialismus.event.player.SocialismusPlayerAddedEvent;
+import me.whereareiam.socialismus.event.player.SocialismusPlayerRemovedEvent;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.service.resource.CacheService;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Keeps a distributed Redis Set of all online player names.
- * Key format: <plugin-identifier>:players  (e.g. "socialismus:players")
+ * Key format: <plugin-identifier>:players (e.g. "socialismus:players")
  */
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
@@ -26,22 +26,22 @@ public final class CrossPlayerSyncBridge implements EventListener {
 
 	private final CacheService cache;
 	private final EventManager eventManager;
-	private final PlayerContainerService localPlayers;
+	private final PlayerRegistry localPlayersRegistry;
 
 	public void initialize() {
 		eventManager.register(this);
 
-		Set<DummyPlayer> current = localPlayers.getPlayers();
+		Collection<SocialismusPlayer> current = localPlayersRegistry.getPlayers();
 		current.forEach(p -> cache.add(SET_KEY, p.getUsername()));
 	}
 
 	@SocialisticEvent
-	public void onDummyPlayerAdd(DummyPlayerAddedEvent event) {
-		cache.add(SET_KEY, event.getDummyPlayer().getUsername());
+	public void onSocialismusPlayerAdd(SocialismusPlayerAddedEvent event) {
+		cache.add(SET_KEY, event.getPlayer().getUsername());
 	}
 
 	@SocialisticEvent
-	public void onDummyPlayerRemove(DummyPlayerRemovedEvent event) {
-		cache.remove(SET_KEY, event.getDummyPlayer().getUsername());
+	public void onSocialismusPlayerRemove(SocialismusPlayerRemovedEvent event) {
+		cache.remove(SET_KEY, event.getPlayer().getUsername());
 	}
 }

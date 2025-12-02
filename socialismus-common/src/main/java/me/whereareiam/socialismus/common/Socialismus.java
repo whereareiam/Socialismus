@@ -3,25 +3,7 @@ package me.whereareiam.socialismus.common;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.input.event.EventListener;
-import me.whereareiam.socialismus.api.input.event.EventManager;
-import me.whereareiam.socialismus.api.input.event.base.SocialisticEvent;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginBootstrappedEvent;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginReadyEvent;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginShutdownEvent;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginInitializedEvent;
-import me.whereareiam.socialismus.api.input.serializer.ComponentService;
-import me.whereareiam.socialismus.api.model.chat.ChatMessages;
-import me.whereareiam.socialismus.api.model.chat.ChatSettings;
-import me.whereareiam.socialismus.api.output.LoggingHelper;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.command.CommandService;
-import me.whereareiam.socialismus.api.output.listener.ListenerRegistrar;
-import me.whereareiam.socialismus.api.output.module.ModuleService;
-import me.whereareiam.socialismus.api.util.EventUtil;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.chat.worker.base.ChatSelector;
 import me.whereareiam.socialismus.common.chat.worker.base.RecipientResolver;
 import me.whereareiam.socialismus.common.chat.worker.base.RecipientSelector;
@@ -29,13 +11,26 @@ import me.whereareiam.socialismus.common.chat.worker.formatted.FormatSelector;
 import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.printer.WelcomeBannerPrinter;
 import me.whereareiam.socialismus.common.updater.UpdateScheduler;
+import me.whereareiam.socialismus.event.EventListener;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.SocialisticEvent;
+import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
+import me.whereareiam.socialismus.event.plugin.PluginInitializedEvent;
+import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
+import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
+import me.whereareiam.socialismus.listener.ListenerRegistrar;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.logging.LoggingHelper;
+import me.whereareiam.socialismus.model.chat.ChatMessages;
+import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.module.ModuleService;
+import me.whereareiam.socialismus.service.CommandService;
+import me.whereareiam.socialismus.service.PlatformInteractor;
+import me.whereareiam.socialismus.util.EventUtil;
 
 /**
  * Core lifecycle coordinator for the Socialismus plugin.
- * <p>
- * This class mirrors the Intercept startup structure by reacting to
- * high-level lifecycle events instead of being called directly from
- * platform entrypoints.
  */
 @Singleton
 public final class Socialismus implements EventListener {
@@ -56,7 +51,9 @@ public final class Socialismus implements EventListener {
 	public void onPluginBootstrapped(PluginBootstrappedEvent event) {
 		Constants.SERVER_VERSION = injector.getInstance(PlatformInteractor.class).getServerVersion();
 		Logger.init(injector.getInstance(LoggingHelper.class));
-		Serializer.init(injector.getInstance(ComponentService.class));
+
+		// Load settings early
+		injector.getInstance(Settings.class);
 	}
 
 	@SocialisticEvent
@@ -70,7 +67,7 @@ public final class Socialismus implements EventListener {
 		injector.getInstance(ChatMessages.class);
 		injector.getInstance(ChatSettings.class);
 
-		injector.getInstance(CommandService.class).initialize();
+		injector.getInstance(CommandService.class);
 		injector.getInstance(ModuleService.class).loadModules();
 		injector.getInstance(ListenerRegistrar.class).registerListeners();
 

@@ -15,7 +15,7 @@ subprojects {
     tasks.withType<ShadowJar> {
         archiveBaseName.set(rootProject.name)
 
-        relocate("com.alessiodp.libby", "me.whereareiam.socialismus.library.libby")
+        relocate("me.whereareiam.attache", "me.whereareiam.socialismus.library.attache")
         relocate("org.bstats", "me.whereareiam.socialismus.library.bStats")
 
         relocate("com.fasterxml.jackson", "me.whereareiam.socialismus.library.jackson")

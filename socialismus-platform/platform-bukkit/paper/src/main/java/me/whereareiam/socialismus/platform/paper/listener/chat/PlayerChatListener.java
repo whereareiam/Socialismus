@@ -4,14 +4,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.input.sync.ChatSyncBus;
-import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.api.output.listener.DynamicListener;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatMessageFactory;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
+import me.whereareiam.socialismus.listener.DynamicListener;
+import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.platform.paper.renderer.SocialismusRenderer;
+import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
 

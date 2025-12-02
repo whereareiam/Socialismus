@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.platform.velocity;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.plugin.PluginContainer;
-import me.whereareiam.socialismus.api.output.PlatformClassLoader;
+import me.whereareiam.socialismus.module.PlatformClassLoader;
 
 @Singleton
 public class VelocityClassLoader implements PlatformClassLoader {

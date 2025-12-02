@@ -1,10 +1,10 @@
 package me.whereareiam.socialismus.common.event;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.input.event.EventListener;
-import me.whereareiam.socialismus.api.input.event.EventManager;
-import me.whereareiam.socialismus.api.input.event.base.*;
+import me.whereareiam.socialismus.event.EventListener;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.*;
+import me.whereareiam.socialismus.logging.Logger;
 
 import java.lang.reflect.Method;
 import java.util.*;

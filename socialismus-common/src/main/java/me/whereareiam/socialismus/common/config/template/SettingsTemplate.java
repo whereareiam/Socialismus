@@ -2,13 +2,12 @@ package me.whereareiam.socialismus.common.config.template;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.TemplateProvider;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.model.Event;
-import me.whereareiam.socialismus.api.model.config.Settings;
-import me.whereareiam.socialismus.api.type.EventPriority;
-import me.whereareiam.socialismus.api.type.PlatformType;
-import me.whereareiam.socialismus.api.type.SerializationType;
-import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.model.Event;
+import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.type.EventPriority;
+import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.Version;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,11 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 	public Settings supply(Settings settings) {
 		// Default values
 		settings.setLevel(2);
-		settings.setSerializer(SerializationType.MINIMESSAGE);
+
+		Settings.Serialization serialization = new Settings.Serialization();
+		serialization.setType("MINIMESSAGE");
+		serialization.setEnableLegacyColors(false);
+		settings.setSerialization(serialization);
 
 		Settings.Synchronization synchronization = new Settings.Synchronization();
 		synchronization.setEnabled(false);
@@ -30,15 +33,18 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 
 		settings.setSynchronization(synchronization);
 
-		Settings.Miscellaneous misc = new Settings.Miscellaneous();
-		misc.setDisableJoinNotification(true);
-		misc.setDisableQuitNotification(true);
-		misc.setAllowLegacyParsing(false);
-		misc.setAllowBrigadierCommands(false);
-		misc.setVanillaSending(true);
-		misc.setCommandsPerPage(7);
+		Settings.Commands commands = new Settings.Commands();
+		commands.setUseAsyncCompletions(true);
+		commands.setUseBrigadier(false);
 
-		settings.setMisc(misc);
+		settings.setCommands(commands);
+
+	Settings.Miscellaneous misc = new Settings.Miscellaneous();
+	misc.setDisableJoinNotification(true);
+	misc.setDisableQuitNotification(true);
+	misc.setVanillaSending(true);
+
+	settings.setMisc(misc);
 
 		Settings.Updater updater = new Settings.Updater();
 		updater.setCheckForUpdates(true);
@@ -68,7 +74,6 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 
 		Event event = Event.builder().register(true).priority(EventPriority.LOWEST).build();
 
-		priorities.put("org.bukkit.event.player.PlayerLoginEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerJoinEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerQuitEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerChangedWorldEvent", event);
@@ -91,8 +96,6 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 			priorities.put("io.papermc.paper.event.connection.configuration.PlayerConnectionInitialConfigureEvent", event);
 			return priorities;
 		}
-
-		priorities.put("org.bukkit.event.player.PlayerLoginEvent", event);
 
 		return priorities;
 	}

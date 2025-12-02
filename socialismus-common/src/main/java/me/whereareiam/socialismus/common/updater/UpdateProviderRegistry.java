@@ -3,8 +3,8 @@ package me.whereareiam.socialismus.common.updater;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import me.whereareiam.socialismus.api.input.updater.UpdateProvider;
-import me.whereareiam.socialismus.api.model.module.UpdateSpecification;
+import me.whereareiam.socialismus.model.update.UpdateSource;
+import me.whereareiam.socialismus.service.UpdateProvider;
 
 @Singleton
 public class UpdateProviderRegistry {
@@ -23,11 +23,12 @@ public class UpdateProviderRegistry {
 		this.github = github;
 	}
 
-	public UpdateProvider by(UpdateSpecification.Spec p) {
-		return switch (p.getProvider()) {
+	public UpdateProvider by(UpdateSource source) {
+		return switch (source.getProvider()) {
 			case MODRINTH -> modrinth;
 			case SPIGOT -> spigot;
 			case GITHUB -> github;
 		};
 	}
 }
+

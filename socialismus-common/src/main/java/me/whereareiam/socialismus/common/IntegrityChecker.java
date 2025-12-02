@@ -3,11 +3,11 @@ package me.whereareiam.socialismus.common;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.type.PlatformType;
-import me.whereareiam.socialismus.api.type.PluginType;
-import me.whereareiam.socialismus.api.type.Version;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.PluginType;
+import me.whereareiam.socialismus.type.Version;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})

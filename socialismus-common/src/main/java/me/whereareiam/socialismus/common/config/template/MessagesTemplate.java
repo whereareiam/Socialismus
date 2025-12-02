@@ -1,9 +1,12 @@
 package me.whereareiam.socialismus.common.config.template;
 
 import com.google.inject.Singleton;
+import me.whereareiam.commandant.model.message.ExceptionMessages;
+import me.whereareiam.commandant.model.message.HelpMessages;
+import me.whereareiam.commandant.model.message.PaginationMessages;
 import me.whereareiam.configura.TemplateProvider;
-import me.whereareiam.socialismus.api.model.config.message.CommandMessages;
-import me.whereareiam.socialismus.api.model.config.message.Messages;
+import me.whereareiam.socialismus.model.config.message.CommandMessages;
+import me.whereareiam.socialismus.model.config.message.Messages;
 
 import java.util.List;
 import java.util.Map;
@@ -17,13 +20,17 @@ public class MessagesTemplate implements TemplateProvider<Messages> {
 		CommandMessages commandMessages = new CommandMessages();
 		commandMessages.setCooldown("{prefix}<white>You must wait <gray>{time} seconds</gray> before using this command again</white>");
 		commandMessages.setCancelled("{prefix}<white>Command execution has been <red>cancelled</red></white>");
-		commandMessages.setNoPermission("{prefix}<white>You don't have \"<gray>{content}</gray>\" permission to use this command.</white>");
-		commandMessages.setExecutionError("{prefix}<white>An error occurred while executing the command:</white> <gray>{content}</gray>");
 
-		commandMessages.setInvalidSyntax("{prefix}<white>Invalid syntax, please use:</white> <yellow>/{content}</yellow>");
-		commandMessages.setInvalidSyntaxBoolean("{prefix}<white>You tried to use <gray>{content}</gray> as a boolean, but it's not a valid value, please use <green>true</green> or <red>false</red>.</white>");
-		commandMessages.setInvalidSyntaxNumber("{prefix}<white>You tried to use <gray>{content}</gray> as a number, but it's not a valid value, please use a valid number.</white>");
-		commandMessages.setInvalidSyntaxString("{prefix}<white>You tried to use <gray>{content}</gray> as a string, but it's not a valid value, please use a valid string.</white>");
+		// Configure exception messages using Commandant's ExceptionMessages
+		ExceptionMessages exceptionMessages = new ExceptionMessages();
+		exceptionMessages.setNoPermission("{prefix}<white>You don't have \"<gray>{content}</gray>\" permission to use this command.</white>");
+		exceptionMessages.setExecutionError("{prefix}<white>An error occurred while executing the command:</white> <gray>{content}</gray>");
+		exceptionMessages.setInvalidSyntax("{prefix}<white>Invalid syntax, please use:</white> <yellow>/{content}</yellow>");
+		exceptionMessages.setInvalidSyntaxBoolean("{prefix}<white>You tried to use <gray>{content}</gray> as a boolean, but it's not a valid value, please use <green>true</green> or <red>false</red>.</white>");
+		exceptionMessages.setInvalidSyntaxNumber("{prefix}<white>You tried to use <gray>{content}</gray> as a number, but it's not a valid value, please use a valid number.</white>");
+		exceptionMessages.setInvalidSyntaxString("{prefix}<white>You tried to use <gray>{content}</gray> as a string, but it's not a valid value, please use a valid string.</white>");
+		exceptionMessages.setInvalidSender("{prefix}<white>You cannot execute this command from this context.</white>");
+		commandMessages.setExceptions(exceptionMessages);
 
 		commandMessages.setArguments(Map.of(
 				"id", "ID",
@@ -41,22 +48,35 @@ public class MessagesTemplate implements TemplateProvider<Messages> {
 
 		commandMessages.setFormat(format);
 
-		CommandMessages.Pagination pagination = new CommandMessages.Pagination();
-		pagination.setShowPaginationIfOnePage(false);
-		pagination.setFormat("\n {previous}<white>Pagination</white> <gray>[{current}/{max}]</gray>{next} \n");
-		pagination.setShowPreviousEvenIfFirst(false);
-		pagination.setPreviousTagFormat("<red><click:run_command:/social help {previousPage}>«</red> ");
-		pagination.setShowNextEvenIfLast(false);
-		pagination.setNextTagFormat(" <green><click:run_command:/social help {nextPage}>»</green>");
+		// Configure pagination messages using Commandant's PaginationMessages
+		PaginationMessages paginationMessages = new PaginationMessages();
+		paginationMessages.setShowPaginationIfOnePage(false);
+		paginationMessages.setFormat("\n {previous}<white>Pagination</white> <gray>[{current}/{max}]</gray>{next} \n");
+		paginationMessages.setShowPreviousEvenIfFirst(false);
+		paginationMessages.setPreviousTagFormat("<red><click:run_command:/social help {previousPage}>«</red> ");
+		paginationMessages.setShowNextEvenIfLast(false);
+		paginationMessages.setNextTagFormat(" <green><click:run_command:/social help {nextPage}>»</green>");
+		commandMessages.setPagination(paginationMessages);
 
-		commandMessages.setPagination(pagination);
+		// Configure help messages using Commandant's HelpMessages
+		HelpMessages helpMessages = new HelpMessages();
+		helpMessages.setFormat(List.of(
+				" ",
+				"<gold><bold> Socialismus</bold> <white>Command help",
+				" ",
+				"{commands}",
+				"{pagination}"
+		));
+		helpMessages.setCommandFormat("  <yellow>/{command}{arguments}</yellow> <dark_gray>- <white>{description}");
+		helpMessages.setNoCommands("  <red>No commands found</red>");
+		helpMessages.setCommandsPerPage(7);
 
-		CommandMessages.HelpCommand helpCommand = new CommandMessages.HelpCommand();
-		helpCommand.setFormat(List.of(" ", "<gold><bold> Socialismus</bold> <white>Command help", " ", "{commands}", "{pagination}"));
-		helpCommand.setCommandFormat(" <yellow>/{command}{arguments}</yellow> <dark_gray>- <white>{description}");
-		helpCommand.setNoCommands("  <red>No commands found</red>");
-
-		commandMessages.setHelpCommand(helpCommand);
+		// Configure argument formatting
+		HelpMessages.Format argumentFormat = new HelpMessages.Format();
+		argumentFormat.setArgument("<gray>[{argument}]</gray>");
+		argumentFormat.setOptionalArgument("<gray>({argument})</gray>");
+		helpMessages.setArgumentFormat(argumentFormat);
+		commandMessages.setHelp(helpMessages);
 
 		CommandMessages.DebugCommand debugCommand = new CommandMessages.DebugCommand();
 		debugCommand.setFormat(List.of(

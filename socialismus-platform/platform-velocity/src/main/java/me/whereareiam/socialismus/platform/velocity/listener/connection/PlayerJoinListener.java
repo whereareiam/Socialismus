@@ -3,36 +3,29 @@ package me.whereareiam.socialismus.platform.velocity.listener.connection;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
-import com.velocitypowered.api.proxy.Player;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.input.container.PlayerContainerService;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.listener.DynamicListener;
 import me.whereareiam.socialismus.common.SynchronizationService;
+import me.whereareiam.socialismus.listener.DynamicListener;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PlayerJoinListener implements DynamicListener<PlayerChooseInitialServerEvent> {
-	private final PlayerContainerService playerContainer;
-	private final PlatformInteractor interactor;
+	private final PlayerRegistry playerRegistry;
 	private final SynchronizationService syncService;
 
 	public void onEvent(PlayerChooseInitialServerEvent event) {
-		Player player = event.getPlayer();
+		String serverName = event.getInitialServer()
+				.map(serverConnection -> serverConnection.getServerInfo().getName())
+				.orElse(null);
 
-		DummyPlayer dummyPlayer = DummyPlayer.builder()
-				.username(player.getUsername())
-				.uniqueId(player.getUniqueId())
-				.server(event.getInitialServer().map(s -> s.getServerInfo().getName()).orElse(null))
-				.locale(player.getEffectiveLocale())
-				// helpers
-				.audience(player)
-				.interactor(interactor)
-				.build();
-
-
-		syncService.applyTo(dummyPlayer, event.getInitialServer().map(s -> s.getServerInfo().getName()).orElse(null));
-		playerContainer.addPlayer(dummyPlayer);
+		playerRegistry.getPlayerData(event.getPlayer().getUniqueId()).ifPresent(
+				player -> {
+					// Update server name
+					player.setServer(serverName);
+					// Apply synchronization settings
+					syncService.applyTo(player, serverName);
+				}
+		);
 	}
 }

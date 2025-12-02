@@ -1,25 +1,25 @@
 package me.whereareiam.socialismus.platform.velocity;
 
-import com.alessiodp.libby.Library;
-import com.alessiodp.libby.VelocityLibraryManager;
-import com.velocitypowered.api.plugin.PluginManager;
-import me.whereareiam.socialismus.api.Constants;
+import com.velocitypowered.api.plugin.PluginContainer;
+import com.velocitypowered.api.proxy.ProxyServer;
+import me.whereareiam.attache.model.Library;
+import me.whereareiam.attache.platform.velocity.VelocityLibraryManager;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.CommonDependencyResolver;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class VelocityDependencyResolver extends CommonDependencyResolver {
-	public VelocityDependencyResolver(VelocitySocialismus velocitySocialismus, Logger logger, Path dataPath, PluginManager pluginManager) {
-		this.libraryManager = new VelocityLibraryManager(velocitySocialismus, logger, dataPath, pluginManager, ".libraries");
+	public VelocityDependencyResolver(ProxyServer proxyServer, PluginContainer pluginContainer, Logger logger, Path dataPath) {
+		this.libraryManager = new VelocityLibraryManager(proxyServer, pluginContainer, logger, dataPath, ".libraries");
 	}
 
 	@Override
 	public void resolveDependencies() {
 		super.resolveDependencies();
 
-		libraries.forEach(libraryManager::loadLibrary);
+		libraryManager.loadLibraries(libraries);
 		clearDependencies();
 	}
 

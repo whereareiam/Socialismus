@@ -2,14 +2,18 @@
 
 # plugins
 shadow = "8.3.8"
+buildconfig = "5.7.1"
 
 # compile time processing
 lombok = "1.18.42"
 
 # general
 guice = "7.0.0"
-libby = "2.0.1"
+annotations = "26.0.1"
+attache = "dev-6254018"
 configura = "dev-a76adc6"
+keystone = "dev-697f401"
+commandant = "dev-5f99bce"
 
 # resouces
 ormlite = "6.1"
@@ -35,10 +39,13 @@ adventure-platform-bukkit = "4.4.1"
 
 # cloud
 cloud-core = "2.0.0"
-cloud-cooldown = "1.0.0-rc.1"
 cloud-paper = "2.0.0-beta.13"
 cloud-velocity = "2.0.0-beta.13"
+cloud-cooldown = "1.0.0-rc.1"
 cloud-minecraft-extras = "2.0.0-beta.13"
+
+# brigadier
+brigadier = "1.0.18"
 
 [libraries]
 
@@ -47,7 +54,16 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
+annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
 configura = { group = "me.whereareiam", name = "configura", version.ref = "configura" }
+keystone = { group = "me.whereareiam", name = "keystone", version.ref = "keystone" }
+commandant = { group = "me.whereareiam", name = "commandant", version.ref = "commandant" }
+
+# attache
+attache-bukkit = { group = "me.whereareiam", name = "attache-bukkit", version.ref = "attache" }
+attache-paper = { group = "me.whereareiam", name = "attache-paper", version.ref = "attache" }
+attache-velocity = { group = "me.whereareiam", name = "attache-velocity", version.ref = "attache" }
+attache-common = { group = "me.whereareiam", name = "attache-common", version.ref = "attache" }
 
 # resources
 ormlite = { group = "com.j256.ormlite", name = "ormlite-core", version.ref = "ormlite" }
@@ -63,12 +79,6 @@ papiProxyBridge = { group = "net.william278", name = "papiproxybridge", version.
 bStats = { group = "org.bstats", name = "bstats-base", version.ref = "bStats" }
 bStats-velocity = { group = "org.bstats", name = "bstats-velocity", version.ref = "bStats" }
 bStats-bukkit = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bStats" }
-
-# libby
-libby-core = { group = "com.github.whereareiam.libby", name = "libby-core", version.ref = "libby" }
-libby-bukkit = { group = "com.github.whereareiam.libby", name = "libby-bukkit", version.ref = "libby" }
-libby-paper = { group = "com.github.whereareiam.libby", name = "libby-paper", version.ref = "libby" }
-libby-velocity = { group = "com.github.whereareiam.libby", name = "libby-velocity", version.ref = "libby" }
 
 # adventure
 adventure = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
@@ -86,6 +96,9 @@ cloud-paper = { group = "org.incendo", name = "cloud-paper", version.ref = "clou
 cloud-velocity = { group = "org.incendo", name = "cloud-velocity", version.ref = "cloud-velocity" }
 cloud-minecraft-extras = { group = "org.incendo", name = "cloud-minecraft-extras", version.ref = "cloud-minecraft-extras" }
 
+# brigadier
+brigadier = { group = "com.mojang", name = "brigadier", version.ref = "brigadier" }
+
 [bundles]
 
 adventure = ["adventure", "adventure-minimessage", "adventure-legacy", "adventure-plain", "adventure-gson"]
@@ -101,3 +114,4 @@ bStats-velocity = ["bStats", "bStats-velocity"]
 [plugins]
 
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }

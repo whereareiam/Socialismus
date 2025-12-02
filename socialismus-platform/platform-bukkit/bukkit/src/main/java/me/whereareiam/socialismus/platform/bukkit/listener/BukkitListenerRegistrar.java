@@ -4,19 +4,21 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.model.config.Settings;
-import me.whereareiam.socialismus.api.output.listener.DynamicListener;
 import me.whereareiam.socialismus.common.CommonListenerRegistrar;
+import me.whereareiam.socialismus.listener.DynamicListener;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.platform.bukkit.listener.chat.PlayerChatListener;
 import me.whereareiam.socialismus.platform.bukkit.listener.connection.PlayerJoinListener;
-import me.whereareiam.socialismus.platform.bukkit.listener.connection.PlayerLoginListener;
 import me.whereareiam.socialismus.platform.listener.activity.PlayerWorldChangeListener;
 import me.whereareiam.socialismus.platform.listener.connection.PlayerQuitListener;
 import me.whereareiam.socialismus.platform.util.BukkitUtil;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
@@ -45,7 +47,6 @@ public class BukkitListenerRegistrar extends CommonListenerRegistrar {
 		registerListener(PlayerChangedWorldEvent.class, injector.getInstance(PlayerWorldChangeListener.class));
 		registerListener(PlayerQuitEvent.class, injector.getInstance(PlayerQuitListener.class));
 		registerListener(PlayerJoinEvent.class, injector.getInstance(PlayerJoinListener.class));
-		registerListener(PlayerLoginEvent.class, injector.getInstance(PlayerLoginListener.class));
 	}
 
 	@Override

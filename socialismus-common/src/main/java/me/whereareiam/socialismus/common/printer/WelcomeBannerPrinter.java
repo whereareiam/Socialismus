@@ -2,16 +2,16 @@ package me.whereareiam.socialismus.common.printer;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.AnsiColor;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.output.LoggingHelper;
-import me.whereareiam.socialismus.api.output.command.CommandService;
-import me.whereareiam.socialismus.api.output.resource.ResourceRegistry;
-import me.whereareiam.socialismus.api.type.PlatformType;
-import me.whereareiam.socialismus.api.type.PluginType;
-import me.whereareiam.socialismus.api.type.ResourceType;
+import me.whereareiam.socialismus.AnsiColor;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.provider.IntegrationProvider;
+import me.whereareiam.socialismus.logging.LoggingHelper;
+import me.whereareiam.socialismus.registry.ResourceRegistry;
+import me.whereareiam.socialismus.service.CommandService;
+import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.PluginType;
+import me.whereareiam.socialismus.type.ResourceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +36,11 @@ public class WelcomeBannerPrinter {
 	private List<String> buildTitleLines() {
 		List<String> l = new ArrayList<>();
 		l.add("");
-		l.add(AnsiColor.CYAN +
+		l.add(AnsiColor.ORANGE +
 				"  █▀ █▀▀   " + AnsiColor.RESET +
 				"Socialismus v" + AnsiColor.GRAY +
 				Constants.VERSION + AnsiColor.RESET);
-		l.add(AnsiColor.CYAN +
+		l.add(AnsiColor.ORANGE +
 				"  ▄█ █▄▄   " + AnsiColor.RESET +
 				"Platform: " + AnsiColor.GRAY +
 				PlatformType.getType() + " [" +
@@ -56,10 +56,10 @@ public class WelcomeBannerPrinter {
 		int chatCount = chatContainer.getChats().size();
 
 		l.add("  Loaded " +
-				AnsiColor.CYAN + cmdCount + AnsiColor.RESET +
+				AnsiColor.ORANGE + cmdCount + AnsiColor.RESET +
 				" command" + (cmdCount == 1 ? "" : "s"));
 		l.add("  Loaded " +
-				AnsiColor.CYAN + chatCount + AnsiColor.RESET +
+				AnsiColor.ORANGE + chatCount + AnsiColor.RESET +
 				" chat" + (chatCount == 1 ? "" : "s"));
 		l.add("");
 		return l;

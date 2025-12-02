@@ -3,13 +3,13 @@ package me.whereareiam.socialismus.platform.bukkit.inject;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.input.DependencyResolver;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.Scheduler;
-import me.whereareiam.socialismus.api.output.listener.ListenerRegistrar;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.socialismus.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.platform.bukkit.*;
 import me.whereareiam.socialismus.platform.bukkit.listener.BukkitListenerRegistrar;
+import me.whereareiam.socialismus.service.DependencyResolver;
+import me.whereareiam.socialismus.service.PlatformInteractor;
+import me.whereareiam.socialismus.service.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -30,6 +30,6 @@ public class BukkitInjectorConfiguration extends AbstractModule {
 		bind(Scheduler.class).to(BukkitScheduler.class);
 		bind(ListenerRegistrar.class).to(BukkitListenerRegistrar.class);
 		bind(PlatformInteractor.class).to(BukkitPlatformInteractor.class);
-		bind(new TypeLiteral<CommandManager<DummyPlayer>>() {}).toProvider(BukkitCommandManagerProvider.class);
+		bind(new TypeLiteral<CommandManager<Actor>>() {}).toProvider(BukkitCommandManagerProvider.class);
 	}
 }

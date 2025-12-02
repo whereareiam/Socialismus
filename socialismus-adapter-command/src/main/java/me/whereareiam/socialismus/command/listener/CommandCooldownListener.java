@@ -4,33 +4,43 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.model.config.message.Messages;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.model.serializer.SerializerContent;
-import me.whereareiam.socialismus.api.model.serializer.SerializerPlaceholder;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.keystone.Player;
+import me.whereareiam.keystone.model.SerializerContent;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.config.message.Messages;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.processors.cooldown.CooldownInstance;
 import org.incendo.cloud.processors.cooldown.listener.CooldownActiveListener;
 
 import java.time.Duration;
-import java.util.List;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
-public class CommandCooldownListener implements CooldownActiveListener<DummyPlayer> {
+public class CommandCooldownListener implements CooldownActiveListener<Actor> {
 	private final Provider<Messages> messages;
 
 	@Override
-	public void cooldownActive(@NonNull DummyPlayer dummyPlayer, @NonNull Command<DummyPlayer> command, @NonNull CooldownInstance cooldown, @NonNull Duration remainingTime) {
-		Logger.debug("Cooldown active for " + dummyPlayer.getUsername() + " on command " + command.rootComponent().name() + " for " + remainingTime.getSeconds() + " seconds");
+	public void cooldownActive(@NonNull Actor actor, @NonNull Command<Actor> command, @NonNull CooldownInstance cooldown, @NonNull Duration remainingTime) {
+		Logger.debug("Cooldown active for " + resolveActorIdentifier(actor) + " on command " + command.rootComponent().name() + " for " + remainingTime.getSeconds() + " seconds");
 
-		dummyPlayer.sendMessage(Serializer.serialize(new SerializerContent(
-				dummyPlayer,
-				List.of(new SerializerPlaceholder("{time}", remainingTime.getSeconds() + "." + String.valueOf(remainingTime.getNano()).substring(0, 2))),
-				messages.get().getCommands().getCooldown()
-		)));
+		// Format time as seconds with 2 decimal places
+		String timeFormatted = String.format("%d.%02d", remainingTime.getSeconds(), remainingTime.getNano() / 10_000_000);
+
+		actor.sendMessage(Serializer.serialize(SerializerContent.builder()
+				.receiver(actor)
+				.message(messages.get().getCommands().getCooldown())
+				.placeholder("{time}", timeFormatted)
+				.build()));
+	}
+
+	private String resolveActorIdentifier(@NonNull Actor actor) {
+		if (actor instanceof Player) {
+			return ((Player) actor).getUsername();
+		}
+
+		return actor.getClass().getSimpleName();
 	}
 }

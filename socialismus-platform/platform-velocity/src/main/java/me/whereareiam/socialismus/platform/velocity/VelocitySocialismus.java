@@ -10,18 +10,18 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import jakarta.inject.Inject;
 import lombok.Getter;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.type.PluginType;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.common.IntegrityChecker;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginBootstrappedEvent;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginReadyEvent;
-import me.whereareiam.socialismus.api.input.event.plugin.PluginShutdownEvent;
-import me.whereareiam.socialismus.api.util.EventUtil;
+import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
+import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
+import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
 import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
 import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
 import me.whereareiam.socialismus.integration.papiproxybridge.PAPIProxyBridgeIntegration;
 import me.whereareiam.socialismus.platform.velocity.inject.VelocityInjector;
+import me.whereareiam.socialismus.type.PluginType;
+import me.whereareiam.socialismus.util.EventUtil;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -56,7 +56,7 @@ public class VelocitySocialismus {
 		PluginType.setPluginType(PluginType.VELOCITY);
 		VelocityLoggingHelper.setLogger(logger);
 
-		VelocityDependencyResolver dependencyResolver = new VelocityDependencyResolver(this, logger, dataPath, proxyServer.getPluginManager());
+		VelocityDependencyResolver dependencyResolver = new VelocityDependencyResolver(proxyServer, pluginContainer, logger, dataPath);
 		dependencyResolver.loadLibraries();
 		dependencyResolver.resolveDependencies();
 
@@ -68,7 +68,6 @@ public class VelocitySocialismus {
 				dataPath
 		);
 
-		// Core bootstrap (mirrors Intercept's bootstrapped event)
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
 
 		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())

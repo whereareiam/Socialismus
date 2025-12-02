@@ -3,29 +3,26 @@ package me.whereareiam.socialismus.command.executor;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.Serializer;
-import me.whereareiam.socialismus.api.input.chat.ChatHistoryService;
-import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.api.model.CommandEntity;
-import me.whereareiam.socialismus.api.model.chat.ChatSettings;
-import me.whereareiam.socialismus.api.model.config.message.Messages;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.command.CommandBase;
-import me.whereareiam.socialismus.api.output.command.CommandCooldown;
+import lombok.RequiredArgsConstructor;
+import me.whereareiam.commandant.annotation.Definition;
+import me.whereareiam.keystone.Actor;
+import me.whereareiam.keystone.Player;
+import me.whereareiam.keystone.model.SerializerContent;
+import me.whereareiam.socialismus.service.PlatformInteractor;
+import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.service.chat.ChatHistoryService;
+import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
+import net.kyori.adventure.text.Component;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
-import org.incendo.cloud.annotations.CommandDescription;
-import org.incendo.cloud.annotations.Permission;
-
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
-public class ClearCommand extends CommandBase {
-	private static final String COMMAND_NAME = "clear";
-	private final Provider<Map<String, CommandEntity>> commands;
-
+@RequiredArgsConstructor(onConstructor_ = @Inject)
+public class ClearCommand {
 	private final Provider<Messages> messages;
 	private final Provider<ChatSettings> chatSettings;
 
@@ -33,89 +30,69 @@ public class ClearCommand extends CommandBase {
 	private final ChatHistoryContainerService containerService;
 	private final PlatformInteractor interactor;
 
-	@Inject
-	public ClearCommand(
-			Provider<Map<String, CommandEntity>> commands,
-			Provider<Messages> messages,
-			Provider<ChatSettings> chatSettings,
-			ChatHistoryService chatHistory,
-			ChatHistoryContainerService containerService,
-			PlatformInteractor interactor
-	) {
-		super(COMMAND_NAME);
-		this.commands = commands;
-		this.messages = messages;
-		this.chatSettings = chatSettings;
-		this.chatHistory = chatHistory;
-		this.containerService = containerService;
-		this.interactor = interactor;
-	}
-
-	@Command("%command." + COMMAND_NAME)
-	@CommandDescription("%description." + COMMAND_NAME)
-	@CommandCooldown("%cooldown." + COMMAND_NAME)
-	@Permission("%permission." + COMMAND_NAME)
-	public void onCommand(DummyPlayer dummyPlayer, @Argument(value = "context") String context) {
+	@Definition("clear")
+	@Command("socialismus clear [context]")
+	public void command(@NotNull Actor actor, @Argument("context") String context) {
 		if (context == null) {
-			handleNumericContext(dummyPlayer, chatSettings.get().getHistory().getHistorySize());
+			handleNumericContext(actor, chatSettings.get().getHistory().getHistorySize());
 			return;
 		}
 
 		try {
-			handleCommand(dummyPlayer, context);
+			handleCommand(actor, context);
 		} catch (NumberFormatException e) {
-			handleNonNumericContext(dummyPlayer, context);
+			handleNonNumericContext(actor, context);
 		}
 	}
 
-	private void handleCommand(DummyPlayer dummyPlayer, String context) {
+	private void handleCommand(@NotNull Actor actor, String context) {
 		try {
 			int number = Integer.parseInt(context);
 			if (number >= 1 && number <= chatSettings.get().getHistory().getHistorySize()) {
-				handleNumericContext(dummyPlayer, number);
+				handleNumericContext(actor, number);
 				return;
 			}
 
-			handleInvalidNumber(dummyPlayer, number);
+			handleInvalidNumber(actor, number);
 		} catch (NumberFormatException e) {
-			handleNonNumericContext(dummyPlayer, context);
+			handleNonNumericContext(actor, context);
 		}
 	}
 
-	private void handleNumericContext(DummyPlayer dummyPlayer, int number) {
+	private void handleNumericContext(@NotNull Actor actor, int number) {
 		if (hasMinimumMessages()) {
-			dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, messages.get().getCommands().getClearCommand().getNotEnoughHistory()));
+			actor.sendMessage(Serializer.serialize(actor, messages.get().getCommands().getClearCommand().getNotEnoughHistory()));
 			return;
 		}
 
 		int count = chatHistory.removeMessages(number);
-		sendResponse(dummyPlayer, count, messages.get().getCommands().getClearCommand().getClearedAmount(), messages.get().getCommands().getClearCommand().getNoHistory());
+		sendResponse(actor, count, messages.get().getCommands().getClearCommand().getClearedAmount(), messages.get().getCommands().getClearCommand().getNoHistory());
 	}
 
-	private void handleInvalidNumber(DummyPlayer dummyPlayer, int number) {
+	private void handleInvalidNumber(@NotNull Actor actor, int number) {
 		if (hasMinimumMessages()) {
-			dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, messages.get().getCommands().getClearCommand().getNotEnoughHistory()));
+			actor.sendMessage(Serializer.serialize(actor, messages.get().getCommands().getClearCommand().getNotEnoughHistory()));
 			return;
 		}
 
 		boolean removed = chatHistory.removeMessage(number);
-		sendResponse(dummyPlayer, removed, messages.get().getCommands().getClearCommand().getCleared(), messages.get().getCommands().getClearCommand().getNoIdHistory().replace("{id}", String.valueOf(number)));
+		sendResponse(actor, removed, messages.get().getCommands().getClearCommand().getCleared(), messages.get().getCommands().getClearCommand().getNoIdHistory(), number);
 	}
 
-	private void handleNonNumericContext(DummyPlayer dummyPlayer, String context) {
+	private void handleNonNumericContext(@NotNull Actor actor, String context) {
 		if (hasMinimumMessages()) {
-			dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, messages.get().getCommands().getClearCommand().getNotEnoughHistory()));
+			actor.sendMessage(Serializer.serialize(actor, messages.get().getCommands().getClearCommand().getNotEnoughHistory()));
 			return;
 		}
 
 		if (interactor.hasPermission(context, chatSettings.get().getHistory().getBypassPermission())) {
-			dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, messages.get().getCommands().getClearCommand().getBypassUser()));
+			actor.sendMessage(Serializer.serialize(actor, messages.get().getCommands().getClearCommand().getBypassUser()));
 			return;
 		}
 
 		int count = chatHistory.removeMessages(context);
 		sendResponse(
-				dummyPlayer, count,
+				actor, count,
 				messages.get().getCommands().getClearCommand().getClearedAmount(),
 				messages.get().getCommands().getClearCommand().getNoUserHistory()
 		);
@@ -125,26 +102,41 @@ public class ClearCommand extends CommandBase {
 		return containerService.getMessages().size() < 5;
 	}
 
-	private void sendResponse(DummyPlayer dummyPlayer, int count, String successMessage, String failureMessage) {
+	private void sendResponse(@NotNull Actor actor, int count, String successMessage, String failureMessage) {
 		if (count > 0) {
-			Logger.info("Deleted %s messages from chat history by %s", count, dummyPlayer.getUsername());
-			dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, successMessage.replace("{amount}", String.valueOf(count))));
+			Logger.info("Deleted %s messages from chat history by %s", count, resolveActorIdentifier(actor));
+			actor.sendMessage(Serializer.serialize(SerializerContent.builder()
+					.receiver(actor)
+					.message(successMessage)
+					.placeholder("{amount}", String.valueOf(count))
+					.build())
+			);
 		} else {
-			dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, failureMessage));
+			Component component = Serializer.serialize(actor, failureMessage);
+			actor.sendMessage(component);
 		}
 	}
 
-	private void sendResponse(DummyPlayer dummyPlayer, boolean removed, String successMessage, String failureMessage) {
+	private void sendResponse(@NotNull Actor actor, boolean removed, String successMessage, String failureMessage, int id) {
 		if (removed) {
-			Logger.info("Deleted message from chat history by %s", dummyPlayer.getUsername());
-			dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, successMessage));
-		} else {
-			dummyPlayer.sendMessage(Serializer.serialize(dummyPlayer, failureMessage));
+			Logger.info("Deleted message from chat history by %s", resolveActorIdentifier(actor));
+			actor.sendMessage(Serializer.serialize(actor, successMessage));
+			return;
 		}
+
+		actor.sendMessage(Serializer.serialize(SerializerContent.builder()
+				.receiver(actor)
+				.message(failureMessage)
+				.placeholder("{id}", String.valueOf(id))
+				.build())
+		);
 	}
 
-	@Override
-	public CommandEntity getCommandEntity() {
-		return commands.get().get(COMMAND_NAME);
+	private String resolveActorIdentifier(@NotNull Actor actor) {
+		if (actor instanceof Player) {
+			return ((Player) actor).getUsername();
+		}
+
+		return actor.getClass().getSimpleName();
 	}
 }

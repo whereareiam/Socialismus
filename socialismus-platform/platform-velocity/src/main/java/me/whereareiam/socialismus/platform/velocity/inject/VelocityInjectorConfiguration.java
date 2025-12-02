@@ -5,16 +5,16 @@ import com.google.inject.TypeLiteral;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.ProxyServer;
-import me.whereareiam.socialismus.api.input.DependencyResolver;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.output.LoggingHelper;
-import me.whereareiam.socialismus.api.output.PlatformClassLoader;
-import me.whereareiam.socialismus.api.output.PlatformInteractor;
-import me.whereareiam.socialismus.api.output.Scheduler;
-import me.whereareiam.socialismus.api.output.listener.ListenerRegistrar;
+import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.integration.bstats.Metrics;
+import me.whereareiam.socialismus.listener.ListenerRegistrar;
+import me.whereareiam.socialismus.logging.LoggingHelper;
+import me.whereareiam.socialismus.module.PlatformClassLoader;
 import me.whereareiam.socialismus.platform.velocity.*;
 import me.whereareiam.socialismus.platform.velocity.listener.VelocityListenerRegistrar;
+import me.whereareiam.socialismus.service.DependencyResolver;
+import me.whereareiam.socialismus.service.PlatformInteractor;
+import me.whereareiam.socialismus.service.Scheduler;
 import org.incendo.cloud.CommandManager;
 import org.slf4j.Logger;
 
@@ -45,7 +45,7 @@ public class VelocityInjectorConfiguration extends AbstractModule {
         bind(ListenerRegistrar.class).to(VelocityListenerRegistrar.class);
         bind(PlatformInteractor.class).to(VelocityPlatformInteractor.class);
         bind(PlatformClassLoader.class).to(VelocityClassLoader.class);
-        bind(new TypeLiteral<CommandManager<DummyPlayer>>() {}).toProvider(VelocityCommandManagerProvider.class);
+        bind(new TypeLiteral<CommandManager<Actor>>() {}).toProvider(VelocityCommandManagerProvider.class);
 
         bind(Metrics.class).to(VelocityMetrics.class);
     }

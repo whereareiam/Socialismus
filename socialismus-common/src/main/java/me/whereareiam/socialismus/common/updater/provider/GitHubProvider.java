@@ -1,59 +1,73 @@
 package me.whereareiam.socialismus.common.updater.provider;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.api.input.updater.UpdateProvider;
-import me.whereareiam.socialismus.api.model.module.UpdateSpecification;
+import lombok.Data;
+import me.whereareiam.configura.Config;
+import me.whereareiam.configura.reader.ConfigReader;
+import me.whereareiam.configura.type.Format;
+import me.whereareiam.socialismus.model.update.UpdateSource;
+import me.whereareiam.socialismus.service.UpdateProvider;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Singleton
 public class GitHubProvider implements UpdateProvider {
-	private final Gson gson = new Gson();
-	private static final int DEFAULT_UPDATE_LIMIT = 30;
+	private static final ConfigReader JSON_READER = Config.reader(Format.JSON);
 
 	@Override
-	public Optional<String> fetchLatest(UpdateSpecification.Spec spec) throws IOException {
-		String api = "https://api.github.com/repos/" + spec.getId() + "/releases/latest";
-		String json = request(api);
-		JsonObject obj = gson.fromJson(json, JsonObject.class);
+	public Optional<String> fetchLatest(UpdateSource source) throws IOException {
+		String api = "https://api.github.com/repos/" + source.getId() + "/releases/latest";
 
-		return Optional.ofNullable(obj.get("tag_name"))
-				.map(JsonElement::getAsString);
+		try (InputStream in = request(api)) {
+			GitHubRelease release = JSON_READER.decode(in, GitHubRelease.class);
+			return Optional.ofNullable(release.tag_name);
+		}
 	}
 
 	@Override
-	public List<String> fetchRecentUpdates(UpdateSpecification.Spec spec, int limit) throws IOException {
-		String api = "https://api.github.com/repos/" + spec.getId() + "/commits?per_page=" + limit;
-		String json = request(api);
-		JsonArray arr = gson.fromJson(json, JsonArray.class);
-		return StreamSupport.stream(arr.spliterator(), false)
-				.map(e -> e.getAsJsonObject()
-						.get("sha")
-						.getAsString())
-				.collect(Collectors.toList());
+	public List<String> fetchRecentUpdates(UpdateSource source, int limit) throws IOException {
+		String api = "https://api.github.com/repos/" + source.getId() + "/commits?per_page=" + limit;
+
+		try (InputStream in = request(api)) {
+			GitHubCommitList commitList = JSON_READER.decode(in, GitHubCommitList.class);
+			return commitList.commits.stream()
+					.map(c -> c.sha)
+					.collect(Collectors.toList());
+		}
 	}
 
-	private String request(String urlString) throws IOException {
+	private InputStream request(String urlString) throws IOException {
 		URL url = URI.create(urlString).toURL();
+
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
 		conn.setConnectTimeout(8_000);
 		conn.setReadTimeout(8_000);
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-			return in.lines().collect(Collectors.joining());
-		}
+
+		return conn.getInputStream();
+	}
+
+	@Data
+	private static class GitHubRelease {
+		private String tag_name;
+	}
+
+	@Data
+	private static class GitHubCommitList {
+		private List<GitHubCommit> commits = new ArrayList<>();
+	}
+
+	@Data
+	private static class GitHubCommit {
+		private String sha;
 	}
 }
+

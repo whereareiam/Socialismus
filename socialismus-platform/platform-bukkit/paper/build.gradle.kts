@@ -16,6 +16,6 @@ tasks.withType<ShadowJar> {
 }
 
 dependencies {
-    "compileOnly"(libs.bundles.paper)
-    "implementation"(libs.libby.paper)
+	"compileOnly"(libs.bundles.paper)
+	"implementation"(libs.attache.paper)
 }

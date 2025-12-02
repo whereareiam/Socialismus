@@ -3,9 +3,9 @@ package me.whereareiam.socialismus.adapter.module.resolver;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Constants;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.model.module.InternalModule;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.module.InternalModule;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})

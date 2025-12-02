@@ -3,16 +3,16 @@ package me.whereareiam.socialismus.common.chat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.input.chat.ChatCoordinationService;
-import me.whereareiam.socialismus.api.input.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.api.input.event.chat.ChatBroadcastEvent;
-import me.whereareiam.socialismus.api.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.api.util.EventUtil;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcastPolicy;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
+import me.whereareiam.socialismus.event.chat.ChatBroadcastEvent;
+import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
+import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
+import me.whereareiam.socialismus.util.EventUtil;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})

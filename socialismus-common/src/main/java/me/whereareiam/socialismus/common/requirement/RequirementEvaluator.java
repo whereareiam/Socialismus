@@ -3,13 +3,13 @@ package me.whereareiam.socialismus.common.requirement;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.Logger;
-import me.whereareiam.socialismus.api.input.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.api.input.requirement.RequirementValidation;
-import me.whereareiam.socialismus.api.model.player.DummyPlayer;
-import me.whereareiam.socialismus.api.model.requirement.Requirement;
-import me.whereareiam.socialismus.api.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.api.type.requirement.RequirementType;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.model.requirement.Requirement;
+import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.service.requirement.RequirementValidation;
+import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 import java.util.Map;
 
@@ -18,51 +18,51 @@ import java.util.Map;
 public class RequirementEvaluator implements RequirementEvaluatorService {
 	private final RequirementRegistry requirementRegistry;
 
-	private boolean isRequirementMet(Map.Entry<RequirementType, ? extends Requirement> entry, DummyPlayer dummyPlayer) {
+	private boolean isRequirementMet(Map.Entry<RequirementType, ? extends Requirement> entry, SocialismusPlayer player) {
 		RequirementValidation checker = requirementRegistry.get(entry.getKey());
 		if (checker == null)
 			return false;
 
-		return checker.check(entry.getValue(), dummyPlayer);
+		return checker.check(entry.getValue(), player);
 	}
 
 	@Override
-	public boolean check(RequirementGroup group, DummyPlayer dummyPlayer) {
+	public boolean check(RequirementGroup group, SocialismusPlayer player) {
 		if (group == null || group.getGroups().isEmpty()) return true;
 
 		return switch (group.getOperator()) {
-			case AND -> checkAnd(group, dummyPlayer);
-			case OR -> checkOr(group, dummyPlayer);
-			case XOR -> checkXor(group, dummyPlayer);
-			case NOT -> checkNot(group, dummyPlayer);
-			case NAND -> checkNand(group, dummyPlayer);
-			case NOR -> checkNor(group, dummyPlayer);
+			case AND -> checkAnd(group, player);
+			case OR -> checkOr(group, player);
+			case XOR -> checkXor(group, player);
+			case NOT -> checkNot(group, player);
+			case NAND -> checkNand(group, player);
+			case NOR -> checkNor(group, player);
 		};
 	}
 
-	private boolean checkAnd(RequirementGroup group, DummyPlayer dummyPlayer) {
-		Logger.debug("Checking AND group for player " + dummyPlayer.getUsername());
+	private boolean checkAnd(RequirementGroup group, SocialismusPlayer player) {
+		Logger.debug("Checking AND group for player " + player.getUsername());
 		for (Map.Entry<RequirementType, ? extends Requirement> entry : group.getGroups().entrySet())
-			if (!isRequirementMet(entry, dummyPlayer))
+			if (!isRequirementMet(entry, player))
 				return false;
 
 		return true;
 	}
 
-	private boolean checkOr(RequirementGroup group, DummyPlayer dummyPlayer) {
-		Logger.debug("Checking OR group for player " + dummyPlayer.getUsername());
+	private boolean checkOr(RequirementGroup group, SocialismusPlayer player) {
+		Logger.debug("Checking OR group for player " + player.getUsername());
 		for (Map.Entry<RequirementType, ? extends Requirement> entry : group.getGroups().entrySet())
-			if (isRequirementMet(entry, dummyPlayer))
+			if (isRequirementMet(entry, player))
 				return true;
 
 		return false;
 	}
 
-	private boolean checkXor(RequirementGroup group, DummyPlayer dummyPlayer) {
+	private boolean checkXor(RequirementGroup group, SocialismusPlayer player) {
 		boolean oneMet = false;
-		Logger.debug("Checking XOR group for player " + dummyPlayer.getUsername());
+		Logger.debug("Checking XOR group for player " + player.getUsername());
 		for (Map.Entry<RequirementType, ? extends Requirement> entry : group.getGroups().entrySet())
-			if (isRequirementMet(entry, dummyPlayer)) {
+			if (isRequirementMet(entry, player)) {
 				if (oneMet) return false;
 				oneMet = true;
 			}
@@ -70,20 +70,20 @@ public class RequirementEvaluator implements RequirementEvaluatorService {
 		return oneMet;
 	}
 
-	private boolean checkNot(RequirementGroup group, DummyPlayer dummyPlayer) {
-		Logger.debug("Checking NOT group for player " + dummyPlayer.getUsername());
+	private boolean checkNot(RequirementGroup group, SocialismusPlayer player) {
+		Logger.debug("Checking NOT group for player " + player.getUsername());
 		for (Map.Entry<RequirementType, ? extends Requirement> entry : group.getGroups().entrySet())
-			if (isRequirementMet(entry, dummyPlayer))
+			if (isRequirementMet(entry, player))
 				return false;
 
 		return true;
 	}
 
-	private boolean checkNand(RequirementGroup group, DummyPlayer dummyPlayer) {
-		return !checkAnd(group, dummyPlayer);
+	private boolean checkNand(RequirementGroup group, SocialismusPlayer player) {
+		return !checkAnd(group, player);
 	}
 
-	private boolean checkNor(RequirementGroup group, DummyPlayer dummyPlayer) {
-		return !checkOr(group, dummyPlayer);
+	private boolean checkNor(RequirementGroup group, SocialismusPlayer player) {
+		return !checkOr(group, player);
 	}
 }

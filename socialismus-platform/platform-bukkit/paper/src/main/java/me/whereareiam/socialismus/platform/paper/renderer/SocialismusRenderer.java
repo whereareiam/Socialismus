@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.platform.paper.renderer;
 
 import io.papermc.paper.chat.ChatRenderer;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;

@@ -13,6 +13,6 @@ tasks.withType<ShadowJar> {
 }
 
 dependencies {
-    "compileOnly"(libs.bundles.bukkit)
-    "implementation"(libs.libby.bukkit)
+	"compileOnly"(libs.bundles.bukkit)
+	"implementation"(libs.attache.bukkit)
 }

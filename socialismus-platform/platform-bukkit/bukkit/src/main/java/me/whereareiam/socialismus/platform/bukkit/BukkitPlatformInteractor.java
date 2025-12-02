@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.api.type.BroadcastTarget;
+import me.whereareiam.socialismus.type.BroadcastTarget;
 import me.whereareiam.socialismus.platform.AbstractPlatformInteractor;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;

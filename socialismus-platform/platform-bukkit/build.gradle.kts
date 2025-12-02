@@ -9,6 +9,7 @@ subprojects {
             "implementation"(project(":socialismus-integration:integration-placeholderapi"))
 
             "compileOnly"(rootProject.libs.cloud.paper)
+            "compileOnly"(rootProject.libs.brigadier)
         }
 
         tasks.named<Copy>("processResources") {

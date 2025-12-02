@@ -3,8 +3,8 @@ package me.whereareiam.socialismus.platform;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import lombok.Setter;
-import me.whereareiam.socialismus.api.model.config.Settings;
-import me.whereareiam.socialismus.api.output.LoggingHelper;
+import me.whereareiam.socialismus.logging.LoggingHelper;
+import me.whereareiam.socialismus.model.config.Settings;
 
 import java.util.logging.Logger;
 

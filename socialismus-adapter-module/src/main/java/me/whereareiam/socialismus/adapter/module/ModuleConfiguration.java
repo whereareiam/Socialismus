@@ -4,11 +4,11 @@ import com.google.inject.AbstractModule;
 import me.whereareiam.socialismus.adapter.module.provider.DatabaseServiceProvider;
 import me.whereareiam.socialismus.adapter.module.provider.cache.CacheServiceProvider;
 import me.whereareiam.socialismus.adapter.module.provider.sync.SyncServiceProvider;
-import me.whereareiam.socialismus.api.output.module.ModuleService;
-import me.whereareiam.socialismus.api.output.resource.CacheService;
-import me.whereareiam.socialismus.api.output.resource.DatabaseService;
-import me.whereareiam.socialismus.api.output.resource.ResourceRegistry;
-import me.whereareiam.socialismus.api.output.resource.sync.SyncService;
+import me.whereareiam.socialismus.module.ModuleService;
+import me.whereareiam.socialismus.registry.ResourceRegistry;
+import me.whereareiam.socialismus.service.resource.CacheService;
+import me.whereareiam.socialismus.service.resource.DatabaseService;
+import me.whereareiam.socialismus.service.resource.sync.SyncService;
 
 public class ModuleConfiguration extends AbstractModule {
 	@Override

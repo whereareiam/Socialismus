@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.platform.velocity.util;
 
-import me.whereareiam.socialismus.api.type.EventPriority;
+import me.whereareiam.socialismus.type.EventPriority;
 
 public class VelocityUtil {
     public static short of(EventPriority priority) {
