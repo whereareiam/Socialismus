@@ -14,6 +14,7 @@ dependencies {
     "api"(rootProject.libs.configura)
     "api"(rootProject.libs.commandant)
     "api"(rootProject.libs.keystone)
+    "api"(rootProject.libs.bundles.adventure)
 }
 
 buildConfig {
