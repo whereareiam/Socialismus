@@ -86,6 +86,28 @@ public class DefaultCommandService implements CommandService {
 	}
 
 	@Override
+	public void registerCommandInstance(@NotNull String key, @NotNull CommandDefinition definition, @NotNull Object commandInstance) {
+		if (registrar == null) throw new IllegalStateException("CommandService has not been initialized yet. Commands can only be registered after plugin initialization.");
+
+		// Register the definition
+		registeredDefinitions.put(key, definition);
+
+		// Register the pre-instantiated command object
+		registrar.register(commandInstance);
+	}
+
+	@Override
+	public void registerCommandInstances(@NotNull Map<String, CommandDefinition> definitions, @NotNull Object... commandInstances) {
+		if (registrar == null) throw new IllegalStateException("CommandService has not been initialized yet. Commands can only be registered after plugin initialization.");
+
+		// Register all definitions
+		registeredDefinitions.putAll(definitions);
+
+		// Register all pre-instantiated command objects
+		registrar.register(commandInstances);
+	}
+
+	@Override
 	public int getCommandCount() {
 		return commandManagerProvider.get().commands().size();
 	}

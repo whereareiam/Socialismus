@@ -45,4 +45,24 @@ public interface CommandService {
 	 * @param commandClasses classes containing Cloud annotations to register as commands
 	 */
 	void registerCommands(@NotNull Map<String, CommandDefinition> definitions, @NotNull Class<?>... commandClasses);
+
+	/**
+	 * Registers a pre-instantiated command object with its definition.
+	 * Use this when your module has its own injector with custom bindings.
+	 * The command object should contain Cloud annotations (@Command, @Definition, etc.).
+	 *
+	 * @param key the key that matches the @Definition annotation value
+	 * @param definition the CommandDefinition for this command
+	 * @param commandInstance the pre-instantiated command object
+	 */
+	void registerCommandInstance(@NotNull String key, @NotNull CommandDefinition definition, @NotNull Object commandInstance);
+
+	/**
+	 * Registers multiple pre-instantiated command objects with their definitions.
+	 * Use this when your module has its own injector with custom bindings.
+	 *
+	 * @param definitions map of definition keys to CommandDefinition objects
+	 * @param commandInstances pre-instantiated command objects
+	 */
+	void registerCommandInstances(@NotNull Map<String, CommandDefinition> definitions, @NotNull Object... commandInstances);
 }
