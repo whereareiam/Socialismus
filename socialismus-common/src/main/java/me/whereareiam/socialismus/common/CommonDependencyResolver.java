@@ -16,6 +16,7 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 	@Override
 	public void resolveDependencies() {
 		libraryManager.addMavenCentral();
+		libraryManager.addRepository("https://maven.whereareiam.me/release");
 		libraryManager.addRepository("https://maven.whereareiam.me/development");
 	}
 
@@ -55,6 +56,20 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 								.build()
 						)
 				).build());
+
+		addDependency(Library.builder()
+				.groupId("me.whereareiam")
+				.artifactId("keystone")
+				.version(Constants.Dependency.KEYSTONE)
+				.resolveTransitiveDependencies(true)
+				.build());
+
+		addDependency(Library.builder()
+				.groupId("me.whereareiam")
+				.artifactId("commandant")
+				.version(Constants.Dependency.COMMANDANT)
+				.resolveTransitiveDependencies(true)
+				.build());
 
 		// Jedis
 		addDependency(Library.builder()

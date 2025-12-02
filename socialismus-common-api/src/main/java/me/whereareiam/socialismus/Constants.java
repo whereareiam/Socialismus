@@ -30,6 +30,8 @@ public final class Constants {
 	public static final class Dependency {
 		public static final String GUICE = BuildConfig.GUICE;
 		public static final String CONFIGURA = BuildConfig.CONFIGURA;
+		public static final String KEYSTONE = BuildConfig.KEYSTONE;
+		public static final String COMMANDANT = BuildConfig.COMMANDANT;
 		public static final String JEDIS = BuildConfig.JEDIS;
 		public static final String ADVENTURE = BuildConfig.ADVENTURE_MINIMESSAGE;
 		public static final String ADVENTURE_BUKKIT = BuildConfig.ADVENTURE_PLATFORM_BUKKIT;
