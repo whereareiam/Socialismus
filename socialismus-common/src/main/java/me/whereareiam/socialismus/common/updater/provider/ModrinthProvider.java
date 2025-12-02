@@ -5,8 +5,8 @@ import lombok.Data;
 import me.whereareiam.configura.Config;
 import me.whereareiam.configura.reader.ConfigReader;
 import me.whereareiam.configura.type.Format;
-import me.whereareiam.socialismus.input.updater.UpdateProvider;
 import me.whereareiam.socialismus.model.update.UpdateSource;
+import me.whereareiam.socialismus.service.UpdateProvider;
 
 import java.io.IOException;
 import java.io.InputStream;

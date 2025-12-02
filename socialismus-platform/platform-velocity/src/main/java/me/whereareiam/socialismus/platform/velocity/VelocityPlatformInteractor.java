@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.output.PlatformInteractor;
+import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.type.BroadcastTarget;
 import me.whereareiam.socialismus.type.Version;
 import net.kyori.adventure.text.Component;

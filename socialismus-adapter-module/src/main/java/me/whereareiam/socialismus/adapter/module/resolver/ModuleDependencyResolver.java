@@ -4,11 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.Logger;
 import me.whereareiam.socialismus.integration.Integration;
+import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.module.InternalModule;
 import me.whereareiam.socialismus.model.module.ModuleDependency;
-import me.whereareiam.socialismus.output.module.ModuleService;
+import me.whereareiam.socialismus.module.ModuleService;
 import me.whereareiam.socialismus.type.module.DependencyType;
 import me.whereareiam.socialismus.type.module.ModuleState;
 

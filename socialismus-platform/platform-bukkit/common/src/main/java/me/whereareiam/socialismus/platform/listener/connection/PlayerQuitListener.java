@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.model.config.Settings;
-import me.whereareiam.socialismus.output.listener.DynamicListener;
+import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.bukkit.event.player.PlayerQuitEvent;
 

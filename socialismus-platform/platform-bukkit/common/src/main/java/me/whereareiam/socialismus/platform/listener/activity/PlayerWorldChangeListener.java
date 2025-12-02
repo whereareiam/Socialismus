@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.platform.listener.activity;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.output.listener.DynamicListener;
+import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 

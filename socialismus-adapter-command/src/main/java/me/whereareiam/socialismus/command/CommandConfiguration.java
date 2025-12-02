@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.command;
 
 import com.google.inject.AbstractModule;
-import me.whereareiam.socialismus.CommandService;
+import me.whereareiam.socialismus.service.CommandService;
 
 public class CommandConfiguration extends AbstractModule {
     @Override

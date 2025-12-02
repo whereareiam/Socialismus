@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.common.chat.processor;
 
 import com.google.inject.Singleton;
 import lombok.Getter;
-import me.whereareiam.socialismus.input.WorkerProcessor;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 

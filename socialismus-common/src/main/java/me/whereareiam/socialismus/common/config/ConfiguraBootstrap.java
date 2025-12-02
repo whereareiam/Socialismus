@@ -6,7 +6,7 @@ import me.whereareiam.configura.Config;
 import me.whereareiam.configura.reader.ConfigReader;
 import me.whereareiam.configura.type.Format;
 import me.whereareiam.configura.writer.ConfigWriter;
-import me.whereareiam.socialismus.output.config.ConfigurationTypeResolver;
+import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
 import me.whereareiam.socialismus.type.ConfigurationType;
 import me.whereareiam.socialismus.type.Version;
 import me.whereareiam.socialismus.common.config.adapter.ComponentAdapter;

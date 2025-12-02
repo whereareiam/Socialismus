@@ -7,7 +7,7 @@ import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.common.config.template.SettingsTemplate;
 import me.whereareiam.socialismus.model.config.Settings;
-import me.whereareiam.socialismus.registry.Registry;
+import me.whereareiam.socialismus.registry.base.Registry;
 
 import java.nio.file.Path;
 

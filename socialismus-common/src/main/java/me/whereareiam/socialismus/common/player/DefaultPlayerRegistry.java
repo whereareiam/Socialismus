@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.common.player;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.input.event.EventManager;
-import me.whereareiam.socialismus.input.event.player.SocialismusPlayerAddedEvent;
-import me.whereareiam.socialismus.input.event.player.SocialismusPlayerRemovedEvent;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.player.SocialismusPlayerAddedEvent;
+import me.whereareiam.socialismus.event.player.SocialismusPlayerRemovedEvent;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.jetbrains.annotations.NotNull;

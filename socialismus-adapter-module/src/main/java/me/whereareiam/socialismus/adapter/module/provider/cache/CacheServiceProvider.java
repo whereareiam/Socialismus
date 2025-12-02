@@ -5,8 +5,8 @@ import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.output.resource.CacheService;
-import me.whereareiam.socialismus.output.resource.ResourceRegistry;
+import me.whereareiam.socialismus.registry.ResourceRegistry;
+import me.whereareiam.socialismus.service.resource.CacheService;
 import me.whereareiam.socialismus.type.ResourceType;
 
 @Singleton

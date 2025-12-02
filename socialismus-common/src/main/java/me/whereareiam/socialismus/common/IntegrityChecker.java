@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.Version;

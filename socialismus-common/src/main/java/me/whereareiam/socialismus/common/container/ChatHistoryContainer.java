@@ -3,11 +3,11 @@ package me.whereareiam.socialismus.common.container;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.input.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.input.event.chat.history.MessageAddedEvent;
-import me.whereareiam.socialismus.input.event.chat.history.MessageRemovedEvent;
+import me.whereareiam.socialismus.event.chat.history.MessageAddedEvent;
+import me.whereareiam.socialismus.event.chat.history.MessageRemovedEvent;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.util.EventUtil;
 
 import java.util.*;

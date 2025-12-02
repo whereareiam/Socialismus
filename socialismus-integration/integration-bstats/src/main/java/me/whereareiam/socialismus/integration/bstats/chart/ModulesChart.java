@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.integration.bstats.chart;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.model.module.Module;
-import me.whereareiam.socialismus.output.module.ModuleService;
+import me.whereareiam.socialismus.module.ModuleService;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.CustomChart;
 

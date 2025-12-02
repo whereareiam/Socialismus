@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.adapter.module;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.Logger;
-import me.whereareiam.socialismus.output.resource.ResourceRegistry;
+import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.type.ResourceType;
 
 import java.util.Map;

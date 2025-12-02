@@ -2,14 +2,14 @@ package me.whereareiam.socialismus.common.requirement.validation;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.Logger;
-import me.whereareiam.socialismus.input.requirement.RequirementValidation;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.PlaceholderIntegration;
+import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.type.PlaceholderRequirement;
-import me.whereareiam.socialismus.registry.ExtendedRegistry;
+import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
+import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 import java.util.List;

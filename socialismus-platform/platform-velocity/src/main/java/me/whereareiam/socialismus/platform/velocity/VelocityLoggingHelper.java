@@ -3,8 +3,8 @@ package me.whereareiam.socialismus.platform.velocity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import lombok.Setter;
+import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.model.config.Settings;
-import me.whereareiam.socialismus.output.LoggingHelper;
 import org.slf4j.Logger;
 
 public class VelocityLoggingHelper implements LoggingHelper {

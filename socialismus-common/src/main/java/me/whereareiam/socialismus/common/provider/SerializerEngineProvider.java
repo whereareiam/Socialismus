@@ -9,7 +9,7 @@ import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.registry.Registry;
+import me.whereareiam.socialismus.registry.base.Registry;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -12,7 +12,7 @@ import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.PlaceholderIntegration;
 import me.whereareiam.socialismus.integration.SerializerIntegration;
-import me.whereareiam.socialismus.registry.Registry;
+import me.whereareiam.socialismus.registry.base.Registry;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;

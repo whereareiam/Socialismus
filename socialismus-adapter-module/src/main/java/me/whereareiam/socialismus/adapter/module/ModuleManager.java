@@ -6,11 +6,11 @@ import com.google.inject.name.Named;
 import lombok.Getter;
 import lombok.Setter;
 import me.whereareiam.configura.Config;
-import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.module.InternalModule;
 import me.whereareiam.socialismus.model.module.Module;
 import me.whereareiam.socialismus.model.module.ModuleDependency;
-import me.whereareiam.socialismus.output.module.ModuleService;
+import me.whereareiam.socialismus.module.ModuleService;
 import me.whereareiam.socialismus.type.module.DependencyType;
 import me.whereareiam.socialismus.type.module.ModuleState;
 

@@ -2,9 +2,9 @@ package me.whereareiam.socialismus.util;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.input.event.EventManager;
-import me.whereareiam.socialismus.input.event.base.CancellableEvent;
-import me.whereareiam.socialismus.input.event.base.Event;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.CancellableEvent;
+import me.whereareiam.socialismus.event.base.Event;
 
 /**
  * Utility class for handling events in the Socialismus plugin.

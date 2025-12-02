@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.platform;
 
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.output.PlatformInteractor;
+import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.type.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

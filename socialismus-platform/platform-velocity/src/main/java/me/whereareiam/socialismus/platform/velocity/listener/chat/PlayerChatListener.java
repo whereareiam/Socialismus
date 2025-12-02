@@ -7,7 +7,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.output.listener.DynamicListener;
+import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatMessageFactory;
 import net.kyori.adventure.text.Component;

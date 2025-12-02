@@ -10,7 +10,7 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.output.PlatformInteractor;
+import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.type.BroadcastTarget;
 import net.kyori.adventure.text.Component;

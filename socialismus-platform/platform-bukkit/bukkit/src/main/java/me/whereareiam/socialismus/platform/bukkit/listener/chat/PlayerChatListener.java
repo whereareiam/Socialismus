@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.output.listener.DynamicListener;
+import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatMessageFactory;

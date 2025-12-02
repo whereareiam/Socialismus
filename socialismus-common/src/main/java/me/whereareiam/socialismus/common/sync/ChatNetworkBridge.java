@@ -5,14 +5,14 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
-import me.whereareiam.socialismus.input.sync.ChatSyncBus;
+import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.output.SerializationService;
-import me.whereareiam.socialismus.output.resource.sync.SyncService;
+import me.whereareiam.socialismus.service.resource.sync.SyncService;
+import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import net.kyori.adventure.text.Component;
 
 import java.util.Set;

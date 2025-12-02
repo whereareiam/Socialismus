@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.adapter.module.resolver;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.Logger;
+import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.module.InternalModule;
 import me.whereareiam.socialismus.type.PlatformType;
 

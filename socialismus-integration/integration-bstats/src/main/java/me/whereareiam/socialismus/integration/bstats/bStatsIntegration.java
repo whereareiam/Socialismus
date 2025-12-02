@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.integration.Integration;
-import me.whereareiam.socialismus.registry.Registry;
+import me.whereareiam.socialismus.registry.base.Registry;
 
 @Singleton
 public class bStatsIntegration implements Integration {

@@ -3,9 +3,9 @@ package me.whereareiam.socialismus.platform;
 import com.google.inject.AbstractModule;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.output.LoggingHelper;
-import me.whereareiam.socialismus.output.PlatformClassLoader;
 import me.whereareiam.socialismus.integration.bstats.Metrics;
+import me.whereareiam.socialismus.logging.LoggingHelper;
+import me.whereareiam.socialismus.module.PlatformClassLoader;
 import org.bukkit.plugin.Plugin;
 
 @RequiredArgsConstructor

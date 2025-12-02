@@ -8,7 +8,7 @@ import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.common.config.provider.DefaultConfigProvider;
 import me.whereareiam.socialismus.common.config.template.chat.ChatMessagesTemplate;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
-import me.whereareiam.socialismus.registry.Registry;
+import me.whereareiam.socialismus.registry.base.Registry;
 
 import java.nio.file.Path;
 

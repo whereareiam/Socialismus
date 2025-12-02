@@ -13,7 +13,7 @@ import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.registry.Registry;
+import me.whereareiam.socialismus.registry.base.Registry;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.annotation.specifier.Range;

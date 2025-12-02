@@ -9,7 +9,7 @@ import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.output.module.ModuleService;
+import me.whereareiam.socialismus.module.ModuleService;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.PluginType;
 import net.kyori.adventure.text.Component;

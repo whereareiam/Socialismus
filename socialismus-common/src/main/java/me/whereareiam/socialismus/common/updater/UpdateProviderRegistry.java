@@ -3,8 +3,8 @@ package me.whereareiam.socialismus.common.updater;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import me.whereareiam.socialismus.input.updater.UpdateProvider;
 import me.whereareiam.socialismus.model.update.UpdateSource;
+import me.whereareiam.socialismus.service.UpdateProvider;
 
 @Singleton
 public class UpdateProviderRegistry {

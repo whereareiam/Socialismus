@@ -5,7 +5,7 @@ import me.whereareiam.attache.model.Library;
 import me.whereareiam.attache.model.Relocation;
 import me.whereareiam.attache.type.VerbosityMode;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.input.DependencyResolver;
+import me.whereareiam.socialismus.service.DependencyResolver;
 
 import java.util.ArrayList;
 import java.util.List;

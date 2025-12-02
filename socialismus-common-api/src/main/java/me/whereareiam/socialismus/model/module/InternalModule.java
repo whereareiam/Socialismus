@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.output.module.SocialisticModule;
+import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.type.module.ModuleState;
 
 import java.nio.file.Path;

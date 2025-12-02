@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.adapter.module.provider.sync;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.output.resource.sync.SyncService;
-import me.whereareiam.socialismus.output.resource.sync.SyncSubscriber;
+import me.whereareiam.socialismus.service.resource.sync.SyncService;
+import me.whereareiam.socialismus.service.resource.sync.SyncSubscriber;
 
 /**
  * A do-nothing implementation used when sync is off.

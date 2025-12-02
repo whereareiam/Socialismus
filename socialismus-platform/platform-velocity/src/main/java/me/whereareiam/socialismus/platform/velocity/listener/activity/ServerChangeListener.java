@@ -7,7 +7,7 @@ import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.common.SynchronizationService;
-import me.whereareiam.socialismus.output.listener.DynamicListener;
+import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 
 @Singleton

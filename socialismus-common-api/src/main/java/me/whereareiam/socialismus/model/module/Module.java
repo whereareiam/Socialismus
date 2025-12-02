@@ -2,8 +2,8 @@ package me.whereareiam.socialismus.model.module;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import me.whereareiam.socialismus.model.ResourceRequirement;
 import me.whereareiam.socialismus.model.update.UpdateConfiguration;
-import me.whereareiam.socialismus.output.resource.ResourceRequirement;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.Version;
 

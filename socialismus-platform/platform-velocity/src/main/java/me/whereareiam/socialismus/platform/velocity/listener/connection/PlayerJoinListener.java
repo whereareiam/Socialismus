@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.common.SynchronizationService;
-import me.whereareiam.socialismus.output.listener.DynamicListener;
+import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 
 @Singleton

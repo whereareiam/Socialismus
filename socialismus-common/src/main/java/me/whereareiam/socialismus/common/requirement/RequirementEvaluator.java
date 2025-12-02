@@ -3,12 +3,12 @@ package me.whereareiam.socialismus.common.requirement;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.Logger;
-import me.whereareiam.socialismus.input.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.input.requirement.RequirementValidation;
+import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 import java.util.Map;

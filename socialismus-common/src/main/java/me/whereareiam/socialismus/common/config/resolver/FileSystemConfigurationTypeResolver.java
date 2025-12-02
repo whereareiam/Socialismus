@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.common.config.resolver;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import me.whereareiam.socialismus.output.config.ConfigurationTypeResolver;
+import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
 import me.whereareiam.socialismus.type.ConfigurationType;
 
 import java.io.IOException;
