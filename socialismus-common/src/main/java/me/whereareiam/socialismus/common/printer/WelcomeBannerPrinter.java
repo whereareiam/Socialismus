@@ -36,11 +36,11 @@ public class WelcomeBannerPrinter {
 	private List<String> buildTitleLines() {
 		List<String> l = new ArrayList<>();
 		l.add("");
-		l.add(AnsiColor.CYAN +
+		l.add(AnsiColor.ORANGE +
 				"  █▀ █▀▀   " + AnsiColor.RESET +
 				"Socialismus v" + AnsiColor.GRAY +
 				Constants.VERSION + AnsiColor.RESET);
-		l.add(AnsiColor.CYAN +
+		l.add(AnsiColor.ORANGE +
 				"  ▄█ █▄▄   " + AnsiColor.RESET +
 				"Platform: " + AnsiColor.GRAY +
 				PlatformType.getType() + " [" +
@@ -56,10 +56,10 @@ public class WelcomeBannerPrinter {
 		int chatCount = chatContainer.getChats().size();
 
 		l.add("  Loaded " +
-				AnsiColor.CYAN + cmdCount + AnsiColor.RESET +
+				AnsiColor.ORANGE + cmdCount + AnsiColor.RESET +
 				" command" + (cmdCount == 1 ? "" : "s"));
 		l.add("  Loaded " +
-				AnsiColor.CYAN + chatCount + AnsiColor.RESET +
+				AnsiColor.ORANGE + chatCount + AnsiColor.RESET +
 				" chat" + (chatCount == 1 ? "" : "s"));
 		l.add("");
 		return l;
