@@ -21,7 +21,7 @@ mockito = "5.20.0"
 
 # resouces
 ormlite = "6.1"
-jedis = "6.0.0"
+jedis = "7.0.0"
 
 # platform api versions
 velocity = "3.4.0-SNAPSHOT"
