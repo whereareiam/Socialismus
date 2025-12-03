@@ -95,7 +95,7 @@ jobs:
         run: mkdir output
 
       - name: Move API
-        run: mv socialismus-common-api/build/libs/socialismus-api-${{ needs.prepare.outputs.version }}.jar output/${{ needs.prepare.outputs.name }}-API-${{ needs.prepare.outputs.version }}.jar
+        run: mv socialismus-api/build/libs/socialismus-api-${{ needs.prepare.outputs.version }}.jar output/${{ needs.prepare.outputs.name }}-API-${{ needs.prepare.outputs.version }}.jar
 
       - name: Move platform jars
         run: |
