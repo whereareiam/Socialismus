@@ -50,7 +50,6 @@ public final class Socialismus implements EventListener {
 	@SocialisticEvent
 	public void onPluginBootstrapped(PluginBootstrappedEvent event) {
 		Constants.SERVER_VERSION = injector.getInstance(PlatformInteractor.class).getServerVersion();
-		EventUtil.init(injector.getInstance(EventManager.class));
 		Logger.init(injector.getInstance(LoggingHelper.class));
 
 		// Load settings early

@@ -4,7 +4,7 @@ package me.whereareiam.socialismus.integration;
  * Base interface for all plugin integrations in the Socialismus plugin.
  * Defines the core methods that all integrations must implement to provide
  * identification and availability status.
- *
+ * <p>
  * This interface serves as a foundation for specific integration types
  * such as formatting, placeholders, and other external plugin integrations.
  */

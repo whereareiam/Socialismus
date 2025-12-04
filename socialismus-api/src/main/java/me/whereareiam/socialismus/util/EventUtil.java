@@ -23,7 +23,7 @@ public class EventUtil {
 	 *
 	 * @param eventManager the event manager instance to use
 	 */
-	public static void init(EventManager eventManager) {
+	public static void initialize(EventManager eventManager) {
 		EventUtil.eventManager = eventManager;
 	}
 

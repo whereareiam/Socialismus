@@ -59,6 +59,7 @@ import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import me.whereareiam.socialismus.type.module.ProviderType;
 import me.whereareiam.socialismus.type.requirement.RequirementType;
+import me.whereareiam.socialismus.util.EventUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -156,6 +157,11 @@ public class CommonConfiguration extends AbstractModule {
 	@Inject
 	void initializeSerializationHelper(Provider<SerializerEngine> serializerProvider) {
 		Serializer.initialize(serializerProvider);
+	}
+
+	@Inject
+	void initializeEventUtil(EventManager eventManager) {
+		EventUtil.initialize(eventManager);
 	}
 
 	@Provides
