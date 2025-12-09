@@ -16,7 +16,7 @@ keystone = "dev-697f401"
 commandant = "dev-5f99bce"
 
 # testing
-junit = "6.0.0"
+junit = "6.0.1"
 mockito = "5.20.0"
 
 # resouces
