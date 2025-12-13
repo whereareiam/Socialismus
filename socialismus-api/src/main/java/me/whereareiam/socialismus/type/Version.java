@@ -58,7 +58,8 @@ public enum Version {
 	V_1_21_7,
 	V_1_21_8,
 	V_1_21_9,
-	V_1_21_10;
+	V_1_21_10,
+	V_1_21_11;
 
 	/**
 	 * Converts a version string to its corresponding Version enum.
