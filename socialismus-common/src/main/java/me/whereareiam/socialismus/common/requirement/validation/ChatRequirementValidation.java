@@ -25,13 +25,15 @@ public class ChatRequirementValidation implements RequirementValidation {
 		if (!(requirement instanceof ChatRequirement cr)) return false;
 		if (!PlatformType.isGameServer()) return false;
 
-		Logger.debug("Checking chat requirement for player " + player.getUsername());
+		String lastChat = player.getLastChat() != null ? player.getLastChat().getId() : "null";
+
+		Logger.debug("Checking chat requirement for player " + player.getUsername() + " [" + lastChat + "]");
 		boolean checkResult = false;
 		switch (cr.getCondition()) {
 			case EQUALS ->
-					checkResult = cr.getChatIdentifiers().size() == 1 && cr.getChatIdentifiers().get(0).equals(player.getLastChat() != null ? player.getLastChat().getId() : "null");
+					checkResult = cr.getChatIdentifiers().size() == 1 && cr.getChatIdentifiers().get(0).equals(lastChat);
 			case CONTAINS ->
-					checkResult = cr.getChatIdentifiers().contains(player.getLastChat() != null ? player.getLastChat().getId() : "null");
+					checkResult = cr.getChatIdentifiers().contains(lastChat);
 		}
 
 		String[] expectedValues = cr.getExpected().split("\\|");
