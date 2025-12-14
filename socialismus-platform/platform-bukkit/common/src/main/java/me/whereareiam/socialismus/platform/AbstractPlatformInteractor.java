@@ -33,6 +33,6 @@ public abstract class AbstractPlatformInteractor implements PlatformInteractor {
 
 	@Override
 	public Version getServerVersion() {
-		return Version.of(Bukkit.getVersion());
+		return Version.of(Bukkit.getBukkitVersion());
 	}
 }
