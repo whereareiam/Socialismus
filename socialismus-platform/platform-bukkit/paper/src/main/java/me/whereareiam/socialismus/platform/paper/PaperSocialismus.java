@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.platform.paper;
 
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
@@ -11,7 +12,9 @@ import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPIInteg
 import me.whereareiam.socialismus.platform.BukkitLoggingHelper;
 import me.whereareiam.socialismus.platform.paper.inject.PaperInjector;
 import me.whereareiam.socialismus.type.PluginType;
+import me.whereareiam.socialismus.type.Version;
 import me.whereareiam.socialismus.util.EventUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
@@ -26,6 +29,7 @@ import java.util.logging.Logger;
 	public void onLoad() {
 		PluginType.setPluginType(PluginType.PAPER);
 		BukkitLoggingHelper.setLogger(logger);
+		Constants.SERVER_VERSION = Version.of(Bukkit.getBukkitVersion());
 
 		if (BukkitIntegrityChecker.checkIntegrity(logger)) {
 			getServer().getPluginManager().disablePlugin(this);
