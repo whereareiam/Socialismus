@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.platform.paper;
 
 import me.whereareiam.socialismus.common.CommonInjector;
-import me.whereareiam.socialismus.common.IntegrityChecker;
+import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
@@ -27,6 +27,11 @@ import java.util.logging.Logger;
 		PluginType.setPluginType(PluginType.PAPER);
 		BukkitLoggingHelper.setLogger(logger);
 
+		if (BukkitIntegrityChecker.checkIntegrity(logger)) {
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+
 		PaperDependencyResolver dependencyResolver = new PaperDependencyResolver(this);
 		dependencyResolver.loadLibraries();
 		dependencyResolver.resolveDependencies();
@@ -34,9 +39,6 @@ import java.util.logging.Logger;
 		new PaperInjector(this, dependencyResolver, dataPath);
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
-
-		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
-			getServer().getPluginManager().disablePlugin(this);
 	}
 
 	@Override

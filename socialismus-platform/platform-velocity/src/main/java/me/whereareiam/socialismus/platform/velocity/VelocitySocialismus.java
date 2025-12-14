@@ -12,7 +12,6 @@ import jakarta.inject.Inject;
 import lombok.Getter;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.CommonInjector;
-import me.whereareiam.socialismus.common.IntegrityChecker;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
@@ -69,9 +68,6 @@ public class VelocitySocialismus {
 		);
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
-
-		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
-			throw new RuntimeException("Integrity check failed, plugin will be disabled");
 
 		CommonInjector.getInjector().getInstance(PAPIProxyBridgeIntegration.class);
 		CommonInjector.getInjector().getInstance(PacketEventsIntegration.class);

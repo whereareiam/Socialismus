@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.platform.bukkit;
 
 import me.whereareiam.socialismus.common.CommonInjector;
-import me.whereareiam.socialismus.common.IntegrityChecker;
+import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
@@ -27,6 +27,11 @@ public class BukkitSocialismus extends JavaPlugin {
 		PluginType.setPluginType(PluginType.BUKKIT);
 		BukkitLoggingHelper.setLogger(logger);
 
+		if (BukkitIntegrityChecker.checkIntegrity(logger)) {
+			getPluginLoader().disablePlugin(this);
+			return;
+		}
+
 		BukkitDependencyResolver dependencyResolver = new BukkitDependencyResolver(this);
 		dependencyResolver.loadLibraries();
 		dependencyResolver.resolveDependencies();
@@ -34,9 +39,6 @@ public class BukkitSocialismus extends JavaPlugin {
 		new BukkitInjector(this, dependencyResolver, dataPath);
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
-
-		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
-			getPluginLoader().disablePlugin(this);
 	}
 
 	@Override
