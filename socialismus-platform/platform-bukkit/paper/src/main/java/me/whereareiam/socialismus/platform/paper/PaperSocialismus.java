@@ -38,12 +38,9 @@ public class PaperSocialismus extends JavaPlugin {
 
 		PaperDependencyResolver dependencyResolver = new PaperDependencyResolver(this);
 		dependencyResolver.loadLibraries();
-		logger.info("Loading runtime libraries...");
 		dependencyResolver.resolveDependencies();
-		logger.info("Runtime libraries loaded, creating injector...");
 
 		new PaperInjector(this, dependencyResolver, dataPath);
-		logger.info("Injector created successfully");
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {
 		});

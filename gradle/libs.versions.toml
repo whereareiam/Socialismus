@@ -11,7 +11,7 @@ lombok = "1.18.42"
 guice = "7.0.0"
 annotations = "26.0.1"
 attache = "dev-0ac3086"
-configura = "dev-03bf581"
+configura = "dev-3526c23"
 keystone = "0.0.1"
 commandant = "0.0.1"
 
