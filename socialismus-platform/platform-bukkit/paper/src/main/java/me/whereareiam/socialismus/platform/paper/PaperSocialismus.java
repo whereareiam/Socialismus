@@ -2,13 +2,13 @@ package me.whereareiam.socialismus.platform.paper;
 
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.CommonInjector;
-import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
 import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
 import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
 import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPIIntegration;
+import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.platform.BukkitLoggingHelper;
 import me.whereareiam.socialismus.platform.paper.inject.PaperInjector;
 import me.whereareiam.socialismus.type.PluginType;
@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 @SuppressWarnings("unused")
-	public class PaperSocialismus extends JavaPlugin {
+public class PaperSocialismus extends JavaPlugin {
 	private final Path dataPath = getDataFolder().toPath();
 	private final Logger logger = getLogger();
 
@@ -38,11 +38,15 @@ import java.util.logging.Logger;
 
 		PaperDependencyResolver dependencyResolver = new PaperDependencyResolver(this);
 		dependencyResolver.loadLibraries();
+		logger.info("Loading runtime libraries...");
 		dependencyResolver.resolveDependencies();
+		logger.info("Runtime libraries loaded, creating injector...");
 
 		new PaperInjector(this, dependencyResolver, dataPath);
+		logger.info("Injector created successfully");
 
-		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
+		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {
+		});
 	}
 
 	@Override
@@ -52,12 +56,14 @@ import java.util.logging.Logger;
 		CommonInjector.getInjector().getInstance(bStatsIntegration.class);
 
 		// Signal that the plugin is ready for normal operation
-		EventUtil.callEvent(new PluginReadyEvent(), () -> {});
+		EventUtil.callEvent(new PluginReadyEvent(), () -> {
+		});
 	}
 
 	@Override
 	public void onDisable() {
 		// Signal shutdown so common core can clean up
-		EventUtil.callEvent(new PluginShutdownEvent(), () -> {});
+		EventUtil.callEvent(new PluginShutdownEvent(), () -> {
+		});
 	}
 }

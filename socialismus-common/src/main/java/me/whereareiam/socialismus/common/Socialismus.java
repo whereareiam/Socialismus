@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.common;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.chat.worker.base.ChatSelector;
 import me.whereareiam.socialismus.common.chat.worker.base.RecipientResolver;
 import me.whereareiam.socialismus.common.chat.worker.base.RecipientSelector;
@@ -26,7 +25,6 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.module.ModuleService;
 import me.whereareiam.socialismus.service.CommandService;
-import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.util.EventUtil;
 
 /**
@@ -75,7 +73,8 @@ public final class Socialismus implements EventListener {
 		injector.getInstance(WelcomeBannerPrinter.class).print();
 		injector.getInstance(UpdateScheduler.class).start();
 
-		EventUtil.callEvent(new PluginInitializedEvent(), () -> {});
+		EventUtil.callEvent(new PluginInitializedEvent(), () -> {
+		});
 	}
 
 	@SocialisticEvent

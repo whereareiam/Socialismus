@@ -24,10 +24,10 @@ public class BukkitIntegrityChecker {
 			logger.severe("You can't use PAPER version of the plugin, because it is made for versions greater than or equal to 1.20.6" +
 					" and your version is " + currentVersion);
 
-			return false;
+			return true; // Problem - version too low
 		}
 
-		return Version.isHigherThan(currentVersion, Version.V_1_20_6);
+		return false; // No problem - version is 1.20.6 or higher
 	}
 
 	private static boolean checkBukkitIntegrity(Logger logger, Version currentVersion) {
