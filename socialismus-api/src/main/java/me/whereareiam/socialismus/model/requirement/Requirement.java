@@ -28,7 +28,8 @@ import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
 				@Polymorphic.Infer(field = "worlds", target = WorldRequirement.class),
 				@Polymorphic.Infer(field = "chatIdentifiers", target = ChatRequirement.class),
 				@Polymorphic.Infer(field = "placeholders", target = PlaceholderRequirement.class),
-				@Polymorphic.Infer(field = "permissions", target = PermissionRequirement.class)
+				@Polymorphic.Infer(field = "permissions", target = PermissionRequirement.class),
+				@Polymorphic.Infer(field = "triggers", target = TriggerRequirement.class)
 		}
 )
 public class Requirement {

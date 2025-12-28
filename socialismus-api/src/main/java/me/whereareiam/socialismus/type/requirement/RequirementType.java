@@ -11,6 +11,7 @@ package me.whereareiam.socialismus.type.requirement;
  *   <li>{@link #SERVER}: Requirements related to server conditions</li>
  *   <li>{@link #WORLD}: Requirements specific to in-game worlds</li>
  *   <li>{@link #CHAT}: Requirements related to chat conditions</li>
+ *   <li>{@link #TRIGGER}: Requirements related to chat trigger conditions</li>
  * </ul>
  */
 public enum RequirementType {
@@ -27,5 +28,8 @@ public enum RequirementType {
     WORLD,
 
     /** Checks chat-related conditions */
-    CHAT
+    CHAT,
+
+    /** Checks trigger-related conditions */
+    TRIGGER
 }

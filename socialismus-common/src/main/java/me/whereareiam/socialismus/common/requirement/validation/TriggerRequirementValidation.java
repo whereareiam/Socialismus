@@ -4,42 +4,43 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.logging.Logger;
-import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.model.chat.ChatTrigger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
-import me.whereareiam.socialismus.model.requirement.type.ChatRequirement;
+import me.whereareiam.socialismus.model.requirement.type.TriggerRequirement;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.chat.TriggerType;
 import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 @Singleton
-public class ChatRequirementValidation implements RequirementValidation {
+public class TriggerRequirementValidation implements RequirementValidation {
 	@Inject
-	public ChatRequirementValidation(
+	public TriggerRequirementValidation(
 			ExtendedRegistry<RequirementType, RequirementValidation> registry
 	) {
-		registry.register(RequirementType.CHAT, this);
+		registry.register(RequirementType.TRIGGER, this);
 	}
 
 	@Override
 	public boolean check(Requirement requirement, SocialismusPlayer player) {
-		if (!(requirement instanceof ChatRequirement cr)) return false;
+		if (!(requirement instanceof TriggerRequirement tr)) return false;
 		if (!PlatformType.isGameServer()) return false;
 
-		Chat lastChat = player.getData(Constants.DataKeys.LAST_CHAT);
-		String lastChatId = lastChat != null ? lastChat.getId() : "null";
+		ChatTrigger lastTrigger = player.getData(Constants.DataKeys.LAST_TRIGGER);
+		TriggerType lastTriggerType = lastTrigger != null ? lastTrigger.getType() : null;
 
-		Logger.debug("Checking chat requirement for player " + player.getUsername() + " [" + lastChatId + "]");
+		Logger.debug("Checking trigger requirement for player " + player.getUsername() + " [" + lastTriggerType + "]");
 		boolean checkResult = false;
-		switch (cr.getCondition()) {
+		switch (tr.getCondition()) {
 			case EQUALS ->
-					checkResult = cr.getChatIdentifiers().size() == 1 && cr.getChatIdentifiers().get(0).equals(lastChatId);
+					checkResult = tr.getTriggers().size() == 1 && tr.getTriggers().get(0).equals(lastTriggerType);
 			case CONTAINS ->
-					checkResult = cr.getChatIdentifiers().contains(lastChatId);
+					checkResult = tr.getTriggers().contains(lastTriggerType);
 		}
 
-		String[] expectedValues = cr.getExpected().split("\\|");
+		String[] expectedValues = tr.getExpected().split("\\|");
 		for (String expectedValue : expectedValues) {
 			if (String.valueOf(checkResult).equals(expectedValue)) {
 				Logger.debug("Found matching expected value: " + checkResult + " for player " + player.getUsername());
