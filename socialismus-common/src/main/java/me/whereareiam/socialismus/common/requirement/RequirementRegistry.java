@@ -45,11 +45,32 @@ public class RequirementRegistry implements ExtendedRegistry<RequirementKey<?>, 
      * Gets a requirement validation by its string key.
      * This is used when deserializing requirements from config files.
      *
-     * @param fullKey the full namespaced key (e.g., "socialismus:permission")
+     * @param fullKey the full namespaced key (e.g., "socialismus:permission") or short key (e.g., "PERMISSION")
      * @return the validation implementation, or null if not registered
      */
     @Nullable
     public RequirementValidation get(@NotNull String fullKey) {
-        return requirementCheckers.get(fullKey);
+        // First try exact match
+        RequirementValidation validation = requirementCheckers.get(fullKey);
+        if (validation != null) {
+            return validation;
+        }
+        
+        // If no namespace present, search through all registered keys
+        if (!fullKey.contains(":")) {
+            String normalizedKey = fullKey.toLowerCase();
+            for (Map.Entry<String, RequirementValidation> entry : requirementCheckers.entrySet()) {
+                String registeredKey = entry.getKey();
+                // Extract the type part after the colon
+                if (registeredKey.contains(":")) {
+                    String type = registeredKey.substring(registeredKey.indexOf(':') + 1);
+                    if (type.equals(normalizedKey)) {
+                        return entry.getValue();
+                    }
+                }
+            }
+        }
+        
+        return null;
     }
 }

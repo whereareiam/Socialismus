@@ -128,14 +128,15 @@ public class CommonConfiguration extends AbstractModule {
 				.to(SpigotMCProvider.class);
 
 		// Requirements
+		bind(new TypeLiteral<ExtendedRegistry<RequirementKey<?>, RequirementValidation>>() {})
+				.to(RequirementRegistry.class)
+				.asEagerSingleton();
 		bind(PermissionRequirementValidation.class).asEagerSingleton();
 		bind(WorldRequirementValidation.class).asEagerSingleton();
 		bind(ServerRequirementValidation.class).asEagerSingleton();
 		bind(PlaceholderRequirementValidation.class).asEagerSingleton();
 		bind(ChatRequirementValidation.class).asEagerSingleton();
 		bind(TriggerRequirementValidation.class).asEagerSingleton();
-		bind(new TypeLiteral<ExtendedRegistry<RequirementKey<?>, RequirementValidation>>() {
-		}).to(RequirementRegistry.class);
 		bind(RequirementEvaluatorService.class).to(RequirementEvaluator.class);
 
 		// Other
