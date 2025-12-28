@@ -2,15 +2,16 @@ package me.whereareiam.socialismus.common.requirement.validation;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.PlaceholderIntegration;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
+import me.whereareiam.socialismus.model.requirement.RequirementKey;
 import me.whereareiam.socialismus.model.requirement.type.PlaceholderRequirement;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 import java.util.List;
 import java.util.Set;
@@ -21,12 +22,12 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
 
 	@Inject
 	public PlaceholderRequirementValidation(
-			ExtendedRegistry<RequirementType, RequirementValidation> registry,
+			ExtendedRegistry<RequirementKey<?>, RequirementValidation> registry,
 			Set<Integration> integrations
 	) {
 		this.integrations = integrations;
 
-		registry.register(RequirementType.PLACEHOLDER, this);
+		registry.register(Constants.Requirements.PLACEHOLDER, this);
 	}
 
 	@Override

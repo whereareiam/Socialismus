@@ -7,19 +7,19 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
+import me.whereareiam.socialismus.model.requirement.RequirementKey;
 import me.whereareiam.socialismus.model.requirement.type.ChatRequirement;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.PlatformType;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 @Singleton
 public class ChatRequirementValidation implements RequirementValidation {
 	@Inject
 	public ChatRequirementValidation(
-			ExtendedRegistry<RequirementType, RequirementValidation> registry
+			ExtendedRegistry<RequirementKey<?>, RequirementValidation> registry
 	) {
-		registry.register(RequirementType.CHAT, this);
+		registry.register(Constants.Requirements.CHAT, this);
 	}
 
 	@Override

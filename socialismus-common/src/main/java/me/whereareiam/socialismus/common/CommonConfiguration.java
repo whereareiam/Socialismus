@@ -58,7 +58,6 @@ import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorServic
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import me.whereareiam.socialismus.type.module.ProviderType;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
 import me.whereareiam.socialismus.util.EventUtil;
 
 import java.io.IOException;
@@ -134,7 +133,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(PlaceholderRequirementValidation.class).asEagerSingleton();
 		bind(ChatRequirementValidation.class).asEagerSingleton();
 		bind(TriggerRequirementValidation.class).asEagerSingleton();
-		bind(new TypeLiteral<ExtendedRegistry<RequirementType, RequirementValidation>>() {
+		bind(new TypeLiteral<ExtendedRegistry<String, RequirementValidation>>() {
 		}).to(RequirementRegistry.class);
 		bind(RequirementEvaluatorService.class).to(RequirementEvaluator.class);
 

@@ -3,6 +3,8 @@ package me.whereareiam.socialismus;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatTrigger;
 import me.whereareiam.socialismus.model.player.PlayerDataKey;
+import me.whereareiam.socialismus.model.requirement.RequirementKey;
+import me.whereareiam.socialismus.model.requirement.type.*;
 import me.whereareiam.socialismus.type.Version;
 
 public final class Constants {
@@ -59,5 +61,43 @@ public final class Constants {
 		 */
 		public static final PlayerDataKey<ChatTrigger> LAST_TRIGGER =
 				PlayerDataKey.create("socialismus", "last_trigger", ChatTrigger.class);
+	}
+
+	public static final class Requirements {
+		/**
+		 * Placeholder-based requirements (e.g., %player_level% > 10)
+		 */
+		public static final RequirementKey<PlaceholderRequirement> PLACEHOLDER =
+				RequirementKey.create("socialismus", "placeholder", PlaceholderRequirement.class);
+
+		/**
+		 * Permission-based requirements (e.g., player has "chat.local")
+		 */
+		public static final RequirementKey<PermissionRequirement> PERMISSION =
+				RequirementKey.create("socialismus", "permission", PermissionRequirement.class);
+
+		/**
+		 * Server-based requirements (e.g., player is on "lobby" server)
+		 */
+		public static final RequirementKey<ServerRequirement> SERVER =
+				RequirementKey.create("socialismus", "server", ServerRequirement.class);
+
+		/**
+		 * World-based requirements (e.g., player is in "world_nether")
+		 */
+		public static final RequirementKey<WorldRequirement> WORLD =
+				RequirementKey.create("socialismus", "world", WorldRequirement.class);
+
+		/**
+		 * Chat-based requirements (e.g., last chat was "local")
+		 */
+		public static final RequirementKey<ChatRequirement> CHAT =
+				RequirementKey.create("socialismus", "chat", ChatRequirement.class);
+
+		/**
+		 * Trigger-based requirements (e.g., chat was triggered by SYMBOL)
+		 */
+		public static final RequirementKey<TriggerRequirement> TRIGGER =
+				RequirementKey.create("socialismus", "trigger", TriggerRequirement.class);
 	}
 }

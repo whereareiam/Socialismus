@@ -1,29 +1,48 @@
 package me.whereareiam.socialismus.common.requirement;
 
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.model.requirement.RequirementKey;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Registry for requirement validations.
+ * Supports namespaced requirement types, allowing modules to register their own requirements
+ * without modifying core code.
+ */
 @Singleton
-public class RequirementRegistry implements ExtendedRegistry<RequirementType, RequirementValidation> {
-    private final Map<RequirementType, RequirementValidation> requirementCheckers = new HashMap<>();
+public class RequirementRegistry implements ExtendedRegistry<String, RequirementValidation> {
+    private final Map<String, RequirementValidation> requirementCheckers = new ConcurrentHashMap<>();
 
-    @Override
-    public void register(RequirementType requirementType, RequirementValidation requirementValidation) {
-        requirementCheckers.put(requirementType, requirementValidation);
+    /**
+     * Registers a requirement validation using a type-safe key.
+     *
+     * @param key the requirement key
+     * @param validation the validation implementation
+     */
+    public void register(@NotNull RequirementKey<?> key, @NotNull RequirementValidation validation) {
+        requirementCheckers.put(key.getFullKey(), validation);
     }
 
     @Override
-    public Map<RequirementType, RequirementValidation> getRegistry() {
+    public void register(@NotNull String fullKey, @NotNull RequirementValidation validation) {
+        requirementCheckers.put(fullKey, validation);
+    }
+
+    @Override
+    @NotNull
+    public Map<String, RequirementValidation> getRegistry() {
         return requirementCheckers;
     }
 
     @Override
-    public RequirementValidation get(RequirementType requirementType) {
-        return requirementCheckers.get(requirementType);
+    @Nullable
+    public RequirementValidation get(@NotNull String fullKey) {
+        return requirementCheckers.get(fullKey);
     }
 }

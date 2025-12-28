@@ -2,8 +2,6 @@ package me.whereareiam.socialismus.model.requirement;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.configura.annotation.Polymorphic;
-import me.whereareiam.socialismus.model.requirement.type.*;
 import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
 
 /**
@@ -15,6 +13,10 @@ import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
  *   <li>A condition type that determines how the comparison should be performed</li>
  *   <li>An expected value that serves as the comparison target</li>
  * </ul>
+ *
+ * <p><b>Note:</b> Polymorphic type registration is handled programmatically via
+ * {@code Config.registerPolymorphic(Requirement.class)} to allow modules to register
+ * their own requirement subtypes without modifying this class.</p>
  */
 @Getter
 @Setter
@@ -22,16 +24,6 @@ import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-@Polymorphic(
-		inferBy = {
-				@Polymorphic.Infer(field = "servers", target = ServerRequirement.class),
-				@Polymorphic.Infer(field = "worlds", target = WorldRequirement.class),
-				@Polymorphic.Infer(field = "chatIdentifiers", target = ChatRequirement.class),
-				@Polymorphic.Infer(field = "placeholders", target = PlaceholderRequirement.class),
-				@Polymorphic.Infer(field = "permissions", target = PermissionRequirement.class),
-				@Polymorphic.Infer(field = "triggers", target = TriggerRequirement.class)
-		}
-)
 public class Requirement {
 	/**
 	 * The type of condition to be checked

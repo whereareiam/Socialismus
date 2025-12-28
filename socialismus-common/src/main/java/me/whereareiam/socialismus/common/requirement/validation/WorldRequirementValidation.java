@@ -2,23 +2,24 @@ package me.whereareiam.socialismus.common.requirement.validation;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
+import me.whereareiam.socialismus.model.requirement.RequirementKey;
 import me.whereareiam.socialismus.model.requirement.type.WorldRequirement;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.PlatformType;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 @Singleton
 public class WorldRequirementValidation implements RequirementValidation {
 
 	@Inject
 	public WorldRequirementValidation(
-			ExtendedRegistry<RequirementType, RequirementValidation> registry
+			ExtendedRegistry<RequirementKey<?>, RequirementValidation> registry
 	) {
-		registry.register(RequirementType.WORLD, this);
+		registry.register(Constants.Requirements.WORLD, this);
 	}
 
 	@Override
