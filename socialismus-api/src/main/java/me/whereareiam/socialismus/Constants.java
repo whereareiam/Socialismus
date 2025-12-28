@@ -1,5 +1,8 @@
 package me.whereareiam.socialismus;
 
+import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.model.chat.ChatTrigger;
+import me.whereareiam.socialismus.model.player.PlayerDataKey;
 import me.whereareiam.socialismus.type.Version;
 
 public final class Constants {
@@ -42,5 +45,19 @@ public final class Constants {
 		public static final String CLOUD_VELOCITY = BuildConfig.CLOUD_VELOCITY;
 		public static final String CLOUD_MINECRAFT_EXTRAS = BuildConfig.CLOUD_MINECRAFT_EXTRAS;
 		public static final String BRIGADIER = BuildConfig.BRIGADIER;
+	}
+
+	public static final class DataKeys {
+		/**
+		 * The last chat channel the player used.
+		 */
+		public static final PlayerDataKey<Chat> LAST_CHAT =
+				PlayerDataKey.create("socialismus", "last_chat", Chat.class);
+
+		/**
+		 * The last trigger that activated a chat for the player.
+		 */
+		public static final PlayerDataKey<ChatTrigger> LAST_TRIGGER =
+				PlayerDataKey.create("socialismus", "last_trigger", ChatTrigger.class);
 	}
 }

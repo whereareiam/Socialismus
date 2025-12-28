@@ -4,15 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import me.whereareiam.keystone.Player;
-import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Abstract base class for Socialismus player implementations.
@@ -37,12 +39,10 @@ public abstract class SocialismusPlayer implements Player {
 	protected final String username;
 
 	/**
-	 * The last chat channel the player used.
-	 * This is a general field that applies to all platforms.
+	 * Dynamic custom data storage for modules to extend player functionality.
+	 * Keys are namespaced to prevent conflicts between modules.
 	 */
-	@Setter
-	@Nullable
-	private Chat lastChat;
+	private final Map<String, Object> customData = new ConcurrentHashMap<>();
 
 	/**
 	 * Static reference to PlayerRegistry for syncing data.
@@ -164,4 +164,54 @@ public abstract class SocialismusPlayer implements Player {
 	 * @return true if players are within range, false otherwise
 	 */
 	public abstract boolean isWithinRange(@NotNull SocialismusPlayer other, double range);
+
+	/**
+	 * Sets custom data for this player using a type-safe key.
+	 *
+	 * @param key the data key
+	 * @param value the value to store (null to remove)
+	 * @param <T> the value type
+	 */
+	public <T> void setData(@NotNull PlayerDataKey<T> key, @Nullable T value) {
+		if (value == null) {
+			customData.remove(key.getFullKey());
+		} else {
+			customData.put(key.getFullKey(), value);
+		}
+	}
+
+	/**
+	 * Gets custom data for this player using a type-safe key.
+	 *
+	 * @param key the data key
+	 * @param <T> the value type
+	 * @return the stored value, or null if not set
+	 */
+	@Nullable
+	public <T> T getData(@NotNull PlayerDataKey<T> key) {
+		Object value = customData.get(key.getFullKey());
+		return key.getType().isInstance(value) ? key.getType().cast(value) : null;
+	}
+
+	/**
+	 * Gets all custom data for this player.
+	 * Used internally for syncing player data.
+	 *
+	 * @return a copy of the custom data map
+	 */
+	@NotNull
+	public Map<String, Object> getCustomData() {
+		return new HashMap<>(customData);
+	}
+
+	/**
+	 * Sets all custom data for this player.
+	 * Used internally for syncing player data.
+	 *
+	 * @param data the custom data to restore
+	 */
+	public void setCustomData(@NotNull Map<String, Object> data) {
+		customData.clear();
+		customData.putAll(data);
+	}
 }
