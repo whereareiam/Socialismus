@@ -44,6 +44,7 @@ import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.model.requirement.RequirementKey;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
@@ -133,7 +134,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(PlaceholderRequirementValidation.class).asEagerSingleton();
 		bind(ChatRequirementValidation.class).asEagerSingleton();
 		bind(TriggerRequirementValidation.class).asEagerSingleton();
-		bind(new TypeLiteral<ExtendedRegistry<String, RequirementValidation>>() {
+		bind(new TypeLiteral<ExtendedRegistry<RequirementKey<?>, RequirementValidation>>() {
 		}).to(RequirementRegistry.class);
 		bind(RequirementEvaluatorService.class).to(RequirementEvaluator.class);
 

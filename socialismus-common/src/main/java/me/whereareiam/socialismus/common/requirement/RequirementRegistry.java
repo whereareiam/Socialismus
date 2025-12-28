@@ -16,31 +16,38 @@ import java.util.concurrent.ConcurrentHashMap;
  * without modifying core code.
  */
 @Singleton
-public class RequirementRegistry implements ExtendedRegistry<String, RequirementValidation> {
+public class RequirementRegistry implements ExtendedRegistry<RequirementKey<?>, RequirementValidation> {
     private final Map<String, RequirementValidation> requirementCheckers = new ConcurrentHashMap<>();
 
-    /**
-     * Registers a requirement validation using a type-safe key.
-     *
-     * @param key the requirement key
-     * @param validation the validation implementation
-     */
+    @Override
     public void register(@NotNull RequirementKey<?> key, @NotNull RequirementValidation validation) {
         requirementCheckers.put(key.getFullKey(), validation);
     }
 
     @Override
-    public void register(@NotNull String fullKey, @NotNull RequirementValidation validation) {
-        requirementCheckers.put(fullKey, validation);
-    }
-
-    @Override
     @NotNull
-    public Map<String, RequirementValidation> getRegistry() {
-        return requirementCheckers;
+    public Map<RequirementKey<?>, RequirementValidation> getRegistry() {
+        // This method is not commonly used, but we need to maintain interface compatibility
+        // Converting the internal String-keyed map to RequirementKey map would require
+        // reconstructing RequirementKey objects, which isn't ideal
+        throw new UnsupportedOperationException(
+            "getRegistry() is not supported. Use get(String) or get(RequirementKey) instead."
+        );
     }
 
     @Override
+    @Nullable
+    public RequirementValidation get(@NotNull RequirementKey<?> key) {
+        return requirementCheckers.get(key.getFullKey());
+    }
+
+    /**
+     * Gets a requirement validation by its string key.
+     * This is used when deserializing requirements from config files.
+     *
+     * @param fullKey the full namespaced key (e.g., "socialismus:permission")
+     * @return the validation implementation, or null if not registered
+     */
     @Nullable
     public RequirementValidation get(@NotNull String fullKey) {
         return requirementCheckers.get(fullKey);
