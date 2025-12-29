@@ -36,9 +36,16 @@ public class BukkitIntegrityChecker {
 			logger.warning("It seems that you are using a version of the plugin that is not recommended for this platform. " +
 					"Please consider using the PAPER version of the plugin with Java 21+, it will be more stable and performant.");
 
-			return true;
+			return false;
 		}
 
-		return currentVersion.isAtLeast(Version.V_1_16);
+		if (Version.isLowerThan(currentVersion, Version.V_1_16)) {
+			logger.severe("You can't use BUKKIT version of the plugin, because it is made for versions greater than or equal to 1.16" +
+					" and your version is " + currentVersion);
+
+			return true; // Problem - version too low
+		}
+
+		return false; // No problem - version is 1.16 or higher
 	}
 }
