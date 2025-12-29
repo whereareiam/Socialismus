@@ -62,13 +62,6 @@ public abstract class CommonDependencyResolver implements DependencyResolver {
 
 		addDependency(Library.builder()
 				.groupId("me.whereareiam")
-				.artifactId("keystone")
-				.version(Constants.Dependency.KEYSTONE)
-				.resolveTransitiveDependencies(true)
-				.build());
-
-		addDependency(Library.builder()
-				.groupId("me.whereareiam")
 				.artifactId("commandant")
 				.version(Constants.Dependency.COMMANDANT)
 				.resolveTransitiveDependencies(true)

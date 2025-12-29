@@ -27,6 +27,17 @@ public class BukkitDependencyResolver extends CommonDependencyResolver {
 	public void loadLibraries() {
 		super.loadLibraries();
 
+		addDependency(Library.builder()
+				.groupId("me.whereareiam")
+				.artifactId("keystone")
+				.version(Constants.Dependency.KEYSTONE)
+				.resolveTransitiveDependencies(true)
+				.relocations(List.of(Relocation.builder()
+						.pattern("net{}kyori")
+						.relocatedPattern("me.whereareiam.socialismus.library")
+						.build()))
+				.build());
+
 		// Bukkit specific libraries
 		addDependency(Library.builder()
 				.groupId("net{}kyori")
