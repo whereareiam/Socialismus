@@ -110,5 +110,10 @@ public abstract class AbstractVelocitySocialismusPlayer extends SocialismusPlaye
 		
 		return thisServer != null && thisServer.equals(otherServer);
 	}
+
+	@Override
+	public void playSound(@NotNull String sound, float volume, float pitch) {
+		// No-op on proxy servers - sounds are backend-specific
+	}
 }
 

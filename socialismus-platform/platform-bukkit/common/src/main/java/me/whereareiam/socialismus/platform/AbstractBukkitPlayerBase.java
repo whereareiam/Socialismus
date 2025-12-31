@@ -5,6 +5,9 @@ import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.position.Position;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -92,5 +95,22 @@ public abstract class AbstractBukkitPlayerBase extends SocialismusPlayer {
 		if (!bukkitPlayer.getWorld().equals(otherPlayer.getWorld())) return false;
 
 		return bukkitPlayer.getLocation().distanceSquared(otherPlayer.getLocation()) <= range * range;
+	}
+
+	@Override
+	public void playSound(@NotNull String sound, float volume, float pitch) {
+		NamespacedKey soundKey = parsesoundKey(sound);
+		if (soundKey == null) return;
+		
+		Sound bukkitSound = Registry.SOUNDS.get(soundKey);
+		if (bukkitSound == null) return;
+		
+		bukkitPlayer.playSound(bukkitPlayer.getLocation(), bukkitSound, volume, pitch);
+	}
+
+	private NamespacedKey parsesoundKey(String sound) {
+		if (sound.contains(":")) return NamespacedKey.fromString(sound);
+		if (sound.matches("[A-Z_]+")) return NamespacedKey.minecraft(sound.toLowerCase().replace('_', '.'));
+		return NamespacedKey.minecraft(sound);
 	}
 }

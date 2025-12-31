@@ -166,6 +166,16 @@ public abstract class SocialismusPlayer implements Player {
 	public abstract boolean isWithinRange(@NotNull SocialismusPlayer other, double range);
 
 	/**
+	 * Plays a sound to this player.
+	 * Platform-specific implementation required.
+	 *
+	 * @param sound The sound identifier (e.g., "BLOCK_BELL_USE", "minecraft:entity.chicken.egg")
+	 * @param volume The volume of the sound (0.0 to 1.0+)
+	 * @param pitch The pitch of the sound (0.5 to 2.0)
+	 */
+	public abstract void playSound(@NotNull String sound, float volume, float pitch);
+
+	/**
 	 * Sets custom data for this player using a type-safe key.
 	 *
 	 * @param key the data key
