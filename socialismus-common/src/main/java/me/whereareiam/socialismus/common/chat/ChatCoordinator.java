@@ -13,6 +13,7 @@ import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
+import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.util.EventUtil;
 
 @Singleton
@@ -49,6 +50,8 @@ public class ChatCoordinator implements ChatCoordinationService {
 				() -> {
 					msg.getSender().setData(Constants.DataKeys.LAST_CHAT, msg.getChat());
 					msg.getSender().setData(Constants.DataKeys.LAST_TRIGGER, msg.getTrigger());
+					msg.getSender().setData(Constants.DataKeys.LAST_MESSAGE, 
+							msg.getContent() != null ? ComponentUtil.getPLAIN_TEXT_SERIALIZER().serialize(msg.getContent()) : "");
 					if (policy.allows(msg))
 						chatBroadcaster.broadcast(msg);
 					chatHistoryContainer.addMessage(msg.getId(), msg);

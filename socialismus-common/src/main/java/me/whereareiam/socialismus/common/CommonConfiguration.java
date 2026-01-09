@@ -137,6 +137,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(PlaceholderRequirementValidation.class).asEagerSingleton();
 		bind(ChatRequirementValidation.class).asEagerSingleton();
 		bind(TriggerRequirementValidation.class).asEagerSingleton();
+		bind(MessageRequirementValidation.class).asEagerSingleton();
 		bind(RequirementEvaluatorService.class).to(RequirementEvaluator.class);
 
 		// Other

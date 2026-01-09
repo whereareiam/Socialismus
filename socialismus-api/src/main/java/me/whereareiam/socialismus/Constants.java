@@ -61,6 +61,12 @@ public final class Constants {
 		 */
 		public static final PlayerDataKey<ChatTrigger> LAST_TRIGGER =
 				PlayerDataKey.create("socialismus", "last_trigger", ChatTrigger.class);
+
+		/**
+		 * The last message content the player sent.
+		 */
+		public static final PlayerDataKey<String> LAST_MESSAGE =
+				PlayerDataKey.create("socialismus", "last_message", String.class);
 	}
 
 	public static final class Requirements {
@@ -99,5 +105,11 @@ public final class Constants {
 		 */
 		public static final RequirementKey<TriggerRequirement> TRIGGER =
 				RequirementKey.create("socialismus", "trigger", TriggerRequirement.class);
+
+		/**
+		 * Message-based requirements (e.g., message is not empty)
+		 */
+		public static final RequirementKey<MessageRequirement> MESSAGE =
+				RequirementKey.create("socialismus", "message", MessageRequirement.class);
 	}
 }

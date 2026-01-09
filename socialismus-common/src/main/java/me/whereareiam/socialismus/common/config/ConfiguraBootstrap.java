@@ -41,6 +41,7 @@ public class ConfiguraBootstrap {
 				.inferByField("placeholders", PlaceholderRequirement.class)
 				.inferByField("permissions", PermissionRequirement.class)
 				.inferByField("triggers", TriggerRequirement.class)
+				.inferByField("messages", MessageRequirement.class)
 				.build();
 	}
 }
