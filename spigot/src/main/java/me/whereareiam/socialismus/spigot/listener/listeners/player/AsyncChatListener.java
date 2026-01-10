@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.api.model.chat.ChatMessage;
 import me.whereareiam.socialismus.core.listener.ChatListener;
 import me.whereareiam.socialismus.core.listener.handler.ChatHandler;
 import me.whereareiam.socialismus.core.util.LoggerUtil;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -30,7 +31,16 @@ public class AsyncChatListener implements ChatListener {
 		String message = event.getMessage();
 
 		ChatMessage chatMessage = onPlayerChatEvent(player, recipients, message);
-		event.setCancelled(chatMessage.isCancelled());
+
+		if (chatMessage.isCancelled()) {
+			event.setCancelled(true);
+			return;
+		}
+
+		event.getRecipients().clear();
+		event.getRecipients().addAll(chatMessage.getRecipients());
+		event.setFormat(LegacyComponentSerializer.legacySection().serialize(chatMessage.getContent()));
+		event.setMessage("");
 	}
 
 	@Override
