@@ -22,6 +22,7 @@ import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.util.EventUtil;
 import net.kyori.adventure.text.TextReplacementConfig;
+import org.intellij.lang.annotations.RegExp;
 
 import java.util.Comparator;
 import java.util.List;
@@ -109,7 +110,7 @@ public class ChatSelector {
 		ChatResolvedEvent event = new ChatResolvedEvent(message, match.chat, message.isCancelled());
 		EventUtil.callEvent(event, () -> message.setChat(event.getChat()));
 		message.setTrigger(match.trigger);
-		Logger.debug("Selected chat: " + match.chat);
+		Logger.debug("Selected chat: %s", match.chat.getId());
 
 		return message;
 	}
@@ -273,7 +274,7 @@ public class ChatSelector {
 
 		// If regex trigger requested strip, apply its pattern now.
 		if (match.trigger instanceof RegexChatTrigger regex && regex.isStrip()) {
-			String pattern = regex.getPattern();
+			@RegExp String pattern = regex.getPattern();
 			message.setContent(message.getContent().replaceText(
 					TextReplacementConfig.builder()
 							.match(pattern)
