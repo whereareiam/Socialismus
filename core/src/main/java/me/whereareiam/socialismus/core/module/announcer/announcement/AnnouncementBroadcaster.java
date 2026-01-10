@@ -45,10 +45,11 @@ public class AnnouncementBroadcaster {
 
 				onlinePlayers = announcerRequirementValidator.filterPlayers(announcement.requirements, onlinePlayers);
 
-				String broadCastMessage = String.join("\n", announcement.message);
-				Component broadcastMessage = formatterUtil.formatMessage(broadCastMessage);
-
-				for (Player player : onlinePlayers)
-						messageUtil.sendMessage(player, broadcastMessage);
+				for (Player player : onlinePlayers) {
+					for (String line : announcement.message) {
+						Component lineComponent = formatterUtil.formatMessage(player, line, true);
+						messageUtil.sendMessage(player, lineComponent);
+					}
+				}
 		}
 }
