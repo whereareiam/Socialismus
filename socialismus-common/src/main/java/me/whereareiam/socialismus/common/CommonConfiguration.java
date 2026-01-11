@@ -8,6 +8,8 @@ import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatHistoryController;
+import me.whereareiam.socialismus.common.chat.render.DefaultChatRenderService;
+import me.whereareiam.socialismus.common.chat.render.ClearPlaceholderResolver;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
 import me.whereareiam.socialismus.common.config.ConfiguraBootstrap;
@@ -23,6 +25,8 @@ import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.container.ChatHistoryContainer;
 import me.whereareiam.socialismus.common.event.EventController;
 import me.whereareiam.socialismus.common.player.DefaultPlayerRegistry;
+import me.whereareiam.socialismus.common.provider.ChatMessageTransformerProvider;
+import me.whereareiam.socialismus.common.provider.ChatPlaceholderResolverProvider;
 import me.whereareiam.socialismus.common.provider.IntegrationProvider;
 import me.whereareiam.socialismus.common.provider.ReloadableProvider;
 import me.whereareiam.socialismus.common.provider.SerializerEngineProvider;
@@ -51,12 +55,15 @@ import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.UpdateProvider;
+import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
+import me.whereareiam.socialismus.service.chat.render.ChatMessageTransformer;
+import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import me.whereareiam.socialismus.type.module.ProviderType;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -118,6 +125,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ChatHistoryContainerService.class).to(ChatHistoryContainer.class);
 		bind(ChatHistoryService.class).to(ChatHistoryController.class);
 		bind(ChatSyncBus.class).to(ChatNetworkBridge.class);
+		bind(ChatRenderService.class).to(DefaultChatRenderService.class);
 
 		// Updater
 		bind(UpdateProvider.class).annotatedWith(Names.named(ProviderType.MODRINTH.toString()))
@@ -145,6 +153,18 @@ public class CommonConfiguration extends AbstractModule {
 		}).to(ChatMessageProcessor.class);
 		bind(new TypeLiteral<WorkerProcessor<FormattedChatMessage>>() {
 		}).to(FormattedChatMessageProcessor.class);
+
+		bind(new TypeLiteral<Registry<ChatMessageTransformer>>() {
+		}).to(ChatMessageTransformerProvider.class).asEagerSingleton();
+		bind(new TypeLiteral<Set<ChatMessageTransformer>>() {
+		}).toProvider(ChatMessageTransformerProvider.class).asEagerSingleton();
+
+		bind(new TypeLiteral<Registry<ChatPlaceholderResolver>>() {
+		}).to(ChatPlaceholderResolverProvider.class).asEagerSingleton();
+		bind(new TypeLiteral<Set<ChatPlaceholderResolver>>() {
+		}).toProvider(ChatPlaceholderResolverProvider.class).asEagerSingleton();
+
+		bind(ClearPlaceholderResolver.class).asEagerSingleton();
 
 		bind(new TypeLiteral<Registry<Integration>>() {
 		}).to(IntegrationProvider.class).asEagerSingleton();

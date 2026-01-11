@@ -6,12 +6,12 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatMessageFactory;
-import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.platform.paper.renderer.SocialismusRenderer;
-import me.whereareiam.socialismus.service.sync.ChatSyncBus;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
+import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
 
@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
-	private final ChatSyncBus chatSyncBus;
 	private final ChatCoordinator chatCoordinator;
 	private final ChatMessageFactory chatMessageFactory;
-	private final ChatBroadcaster chatBroadcaster;
+	private final ChatRenderService chatRenderService;
+	private final PlayerRegistry playerRegistry;
 
 	@Override
 	public void onEvent(AsyncChatEvent event) {
@@ -64,7 +64,6 @@ public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
 
 		event.viewers().addAll(nonPlayerAudiences);
 
-		event.renderer(new SocialismusRenderer(formatted, chatBroadcaster));
+		event.renderer(new SocialismusRenderer(formatted, chatRenderService, playerRegistry));
 	}
-
 }

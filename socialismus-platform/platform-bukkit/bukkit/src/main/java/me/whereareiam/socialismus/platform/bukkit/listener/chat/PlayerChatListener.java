@@ -9,8 +9,8 @@ import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatMessageFactory;
-import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import net.kyori.adventure.text.Component;
+import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class PlayerChatListener implements DynamicListener<AsyncPlayerChatEvent> {
 	private final ChatCoordinator chatCoordinator;
-	private final ChatBroadcaster chatBroadcaster;
 	private final ChatMessageFactory chatMessageFactory;
+	private final ChatRenderService chatRenderService;
 
 	public void onEvent(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
@@ -49,11 +49,10 @@ public class PlayerChatListener implements DynamicListener<AsyncPlayerChatEvent>
 						.collect(Collectors.toSet())
 		);
 
-		event.setFormat(ComponentUtil.toLegacy(
-				formattedChatMessage.getFormat().replaceText(
-						chatBroadcaster.createClearReplacement(formattedChatMessage, player.getUniqueId())
-				), true
-		).replace("{message}", "%2$s"));
-		event.setMessage(ComponentUtil.toLegacy(formattedChatMessage.getContent(), true));
+		Component formatComponent = chatRenderService.renderFormat(formattedChatMessage, formattedChatMessage.getSender());
+		event.setFormat(ComponentUtil.toLegacy(formatComponent, true).replace("{message}", "%2$s"));
+
+		Component renderedMessage = chatRenderService.renderMessage(formattedChatMessage, formattedChatMessage.getSender());
+		event.setMessage(ComponentUtil.toLegacy(renderedMessage, true));
 	}
 }
