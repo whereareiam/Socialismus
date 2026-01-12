@@ -12,7 +12,7 @@ guice = "7.0.0"
 annotations = "26.0.1"
 attache = "dev-0ac3086"
 configura = "dev-cf8e100"
-keystone = "0.0.1"
+keystone = "dev-b1e6a0e"
 commandant = "0.0.1"
 
 # testing

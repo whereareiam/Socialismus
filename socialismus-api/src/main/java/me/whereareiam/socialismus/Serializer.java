@@ -19,15 +19,36 @@ public final class Serializer {
 		serializerProvider = Objects.requireNonNull(provider, "provider");
 	}
 
-	@NotNull
-	public static Component serialize(@NotNull String message) {
-		return getEngine().serialize(message);
-	}
+    @NotNull
+    public static Component serialize(@NotNull String message) {
+        return getEngine().serialize(message);
+    }
 
-	@NotNull
-	public static Component serialize(@NotNull Actor actor, @NotNull String message) {
-		return getEngine().serialize(actor, message);
-	}
+    @NotNull
+    public static Component serialize(@NotNull String message, @NotNull String scope) {
+        return getEngine().serialize(SerializerContent.builder()
+                .scope(scope)
+                .message(message)
+                .build());
+    }
+
+    @NotNull
+    public static Component serialize(@NotNull Actor actor, @NotNull String message) {
+        return getEngine().serialize(actor, message);
+    }
+
+    @NotNull
+    public static Component serialize(
+            @NotNull Actor actor,
+            @NotNull String message,
+            @NotNull String scope
+    ) {
+        return getEngine().serialize(SerializerContent.builder()
+                .receiver(actor)
+                .scope(scope)
+                .message(message)
+                .build());
+    }
 
 	@NotNull
 	public static Component serialize(@NotNull SerializerContent content) {
@@ -42,4 +63,3 @@ public final class Serializer {
 		return provider.get();
 	}
 }
-
