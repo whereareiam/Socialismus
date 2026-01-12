@@ -12,8 +12,8 @@ import me.whereareiam.socialismus.service.SerializationService;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class SerializationServiceAdapter implements SerializationService {
-	private final ConfigReader reader = Config.reader(Format.JSON);
-	private final ConfigWriter writer = Config.writer(Format.JSON);
+	private final ConfigReader reader = Config.getDefaultReader().withFormat(Format.JSON);
+	private final ConfigWriter writer = Config.getDefaultWriter().withFormat(Format.JSON);
 
 	@Override
 	public <T> byte[] serialize(T object) {
