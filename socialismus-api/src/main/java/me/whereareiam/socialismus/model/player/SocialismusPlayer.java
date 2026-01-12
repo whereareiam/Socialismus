@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.model.player;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.whereareiam.keystone.Player;
+import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import net.kyori.adventure.text.Component;
@@ -19,13 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Abstract base class for Socialismus player implementations.
  * Platform-specific modules (Paper, Velocity) extend this with concrete implementations.
- * <p>
- * Implements Player (Keystone) which extends Actor.
  */
 @Getter
 @ToString
 @SuppressWarnings("unused")
-public abstract class SocialismusPlayer implements Player {
+public abstract class SocialismusPlayer implements Actor {
 	/**
 	 * The player's unique identifier
 	 */
