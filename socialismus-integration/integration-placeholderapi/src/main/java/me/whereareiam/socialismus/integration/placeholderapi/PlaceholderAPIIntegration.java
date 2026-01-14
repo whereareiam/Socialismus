@@ -1,7 +1,6 @@
 package me.whereareiam.socialismus.integration.placeholderapi;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.whereareiam.keystone.Actor;
@@ -23,13 +22,11 @@ import java.util.UUID;
 public class PlaceholderAPIIntegration implements SerializerIntegration, PlaceholderIntegration {
 	@Inject
 	public PlaceholderAPIIntegration(
-			Registry<Integration> registry,
-			Provider<SerializerEngine> serializerEngineProvider
+			Registry<Integration> registry
 	) {
 		if (!isAvailable()) return;
 
 		registry.register(this);
-		registerDecorator(serializerEngineProvider.get());
 	}
 
 	@Override

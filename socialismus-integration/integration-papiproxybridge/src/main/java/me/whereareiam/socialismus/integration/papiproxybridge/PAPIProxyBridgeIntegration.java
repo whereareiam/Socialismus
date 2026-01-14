@@ -1,7 +1,6 @@
 package me.whereareiam.socialismus.integration.papiproxybridge;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.Serializers;
@@ -23,14 +22,12 @@ public class PAPIProxyBridgeIntegration implements SerializerIntegration, Placeh
 
 	@Inject
 	public PAPIProxyBridgeIntegration(
-			Registry<Integration> registry,
-			Provider<SerializerEngine> serializerEngineProvider
+			Registry<Integration> registry
 	) {
 		if (!isAvailable()) return;
 
 		this.placeholderAPI = PlaceholderAPI.createInstance();
 		registry.register(this);
-		registerDecorator(serializerEngineProvider.get());
 	}
 
 	@Override
