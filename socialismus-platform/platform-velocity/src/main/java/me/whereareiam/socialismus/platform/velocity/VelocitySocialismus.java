@@ -11,13 +11,9 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
-import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
-import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
-import me.whereareiam.socialismus.integration.papiproxybridge.PAPIProxyBridgeIntegration;
 import me.whereareiam.socialismus.platform.velocity.inject.VelocityInjector;
 import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.Version;
@@ -70,10 +66,6 @@ public class VelocitySocialismus {
 		);
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
-
-		CommonInjector.getInjector().getInstance(PAPIProxyBridgeIntegration.class);
-		CommonInjector.getInjector().getInstance(PacketEventsIntegration.class);
-		CommonInjector.getInjector().getInstance(bStatsIntegration.class);
 
 		// Signal that the plugin is ready for normal operation
 		EventUtil.callEvent(new PluginReadyEvent(), () -> {});

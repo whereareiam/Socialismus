@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.integration.papiproxybridge;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.Serializers;
@@ -19,16 +18,7 @@ import java.util.UUID;
 @Singleton
 public class PAPIProxyBridgeIntegration implements SerializerIntegration, PlaceholderIntegration {
 	private PlaceholderAPI placeholderAPI;
-
-	@Inject
-	public PAPIProxyBridgeIntegration(
-			Registry<Integration> registry
-	) {
-		if (!isAvailable()) return;
-
-		this.placeholderAPI = PlaceholderAPI.createInstance();
-		registry.register(this);
-	}
+	private boolean initialized;
 
 	@Override
 	public String getName() {
@@ -43,6 +33,17 @@ public class PAPIProxyBridgeIntegration implements SerializerIntegration, Placeh
 		} catch (ClassNotFoundException | NoClassDefFoundError e) {
 			return false;
 		}
+	}
+
+	@Override
+	public synchronized void initialize(Registry<Integration> registry) {
+		if (initialized || !isAvailable()) return;
+		if (placeholderAPI == null) {
+			placeholderAPI = PlaceholderAPI.createInstance();
+		}
+
+		registry.register(this);
+		initialized = true;
 	}
 
 	@Override

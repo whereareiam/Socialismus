@@ -2,8 +2,14 @@ package me.whereareiam.socialismus.platform.bukkit.inject;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.keystone.Actor;
+import me.whereareiam.socialismus.integration.Integration;
+import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
+import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
+import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPIIntegration;
 import me.whereareiam.socialismus.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.platform.bukkit.*;
 import me.whereareiam.socialismus.platform.bukkit.listener.BukkitListenerRegistrar;
@@ -31,5 +37,10 @@ public class BukkitInjectorConfiguration extends AbstractModule {
 		bind(ListenerRegistrar.class).to(BukkitListenerRegistrar.class);
 		bind(PlatformInteractor.class).to(BukkitPlatformInteractor.class);
 		bind(new TypeLiteral<CommandManager<Actor>>() {}).toProvider(BukkitCommandManagerProvider.class);
+
+		Multibinder<Integration> integrations = Multibinder.newSetBinder(binder(), Integration.class, Names.named("integrationCandidates"));
+		integrations.addBinding().to(PlaceholderAPIIntegration.class);
+		integrations.addBinding().to(PacketEventsIntegration.class);
+		integrations.addBinding().to(bStatsIntegration.class);
 	}
 }

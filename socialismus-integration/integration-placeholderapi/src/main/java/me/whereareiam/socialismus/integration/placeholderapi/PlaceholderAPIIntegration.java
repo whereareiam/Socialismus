@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.integration.placeholderapi;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.whereareiam.keystone.Actor;
@@ -20,14 +19,7 @@ import java.util.UUID;
 
 @Singleton
 public class PlaceholderAPIIntegration implements SerializerIntegration, PlaceholderIntegration {
-	@Inject
-	public PlaceholderAPIIntegration(
-			Registry<Integration> registry
-	) {
-		if (!isAvailable()) return;
-
-		registry.register(this);
-	}
+	private boolean initialized;
 
 	@Override
 	public String getName() {
@@ -42,6 +34,14 @@ public class PlaceholderAPIIntegration implements SerializerIntegration, Placeho
 		} catch (ClassNotFoundException | NoClassDefFoundError e) {
 			return false;
 		}
+	}
+
+	@Override
+	public synchronized void initialize(Registry<Integration> registry) {
+		if (initialized) return;
+		if (!isAvailable()) return;
+		registry.register(this);
+		initialized = true;
 	}
 
 	@Override

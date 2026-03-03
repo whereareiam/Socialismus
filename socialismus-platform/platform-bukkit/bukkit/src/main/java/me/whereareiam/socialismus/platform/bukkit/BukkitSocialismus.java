@@ -1,14 +1,10 @@
 package me.whereareiam.socialismus.platform.bukkit;
 
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
-import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
-import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
-import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPIIntegration;
 import me.whereareiam.socialismus.platform.BukkitLoggingHelper;
 import me.whereareiam.socialismus.platform.bukkit.inject.BukkitInjector;
 import me.whereareiam.socialismus.type.PluginType;
@@ -47,10 +43,6 @@ public class BukkitSocialismus extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		CommonInjector.getInjector().getInstance(PlaceholderAPIIntegration.class);
-		CommonInjector.getInjector().getInstance(PacketEventsIntegration.class);
-		CommonInjector.getInjector().getInstance(bStatsIntegration.class);
-
 		// Signal that the plugin is ready for normal operation
 		EventUtil.callEvent(new PluginReadyEvent(), () -> {});
 	}

@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.common;
 
 import com.google.inject.*;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import me.whereareiam.keystone.serializer.SerializerEngine;
@@ -8,10 +9,10 @@ import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatHistoryController;
-import me.whereareiam.socialismus.common.chat.render.DefaultChatRenderService;
-import me.whereareiam.socialismus.common.chat.render.ClearPlaceholderResolver;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
+import me.whereareiam.socialismus.common.chat.render.ClearPlaceholderResolver;
+import me.whereareiam.socialismus.common.chat.render.DefaultChatRenderService;
 import me.whereareiam.socialismus.common.config.ConfiguraBootstrap;
 import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
 import me.whereareiam.socialismus.common.config.provider.CommandsProvider;
@@ -25,11 +26,7 @@ import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.container.ChatHistoryContainer;
 import me.whereareiam.socialismus.common.event.EventController;
 import me.whereareiam.socialismus.common.player.DefaultPlayerRegistry;
-import me.whereareiam.socialismus.common.provider.ChatMessageTransformerProvider;
-import me.whereareiam.socialismus.common.provider.ChatPlaceholderResolverProvider;
-import me.whereareiam.socialismus.common.provider.IntegrationProvider;
-import me.whereareiam.socialismus.common.provider.ReloadableProvider;
-import me.whereareiam.socialismus.common.provider.SerializerEngineProvider;
+import me.whereareiam.socialismus.common.provider.*;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.common.requirement.RequirementRegistry;
 import me.whereareiam.socialismus.common.requirement.validation.*;
@@ -55,15 +52,15 @@ import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.UpdateProvider;
-import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
+import me.whereareiam.socialismus.service.chat.render.ChatMessageTransformer;
+import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
+import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
-import me.whereareiam.socialismus.service.chat.render.ChatMessageTransformer;
-import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import me.whereareiam.socialismus.type.module.ProviderType;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -136,7 +133,8 @@ public class CommonConfiguration extends AbstractModule {
 				.to(SpigotMCProvider.class);
 
 		// Requirements
-		bind(new TypeLiteral<ExtendedRegistry<RequirementKey<?>, RequirementValidation>>() {})
+		bind(new TypeLiteral<ExtendedRegistry<RequirementKey<?>, RequirementValidation>>() {
+		})
 				.to(RequirementRegistry.class)
 				.asEagerSingleton();
 		bind(PermissionRequirementValidation.class).asEagerSingleton();
@@ -165,6 +163,8 @@ public class CommonConfiguration extends AbstractModule {
 		}).toProvider(ChatPlaceholderResolverProvider.class).asEagerSingleton();
 
 		bind(ClearPlaceholderResolver.class).asEagerSingleton();
+
+		Multibinder.newSetBinder(binder(), Integration.class, Names.named("integrationCandidates"));
 
 		bind(new TypeLiteral<Registry<Integration>>() {
 		}).to(IntegrationProvider.class).asEagerSingleton();

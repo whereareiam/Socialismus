@@ -8,6 +8,7 @@ import me.whereareiam.socialismus.common.chat.worker.base.RecipientResolver;
 import me.whereareiam.socialismus.common.chat.worker.base.RecipientSelector;
 import me.whereareiam.socialismus.common.chat.worker.formatted.FormatSelector;
 import me.whereareiam.socialismus.common.container.ChatContainer;
+import me.whereareiam.socialismus.common.integration.DefaultIntegrationManager;
 import me.whereareiam.socialismus.common.printer.WelcomeBannerPrinter;
 import me.whereareiam.socialismus.common.updater.UpdateScheduler;
 import me.whereareiam.socialismus.event.EventListener;
@@ -55,6 +56,9 @@ public final class Socialismus implements EventListener {
 
 	@SocialisticEvent
 	public void onPluginReady(PluginReadyEvent event) {
+		// Bootstrap integrations after plugins are enabled
+		injector.getInstance(DefaultIntegrationManager.class);
+
 		// Initialize all component before first event is triggered, leads to faster response time
 		injector.getInstance(ChatContainer.class);
 		injector.getInstance(RecipientResolver.class);
@@ -82,5 +86,3 @@ public final class Socialismus implements EventListener {
 		// Currently no explicit shutdown logic
 	}
 }
-
-
