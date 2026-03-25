@@ -1,7 +1,8 @@
-repositories {
-    maven("https://repo.william278.net/releases/")
+plugins {
+    id("whereami.convention.basic")
 }
 
 dependencies {
-    "compileOnly"(libs.papiProxyBridge)
+    compileOnly(libs.papiProxyBridge)
+    compileOnly(projects.socialismusApi)
 }

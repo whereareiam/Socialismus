@@ -1,9 +1,9 @@
-repositories {
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+plugins {
+    id("whereami.convention.basic")
 }
 
 dependencies {
-    "compileOnly"(libs.spigot)
-    "compileOnly"(libs.placeholderAPI)
+    compileOnly(libs.placeholderAPI)
+    compileOnly(libs.spigot)
+    compileOnly(projects.socialismusApi)
 }

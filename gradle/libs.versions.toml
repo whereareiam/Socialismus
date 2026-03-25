@@ -109,6 +109,8 @@ junit-platform = { group = "org.junit.platform", name = "junit-platform-launcher
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-junit = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito" }
 
+shadow = { module = "com.gradleup.shadow:shadow-gradle-plugin", version.ref = "shadow" }
+
 [bundles]
 
 adventure = ["adventure", "adventure-minimessage", "adventure-legacy", "adventure-plain", "adventure-gson"]

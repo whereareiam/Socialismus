@@ -1,12 +1,11 @@
-repositories {
-    maven("https://jitpack.io")
+plugins {
+    id("whereami.convention.basic")
 }
 
 dependencies {
-    "compileOnly"(project(":socialismus-api"))
-
-    "compileOnly"(libs.cloud.core)
-    "compileOnly"(libs.cloud.annotations)
-    "compileOnly"(libs.cloud.cooldowns)
-    "compileOnly"(libs.cloud.minecraft.extras)
+    compileOnly(libs.cloud.annotations)
+    compileOnly(libs.cloud.cooldowns)
+    compileOnly(libs.cloud.core)
+    compileOnly(libs.cloud.minecraft.extras)
+    compileOnly(projects.socialismusApi)
 }

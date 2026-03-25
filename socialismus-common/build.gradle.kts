@@ -1,14 +1,14 @@
-repositories {
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+plugins {
+    id("whereami.convention.basic")
 }
 
 dependencies {
-    "compileOnly"(project(":socialismus-api"))
-    "compileOnly"(libs.bundles.adventure)
+    compileOnly(libs.bundles.adventure)
+    compileOnly(projects.socialismusApi)
     
     // test dependencies
-    "testImplementation"(project(":socialismus-api"))
-    "testImplementation"(libs.bundles.adventure)
+    testImplementation(libs.bundles.adventure)
+    testImplementation(projects.socialismusApi)
 }
 
 tasks.test {

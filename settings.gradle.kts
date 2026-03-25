@@ -1,3 +1,24 @@
+pluginManagement {
+    includeBuild("build-logic")
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://maven.whereareiam.me/development")
+        maven("https://repo.william278.net/releases/")
+        maven("https://maven.whereareiam.me/release")
+        maven("https://jitpack.io")
+    }
+}
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "Socialismus"
 
 include("socialismus-integration:integration-papiproxybridge")

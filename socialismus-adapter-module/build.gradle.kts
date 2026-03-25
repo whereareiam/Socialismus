@@ -1,3 +1,7 @@
+plugins {
+    id("whereami.convention.basic")
+}
+
 dependencies {
-    "compileOnly"(project(":socialismus-api"))
+    compileOnly(projects.socialismusApi)
 }

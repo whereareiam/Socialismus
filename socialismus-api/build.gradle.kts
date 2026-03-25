@@ -1,4 +1,5 @@
 plugins {
+    id("whereami.convention.basic")
     alias(libs.plugins.buildconfig)
     `java-library`
 }
@@ -7,21 +8,18 @@ plugins {
 val shadowExcludes: Configuration by configurations.creating {
     isCanBeResolved = true
     isCanBeConsumed = false
-    extendsFrom(configurations.getByName("api"))
-}
-
-repositories {
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    extendsFrom(configurations.api.get())
 }
 
 dependencies {
-    "compileOnly"(libs.ormlite)
-    "api"(rootProject.libs.guice)
-    "api"(rootProject.libs.annotations)
-    "api"(rootProject.libs.configura)
-    "api"(rootProject.libs.commandant)
-    "api"(rootProject.libs.keystone)
-    "api"(rootProject.libs.bundles.adventure)
+    api(rootProject.libs.annotations)
+    api(rootProject.libs.bundles.adventure)
+    api(rootProject.libs.commandant)
+    api(rootProject.libs.configura)
+    api(rootProject.libs.guice)
+    api(rootProject.libs.keystone)
+
+    compileOnly(libs.ormlite)
 }
 
 buildConfig {
