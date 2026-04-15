@@ -9,7 +9,6 @@ import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
 
 import java.util.Map;
 
@@ -18,10 +17,12 @@ import java.util.Map;
 public class RequirementEvaluator implements RequirementEvaluatorService {
 	private final RequirementRegistry requirementRegistry;
 
-	private boolean isRequirementMet(Map.Entry<RequirementType, ? extends Requirement> entry, SocialismusPlayer player) {
+	private boolean isRequirementMet(Map.Entry<String, ? extends Requirement> entry, SocialismusPlayer player) {
 		RequirementValidation checker = requirementRegistry.get(entry.getKey());
-		if (checker == null)
+		if (checker == null) {
+			Logger.warn("No requirement validation registered for: " + entry.getKey());
 			return false;
+		}
 
 		return checker.check(entry.getValue(), player);
 	}
@@ -42,7 +43,7 @@ public class RequirementEvaluator implements RequirementEvaluatorService {
 
 	private boolean checkAnd(RequirementGroup group, SocialismusPlayer player) {
 		Logger.debug("Checking AND group for player " + player.getUsername());
-		for (Map.Entry<RequirementType, ? extends Requirement> entry : group.getGroups().entrySet())
+		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet())
 			if (!isRequirementMet(entry, player))
 				return false;
 
@@ -51,7 +52,7 @@ public class RequirementEvaluator implements RequirementEvaluatorService {
 
 	private boolean checkOr(RequirementGroup group, SocialismusPlayer player) {
 		Logger.debug("Checking OR group for player " + player.getUsername());
-		for (Map.Entry<RequirementType, ? extends Requirement> entry : group.getGroups().entrySet())
+		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet())
 			if (isRequirementMet(entry, player))
 				return true;
 
@@ -61,7 +62,7 @@ public class RequirementEvaluator implements RequirementEvaluatorService {
 	private boolean checkXor(RequirementGroup group, SocialismusPlayer player) {
 		boolean oneMet = false;
 		Logger.debug("Checking XOR group for player " + player.getUsername());
-		for (Map.Entry<RequirementType, ? extends Requirement> entry : group.getGroups().entrySet())
+		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet())
 			if (isRequirementMet(entry, player)) {
 				if (oneMet) return false;
 				oneMet = true;
@@ -72,7 +73,7 @@ public class RequirementEvaluator implements RequirementEvaluatorService {
 
 	private boolean checkNot(RequirementGroup group, SocialismusPlayer player) {
 		Logger.debug("Checking NOT group for player " + player.getUsername());
-		for (Map.Entry<RequirementType, ? extends Requirement> entry : group.getGroups().entrySet())
+		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet())
 			if (isRequirementMet(entry, player))
 				return false;
 

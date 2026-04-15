@@ -9,7 +9,6 @@ import me.whereareiam.commandant.model.CommandDefinition;
 import me.whereareiam.commandant.model.message.ExceptionMessages;
 import me.whereareiam.commandant.registration.CommandRegistrar;
 import me.whereareiam.keystone.Actor;
-import me.whereareiam.keystone.Player;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.command.executor.*;
 import me.whereareiam.socialismus.command.suggestion.CrossPlayerProvider;
@@ -23,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -135,7 +133,7 @@ public class DefaultCommandService implements CommandService {
 
 		this.registrar = Commandant.createAnnotationRegistrar(
 				commandManager,
-				this::resolveCooldownKey,
+				Actor::getUniqueId,
 				Actor.class,
 				definitionLookup
 		);
@@ -153,13 +151,6 @@ public class DefaultCommandService implements CommandService {
 		// Fall back to config file definitions
 		Commands commands = commandsProvider.get();
 		return commands.getCommands().get(key);
-	}
-
-	private @NotNull UUID resolveCooldownKey(@NotNull Actor actor) {
-		if (actor instanceof Player player) {
-			return player.getUniqueId();
-		}
-		return UUID.nameUUIDFromBytes(actor.getClass().getName().getBytes());
 	}
 
 	private @NotNull String resolveRootCommand(@NotNull Function<String, CommandDefinition> definitionLookup) {

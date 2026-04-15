@@ -50,7 +50,7 @@ public class FormatSelector {
 			return msg;
 		}
 
-		Logger.debug("Selected format: " + chosen);
+		Logger.debug("Selected format for user %s", msg.getSender().getUsername());
 		msg.setFormat(Serializer.serialize(msg.getSender(), chosen.getFormat()));
 		return msg;
 	}

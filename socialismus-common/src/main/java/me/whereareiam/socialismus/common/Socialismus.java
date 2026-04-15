@@ -3,12 +3,12 @@ package me.whereareiam.socialismus.common;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.chat.worker.base.ChatSelector;
 import me.whereareiam.socialismus.common.chat.worker.base.RecipientResolver;
 import me.whereareiam.socialismus.common.chat.worker.base.RecipientSelector;
 import me.whereareiam.socialismus.common.chat.worker.formatted.FormatSelector;
 import me.whereareiam.socialismus.common.container.ChatContainer;
+import me.whereareiam.socialismus.common.integration.DefaultIntegrationManager;
 import me.whereareiam.socialismus.common.printer.WelcomeBannerPrinter;
 import me.whereareiam.socialismus.common.updater.UpdateScheduler;
 import me.whereareiam.socialismus.event.EventListener;
@@ -26,7 +26,6 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.module.ModuleService;
 import me.whereareiam.socialismus.service.CommandService;
-import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.util.EventUtil;
 
 /**
@@ -49,7 +48,6 @@ public final class Socialismus implements EventListener {
 
 	@SocialisticEvent
 	public void onPluginBootstrapped(PluginBootstrappedEvent event) {
-		Constants.SERVER_VERSION = injector.getInstance(PlatformInteractor.class).getServerVersion();
 		Logger.init(injector.getInstance(LoggingHelper.class));
 
 		// Load settings early
@@ -58,6 +56,9 @@ public final class Socialismus implements EventListener {
 
 	@SocialisticEvent
 	public void onPluginReady(PluginReadyEvent event) {
+		// Bootstrap integrations after plugins are enabled
+		injector.getInstance(DefaultIntegrationManager.class);
+
 		// Initialize all component before first event is triggered, leads to faster response time
 		injector.getInstance(ChatContainer.class);
 		injector.getInstance(RecipientResolver.class);
@@ -76,7 +77,8 @@ public final class Socialismus implements EventListener {
 		injector.getInstance(WelcomeBannerPrinter.class).print();
 		injector.getInstance(UpdateScheduler.class).start();
 
-		EventUtil.callEvent(new PluginInitializedEvent(), () -> {});
+		EventUtil.callEvent(new PluginInitializedEvent(), () -> {
+		});
 	}
 
 	@SocialisticEvent
@@ -84,5 +86,3 @@ public final class Socialismus implements EventListener {
 		// Currently no explicit shutdown logic
 	}
 }
-
-

@@ -10,9 +10,9 @@ lombok = "1.18.42"
 # general
 guice = "7.0.0"
 annotations = "26.0.1"
-attache = "dev-489d38d"
-configura = "dev-b1bb54d"
-keystone = "0.0.1"
+attache = "dev-0ac3086"
+configura = "dev-edb606f"
+keystone = "dev-b1e6a0e"
 commandant = "0.0.1"
 
 # testing
@@ -25,8 +25,8 @@ jedis = "7.0.0"
 
 # platform api versions
 velocity = "3.4.0-SNAPSHOT"
-spigot = "1.21.7-R0.1-SNAPSHOT"
-paper = "1.21.7-R0.1-SNAPSHOT"
+spigot = "1.21.11-R0.1-SNAPSHOT"
+paper = "1.21.11-R0.1-SNAPSHOT"
 
 # platform integrations
 placeholderAPI = "2.11.6"
@@ -43,10 +43,10 @@ adventure-platform-bukkit = "4.4.1"
 
 # cloud
 cloud-core = "2.0.0"
-cloud-paper = "2.0.0-beta.13"
-cloud-velocity = "2.0.0-beta.13"
+cloud-paper = "2.0.0-beta.15"
+cloud-velocity = "2.0.0-beta.15"
 cloud-cooldown = "1.0.0-rc.1"
-cloud-minecraft-extras = "2.0.0-beta.13"
+cloud-minecraft-extras = "2.0.0-beta.15"
 
 # brigadier
 brigadier = "1.0.18"

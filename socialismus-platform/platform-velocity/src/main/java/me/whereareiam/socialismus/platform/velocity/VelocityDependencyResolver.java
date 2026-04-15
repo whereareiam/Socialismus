@@ -27,6 +27,13 @@ public class VelocityDependencyResolver extends CommonDependencyResolver {
 	public void loadLibraries() {
 		super.loadLibraries();
 
+		addDependency(Library.builder()
+				.groupId("me.whereareiam")
+				.artifactId("keystone")
+				.version(Constants.Dependency.KEYSTONE)
+				.resolveTransitiveDependencies(true)
+				.build());
+
 		// Velocity specific libraries
 		addDependency(Library.builder()
 				.groupId("org{}incendo")

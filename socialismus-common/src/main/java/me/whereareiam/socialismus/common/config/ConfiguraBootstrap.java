@@ -7,10 +7,14 @@ import me.whereareiam.configura.reader.ConfigReader;
 import me.whereareiam.configura.type.Format;
 import me.whereareiam.configura.writer.ConfigWriter;
 import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
+import me.whereareiam.socialismus.model.requirement.Requirement;
+import me.whereareiam.socialismus.model.requirement.type.*;
 import me.whereareiam.socialismus.type.ConfigurationType;
 import me.whereareiam.socialismus.type.Version;
 import me.whereareiam.socialismus.common.config.adapter.ComponentAdapter;
+import me.whereareiam.socialismus.common.config.adapter.SocialismusPlayerAdapter;
 import me.whereareiam.socialismus.common.config.adapter.VersionAdapter;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import net.kyori.adventure.text.Component;
 
 @Singleton
@@ -30,5 +34,17 @@ public class ConfiguraBootstrap {
 		// Register adapters
 		Config.registerAdapter(Version.class, VersionAdapter.class);
 		Config.registerAdapter(Component.class, ComponentAdapter.class);
+		Config.registerAdapter(SocialismusPlayer.class, SocialismusPlayerAdapter.class);
+
+		// Register polymorphic types
+		Config.registerPolymorphic(Requirement.class)
+				.inferByField("servers", ServerRequirement.class)
+				.inferByField("worlds", WorldRequirement.class)
+				.inferByField("chatIdentifiers", ChatRequirement.class)
+				.inferByField("placeholders", PlaceholderRequirement.class)
+				.inferByField("permissions", PermissionRequirement.class)
+				.inferByField("triggers", TriggerRequirement.class)
+				.inferByField("messages", MessageRequirement.class)
+				.build();
 	}
 }

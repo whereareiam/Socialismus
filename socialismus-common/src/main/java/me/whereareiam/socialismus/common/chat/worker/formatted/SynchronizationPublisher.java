@@ -33,11 +33,27 @@ public class SynchronizationPublisher {
 	private FormattedChatMessage publish(FormattedChatMessage msg) {
 		if (!chatSettings.get().getSynchronization().isEnabled()) return msg;
 		if (msg.getOrigin() != null && !msg.getOrigin().equals(Constants.Synchronization.IDENTIFIER)) return msg;
+		if (determineRadius(msg) > 0) return msg;
 
 		syncBus.publish(msg);
 		Logger.debug("Synced formatted chat #%s from %s",
 				msg.getId(), msg.getSender().getUsername());
 
 		return msg;
+	}
+
+	private int determineRadius(FormattedChatMessage message) {
+		if (message.getTrigger() != null && message.getTrigger().getRadius() != null)
+			return message.getTrigger().getRadius();
+
+		if (message.getChat() != null && message.getChat().getTriggers() != null) {
+			return message.getChat().getTriggers().stream()
+					.map(trigger -> trigger.getRadius() == null ? 0 : trigger.getRadius())
+					.filter(radius -> radius > 0)
+					.findFirst()
+					.orElse(0);
+		}
+
+		return 0;
 	}
 }

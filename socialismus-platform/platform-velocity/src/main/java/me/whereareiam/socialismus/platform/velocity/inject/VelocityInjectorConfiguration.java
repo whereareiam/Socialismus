@@ -2,11 +2,17 @@ package me.whereareiam.socialismus.platform.velocity.inject;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.ProxyServer;
 import me.whereareiam.keystone.Actor;
+import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.bstats.Metrics;
+import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
+import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
+import me.whereareiam.socialismus.integration.papiproxybridge.PAPIProxyBridgeIntegration;
 import me.whereareiam.socialismus.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.module.PlatformClassLoader;
@@ -48,5 +54,10 @@ public class VelocityInjectorConfiguration extends AbstractModule {
         bind(new TypeLiteral<CommandManager<Actor>>() {}).toProvider(VelocityCommandManagerProvider.class);
 
         bind(Metrics.class).to(VelocityMetrics.class);
+
+        Multibinder<Integration> integrations = Multibinder.newSetBinder(binder(), Integration.class, Names.named("integrationCandidates"));
+        integrations.addBinding().to(PAPIProxyBridgeIntegration.class);
+        integrations.addBinding().to(PacketEventsIntegration.class);
+        integrations.addBinding().to(bStatsIntegration.class);
     }
 }

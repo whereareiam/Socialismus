@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.common.config.template.chat;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.TemplateProvider;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
@@ -11,7 +12,6 @@ import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.type.chat.TriggerType;
 import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
 import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
 import me.whereareiam.socialismus.common.config.dynamic.ChatsConfig;
 
 import java.util.HashMap;
@@ -67,8 +67,9 @@ public class ChatTemplate implements TemplateProvider<ChatsConfig> {
 										Participants.SENDER,
 										RequirementGroup.builder()
 												.operator(RequirementOperatorType.AND)
-												.groups(Map.of(
-														RequirementType.PERMISSION, PermissionRequirement.builder()
+												.groups(RequirementGroup.of(
+														Constants.Requirements.PERMISSION,
+														PermissionRequirement.builder()
 																.permissions(List.of("socialismus.admin"))
 																.condition(RequirementConditionType.HAS)
 																.expected("true")
@@ -80,8 +81,9 @@ public class ChatTemplate implements TemplateProvider<ChatsConfig> {
 				Map.of(
 						Participants.SENDER, RequirementGroup.builder()
 								.operator(RequirementOperatorType.AND)
-								.groups(Map.of(
-										RequirementType.PERMISSION, PermissionRequirement.builder()
+								.groups(RequirementGroup.of(
+										Constants.Requirements.PERMISSION,
+										PermissionRequirement.builder()
 												.permissions(List.of("socialismus.chat.local"))
 												.condition(RequirementConditionType.HAS)
 												.expected("true")
@@ -89,8 +91,9 @@ public class ChatTemplate implements TemplateProvider<ChatsConfig> {
 								)).build(),
 						Participants.RECIPIENT, RequirementGroup.builder()
 								.operator(RequirementOperatorType.AND)
-								.groups(Map.of(
-										RequirementType.PERMISSION, PermissionRequirement.builder()
+								.groups(RequirementGroup.of(
+										Constants.Requirements.PERMISSION,
+										PermissionRequirement.builder()
 												.permissions(List.of("socialismus.chat.local"))
 												.condition(RequirementConditionType.HAS)
 												.expected("true")
@@ -122,8 +125,9 @@ public class ChatTemplate implements TemplateProvider<ChatsConfig> {
 										Participants.SENDER,
 										RequirementGroup.builder()
 												.operator(RequirementOperatorType.AND)
-												.groups(Map.of(
-														RequirementType.PERMISSION, PermissionRequirement.builder()
+												.groups(RequirementGroup.of(
+														Constants.Requirements.PERMISSION,
+														PermissionRequirement.builder()
 																.permissions(List.of("socialismus.admin"))
 																.condition(RequirementConditionType.HAS)
 																.expected("true")

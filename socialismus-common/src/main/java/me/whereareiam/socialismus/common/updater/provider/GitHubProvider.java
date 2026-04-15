@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,8 +37,8 @@ public class GitHubProvider implements UpdateProvider {
 		String api = "https://api.github.com/repos/" + source.getId() + "/commits?per_page=" + limit;
 
 		try (InputStream in = request(api)) {
-			GitHubCommitList commitList = JSON_READER.decode(in, GitHubCommitList.class);
-			return commitList.commits.stream()
+			GitHubCommit[] commits = JSON_READER.decode(in, GitHubCommit[].class);
+			return Arrays.stream(commits)
 					.map(c -> c.sha)
 					.collect(Collectors.toList());
 		}
@@ -61,13 +61,7 @@ public class GitHubProvider implements UpdateProvider {
 	}
 
 	@Data
-	private static class GitHubCommitList {
-		private List<GitHubCommit> commits = new ArrayList<>();
-	}
-
-	@Data
 	private static class GitHubCommit {
 		private String sha;
 	}
 }
-

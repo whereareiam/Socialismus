@@ -1,17 +1,16 @@
 package me.whereareiam.socialismus.platform.bukkit;
 
-import me.whereareiam.socialismus.common.CommonInjector;
-import me.whereareiam.socialismus.common.IntegrityChecker;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
-import me.whereareiam.socialismus.integration.bstats.bStatsIntegration;
-import me.whereareiam.socialismus.integration.packetevents.PacketEventsIntegration;
-import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPIIntegration;
 import me.whereareiam.socialismus.platform.BukkitLoggingHelper;
 import me.whereareiam.socialismus.platform.bukkit.inject.BukkitInjector;
 import me.whereareiam.socialismus.type.PluginType;
+import me.whereareiam.socialismus.type.Version;
 import me.whereareiam.socialismus.util.EventUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
@@ -26,6 +25,12 @@ public class BukkitSocialismus extends JavaPlugin {
 	public void onLoad() {
 		PluginType.setPluginType(PluginType.BUKKIT);
 		BukkitLoggingHelper.setLogger(logger);
+		Constants.SERVER_VERSION = Version.of(Bukkit.getBukkitVersion());
+
+		if (BukkitIntegrityChecker.checkIntegrity(logger)) {
+			getPluginLoader().disablePlugin(this);
+			return;
+		}
 
 		BukkitDependencyResolver dependencyResolver = new BukkitDependencyResolver(this);
 		dependencyResolver.loadLibraries();
@@ -34,17 +39,10 @@ public class BukkitSocialismus extends JavaPlugin {
 		new BukkitInjector(this, dependencyResolver, dataPath);
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
-
-		if (CommonInjector.getInjector().getInstance(IntegrityChecker.class).checkIntegrity())
-			getPluginLoader().disablePlugin(this);
 	}
 
 	@Override
 	public void onEnable() {
-		CommonInjector.getInjector().getInstance(PlaceholderAPIIntegration.class);
-		CommonInjector.getInjector().getInstance(PacketEventsIntegration.class);
-		CommonInjector.getInjector().getInstance(bStatsIntegration.class);
-
 		// Signal that the plugin is ready for normal operation
 		EventUtil.callEvent(new PluginReadyEvent(), () -> {});
 	}

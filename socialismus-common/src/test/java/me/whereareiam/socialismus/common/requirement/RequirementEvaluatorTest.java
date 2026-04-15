@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.common.requirement;
 
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
@@ -9,7 +10,6 @@ import me.whereareiam.socialismus.model.requirement.type.PermissionRequirement;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
 import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,8 +75,8 @@ class RequirementEvaluatorTest {
     @DisplayName("Should return false when no validator registered")
     void testNoValidatorRegistered() {
         // Given
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.HAS)
                 .expected("true")
                 .permissions(List.of("test.permission"))
@@ -99,12 +99,12 @@ class RequirementEvaluatorTest {
     void testAndOperatorAllMet() {
         // Given
         RequirementValidation alwaysTrueValidator = (req, player) -> true;
-        registry.register(RequirementType.PERMISSION, alwaysTrueValidator);
-        registry.register(RequirementType.SERVER, alwaysTrueValidator);
+        registry.register(Constants.Requirements.PERMISSION, alwaysTrueValidator);
+        registry.register(Constants.Requirements.SERVER, alwaysTrueValidator);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, createTestRequirement());
-        requirements.put(RequirementType.SERVER, createTestRequirement());
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), createTestRequirement());
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), createTestRequirement());
 
         RequirementGroup group = RequirementGroup.builder()
                 .operator(RequirementOperatorType.AND)
@@ -124,12 +124,12 @@ class RequirementEvaluatorTest {
         // Given
         RequirementValidation alwaysTrueValidator = (req, player) -> true;
         RequirementValidation alwaysFalseValidator = (req, player) -> false;
-        registry.register(RequirementType.PERMISSION, alwaysTrueValidator);
-        registry.register(RequirementType.SERVER, alwaysFalseValidator);
+        registry.register(Constants.Requirements.PERMISSION, alwaysTrueValidator);
+        registry.register(Constants.Requirements.SERVER, alwaysFalseValidator);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, createTestRequirement());
-        requirements.put(RequirementType.SERVER, createTestRequirement());
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), createTestRequirement());
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), createTestRequirement());
 
         RequirementGroup group = RequirementGroup.builder()
                 .operator(RequirementOperatorType.AND)
@@ -149,12 +149,12 @@ class RequirementEvaluatorTest {
         // Given
         RequirementValidation alwaysTrueValidator = (req, player) -> true;
         RequirementValidation alwaysFalseValidator = (req, player) -> false;
-        registry.register(RequirementType.PERMISSION, alwaysTrueValidator);
-        registry.register(RequirementType.SERVER, alwaysFalseValidator);
+        registry.register(Constants.Requirements.PERMISSION, alwaysTrueValidator);
+        registry.register(Constants.Requirements.SERVER, alwaysFalseValidator);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, createTestRequirement());
-        requirements.put(RequirementType.SERVER, createTestRequirement());
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), createTestRequirement());
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), createTestRequirement());
 
         RequirementGroup group = RequirementGroup.builder()
                 .operator(RequirementOperatorType.OR)
@@ -173,12 +173,12 @@ class RequirementEvaluatorTest {
     void testOrOperatorNoneMet() {
         // Given
         RequirementValidation alwaysFalseValidator = (req, player) -> false;
-        registry.register(RequirementType.PERMISSION, alwaysFalseValidator);
-        registry.register(RequirementType.SERVER, alwaysFalseValidator);
+        registry.register(Constants.Requirements.PERMISSION, alwaysFalseValidator);
+        registry.register(Constants.Requirements.SERVER, alwaysFalseValidator);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, createTestRequirement());
-        requirements.put(RequirementType.SERVER, createTestRequirement());
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), createTestRequirement());
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), createTestRequirement());
 
         RequirementGroup group = RequirementGroup.builder()
                 .operator(RequirementOperatorType.OR)
@@ -198,12 +198,12 @@ class RequirementEvaluatorTest {
         // Given
         RequirementValidation alwaysTrueValidator = (req, player) -> true;
         RequirementValidation alwaysFalseValidator = (req, player) -> false;
-        registry.register(RequirementType.PERMISSION, alwaysTrueValidator);
-        registry.register(RequirementType.SERVER, alwaysFalseValidator);
+        registry.register(Constants.Requirements.PERMISSION, alwaysTrueValidator);
+        registry.register(Constants.Requirements.SERVER, alwaysFalseValidator);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, createTestRequirement());
-        requirements.put(RequirementType.SERVER, createTestRequirement());
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), createTestRequirement());
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), createTestRequirement());
 
         RequirementGroup group = RequirementGroup.builder()
                 .operator(RequirementOperatorType.XOR)
@@ -222,10 +222,10 @@ class RequirementEvaluatorTest {
     void testNotOperatorNoneMet() {
         // Given
         RequirementValidation alwaysFalseValidator = (req, player) -> false;
-        registry.register(RequirementType.PERMISSION, alwaysFalseValidator);
+        registry.register(Constants.Requirements.PERMISSION, alwaysFalseValidator);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, createTestRequirement());
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), createTestRequirement());
 
         RequirementGroup group = RequirementGroup.builder()
                 .operator(RequirementOperatorType.NOT)
@@ -244,10 +244,10 @@ class RequirementEvaluatorTest {
     void testNotOperatorAnyMet() {
         // Given
         RequirementValidation alwaysTrueValidator = (req, player) -> true;
-        registry.register(RequirementType.PERMISSION, alwaysTrueValidator);
+        registry.register(Constants.Requirements.PERMISSION, alwaysTrueValidator);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, createTestRequirement());
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), createTestRequirement());
 
         RequirementGroup group = RequirementGroup.builder()
                 .operator(RequirementOperatorType.NOT)

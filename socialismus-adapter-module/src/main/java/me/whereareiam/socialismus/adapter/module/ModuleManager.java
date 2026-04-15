@@ -110,7 +110,7 @@ public class ModuleManager implements ModuleService {
 					}
 				} catch (Exception e) {
 					Logger.warn("Failed to load module from file '" + file.getName() + "': " + e.getMessage());
-					Logger.debug("Module loading stack trace:", e);
+					Logger.debug("Module loading stack trace:", e.fillInStackTrace());
 				}
 
 				List<InternalModule> sortedModules = sortModulesByDependencies(modules);

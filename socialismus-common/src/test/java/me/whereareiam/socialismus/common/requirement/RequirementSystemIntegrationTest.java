@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.common.requirement;
 
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.requirement.validation.PermissionRequirementValidation;
 import me.whereareiam.socialismus.common.requirement.validation.ServerRequirementValidation;
 import me.whereareiam.socialismus.logging.Logger;
@@ -11,7 +12,6 @@ import me.whereareiam.socialismus.model.requirement.type.PermissionRequirement;
 import me.whereareiam.socialismus.model.requirement.type.ServerRequirement;
 import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
 import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
-import me.whereareiam.socialismus.type.requirement.RequirementType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,13 +59,13 @@ class RequirementSystemIntegrationTest {
         when(mockPlayer.hasPermission("chat.use")).thenReturn(true);
         when(mockPlayer.getServer()).thenReturn("lobby");
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.HAS)
                 .expected("true")
                 .permissions(List.of("chat.use"))
                 .build());
-        requirements.put(RequirementType.SERVER, ServerRequirement.builder()
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), ServerRequirement.builder()
                 .condition(RequirementConditionType.CONTAINS)
                 .expected("true")
                 .servers(List.of("lobby", "hub"))
@@ -90,13 +90,13 @@ class RequirementSystemIntegrationTest {
         when(mockPlayer.hasPermission("chat.use")).thenReturn(true);
         when(mockPlayer.getServer()).thenReturn("survival");
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.HAS)
                 .expected("true")
                 .permissions(List.of("chat.use"))
                 .build());
-        requirements.put(RequirementType.SERVER, ServerRequirement.builder()
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), ServerRequirement.builder()
                 .condition(RequirementConditionType.CONTAINS)
                 .expected("true")
                 .servers(List.of("lobby", "hub"))
@@ -121,13 +121,13 @@ class RequirementSystemIntegrationTest {
         when(mockPlayer.hasPermission("chat.use")).thenReturn(false);
         when(mockPlayer.getServer()).thenReturn("lobby");
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.HAS)
                 .expected("true")
                 .permissions(List.of("chat.use"))
                 .build());
-        requirements.put(RequirementType.SERVER, ServerRequirement.builder()
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), ServerRequirement.builder()
                 .condition(RequirementConditionType.CONTAINS)
                 .expected("true")
                 .servers(List.of("lobby", "hub"))
@@ -153,8 +153,8 @@ class RequirementSystemIntegrationTest {
         when(mockPlayer.hasPermission("chat.format")).thenReturn(true);
         when(mockPlayer.hasPermission("chat.links")).thenReturn(true);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.HAS)
                 .expected("true")
                 .permissions(List.of("chat.color", "chat.format", "chat.links"))
@@ -183,8 +183,8 @@ class RequirementSystemIntegrationTest {
         when(mockPlayer.hasPermission("chat.format")).thenReturn(true);
         when(mockPlayer.hasPermission("chat.links")).thenReturn(false);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.CONTAINS)
                 .expected("true")
                 .permissions(List.of("chat.color", "chat.format", "chat.links"))
@@ -209,13 +209,13 @@ class RequirementSystemIntegrationTest {
         when(mockPlayer.hasPermission("vip.chat")).thenReturn(true);
         when(mockPlayer.getServer()).thenReturn("survival");
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.HAS)
                 .expected("true")
                 .permissions(List.of("vip.chat"))
                 .build());
-        requirements.put(RequirementType.SERVER, ServerRequirement.builder()
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), ServerRequirement.builder()
                 .condition(RequirementConditionType.CONTAINS)
                 .expected("true")
                 .servers(List.of("lobby", "hub"))
@@ -240,13 +240,13 @@ class RequirementSystemIntegrationTest {
         when(mockPlayer.hasPermission("vip.chat")).thenReturn(true);
         when(mockPlayer.getServer()).thenReturn("lobby");
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.HAS)
                 .expected("true")
                 .permissions(List.of("vip.chat"))
                 .build());
-        requirements.put(RequirementType.SERVER, ServerRequirement.builder()
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), ServerRequirement.builder()
                 .condition(RequirementConditionType.CONTAINS)
                 .expected("true")
                 .servers(List.of("lobby", "hub"))
@@ -270,8 +270,8 @@ class RequirementSystemIntegrationTest {
         // Given
         when(mockPlayer.hasPermission("banned.chat")).thenReturn(true);
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.HAS)
                 .expected("true")
                 .permissions(List.of("banned.chat"))
@@ -295,8 +295,8 @@ class RequirementSystemIntegrationTest {
         // Given
         when(mockPlayer.getServer()).thenReturn("lobby");
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.SERVER, ServerRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), ServerRequirement.builder()
                 .condition(RequirementConditionType.EQUALS)
                 .expected("true")
                 .servers(List.of("lobby"))
@@ -320,8 +320,8 @@ class RequirementSystemIntegrationTest {
         // Given
         when(mockPlayer.getServer()).thenReturn("creative");
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.SERVER, ServerRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), ServerRequirement.builder()
                 .condition(RequirementConditionType.CONTAINS)
                 .expected("true|false")
                 .servers(List.of("lobby", "hub"))
@@ -347,13 +347,13 @@ class RequirementSystemIntegrationTest {
         when(mockPlayer.hasPermission("staff.moderate")).thenReturn(true);
         when(mockPlayer.getServer()).thenReturn("staff-lobby");
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.PERMISSION, PermissionRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.PERMISSION.getFullKey(), PermissionRequirement.builder()
                 .condition(RequirementConditionType.HAS)
                 .expected("true")
                 .permissions(List.of("staff.access", "staff.moderate"))
                 .build());
-        requirements.put(RequirementType.SERVER, ServerRequirement.builder()
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), ServerRequirement.builder()
                 .condition(RequirementConditionType.CONTAINS)
                 .expected("true")
                 .servers(List.of("staff-lobby", "admin-hub"))
@@ -377,8 +377,8 @@ class RequirementSystemIntegrationTest {
         // Given - Player should NOT be on blacklisted servers
         when(mockPlayer.getServer()).thenReturn("lobby");
 
-        Map<RequirementType, Requirement> requirements = new HashMap<>();
-        requirements.put(RequirementType.SERVER, ServerRequirement.builder()
+        Map<String, Requirement> requirements = new HashMap<>();
+        requirements.put(Constants.Requirements.SERVER.getFullKey(), ServerRequirement.builder()
                 .condition(RequirementConditionType.CONTAINS)
                 .expected("true")
                 .servers(List.of("restricted", "banned", "quarantine"))

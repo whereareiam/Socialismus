@@ -3,6 +3,13 @@ plugins {
     `java-library`
 }
 
+// Resolvable configuration for shadow exclusions - automatically includes all api dependencies
+val shadowExcludes: Configuration by configurations.creating {
+    isCanBeResolved = true
+    isCanBeConsumed = false
+    extendsFrom(configurations.getByName("api"))
+}
+
 repositories {
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
@@ -40,7 +47,7 @@ java {
     withJavadocJar()
 }
 
-    publishing {
+publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])

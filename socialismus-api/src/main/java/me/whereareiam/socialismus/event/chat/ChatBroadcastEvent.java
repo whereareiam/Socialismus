@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import me.whereareiam.socialismus.event.base.CancellableEvent;
 import me.whereareiam.socialismus.event.base.Event;
+import me.whereareiam.socialismus.event.base.SynchronousEvent;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 
 /**
@@ -19,7 +20,7 @@ import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 @Setter
 @ToString
 @AllArgsConstructor
-public class ChatBroadcastEvent implements Event, CancellableEvent {
+public class ChatBroadcastEvent implements Event, CancellableEvent, SynchronousEvent {
     /** The formatted chat message to be broadcasted */
     private final FormattedChatMessage chatMessage;
 

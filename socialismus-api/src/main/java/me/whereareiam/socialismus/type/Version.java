@@ -23,7 +23,7 @@ public enum Version {
 	FUTURE,
 
 	/**
-	 * Minecraft versions from 1.16 to 1.21.4
+	 * Minecraft versions from 1.16 to 26.1.2
 	 */
 	V_1_16,
 	V_1_16_1,
@@ -59,7 +59,10 @@ public enum Version {
 	V_1_21_8,
 	V_1_21_9,
 	V_1_21_10,
-	V_1_21_11;
+	V_1_21_11,
+	V_26_1,
+	V_26_1_1,
+	V_26_1_2;
 
 	/**
 	 * Converts a version string to its corresponding Version enum.
@@ -114,8 +117,8 @@ public enum Version {
 	 */
 	public static Version getLatest() {
 		return Arrays.stream(Version.values())
-				.filter(version -> version != UNSUPPORTED && version != FUTURE)
-				.max(Comparator.comparing(v -> v.name().substring(2).replaceAll("_", ".")))
+				.filter(Version::isConcreteVersion)
+				.max(Comparator.comparing(Version::versionComponents, Version::compareComponents))
 				.orElse(UNSUPPORTED);
 	}
 
@@ -127,7 +130,7 @@ public enum Version {
 	 * @return true if version1 is lower than version2
 	 */
 	public static boolean isLowerThan(Version version1, Version version2) {
-		return version1.ordinal() < version2.ordinal();
+		return compare(version1, version2) < 0;
 	}
 
 	/**
@@ -138,7 +141,7 @@ public enum Version {
 	 * @return true if version1 is higher than version2
 	 */
 	public static boolean isHigherThan(Version version1, Version version2) {
-		return version1.ordinal() > version2.ordinal();
+		return compare(version1, version2) > 0;
 	}
 
 	/**
@@ -149,5 +152,58 @@ public enum Version {
 	 */
 	public boolean isAtLeast(Version version) {
 		return !isLowerThan(this, version);
+	}
+
+	private static int compare(Version version1, Version version2) {
+		if (version1 == version2) {
+			return 0;
+		}
+
+		if (version1 == FUTURE) {
+			return 1;
+		}
+
+		if (version2 == FUTURE) {
+			return -1;
+		}
+
+		boolean version1Concrete = isConcreteVersion(version1);
+		boolean version2Concrete = isConcreteVersion(version2);
+
+		if (version1Concrete && version2Concrete) {
+			return compareComponents(versionComponents(version1), versionComponents(version2));
+		}
+
+		if (version1Concrete) {
+			return 1;
+		}
+
+		if (version2Concrete) {
+			return -1;
+		}
+
+		return Integer.compare(version1.ordinal(), version2.ordinal());
+	}
+
+	private static boolean isConcreteVersion(Version version) {
+		return version.name().startsWith("V_");
+	}
+
+	private static int[] versionComponents(Version version) {
+		return Arrays.stream(version.name().substring(2).split("_"))
+				.mapToInt(Integer::parseInt)
+				.toArray();
+	}
+
+	private static int compareComponents(int[] left, int[] right) {
+		int minLength = Math.min(left.length, right.length);
+		for (int i = 0; i < minLength; i++) {
+			int comparison = Integer.compare(left[i], right[i]);
+			if (comparison != 0) {
+				return comparison;
+			}
+		}
+
+		return Integer.compare(left.length, right.length);
 	}
 }

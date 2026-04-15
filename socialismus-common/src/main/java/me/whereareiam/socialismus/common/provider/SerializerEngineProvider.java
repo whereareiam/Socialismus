@@ -7,10 +7,14 @@ import me.whereareiam.keystone.Serializers;
 import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.integration.Integration;
+import me.whereareiam.socialismus.integration.SerializerIntegration;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import me.whereareiam.socialismus.registry.base.Registry;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 /**
  * Guice Provider for SerializerEngine instances.
@@ -21,16 +25,19 @@ import org.jetbrains.annotations.NotNull;
 public class SerializerEngineProvider implements Provider<SerializerEngine>, Reloadable {
 	private final Provider<Messages> messagesProvider;
 	private final Provider<Settings> settingsProvider;
+	private final Provider<Set<Integration>> integrationsProvider;
 	private volatile SerializerEngine engine;
 
 	@Inject
 	public SerializerEngineProvider(
 			@NotNull Provider<Messages> messagesProvider,
 			@NotNull Provider<Settings> settingsProvider,
+			@NotNull Provider<Set<Integration>> integrationsProvider,
 			@NotNull Registry<Reloadable> reloadables
 	) {
 		this.messagesProvider = messagesProvider;
 		this.settingsProvider = settingsProvider;
+		this.integrationsProvider = integrationsProvider;
 
 		reloadables.register(this);
 	}
@@ -59,9 +66,16 @@ public class SerializerEngineProvider implements Provider<SerializerEngine>, Rel
 					.build();
 
 			engine = Serializers.createEngine(options);
+			registerDecorators(engine);
 		}
 
 		return engine;
+	}
+
+	private void registerDecorators(@NotNull SerializerEngine engine) {
+		for (Integration integration : integrationsProvider.get())
+			if (integration instanceof SerializerIntegration)
+				if (integration.isAvailable()) ((SerializerIntegration) integration).registerDecorator(engine);
 	}
 
 	@Override
@@ -69,4 +83,3 @@ public class SerializerEngineProvider implements Provider<SerializerEngine>, Rel
 		engine = null;
 	}
 }
-
