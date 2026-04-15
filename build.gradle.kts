@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.Test
+
 defaultTasks("shadowJar")
 
 allprojects {
@@ -41,6 +43,10 @@ subprojects {
         "testImplementation"(rootProject.libs.guice)
         "testImplementation"(rootProject.libs.bundles.testing)
         "testRuntimeOnly"(rootProject.libs.junit.platform)
+    }
+
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
     }
 
     extensions.configure<PublishingExtension> {
