@@ -10,9 +10,6 @@ import me.whereareiam.socialismus.service.UpdateProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -20,48 +17,49 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class GitHubProvider implements UpdateProvider {
-	private static final ConfigReader JSON_READER = Config.reader(Format.JSON);
+    private static final ConfigReader JSON_READER = Config.reader(Format.JSON);
 
-	@Override
-	public Optional<String> fetchLatest(UpdateSource source) throws IOException {
-		String api = "https://api.github.com/repos/" + source.getId() + "/releases/latest";
+    @Override
+    public Optional<String> fetchLatest(UpdateSource source) throws IOException {
+        String api = "https://api.github.com/repos/" + source.getId() + "/releases/latest";
 
-		try (InputStream in = request(api)) {
-			GitHubRelease release = JSON_READER.decode(in, GitHubRelease.class);
-			return Optional.ofNullable(release.tag_name);
-		}
-	}
+        try (InputStream in = request(api)) {
+            return decodeLatest(in);
+        }
+    }
 
-	@Override
-	public List<String> fetchRecentUpdates(UpdateSource source, int limit) throws IOException {
-		String api = "https://api.github.com/repos/" + source.getId() + "/commits?per_page=" + limit;
+    @Override
+    public List<String> fetchRecentUpdates(UpdateSource source, int limit) throws IOException {
+        String api = "https://api.github.com/repos/" + source.getId() + "/commits?per_page=" + limit;
 
-		try (InputStream in = request(api)) {
-			GitHubCommit[] commits = JSON_READER.decode(in, GitHubCommit[].class);
-			return Arrays.stream(commits)
-					.map(c -> c.sha)
-					.collect(Collectors.toList());
-		}
-	}
+        try (InputStream in = request(api)) {
+            return decodeRecentUpdates(in);
+        }
+    }
 
-	private InputStream request(String urlString) throws IOException {
-		URL url = URI.create(urlString).toURL();
+    Optional<String> decodeLatest(InputStream in) {
+        GitHubRelease release = JSON_READER.decode(in, GitHubRelease.class);
+        return Optional.ofNullable(release.tag_name);
+    }
 
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		conn.setConnectTimeout(8_000);
-		conn.setReadTimeout(8_000);
+    List<String> decodeRecentUpdates(InputStream in) {
+        GitHubCommit[] commits = JSON_READER.decode(in, GitHubCommit[].class);
+        return Arrays.stream(commits)
+                .map(c -> c.sha)
+                .collect(Collectors.toList());
+    }
 
-		return conn.getInputStream();
-	}
+    InputStream request(String urlString) throws IOException {
+        return UpdateHttpClient.get(urlString, "application/vnd.github+json");
+    }
 
-	@Data
-	private static class GitHubRelease {
-		private String tag_name;
-	}
+    @Data
+    static class GitHubRelease {
+        private String tag_name;
+    }
 
-	@Data
-	private static class GitHubCommit {
-		private String sha;
-	}
+    @Data
+    static class GitHubCommit {
+        private String sha;
+    }
 }

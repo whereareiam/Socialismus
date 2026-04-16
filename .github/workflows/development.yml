@@ -39,7 +39,7 @@ jobs:
       - name: Run tests
         env:
           VERSION: ${{ needs.prepare.outputs.version }}
-        run: ./gradlew test
+        run: ./gradlew test -Dsocialismus.liveApiTests=true
 
       - name: Upload test results
         if: always()

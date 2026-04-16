@@ -6,9 +6,8 @@ import me.whereareiam.socialismus.service.UpdateProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,10 +17,8 @@ public class SpigotMCProvider implements UpdateProvider {
 
 	@Override
 	public Optional<String> fetchLatest(UpdateSource source) throws IOException {
-		URL url = URI.create(UPDATE_URL + source.getId()).toURL();
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
-			String version = in.readLine();
-			return Optional.ofNullable(version);
+		try (InputStream in = request(source)) {
+			return decodeLatest(in);
 		}
 	}
 
@@ -31,5 +28,14 @@ public class SpigotMCProvider implements UpdateProvider {
 				.map(List::of)
 				.orElse(List.of());
 	}
-}
 
+	InputStream request(UpdateSource source) throws IOException {
+		return UpdateHttpClient.get(UPDATE_URL + source.getId(), "text/plain");
+	}
+
+	Optional<String> decodeLatest(InputStream in) throws IOException {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+			return Optional.ofNullable(reader.readLine());
+		}
+	}
+}
