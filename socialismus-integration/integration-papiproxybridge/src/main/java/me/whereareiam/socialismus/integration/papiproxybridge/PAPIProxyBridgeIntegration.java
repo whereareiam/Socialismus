@@ -11,11 +11,12 @@ import me.whereareiam.socialismus.integration.SerializerIntegration;
 import me.whereareiam.socialismus.registry.base.Registry;
 import net.william278.papiproxybridge.api.PlaceholderAPI;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.UUID;
 
 @Singleton
 public class PAPIProxyBridgeIntegration implements PlaceholderIntegration, SerializerIntegration {
-	private PlaceholderAPI placeholderAPI;
+	private PlaceholderResolver resolver;
 	private boolean initialized;
 
 	@Override
@@ -36,17 +37,16 @@ public class PAPIProxyBridgeIntegration implements PlaceholderIntegration, Seria
 	@Override
 	public synchronized void initialize(Registry<Integration> registry) {
 		if (initialized || !isAvailable()) return;
-		if (placeholderAPI == null) {
-			placeholderAPI = PlaceholderAPI.createInstance();
-		}
-
+		PlaceholderAPI placeholderAPI = PlaceholderAPI.createInstance();
+		resolver = placeholderAPI::formatPlaceholders;
 		registry.register(this);
 		initialized = true;
 	}
 
 	@Override
 	public String resolve(UUID uniqueId, String text) {
-		return placeholderAPI.formatPlaceholders(text, uniqueId).getNow(text);
+		if (resolver == null) return text;
+		return resolver.resolve(text, uniqueId).getNow(text);
 	}
 
 	@Override
@@ -57,5 +57,10 @@ public class PAPIProxyBridgeIntegration implements PlaceholderIntegration, Seria
 	@Override
 	public PlaceholderResolutionMode resolutionMode() {
 		return PlaceholderResolutionMode.CHAINED;
+	}
+
+	@FunctionalInterface
+	private interface PlaceholderResolver {
+		CompletableFuture<String> resolve(String text, UUID uniqueId);
 	}
 }

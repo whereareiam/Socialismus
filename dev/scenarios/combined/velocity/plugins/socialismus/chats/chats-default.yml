@@ -1,0 +1,12 @@
+chats:
+  - id: "staff"
+    priority: 0
+    enabled: true
+    triggers:
+      - type: "COMMAND"
+        radius: 0
+        command: "staff"
+    formats:
+      - format: "{clear}<gray>[Proxy-S] {playerName}: <white>{message}"
+        requirements: {}
+    requirements: {}

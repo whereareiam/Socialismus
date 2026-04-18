@@ -1,3 +1,8 @@
+plugins {
+    id("me.whereareiam.spawner") version "dev-56440cd"
+    id("socialismus.dev-scenarios")
+}
+
 defaultTasks("pluginJars")
 
 tasks.register("pluginJars") {

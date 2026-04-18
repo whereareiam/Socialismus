@@ -6,12 +6,12 @@ plugins {
 
 dependencies {
     compileOnly(libs.ormlite)
-    api(libs.guice)
-    api(libs.annotations)
-    api(libs.configura)
-    api(libs.commandant)
-    api(libs.keystone)
-    api(libs.bundles.adventure)
+    compileOnlyApi(libs.guice)
+    compileOnlyApi(libs.annotations)
+    compileOnlyApi(libs.configura)
+    compileOnlyApi(libs.commandant)
+    compileOnlyApi(libs.keystone)
+    compileOnlyApi(libs.bundles.adventure)
 }
 
 buildConfig {

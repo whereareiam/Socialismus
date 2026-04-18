@@ -1,0 +1,25 @@
+chats:
+  - id: "local"
+    priority: 0
+    enabled: true
+    triggers:
+      - type: "SYMBOL"
+        strip: true
+        radius: 200
+        symbol: ""
+    formats:
+      - format: "{clear}<gray>[Backend-L] {playerName}: <white>{message}"
+        requirements: {}
+    requirements: {}
+  - id: "global"
+    priority: 1
+    enabled: true
+    triggers:
+      - type: "SYMBOL"
+        strip: true
+        radius: 0
+        symbol: "!"
+    formats:
+      - format: "{clear}<gray>[Backend-G] {playerName}: <white>{message}"
+        requirements: {}
+    requirements: {}

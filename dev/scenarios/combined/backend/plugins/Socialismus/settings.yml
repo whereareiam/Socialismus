@@ -1,0 +1,40 @@
+level: 2
+serialization:
+  type: "MINIMESSAGE"
+  enableLegacyColors: false
+synchronization:
+  enabled: false
+  server: "combined-backend"
+  useRealServerName: false
+  crossPlayerSync: true
+updater:
+  checkForUpdates: true
+  warnAboutUpdates: true
+  warnAboutLocalBuilds: true
+  warnAboutDevBuilds: true
+  interval: 1
+commands:
+  useBrigadier: false
+  useAsyncCompletions: true
+misc:
+  disableJoinNotification: true
+  disableQuitNotification: true
+  allowLegacyParsing: false
+  vanillaSending: true
+listeners:
+  events:
+    org.bukkit.event.player.PlayerJoinEvent:
+      register: true
+      priority: "LOWEST"
+    io.papermc.paper.event.player.AsyncChatEvent:
+      register: true
+      priority: "LOWEST"
+    io.papermc.paper.event.connection.configuration.PlayerConnectionInitialConfigureEvent:
+      register: true
+      priority: "LOWEST"
+    org.bukkit.event.player.PlayerQuitEvent:
+      register: true
+      priority: "LOWEST"
+    org.bukkit.event.player.PlayerChangedWorldEvent:
+      register: true
+      priority: "LOWEST"

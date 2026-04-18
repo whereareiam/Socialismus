@@ -1,0 +1,37 @@
+level: 2
+serialization:
+  type: "MINIMESSAGE"
+  enableLegacyColors: false
+synchronization:
+  enabled: false
+  server: "combined-proxy"
+  useRealServerName: false
+  crossPlayerSync: true
+updater:
+  checkForUpdates: true
+  warnAboutUpdates: true
+  warnAboutLocalBuilds: true
+  warnAboutDevBuilds: true
+  interval: 1
+commands:
+  useBrigadier: false
+  useAsyncCompletions: true
+misc:
+  disableJoinNotification: true
+  disableQuitNotification: true
+  allowLegacyParsing: false
+  vanillaSending: true
+listeners:
+  events:
+    com.velocitypowered.api.event.player.ServerPostConnectEvent:
+      register: true
+      priority: "LOWEST"
+    com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent:
+      register: true
+      priority: "LOWEST"
+    com.velocitypowered.api.event.player.PlayerChatEvent:
+      register: true
+      priority: "LOWEST"
+    com.velocitypowered.api.event.connection.DisconnectEvent:
+      register: true
+      priority: "LOWEST"

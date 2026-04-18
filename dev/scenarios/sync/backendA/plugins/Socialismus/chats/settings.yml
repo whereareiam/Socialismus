@@ -1,0 +1,17 @@
+notifyNoChat: true
+notifyNoFormat: true
+notifyNoPlayers: false
+notifyNoNearbyPlayers: false
+notifyEmptyMessage: true
+fallback:
+  enabled: false
+  chatId: "fallback"
+history:
+  fillerSize: 100
+  historySize: 1000
+  permission: "socialismus.admin"
+  bypassPermission: "socialismus.admin"
+synchronization:
+  enabled: true
+  preserveFormat: true
+  clearHistory: false
