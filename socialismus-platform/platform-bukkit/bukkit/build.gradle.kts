@@ -1,18 +1,20 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-tasks.withType<ShadowJar> {
-    archiveClassifier.set("BUKKIT")
-
-    manifest {
-        attributes(
-            "Plugin-Type" to "BUKKIT"
-        )
-    }
-
-    relocate("net.kyori.adventure", "me.whereareiam.socialismus.library.adventure")
+plugins {
+    id("socialismus.platform-bukkit")
 }
 
 dependencies {
-	"compileOnly"(libs.bundles.bukkit)
-	"implementation"(libs.attache.bukkit)
+    compileOnly(libs.bundles.bukkit)
+    implementation(libs.attache.bukkit)
+}
+
+tasks.withType<ShadowJar>().configureEach {
+    archiveClassifier.set("BUKKIT")
+
+    manifest {
+        attributes["Plugin-Type"] = "BUKKIT"
+    }
+
+    relocate("net.kyori.adventure", "me.whereareiam.socialismus.library.adventure")
 }

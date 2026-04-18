@@ -1,7 +1,7 @@
-repositories {
-    maven("https://repo.william278.net/releases/")
+plugins {
+    id("socialismus.integration")
 }
 
 dependencies {
-    "compileOnly"(libs.papiProxyBridge)
+    compileOnly(libs.papiProxyBridge)
 }

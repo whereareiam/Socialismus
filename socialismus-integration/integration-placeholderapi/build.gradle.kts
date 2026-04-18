@@ -1,9 +1,8 @@
-repositories {
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+plugins {
+    id("socialismus.integration")
 }
 
 dependencies {
-    "compileOnly"(libs.spigot)
-    "compileOnly"(libs.placeholderAPI)
+    compileOnly(libs.spigot)
+    compileOnly(libs.placeholderAPI)
 }

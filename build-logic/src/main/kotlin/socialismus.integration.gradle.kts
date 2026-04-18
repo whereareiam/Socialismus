@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    compileOnly(projects.socialismusApi)
+    add("compileOnly", project(":socialismus-api"))
 }

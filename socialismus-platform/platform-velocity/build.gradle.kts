@@ -1,21 +1,23 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-tasks.withType<ShadowJar> {
-    archiveClassifier.set("VELOCITY")
-
-    manifest {
-        attributes(
-            "Plugin-Type" to "VELOCITY"
-        )
-    }
+plugins {
+    id("socialismus.platform-runtime")
 }
 
 dependencies {
-	"implementation"(project(":socialismus-integration:integration-papiproxybridge"))
+    implementation(projects.integrationPapiproxybridge)
 
-	"compileOnly"(libs.bundles.velocity)
-	"compileOnly"(libs.cloud.velocity)
-	"annotationProcessor"(libs.velocity)
-	"implementation"(rootProject.libs.attache.velocity)
-	"implementation"(rootProject.libs.bundles.bStats.velocity)
+    compileOnly(libs.bundles.velocity)
+    compileOnly(libs.cloud.velocity)
+    annotationProcessor(libs.velocity)
+    implementation(libs.attache.velocity)
+    implementation(libs.bundles.bStats.velocity)
+}
+
+tasks.withType<ShadowJar>().configureEach {
+    archiveClassifier.set("VELOCITY")
+
+    manifest {
+        attributes["Plugin-Type"] = "VELOCITY"
+    }
 }

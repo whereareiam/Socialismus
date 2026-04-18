@@ -1,4 +1,8 @@
+plugins {
+    id("socialismus.platform-common")
+}
+
 dependencies {
-    "compileOnly"(libs.spigot)
-    "implementation"(rootProject.libs.bundles.bStats.bukkit)
+    compileOnly(libs.spigot)
+    implementation(libs.bundles.bStats.bukkit)
 }

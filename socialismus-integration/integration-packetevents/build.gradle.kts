@@ -1,3 +1,3 @@
-dependencies {
-    "compileOnly"(project(":socialismus-api"))
+plugins {
+    id("socialismus.integration")
 }

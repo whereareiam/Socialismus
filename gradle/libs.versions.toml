@@ -55,6 +55,7 @@ brigadier = "1.0.500"
 
 # compile time processing
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
+shadow-gradle-plugin = { group = "com.gradleup.shadow", name = "shadow-gradle-plugin", version.ref = "shadow" }
 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }

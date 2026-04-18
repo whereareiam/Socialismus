@@ -1,3 +1,7 @@
+plugins {
+    id("socialismus.integration")
+}
+
 dependencies {
-    "compileOnly"(libs.bundles.bStats)
+    compileOnly(libs.bundles.bStats)
 }
