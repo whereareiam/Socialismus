@@ -10,7 +10,3 @@ dependencies {
     "testImplementation"(project(":socialismus-api"))
     "testImplementation"(libs.bundles.adventure)
 }
-
-tasks.test {
-    useJUnitPlatform()
-}

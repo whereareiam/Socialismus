@@ -1,5 +1,6 @@
-package me.whereareiam.socialismus.type;
+package me.whereareiam.socialismus.common;
 
+import me.whereareiam.socialismus.type.Version;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

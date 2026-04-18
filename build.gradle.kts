@@ -35,18 +35,21 @@ subprojects {
         "compileOnly"(rootProject.libs.keystone)
         "compileOnly"(rootProject.libs.bundles.adventure)
         "implementation"(rootProject.libs.attache.common)
-
-        // test
-        "testImplementation"(rootProject.libs.configura)
-        "testImplementation"(rootProject.libs.commandant)
-        "testImplementation"(rootProject.libs.keystone)
-        "testImplementation"(rootProject.libs.guice)
-        "testImplementation"(rootProject.libs.bundles.testing)
-        "testRuntimeOnly"(rootProject.libs.junit.platform)
     }
 
-    tasks.withType<Test>().configureEach {
-        useJUnitPlatform()
+    if (name != "socialismus-api") {
+        dependencies {
+            "testImplementation"(rootProject.libs.configura)
+            "testImplementation"(rootProject.libs.commandant)
+            "testImplementation"(rootProject.libs.keystone)
+            "testImplementation"(rootProject.libs.guice)
+            "testImplementation"(rootProject.libs.bundles.testing)
+            "testRuntimeOnly"(rootProject.libs.junit.platform)
+        }
+
+        tasks.withType<Test>().configureEach {
+            useJUnitPlatform()
+        }
     }
 
     extensions.configure<PublishingExtension> {

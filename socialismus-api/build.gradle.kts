@@ -67,3 +67,11 @@ tasks.withType<Javadoc> {
         windowTitle = "Socialismus API"
     }
 }
+
+tasks.named<JavaCompile>("compileTestJava") {
+    enabled = false
+}
+
+tasks.named<Test>("test") {
+    enabled = false
+}
