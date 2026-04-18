@@ -2,23 +2,21 @@ package me.whereareiam.socialismus.integration.placeholderapi;
 
 import com.google.inject.Singleton;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.Serializers;
-import me.whereareiam.keystone.model.SerializerContent;
-import me.whereareiam.keystone.serializer.MessageDecorator;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.integration.Integration;
-import me.whereareiam.socialismus.integration.PlaceholderIntegration;
+import me.whereareiam.socialismus.integration.placeholder.PlaceholderIntegration;
+import me.whereareiam.socialismus.integration.placeholder.PlaceholderMessageDecorator;
+import me.whereareiam.socialismus.type.PlaceholderResolutionMode;
 import me.whereareiam.socialismus.integration.SerializerIntegration;
 import me.whereareiam.socialismus.registry.base.Registry;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 @Singleton
-public class PlaceholderAPIIntegration implements SerializerIntegration, PlaceholderIntegration {
+public class PlaceholderAPIIntegration implements PlaceholderIntegration, SerializerIntegration {
 	private boolean initialized;
 
 	@Override
@@ -45,36 +43,18 @@ public class PlaceholderAPIIntegration implements SerializerIntegration, Placeho
 	}
 
 	@Override
-	public void registerDecorator(SerializerEngine engine) {
-		Serializers.registerDecorator(engine, new PlaceholderAPIDecorator());
-	}
-
-	@Override
 	public String resolve(UUID uniqueId, String text) {
 		OfflinePlayer player = Bukkit.getOfflinePlayer(uniqueId);
 		return PlaceholderAPI.setPlaceholders(player, text);
 	}
 
-	/**
-	 * Inner decorator controlled by this integration.
-	 * Handles placeholder resolution in the serialization pipeline.
-	 */
-	private class PlaceholderAPIDecorator implements MessageDecorator {
-		@Override
-		@NotNull
-		public SerializerContent decorate(@NotNull SerializerContent content) {
-			Actor receiver = content.getReceiver();
-			if (receiver == null) return content;
+	@Override
+	public void registerDecorator(SerializerEngine engine) {
+		Serializers.registerDecorator(engine, new PlaceholderMessageDecorator(this));
+	}
 
-			String processed = resolve(receiver.getUniqueId(), content.getMessage());
-			content.setMessage(processed);
-
-			return content;
-		}
-
-		@Override
-		public boolean isAvailable() {
-			return PlaceholderAPIIntegration.this.isAvailable();
-		}
+	@Override
+	public PlaceholderResolutionMode resolutionMode() {
+		return PlaceholderResolutionMode.CHAINED;
 	}
 }

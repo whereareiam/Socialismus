@@ -1,4 +1,8 @@
-package me.whereareiam.socialismus.integration;
+package me.whereareiam.socialismus.integration.placeholder;
+
+import me.whereareiam.socialismus.integration.Integration;
+import me.whereareiam.socialismus.integration.SerializerIntegration;
+import me.whereareiam.socialismus.type.PlaceholderResolutionMode;
 
 import java.util.UUID;
 
@@ -18,4 +22,12 @@ public interface PlaceholderIntegration extends Integration {
 	 * @return The text with placeholders resolved
 	 */
 	String resolve(UUID uniqueId, String text);
+
+	/**
+	 * Declares how this integration's placeholder output should be handled by runtime services.
+	 * Defaults to a single resolution pass.
+	 */
+	default PlaceholderResolutionMode resolutionMode() {
+		return PlaceholderResolutionMode.SINGLE_PASS;
+	}
 }
