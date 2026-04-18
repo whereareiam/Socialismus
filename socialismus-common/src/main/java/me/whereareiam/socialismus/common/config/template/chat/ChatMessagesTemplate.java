@@ -14,6 +14,7 @@ public class ChatMessagesTemplate implements TemplateProvider<ChatMessages> {
 		chatMessages.setNoFormatMatch("{prefix}<white>No format matching criteria found.");
 		chatMessages.setNoFallbackChat("{prefix}<white>No fallback chat found.");
 		chatMessages.setNoNearbyPlayers("{prefix}<white>No nearby players found, within a radius of <gray>{radius}</gray> blocks.");
+		chatMessages.setEmptyMessage("{prefix}<white>You need to write a message.");
 
 		ChatMessages.ClearFormat clearFormat = new ChatMessages.ClearFormat();
 		clearFormat.setFormat("<gray>[<red>X</red>]</gray> ");

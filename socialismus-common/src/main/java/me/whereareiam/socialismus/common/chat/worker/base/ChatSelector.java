@@ -105,6 +105,12 @@ public class ChatSelector {
 
 		// Apply content changes (strip symbol and/or regex) once we know the final trigger.
 		applyStripping(message, match, plain);
+		if (isBlank(message)) {
+			notifyEmptyMessage(message, settings);
+			Logger.debug("Cancelling chat message for user %s because trigger stripping left no content", message.getSender().getUsername());
+			message.setCancelled(true);
+			return message;
+		}
 
 		// Fire event and set chat
 		ChatResolvedEvent event = new ChatResolvedEvent(message, match.chat, message.isCancelled());
@@ -258,6 +264,15 @@ public class ChatSelector {
 		}
 	}
 
+	private void notifyEmptyMessage(ChatMessage message, ChatSettings settings) {
+		if (!settings.isNotifyEmptyMessage()) return;
+
+		String emptyMessage = chatMessagesProvider.get().getEmptyMessage();
+		if (emptyMessage == null || emptyMessage.isBlank()) return;
+
+		message.getSender().sendMessage(Serializer.serialize(message.getSender(), emptyMessage));
+	}
+
 	private void applyStripping(ChatMessage message, ChatMatch match, String originalPlain) {
 		// Strip leading symbol if we selected a symbol-bound chat via leading char.
 		if (match.stripLeadingSymbol && originalPlain != null && !originalPlain.isEmpty()) {
@@ -284,6 +299,12 @@ public class ChatSelector {
 			));
 			Logger.debug("Stripped regex pattern from message content: " + pattern);
 		}
+	}
+
+	private boolean isBlank(ChatMessage message) {
+		if (message.getContent() == null) return true;
+		String plain = ComponentUtil.toPlain(message.getContent());
+		return plain.isBlank();
 	}
 
 	@AllArgsConstructor

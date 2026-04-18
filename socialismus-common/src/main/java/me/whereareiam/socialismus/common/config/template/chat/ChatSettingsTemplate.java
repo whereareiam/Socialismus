@@ -13,6 +13,7 @@ public class ChatSettingsTemplate implements TemplateProvider<ChatSettings> {
 		chatSettings.setNotifyNoFormat(true);
 		chatSettings.setNotifyNoPlayers(false);
 		chatSettings.setNotifyNoNearbyPlayers(false);
+		chatSettings.setNotifyEmptyMessage(true);
 
 		ChatSettings.FallbackChatSettings fallback = new ChatSettings.FallbackChatSettings();
 		fallback.setEnabled(true);

@@ -39,6 +39,11 @@ public class ChatSettings {
 	private boolean notifyNoNearbyPlayers;
 
 	/**
+	 * Whether to notify when a trigger is used without any message content.
+	 */
+	private boolean notifyEmptyMessage;
+
+	/**
 	 * Settings for fallback chat behavior.
 	 */
 	private FallbackChatSettings fallback;

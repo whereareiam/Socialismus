@@ -44,6 +44,11 @@ public class ChatMessages {
     private String noNearbyPlayers;
 
     /**
+     * Message shown when a trigger is used without any message content.
+     */
+    private String emptyMessage;
+
+    /**
      * Configuration for clearing chat messages.
      */
     private ClearFormat clearFormat;
