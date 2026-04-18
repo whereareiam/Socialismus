@@ -49,7 +49,7 @@ cloud-cooldown = "1.0.0-rc.1"
 cloud-minecraft-extras = "2.0.0-beta.15"
 
 # brigadier
-brigadier = "1.0.18"
+brigadier = "1.0.500"
 
 [libraries]
 
