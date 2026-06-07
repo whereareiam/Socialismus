@@ -1,14 +1,10 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.jvm.tasks.Jar
 
 plugins {
-    id("socialismus.java-common")
     id("com.gradleup.shadow")
 }
 
 tasks.withType<ShadowJar>().configureEach {
-    archiveBaseName.set(rootProject.name)
-
     relocate("me.whereareiam.attache", "me.whereareiam.socialismus.library.attache")
     relocate("org.bstats", "me.whereareiam.socialismus.library.bStats")
     relocate("com.fasterxml.jackson", "me.whereareiam.socialismus.library.jackson")
@@ -19,7 +15,14 @@ tasks.withType<ShadowJar>().configureEach {
         exclude(dependency("com.google.inject:guice:.*"))
         exclude(dependency("org.jetbrains:annotations:.*"))
         exclude(dependency("me.whereareiam:configura:.*"))
+        exclude(dependency("me.whereareiam.configura.feature:extension:.*"))
+        exclude(dependency("me.whereareiam.configura.feature:extension-api:.*"))
+        exclude(dependency("me.whereareiam.configura.feature:postprocess:.*"))
+        exclude(dependency("me.whereareiam.configura.feature:postprocess-api:.*"))
+        exclude(dependency("me.whereareiam.configura.feature:polymorphic:.*"))
+        exclude(dependency("me.whereareiam.configura.feature:polymorphic-api:.*"))
         exclude(dependency("me.whereareiam:commandant:.*"))
+        exclude(dependency("me.whereareiam:commandant-common:.*"))
         exclude(dependency("me.whereareiam:keystone:.*"))
         exclude(dependency("net.kyori:adventure-api:.*"))
         exclude(dependency("net.kyori:adventure-text-minimessage:.*"))
@@ -27,16 +30,4 @@ tasks.withType<ShadowJar>().configureEach {
         exclude(dependency("net.kyori:adventure-text-serializer-plain:.*"))
         exclude(dependency("net.kyori:adventure-text-serializer-gson:.*"))
     }
-
-    val defaultDestination = rootProject.layout.buildDirectory.dir("libs")
-
-    if (providers.gradleProperty("output").isPresent) {
-        destinationDirectory.set(file(providers.gradleProperty("output").get()))
-    } else if (project.path != ":platform-bukkit-common") {
-        destinationDirectory.set(defaultDestination)
-    }
-}
-
-tasks.named<Jar>("jar").configure {
-    dependsOn(tasks.named("shadowJar"))
 }

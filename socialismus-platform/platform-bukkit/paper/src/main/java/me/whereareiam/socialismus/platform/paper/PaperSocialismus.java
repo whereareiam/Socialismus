@@ -1,5 +1,7 @@
 package me.whereareiam.socialismus.platform.paper;
 
+import me.whereareiam.attache.platform.paper.PaperLibraryManager;
+import me.whereareiam.attache.type.VerbosityMode;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
@@ -32,11 +34,14 @@ public class PaperSocialismus extends JavaPlugin {
 			return;
 		}
 
-		PaperDependencyResolver dependencyResolver = new PaperDependencyResolver(this);
-		dependencyResolver.loadLibraries();
-		dependencyResolver.resolveDependencies();
+		PaperLibraryManager libraryManager = new PaperLibraryManager(this, ".libraries");
+		libraryManager.setVerbosityMode(VerbosityMode.SUMMARY);
+		libraryManager.addMavenCentral();
+		libraryManager.addRepository("https://maven.whereareiam.me/release");
+		libraryManager.addRepository("https://maven.whereareiam.me/development");
+		libraryManager.loadDescriptors();
 
-		new PaperInjector(this, dependencyResolver, dataPath);
+		new PaperInjector(this, dataPath);
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {
 		});

@@ -1,6 +1,3 @@
-import org.gradle.api.Action
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.provider.Property
 import org.gradle.jvm.tasks.Jar
 
 evaluationDependsOn(":platform-velocity")

@@ -1,10 +1,10 @@
-package me.whereareiam.socialismus.common.config.template;
+package me.whereareiam.socialismus.common.config.defaults;
 
 import com.google.inject.Singleton;
 import me.whereareiam.commandant.model.message.ExceptionMessages;
 import me.whereareiam.commandant.model.message.HelpMessages;
 import me.whereareiam.commandant.model.message.PaginationMessages;
-import me.whereareiam.configura.TemplateProvider;
+import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.model.config.message.CommandMessages;
 import me.whereareiam.socialismus.model.config.message.Messages;
 
@@ -12,16 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 @Singleton
-public class MessagesTemplate implements TemplateProvider<Messages> {
+public class MessagesDefaults implements DefaultsProvider<Messages> {
 	@Override
 	public Messages supply(Messages messages) {
-		// Default values
 		messages.setPrefix("<gold>ꜱᴏᴄɪᴀʟɪꜱᴍᴜꜱ <dark_gray>| ");
+
 		CommandMessages commandMessages = new CommandMessages();
 		commandMessages.setCooldown("{prefix}<white>You must wait <gray>{time} seconds</gray> before using this command again</white>");
 		commandMessages.setCancelled("{prefix}<white>Command execution has been <red>cancelled</red></white>");
 
-		// Configure exception messages using Commandant's ExceptionMessages
 		ExceptionMessages exceptionMessages = new ExceptionMessages();
 		exceptionMessages.setNoPermission("{prefix}<white>You don't have \"<gray>{content}</gray>\" permission to use this command.</white>");
 		exceptionMessages.setExecutionError("{prefix}<white>An error occurred while executing the command:</white> <gray>{content}</gray>");
@@ -45,10 +44,8 @@ public class MessagesTemplate implements TemplateProvider<Messages> {
 		format.setFormat("<gray>{command}</gray>");
 		format.setArgument("<gray>[{argument}]</gray>");
 		format.setOptionalArgument("<gray>({argument})</gray>");
-
 		commandMessages.setFormat(format);
 
-		// Configure pagination messages using Commandant's PaginationMessages
 		PaginationMessages paginationMessages = new PaginationMessages();
 		paginationMessages.setShowPaginationIfOnePage(false);
 		paginationMessages.setFormat("\n {previous}<white>Pagination</white> <gray>[{current}/{max}]</gray>{next} \n");
@@ -58,7 +55,6 @@ public class MessagesTemplate implements TemplateProvider<Messages> {
 		paginationMessages.setNextTagFormat(" <green><click:run_command:/social help {nextPage}>»</green>");
 		commandMessages.setPagination(paginationMessages);
 
-		// Configure help messages using Commandant's HelpMessages
 		HelpMessages helpMessages = new HelpMessages();
 		helpMessages.setFormat(List.of(
 				" ",
@@ -71,7 +67,6 @@ public class MessagesTemplate implements TemplateProvider<Messages> {
 		helpMessages.setNoCommands("  <red>No commands found</red>");
 		helpMessages.setCommandsPerPage(7);
 
-		// Configure argument formatting
 		HelpMessages.Format argumentFormat = new HelpMessages.Format();
 		argumentFormat.setArgument("<gray>[{argument}]</gray>");
 		argumentFormat.setOptionalArgument("<gray>({argument})</gray>");
@@ -96,14 +91,12 @@ public class MessagesTemplate implements TemplateProvider<Messages> {
 				" "
 		));
 		debugCommand.setModuleFormat("<dark_gray>   - <hover:show_text:\"<white>Made by {authors}\"><green>{name}</green> <gray>[{version}]</gray></hover>");
-
 		commandMessages.setDebugCommand(debugCommand);
 
 		CommandMessages.ReloadCommand reloadCommand = new CommandMessages.ReloadCommand();
 		reloadCommand.setReloading("{prefix}<white>Reloading configuration, some features may still require a server restart...</white>");
 		reloadCommand.setReloaded("{prefix}<white>Configuration reloaded <green>successfully</green>!</white>");
 		reloadCommand.setException("{prefix}<white>An error occurred while reloading the configuration:</white> <gray>{exception}</gray>");
-
 		commandMessages.setReloadCommand(reloadCommand);
 
 		CommandMessages.ClearCommand clearCommand = new CommandMessages.ClearCommand();
@@ -114,11 +107,9 @@ public class MessagesTemplate implements TemplateProvider<Messages> {
 		clearCommand.setNotEnoughHistory("{prefix}<white>Not enough chat history entries to clear</white>");
 		clearCommand.setCleared("{prefix}<white>Successfully deleted message from chat history</white>");
 		clearCommand.setClearedAmount("{prefix}<white>Successfully cleared <gray>{amount}</gray>x chat history entries</white>");
-
 		commandMessages.setClearCommand(clearCommand);
 
 		messages.setCommands(commandMessages);
-
 		return messages;
 	}
 }

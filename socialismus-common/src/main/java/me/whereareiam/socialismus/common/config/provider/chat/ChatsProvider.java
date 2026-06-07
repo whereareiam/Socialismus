@@ -3,11 +3,11 @@ package me.whereareiam.socialismus.common.config.provider.chat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import me.whereareiam.configura.Config;
+import me.whereareiam.configura.Configura;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.common.config.defaults.chat.ChatDefaults;
 import me.whereareiam.socialismus.common.config.dynamic.ChatsConfig;
 import me.whereareiam.socialismus.common.config.provider.DefaultConfigProvider;
-import me.whereareiam.socialismus.common.config.template.chat.ChatTemplate;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -27,13 +27,13 @@ public class ChatsProvider extends DefaultConfigProvider<List<Chat>> {
 			@Named("chatPath") Path dataPath,
 			Registry<Reloadable> registry
 	) {
-		super(dataPath, registry);
+		super(dataPath, "", listType(), registry);
 	}
 
 	@Override
 	protected List<Chat> load() {
 		List<Chat> loaded = new ArrayList<>();
-		try (Stream<Path> paths = Files.list(getBasePath())) {
+		try (Stream<Path> paths = Files.list(getPath())) {
 			paths.filter(path -> !Files.isDirectory(path)).forEach(path -> {
 				String fileName = path.getFileName().toString();
 				int dotIndex = fileName.lastIndexOf('.');
@@ -48,21 +48,26 @@ public class ChatsProvider extends DefaultConfigProvider<List<Chat>> {
 			return Collections.emptyList();
 		}
 
-		if (loaded.isEmpty()) loaded.addAll(addChatsFromConfig(getBasePath().resolve("chats-default")));
+		if (loaded.isEmpty()) loaded.addAll(addChatsFromConfig(getPath().resolve("chats-default")));
 
 		loaded.removeIf(chat -> loaded.stream().anyMatch(c -> c != chat && c.getId().equals(chat.getId())));
 		return loaded;
 	}
 
 	@Override
-	protected void registerTemplate() {
-		Config.registerTemplate(ChatTemplate.class);
+	protected Configura configura() {
+		return versioned(super.configura().withDefaults(ChatDefaults.class), ChatsConfig.class);
 	}
 
 	private List<Chat> addChatsFromConfig(Path path) {
-		ChatsConfig chatsConfig = Config.update(path, ChatsConfig.class);
+		ChatsConfig chatsConfig = configura().update(path, ChatsConfig.class);
 		return chatsConfig.getChats().stream()
 				.filter(Chat::isEnabled)
 				.toList();
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Class<? extends List<Chat>> listType() {
+		return (Class<? extends List<Chat>>) List.class;
 	}
 }

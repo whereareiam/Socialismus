@@ -1,18 +1,17 @@
-package me.whereareiam.socialismus.common.config.template;
+package me.whereareiam.socialismus.common.config.defaults;
 
 import com.google.inject.Singleton;
-import me.whereareiam.commandant.model.CommandDefinition;
-import me.whereareiam.configura.TemplateProvider;
+import me.whereareiam.configura.merge.defaults.DefaultsProvider;
+import me.whereareiam.socialismus.model.CommandDefinition;
 import me.whereareiam.socialismus.model.config.Commands;
 
 import java.util.List;
 import java.util.Map;
 
 @Singleton
-public class CommandsTemplate implements TemplateProvider<Commands> {
+public class CommandsDefaults implements DefaultsProvider<Commands> {
 	@Override
 	public Commands supply(Commands commands) {
-		// Default values
 		CommandDefinition main = CommandDefinition.builder()
 				.enabled(true)
 				.aliases(List.of("socialismus", "social"))
@@ -23,8 +22,8 @@ public class CommandsTemplate implements TemplateProvider<Commands> {
 						.enabled(true)
 						.duration(2)
 						.group("global")
-						.build()
-				).build();
+						.build())
+				.build();
 
 		CommandDefinition help = CommandDefinition.builder()
 				.enabled(true)
@@ -36,11 +35,8 @@ public class CommandsTemplate implements TemplateProvider<Commands> {
 						.enabled(true)
 						.duration(2)
 						.group("global")
-						.build()
-				)
-				.arguments(Map.of(
-						"page", "Page"
-				))
+						.build())
+				.arguments(Map.of("page", "Page"))
 				.build();
 
 		CommandDefinition debug = CommandDefinition.builder()
@@ -53,8 +49,8 @@ public class CommandsTemplate implements TemplateProvider<Commands> {
 						.enabled(true)
 						.duration(2)
 						.group("global")
-						.build()
-				).build();
+						.build())
+				.build();
 
 		CommandDefinition reload = CommandDefinition.builder()
 				.enabled(true)
@@ -66,8 +62,8 @@ public class CommandsTemplate implements TemplateProvider<Commands> {
 						.enabled(true)
 						.duration(2)
 						.group("global")
-						.build()
-				).build();
+						.build())
+				.build();
 
 		CommandDefinition clear = CommandDefinition.builder()
 				.enabled(true)
@@ -79,11 +75,8 @@ public class CommandsTemplate implements TemplateProvider<Commands> {
 						.enabled(true)
 						.duration(2)
 						.group("global")
-						.build()
-				)
-				.arguments(Map.of(
-						"context", "Context"
-				))
+						.build())
+				.arguments(Map.of("context", "Context"))
 				.build();
 
 		commands.getCommands().put("main", main);
@@ -91,7 +84,6 @@ public class CommandsTemplate implements TemplateProvider<Commands> {
 		commands.getCommands().put("debug", debug);
 		commands.getCommands().put("reload", reload);
 		commands.getCommands().put("clear", clear);
-
 		return commands;
 	}
 }

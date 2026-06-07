@@ -3,7 +3,8 @@ package me.whereareiam.socialismus.model.config;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.whereareiam.commandant.model.CommandDefinition;
+import me.whereareiam.configura.ConfigDocument;
+import me.whereareiam.socialismus.model.CommandDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class Commands {
+public class Commands extends ConfigDocument {
 	/**
 	 * Map of command names to their CommandDefinition configurations.
 	 * Key: command name (e.g., "help", "reload")

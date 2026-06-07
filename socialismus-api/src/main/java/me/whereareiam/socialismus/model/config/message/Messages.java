@@ -1,9 +1,9 @@
 package me.whereareiam.socialismus.model.config.message;
 
-import com.google.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.whereareiam.configura.ConfigDocument;
 
 /**
  * Configuration class for managing messages in the Socialismus plugin.
@@ -15,8 +15,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Singleton
-public class Messages {
+public class Messages extends ConfigDocument {
 		/**
 		 * The global prefix used for all plugin messages
 		 */

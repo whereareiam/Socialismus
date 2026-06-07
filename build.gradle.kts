@@ -1,6 +1,17 @@
+import me.whereareiam.attache.plugin.gradle.extension.AttacheExtension
+
 plugins {
-    id("me.whereareiam.spawner") version "dev-56440cd"
-    id("socialismus.dev-scenarios")
+    alias(libs.plugins.attache)
+    alias(libs.plugins.spawner)
+    id("dev-scenarios")
+}
+
+extensions.configure<AttacheExtension>("attache") {
+    transitive.set(true)
+
+    mavenLocal()
+    repository("https://maven.whereareiam.me/release")
+    repository("https://maven.whereareiam.me/development")
 }
 
 defaultTasks("pluginJars")

@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.common.config.provider;
 
-import com.google.inject.Provider;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.config.ConfigProvider;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -8,20 +7,16 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import java.nio.file.Path;
 
 /**
- * Adapter-layer base that wires {@link ConfigProvider} into our reload registry
- * and exposes the resolved base path for subclasses.
+ * Shared adapter-layer base for standard Socialismus configuration providers.
  */
-public abstract class DefaultConfigProvider<T> extends ConfigProvider<T> implements Provider<T> {
-	private final Path basePath;
-
-	protected DefaultConfigProvider(Path basePath, Registry<Reloadable> reloadables) {
-		this.basePath = basePath;
-		reloadables.register(this);
-	}
-
-	protected Path getBasePath() {
-		return basePath;
+public abstract class DefaultConfigProvider<T> extends ConfigProvider<T> {
+	protected DefaultConfigProvider(
+			Path basePath,
+			String fileName,
+			Class<? extends T> type,
+			Registry<Reloadable> reloadables
+	) {
+		super(basePath, fileName, type, reloadables);
 	}
 }
-
 

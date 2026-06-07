@@ -38,12 +38,12 @@ public class GitHubProvider implements UpdateProvider {
     }
 
     Optional<String> decodeLatest(InputStream in) {
-        GitHubRelease release = JSON_READER.decode(in, GitHubRelease.class);
+        GitHubRelease release = JSON_READER.read(in, GitHubRelease.class);
         return Optional.ofNullable(release.tag_name);
     }
 
     List<String> decodeRecentUpdates(InputStream in) {
-        GitHubCommit[] commits = JSON_READER.decode(in, GitHubCommit[].class);
+        GitHubCommit[] commits = JSON_READER.read(in, GitHubCommit[].class);
         return Arrays.stream(commits)
                 .map(c -> c.sha)
                 .collect(Collectors.toList());

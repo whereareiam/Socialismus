@@ -1,12 +1,12 @@
 plugins {
-    id("socialismus.java-common")
+    id("shared")
+    alias(libs.plugins.attache)
 }
 
 dependencies {
-    compileOnly(projects.socialismusApi)
-
-    compileOnly(libs.cloud.core)
-    compileOnly(libs.cloud.annotations)
-    compileOnly(libs.cloud.cooldowns)
-    compileOnly(libs.cloud.minecraft.extras)
+    attache(libs.cloud.core)
+    attache(libs.cloud.annotations)
+    attache(libs.cloud.cooldowns)
+    attache(libs.cloud.minecraft.extras)
+    attache(libs.commandant.common)
 }

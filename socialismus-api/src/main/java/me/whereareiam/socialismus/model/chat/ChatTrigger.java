@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.configura.annotation.Polymorphic;
-import me.whereareiam.socialismus.type.chat.TriggerType;
+import me.whereareiam.configura.feature.polymorphic.api.annotation.Polymorphic;
 import me.whereareiam.socialismus.model.chat.trigger.CommandChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.RegexChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
+import me.whereareiam.socialismus.type.chat.TriggerType;
 
 /**
  * Describes a trigger that can route a message into a chat.
@@ -49,5 +49,4 @@ public class ChatTrigger {
      */
     private Integer radius;
 }
-
 

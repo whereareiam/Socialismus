@@ -1,5 +1,3 @@
-import org.gradle.jvm.toolchain.JavaLanguageVersion
-
 plugins {
     `kotlin-dsl`
 }
@@ -17,8 +15,11 @@ kotlin {
 repositories {
     gradlePluginPortal()
     mavenCentral()
+    maven("https://maven.whereareiam.me/release")
+    maven("https://maven.whereareiam.me/development")
 }
 
 dependencies {
     implementation(libs.shadow.gradle.plugin)
+    implementation(libs.toolkit.publish.maven)
 }

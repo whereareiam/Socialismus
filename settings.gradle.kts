@@ -1,5 +1,3 @@
-import org.gradle.api.initialization.resolve.RepositoriesMode
-
 rootProject.name = "Socialismus"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -24,7 +22,6 @@ dependencyResolutionManagement {
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-        maven("https://jitpack.io")
         maven("https://repo.william278.net/releases/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     }

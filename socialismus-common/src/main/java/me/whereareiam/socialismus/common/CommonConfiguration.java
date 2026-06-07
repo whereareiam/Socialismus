@@ -4,6 +4,11 @@ import com.google.inject.*;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
+import me.whereareiam.configura.Config;
+import me.whereareiam.configura.Configura;
+import me.whereareiam.configura.feature.polymorphic.PolymorphicFeature;
+import me.whereareiam.configura.feature.postprocess.PostProcessFeature;
+import me.whereareiam.configura.type.Format;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
@@ -13,8 +18,8 @@ import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.render.ClearPlaceholderResolver;
 import me.whereareiam.socialismus.common.chat.render.DefaultChatRenderService;
-import me.whereareiam.socialismus.common.config.ConfiguraBootstrap;
 import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
+import me.whereareiam.socialismus.common.config.SocialismusConfiguraModule;
 import me.whereareiam.socialismus.common.config.provider.CommandsProvider;
 import me.whereareiam.socialismus.common.config.provider.MessagesProvider;
 import me.whereareiam.socialismus.common.config.provider.SettingsProvider;
@@ -45,7 +50,9 @@ import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
+import me.whereareiam.socialismus.model.requirement.type.*;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
@@ -62,6 +69,7 @@ import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.service.sync.ChatSyncBus;
+import me.whereareiam.socialismus.type.ConfigurationType;
 import me.whereareiam.socialismus.type.module.ProviderType;
 import me.whereareiam.socialismus.util.EventUtil;
 
@@ -87,7 +95,6 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ConfigurationTypeResolver.class)
 				.to(FileSystemConfigurationTypeResolver.class)
 				.asEagerSingleton();
-		bind(ConfiguraBootstrap.class).asEagerSingleton();
 
 		// Configs
 		bind(SettingsProvider.class);
@@ -187,6 +194,11 @@ public class CommonConfiguration extends AbstractModule {
 		EventUtil.initialize(eventManager);
 	}
 
+	@Inject
+	void initializeConfigura(Configura configura) {
+		Config.setConfigured(configura);
+	}
+
 	@Provides
 	@Singleton
 	Path provideBasePath() {
@@ -212,6 +224,31 @@ public class CommonConfiguration extends AbstractModule {
 	@Named("chatPath")
 	Path provideChatPath() {
 		return ensureDirectory(dataPath.resolve("chats"), "chats");
+	}
+
+	@Provides
+	@Singleton
+	Configura provideConfigura(@Named("dataPath") Path dataPath) {
+		ConfigurationType type = new FileSystemConfigurationTypeResolver(dataPath).getConfigurationType();
+		Format format = type == ConfigurationType.JSON ? Format.JSON : Format.YAML;
+
+		PolymorphicFeature polymorphic = PolymorphicFeature.defaults();
+		polymorphic.register(Requirement.class)
+				.inferByField("servers", ServerRequirement.class)
+				.inferByField("worlds", WorldRequirement.class)
+				.inferByField("chatIdentifiers", ChatRequirement.class)
+				.inferByField("placeholders", PlaceholderRequirement.class)
+				.inferByField("permissions", PermissionRequirement.class)
+				.inferByField("triggers", TriggerRequirement.class)
+				.inferByField("messages", MessageRequirement.class)
+				.build();
+
+		return Config.builder()
+				.format(format)
+				.module(new SocialismusConfiguraModule())
+				.feature(PostProcessFeature.defaults())
+				.feature(polymorphic)
+				.build();
 	}
 
 	private Path ensureDirectory(Path path, String label) {

@@ -1,18 +1,27 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.api.tasks.compile.JavaCompile
 
 plugins {
-    id("socialismus.platform-bukkit")
+    id("platform")
+    id("platform-descriptor")
+    alias(libs.plugins.attache)
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = JavaVersion.VERSION_21.toString()
-    targetCompatibility = JavaVersion.VERSION_21.toString()
+    sourceCompatibility = JavaVersion.VERSION_25.toString()
+    targetCompatibility = JavaVersion.VERSION_25.toString()
 }
 
 dependencies {
+    implementation(projects.platformBukkitCommon)
+    implementation(projects.integrationPlaceholderapi)
+
     compileOnly(libs.bundles.paper)
+    compileOnly(libs.cloud.paper)
+    compileOnly(libs.brigadier)
     implementation(libs.attache.paper)
+
+    attache(libs.cloud.paper)
+    attache(libs.cloud.minecraft.extras)
 }
 
 tasks.withType<ShadowJar>().configureEach {

@@ -1,9 +1,10 @@
 package me.whereareiam.socialismus.common.sync;
 
 import me.whereareiam.configura.Config;
+import me.whereareiam.configura.Configura;
+import me.whereareiam.configura.type.Format;
 import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
-import me.whereareiam.socialismus.common.config.adapter.ComponentAdapter;
-import me.whereareiam.socialismus.common.config.adapter.SocialismusPlayerAdapter;
+import me.whereareiam.socialismus.common.config.SocialismusConfiguraModule;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.player.SyncedSocialismusPlayer;
@@ -19,9 +20,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SocialismusPlayerSyncSerializationTest {
 	@BeforeAll
-	static void registerAdapters() {
-		Config.registerAdapter(SocialismusPlayer.class, SocialismusPlayerAdapter.class);
-		Config.registerAdapter(Component.class, ComponentAdapter.class);
+	static void configureConfigura() {
+		Configura configura = Config.builder()
+				.format(Format.JSON)
+				.module(new SocialismusConfiguraModule())
+				.build();
+		Config.setConfigured(configura);
 	}
 
 	@Test

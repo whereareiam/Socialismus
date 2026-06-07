@@ -1,17 +1,24 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    id("socialismus.platform-runtime")
+    id("platform")
+    alias(libs.plugins.attache)
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = JavaVersion.VERSION_21.toString()
+    targetCompatibility = JavaVersion.VERSION_21.toString()
 }
 
 dependencies {
     implementation(projects.integrationPapiproxybridge)
 
     compileOnly(libs.bundles.velocity)
-    compileOnly(libs.cloud.velocity)
     annotationProcessor(libs.velocity)
     implementation(libs.attache.velocity)
     implementation(libs.bundles.bStats.velocity)
+
+    attache(libs.cloud.velocity)
 }
 
 tasks.withType<ShadowJar>().configureEach {

@@ -4,13 +4,12 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.commandant.Help;
-import me.whereareiam.commandant.Pagination;
 import me.whereareiam.commandant.annotation.Definition;
 import me.whereareiam.commandant.builder.HelpBuilder;
-import me.whereareiam.commandant.model.CommandDefinition;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.model.CommandDefinition;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
@@ -69,13 +68,12 @@ public class HelpCommand implements Reloadable {
 		if (helpBuilder == null) {
 			Messages messages = messagesProvider.get();
 
-			helpBuilder = Help.create(
-					messages.getCommands().getHelp(),
-					getArgumentDescriptions(),
-					Pagination.create(messages.getCommands().getPagination()),
-					messages.getCommands().getHelp().getCommandsPerPage(),
-					true
-			);
+			helpBuilder = Help.<Actor>builder(messages.getCommands().getHelp())
+					.customArgumentNames(getArgumentDescriptions())
+					.paginationMessages(messages.getCommands().getPagination())
+					.itemsPerPage(messages.getCommands().getHelp().getCommandsPerPage())
+					.sortAlphabetically(true)
+					.build();
 		}
 		return helpBuilder;
 	}

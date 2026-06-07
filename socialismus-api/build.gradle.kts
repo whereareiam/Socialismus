@@ -1,6 +1,5 @@
 plugins {
-    `java-library`
-    id("socialismus.java-common")
+    id("api")
     alias(libs.plugins.buildconfig)
 }
 
@@ -9,7 +8,9 @@ dependencies {
     compileOnlyApi(libs.guice)
     compileOnlyApi(libs.annotations)
     compileOnlyApi(libs.configura)
-    compileOnlyApi(libs.commandant)
+    compileOnlyApi(libs.configura.feature.extension.api)
+    compileOnlyApi(libs.configura.feature.postprocess.api)
+    compileOnlyApi(libs.configura.feature.polymorphic.api)
     compileOnlyApi(libs.keystone)
     compileOnlyApi(libs.bundles.adventure)
 }
@@ -28,36 +29,16 @@ buildConfig {
     }
 }
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
+toolkitPublish {
+    artifactId.set("Socialismus")
 
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-            artifactId = "Socialismus"
-            pom {
-                name.set("Socialismus")
-                description.set("Public API for Socialismus - Minecraft communication management plugin")
-            }
-        }
+    pom {
+        description.set("Public API for Socialismus - Minecraft communication management plugin")
+        name.set("Socialismus API")
     }
-}
 
-tasks.withType<Javadoc>().configureEach {
-    (options as StandardJavadocDocletOptions).apply {
-        addStringOption("Xdoclint:none", "-quiet")
-        title = "Socialismus API"
-        windowTitle = "Socialismus API"
+    javadoc {
+        title.set("Socialismus API")
+        windowTitle.set("Socialismus API")
     }
-}
-
-tasks.named<JavaCompile>("compileTestJava") {
-    enabled = false
-}
-
-tasks.named<Test>("test") {
-    enabled = false
 }

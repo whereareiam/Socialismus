@@ -10,6 +10,8 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import jakarta.inject.Inject;
 import lombok.Getter;
+import me.whereareiam.attache.platform.velocity.VelocityLibraryManager;
+import me.whereareiam.attache.type.VerbosityMode;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
@@ -53,15 +55,17 @@ public class VelocitySocialismus {
 		VelocityLoggingHelper.setLogger(logger);
 		Constants.SERVER_VERSION = Version.getLatest();
 
-		VelocityDependencyResolver dependencyResolver = new VelocityDependencyResolver(proxyServer, pluginContainer, logger, dataPath);
-		dependencyResolver.loadLibraries();
-		dependencyResolver.resolveDependencies();
+		VelocityLibraryManager libraryManager = new VelocityLibraryManager(proxyServer, pluginContainer, logger, dataPath, ".libraries");
+		libraryManager.setVerbosityMode(VerbosityMode.SUMMARY);
+		libraryManager.addMavenCentral();
+		libraryManager.addRepository("https://maven.whereareiam.me/release");
+		libraryManager.addRepository("https://maven.whereareiam.me/development");
+		libraryManager.loadDescriptors();
 
 		new VelocityInjector(
 				this,
 				pluginContainer,
 				proxyServer,
-				dependencyResolver,
 				dataPath
 		);
 

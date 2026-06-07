@@ -1,5 +1,5 @@
 plugins {
-    id("socialismus.integration")
+    id("integration")
 }
 
 dependencies {

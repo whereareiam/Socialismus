@@ -90,7 +90,7 @@ public class ModuleManager implements ModuleService {
 					}
 
 					try (InputStream stream = jarFile.getInputStream(entry)) {
-						Module module = Config.load(stream, Module.class);
+						Module module = Config.read(stream, Module.class);
 						if (!validateModule(module, file)) {
 							return;
 						}

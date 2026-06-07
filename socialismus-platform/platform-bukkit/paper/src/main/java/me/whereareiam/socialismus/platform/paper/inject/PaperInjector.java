@@ -8,16 +8,15 @@ import me.whereareiam.socialismus.command.CommandConfiguration;
 import me.whereareiam.socialismus.common.CommonConfiguration;
 import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.platform.PlatformCommonConfiguration;
-import me.whereareiam.socialismus.platform.paper.PaperDependencyResolver;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 
 @Getter
 public class PaperInjector {
-	public PaperInjector(Plugin plugin, PaperDependencyResolver dependencyResolver, Path dataPath) {
+	public PaperInjector(Plugin plugin, Path dataPath) {
 		Injector injector = Guice.createInjector(
-				new PaperInjectorConfiguration(plugin, dependencyResolver),
+				new PaperInjectorConfiguration(plugin),
 				new PlatformCommonConfiguration(plugin),
 				new CommonConfiguration(dataPath),
 				new CommandConfiguration(),

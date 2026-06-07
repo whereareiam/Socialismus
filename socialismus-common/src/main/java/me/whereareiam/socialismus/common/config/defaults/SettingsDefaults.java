@@ -1,7 +1,7 @@
-package me.whereareiam.socialismus.common.config.template;
+package me.whereareiam.socialismus.common.config.defaults;
 
 import com.google.inject.Singleton;
-import me.whereareiam.configura.TemplateProvider;
+import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.Event;
 import me.whereareiam.socialismus.model.config.Settings;
@@ -14,10 +14,9 @@ import java.util.Map;
 import java.util.UUID;
 
 @Singleton
-public class SettingsTemplate implements TemplateProvider<Settings> {
+public class SettingsDefaults implements DefaultsProvider<Settings> {
 	@Override
 	public Settings supply(Settings settings) {
-		// Default values
 		settings.setLevel(2);
 
 		Settings.Serialization serialization = new Settings.Serialization();
@@ -30,21 +29,18 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 		synchronization.setServer(UUID.randomUUID().toString());
 		synchronization.setUseRealServerName(false);
 		synchronization.setCrossPlayerSync(true);
-
 		settings.setSynchronization(synchronization);
 
 		Settings.Commands commands = new Settings.Commands();
 		commands.setUseAsyncCompletions(true);
 		commands.setUseBrigadier(false);
-
 		settings.setCommands(commands);
 
-	Settings.Miscellaneous misc = new Settings.Miscellaneous();
-	misc.setDisableJoinNotification(true);
-	misc.setDisableQuitNotification(true);
-	misc.setVanillaSending(true);
-
-	settings.setMisc(misc);
+		Settings.Miscellaneous misc = new Settings.Miscellaneous();
+		misc.setDisableJoinNotification(true);
+		misc.setDisableQuitNotification(true);
+		misc.setVanillaSending(true);
+		settings.setMisc(misc);
 
 		Settings.Updater updater = new Settings.Updater();
 		updater.setCheckForUpdates(true);
@@ -52,7 +48,6 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 		updater.setWarnAboutLocalBuilds(true);
 		updater.setWarnAboutDevBuilds(true);
 		updater.setInterval(1);
-
 		settings.setUpdater(updater);
 
 		Settings.Listeners listeners = new Settings.Listeners();
@@ -65,26 +60,22 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 			listeners.setEvents(getPrioritiesForBukkit());
 
 		settings.setListeners(listeners);
-
 		return settings;
 	}
 
 	private Map<String, Event> getPrioritiesForBukkit() {
 		Map<String, Event> priorities = new HashMap<>();
-
 		Event event = Event.builder().register(true).priority(EventPriority.LOWEST).build();
 
 		priorities.put("org.bukkit.event.player.PlayerJoinEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerQuitEvent", event);
 		priorities.put("org.bukkit.event.player.PlayerChangedWorldEvent", event);
 		priorities.put("org.bukkit.event.player.AsyncPlayerChatEvent", event);
-
 		return priorities;
 	}
 
 	private Map<String, Event> getPrioritiesForPaper() {
 		Map<String, Event> priorities = new HashMap<>();
-
 		Event event = Event.builder().register(true).priority(EventPriority.LOWEST).build();
 
 		priorities.put("org.bukkit.event.player.PlayerJoinEvent", event);
@@ -92,24 +83,20 @@ public class SettingsTemplate implements TemplateProvider<Settings> {
 		priorities.put("org.bukkit.event.player.PlayerChangedWorldEvent", event);
 		priorities.put("io.papermc.paper.event.player.AsyncChatEvent", event);
 
-		if (Constants.SERVER_VERSION.isAtLeast(Version.V_1_21_6)) {
+		if (Constants.SERVER_VERSION.isAtLeast(Version.V_1_21_6))
 			priorities.put("io.papermc.paper.event.connection.configuration.PlayerConnectionInitialConfigureEvent", event);
-			return priorities;
-		}
 
 		return priorities;
 	}
 
 	private Map<String, Event> getPrioritiesForProxy() {
 		Map<String, Event> priorities = new HashMap<>();
-
 		Event event = Event.builder().register(true).priority(EventPriority.LOWEST).build();
 
 		priorities.put("com.velocitypowered.api.event.player.ServerPostConnectEvent", event);
 		priorities.put("com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent", event);
 		priorities.put("com.velocitypowered.api.event.player.PlayerChatEvent", event);
 		priorities.put("com.velocitypowered.api.event.connection.DisconnectEvent", event);
-
 		return priorities;
 	}
 }

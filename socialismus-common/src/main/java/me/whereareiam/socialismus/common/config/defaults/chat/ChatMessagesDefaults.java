@@ -1,14 +1,13 @@
-package me.whereareiam.socialismus.common.config.template.chat;
+package me.whereareiam.socialismus.common.config.defaults.chat;
 
 import com.google.inject.Singleton;
-import me.whereareiam.configura.TemplateProvider;
+import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 
 @Singleton
-public class ChatMessagesTemplate implements TemplateProvider<ChatMessages> {
+public class ChatMessagesDefaults implements DefaultsProvider<ChatMessages> {
 	@Override
 	public ChatMessages supply(ChatMessages chatMessages) {
-		// Default values
 		chatMessages.setNoPlayers("{prefix}<white>Your message was not sent because there are no players online.");
 		chatMessages.setNoChatMatch("{prefix}<white>No chat matching criteria found.");
 		chatMessages.setNoFormatMatch("{prefix}<white>No format matching criteria found.");
@@ -18,7 +17,6 @@ public class ChatMessagesTemplate implements TemplateProvider<ChatMessages> {
 
 		ChatMessages.ClearFormat clearFormat = new ChatMessages.ClearFormat();
 		clearFormat.setFormat("<gray>[<red>X</red>]</gray> ");
-
 		chatMessages.setClearFormat(clearFormat);
 
 		return chatMessages;

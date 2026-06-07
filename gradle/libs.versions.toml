@@ -3,6 +3,8 @@
 # plugins
 shadow = "9.3.0"
 buildconfig = "5.7.1"
+spawner = "dev-56440cd"
+toolkit = "dev-8c0271b"
 
 # compile time processing
 lombok = "1.18.42"
@@ -10,10 +12,10 @@ lombok = "1.18.42"
 # general
 guice = "7.0.0"
 annotations = "26.0.1"
-attache = "dev-0ac3086"
-configura = "dev-edb606f"
-keystone = "dev-b1e6a0e"
-commandant = "0.0.1"
+attache = "dev-58f53b4"
+configura = "dev-8cde90a"
+keystone = "dev-90d39d2"
+commandant = "dev-866e0f7"
 
 # testing
 junit = "6.0.1"
@@ -24,17 +26,17 @@ ormlite = "6.1"
 jedis = "7.0.0"
 
 # platform api versions
-velocity = "3.4.0-SNAPSHOT"
-spigot = "1.21.11-R0.1-SNAPSHOT"
-paper = "1.21.11-R0.1-SNAPSHOT"
+velocity = "3.5.0-SNAPSHOT"
+spigot = "26.1.2-R0.1-SNAPSHOT"
+paper = "26.1.2.build.+"
 
 # platform integrations
 placeholderAPI = "2.11.6"
 papiProxyBridge = "1.8.4"
-bStats = "3.1.0"
+bStats = "3.2.1"
 
 # adventure
-adventure = "4.24.0"
+adventure = "4.25.0"
 adventure-minimessage = "4.25.0"
 adventure-legacy = "4.24.0"
 adventure-plain = "4.25.0"
@@ -56,15 +58,24 @@ brigadier = "1.0.500"
 # compile time processing
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
 shadow-gradle-plugin = { group = "com.gradleup.shadow", name = "shadow-gradle-plugin", version.ref = "shadow" }
+toolkit-publish-maven = { group = "me.whereareiam.toolkit", name = "publish-maven", version.ref = "toolkit" }
 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
 configura = { group = "me.whereareiam", name = "configura", version.ref = "configura" }
+configura-feature-extension = { group = "me.whereareiam.configura.feature", name = "extension", version.ref = "configura" }
+configura-feature-extension-api = { group = "me.whereareiam.configura.feature", name = "extension-api", version.ref = "configura" }
+configura-feature-postprocess = { group = "me.whereareiam.configura.feature", name = "postprocess", version.ref = "configura" }
+configura-feature-postprocess-api = { group = "me.whereareiam.configura.feature", name = "postprocess-api", version.ref = "configura" }
+configura-feature-polymorphic = { group = "me.whereareiam.configura.feature", name = "polymorphic", version.ref = "configura" }
+configura-feature-polymorphic-api = { group = "me.whereareiam.configura.feature", name = "polymorphic-api", version.ref = "configura" }
 keystone = { group = "me.whereareiam", name = "keystone", version.ref = "keystone" }
 commandant = { group = "me.whereareiam", name = "commandant", version.ref = "commandant" }
+commandant-common = { group = "me.whereareiam", name = "commandant-common", version.ref = "commandant" }
 
 # attache
+attache-standalone = { group = "me.whereareiam", name = "attache-standalone", version.ref = "attache" }
 attache-bukkit = { group = "me.whereareiam", name = "attache-bukkit", version.ref = "attache" }
 attache-paper = { group = "me.whereareiam", name = "attache-paper", version.ref = "attache" }
 attache-velocity = { group = "me.whereareiam", name = "attache-velocity", version.ref = "attache" }
@@ -127,3 +138,5 @@ bStats-velocity = ["bStats", "bStats-velocity"]
 
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+attache = { id = "me.whereareiam.attache", version.ref = "attache" }
+spawner = { id = "me.whereareiam.spawner", version.ref = "spawner" }

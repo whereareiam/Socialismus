@@ -1,7 +1,5 @@
-import org.gradle.api.artifacts.VersionCatalogsExtension
-
 plugins {
-    id("socialismus.platform-base")
+    id("runtime")
 }
 
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")

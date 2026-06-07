@@ -1,10 +1,12 @@
 package me.whereareiam.socialismus.platform.bukkit;
 
+import me.whereareiam.attache.platform.bukkit.BukkitLibraryManager;
+import me.whereareiam.attache.type.VerbosityMode;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
+import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.platform.BukkitLoggingHelper;
 import me.whereareiam.socialismus.platform.bukkit.inject.BukkitInjector;
 import me.whereareiam.socialismus.type.PluginType;
@@ -32,11 +34,14 @@ public class BukkitSocialismus extends JavaPlugin {
 			return;
 		}
 
-		BukkitDependencyResolver dependencyResolver = new BukkitDependencyResolver(this);
-		dependencyResolver.loadLibraries();
-		dependencyResolver.resolveDependencies();
+		BukkitLibraryManager libraryManager = new BukkitLibraryManager(this, ".libraries");
+		libraryManager.setVerbosityMode(VerbosityMode.SUMMARY);
+		libraryManager.addMavenCentral();
+		libraryManager.addRepository("https://maven.whereareiam.me/release");
+		libraryManager.addRepository("https://maven.whereareiam.me/development");
+		libraryManager.loadDescriptors();
 
-		new BukkitInjector(this, dependencyResolver, dataPath);
+		new BukkitInjector(this, dataPath);
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
 	}

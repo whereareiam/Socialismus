@@ -8,16 +8,15 @@ import me.whereareiam.socialismus.command.CommandConfiguration;
 import me.whereareiam.socialismus.common.CommonConfiguration;
 import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.platform.PlatformCommonConfiguration;
-import me.whereareiam.socialismus.platform.bukkit.BukkitDependencyResolver;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 
 @Getter
 public class BukkitInjector {
-	public BukkitInjector(Plugin plugin, BukkitDependencyResolver dependencyResolver, Path dataPath) {
+	public BukkitInjector(Plugin plugin, Path dataPath) {
 		Injector injector = Guice.createInjector(
-				new BukkitInjectorConfiguration(plugin, dependencyResolver),
+				new BukkitInjectorConfiguration(plugin),
 				new PlatformCommonConfiguration(plugin),
 				new CommonConfiguration(dataPath),
 				new CommandConfiguration(),

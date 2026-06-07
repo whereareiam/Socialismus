@@ -14,9 +14,9 @@ import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
  *   <li>An expected value that serves as the comparison target</li>
  * </ul>
  *
- * <p><b>Note:</b> Polymorphic type registration is handled programmatically via
- * {@code Config.registerPolymorphic(Requirement.class)} to allow modules to register
- * their own requirement subtypes without modifying this class.</p>
+ * <p><b>Note:</b> Polymorphic type registration is wired at bootstrap time through
+ * Configura's polymorphic feature so modules can still contribute their own requirement
+ * subtypes without modifying this class.</p>
  */
 @Getter
 @Setter

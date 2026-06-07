@@ -1,9 +1,9 @@
 package me.whereareiam.socialismus.model.chat;
 
-import com.google.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.whereareiam.configura.ConfigDocument;
 
 /**
  * Configuration model for chat-related messages and formats.
@@ -16,8 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Singleton
-public class ChatMessages {
+public class ChatMessages extends ConfigDocument {
     /**
      * Message shown when no players are online.
      */

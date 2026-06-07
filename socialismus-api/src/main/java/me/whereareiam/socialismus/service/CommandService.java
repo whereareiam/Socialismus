@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.service;
 
-import me.whereareiam.commandant.model.CommandDefinition;
+import me.whereareiam.socialismus.model.CommandDefinition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

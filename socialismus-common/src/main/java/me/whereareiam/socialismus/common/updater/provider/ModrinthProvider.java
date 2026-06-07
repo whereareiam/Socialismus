@@ -44,7 +44,7 @@ public class ModrinthProvider implements UpdateProvider {
 	}
 
 	List<ModrinthVersion> decodeVersions(InputStream in) throws IOException {
-		ModrinthVersion[] versions = JSON_READER.decode(in, ModrinthVersion[].class);
+		ModrinthVersion[] versions = JSON_READER.read(in, ModrinthVersion[].class);
 		return versions == null ? List.of() : Arrays.asList(versions);
 	}
 
