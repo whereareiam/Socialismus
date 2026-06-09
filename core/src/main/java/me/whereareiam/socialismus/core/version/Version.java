@@ -2,6 +2,8 @@ package me.whereareiam.socialismus.core.version;
 
 import org.bukkit.Bukkit;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +22,15 @@ public enum Version {
 		V1_21_3("1.21.3", 1),
 		V1_21_4("1.21.4", 1),
 		V1_21_5("1.21.5", 1),
+		V1_21_6("1.21.6", 1),
+		V1_21_7("1.21.7", 1),
+		V1_21_8("1.21.8", 1),
+		V1_21_9("1.21.9", 1),
+		V1_21_10("1.21.10", 1),
+		V1_21_11("1.21.11", 1),
+		V26_1("26.1", 1),
+		V26_1_1("26.1.1", 1),
+		V26_1_2("26.1.2", 1),
 		FUTURE("future", 1);
 
 		private static final Map<String, Version> VERSION_MAP = new HashMap<>();
@@ -51,13 +62,47 @@ public enum Version {
 
 		private static boolean isFutureVersion(String version) {
 				try {
-						if (version.startsWith("1.")) {
-								String[] parts = version.split("\\.");
-								int minorVersion = Integer.parseInt(parts[1]);
-								return minorVersion > 21 || (minorVersion == 21 && parts.length > 2);
+						int[] currentVersion = versionComponents(version);
+						Version latestSupportedVersion = getLatestSupportedVersionForTrack(currentVersion[0]);
+
+						if (latestSupportedVersion == null) {
+								return false;
 						}
+
+						return compareComponents(currentVersion, versionComponents(latestSupportedVersion.versionString)) > 0;
 				} catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
 				}
 				return false;
+		}
+
+		private static Version getLatestSupportedVersionForTrack(int majorVersion) {
+				return Arrays.stream(values())
+						.filter(version -> version != FUTURE)
+						.filter(version -> isSameVersionTrack(version, majorVersion))
+						.max(Comparator.comparing(version -> versionComponents(version.versionString), Version::compareComponents))
+						.orElse(null);
+		}
+
+		private static boolean isSameVersionTrack(Version version, int majorVersion) {
+				int supportedMajorVersion = versionComponents(version.versionString)[0];
+				return majorVersion == 1 ? supportedMajorVersion == 1 : supportedMajorVersion > 1;
+		}
+
+		private static int[] versionComponents(String version) {
+				return Arrays.stream(version.split("\\."))
+						.mapToInt(Integer::parseInt)
+						.toArray();
+		}
+
+		private static int compareComponents(int[] left, int[] right) {
+				int minLength = Math.min(left.length, right.length);
+				for (int i = 0; i < minLength; i++) {
+						int comparison = Integer.compare(left[i], right[i]);
+						if (comparison != 0) {
+								return comparison;
+						}
+				}
+
+				return Integer.compare(left.length, right.length);
 		}
 }
