@@ -73,41 +73,67 @@ public enum Version {
 	public static Version of(String version) {
 		if (version == null || version.isEmpty()) return Version.UNSUPPORTED;
 
-		String normalizedVersion = version.split("[\\s-]")[0];
+		// Extract the leading numeric version components, ignoring revision/build
+		// suffixes such as "-R0.1-SNAPSHOT" (Spigot/Bukkit) or ".build.63-stable"
+		// (Paper's 26.1+ versioning scheme). For example,
+		// "26.1.2.build.63-stable" -> [26, 1, 2].
+		int[] currentParts = leadingNumericComponents(version.split("[\\s-]")[0]);
+		if (currentParts.length == 0) return Version.UNSUPPORTED;
+
+		StringBuilder name = new StringBuilder("V");
+		for (int part : currentParts) {
+			name.append("_").append(part);
+		}
 
 		try {
-			return Version.valueOf("V_" + normalizedVersion.replace(".", "_"));
+			return Version.valueOf(name.toString());
 		} catch (IllegalArgumentException e) {
 			Version latest = getLatest();
 			if (latest == UNSUPPORTED) {
 				return UNSUPPORTED;
 			}
 
-			String[] latestVersionParts = latest.name().substring(2).split("_");
-			String[] currentVersionParts = normalizedVersion.split("\\.");
+			int[] latestParts = versionComponents(latest);
 
-			int minLength = Math.min(latestVersionParts.length, currentVersionParts.length);
+			int minLength = Math.min(latestParts.length, currentParts.length);
 			for (int i = 0; i < minLength; i++) {
-				try {
-					int latestPart = Integer.parseInt(latestVersionParts[i]);
-					int currentPart = Integer.parseInt(currentVersionParts[i]);
-
-					if (currentPart > latestPart) {
-						return FUTURE;
-					} else if (currentPart < latestPart) {
-						return UNSUPPORTED;
-					}
-				} catch (NumberFormatException ex) {
+				if (currentParts[i] > latestParts[i]) {
+					return FUTURE;
+				} else if (currentParts[i] < latestParts[i]) {
 					return UNSUPPORTED;
 				}
 			}
 
-			if (currentVersionParts.length > latestVersionParts.length) {
+			if (currentParts.length > latestParts.length) {
 				return FUTURE;
 			}
 
 			return UNSUPPORTED;
 		}
+	}
+
+	/**
+	 * Extracts the leading run of numeric, dot-separated components from a raw
+	 * version token, stopping at the first non-numeric segment. This strips
+	 * build/revision suffixes (e.g. Paper's "26.1.2.build.63") so the underlying
+	 * Minecraft version can be matched.
+	 *
+	 * @param version the raw version token (already trimmed of "-"/whitespace tails)
+	 * @return the leading numeric components, or an empty array if none are present
+	 */
+	private static int[] leadingNumericComponents(String version) {
+		String[] parts = version.split("\\.");
+		int count = 0;
+		while (count < parts.length && parts[count].matches("\\d+")) {
+			count++;
+		}
+
+		int[] result = new int[count];
+		for (int i = 0; i < count; i++) {
+			result[i] = Integer.parseInt(parts[i]);
+		}
+
+		return result;
 	}
 
 	/**
