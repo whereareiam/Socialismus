@@ -1,8 +1,9 @@
 package me.whereareiam.socialismus.command.executor;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.commandant.annotation.Definition;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.model.SerializerContent;
@@ -17,21 +18,12 @@ import org.incendo.cloud.annotations.Command;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class DebugCommand {
 	private final Provider<Messages> messages;
 	private final ModuleService moduleService;
-
-	@Inject
-	public DebugCommand(
-			@NotNull Provider<Messages> messages,
-			@NotNull ModuleService moduleService
-	) {
-		this.messages = messages;
-		this.moduleService = moduleService;
-	}
 
 	@Definition("debug")
 	@Command("socialismus debug")
@@ -39,24 +31,26 @@ public class DebugCommand {
 		String message = String.join("\n", messages.get().getCommands().getDebugCommand().getFormat());
 		
 		String moduleFormat = messages.get().getCommands().getDebugCommand().getModuleFormat();
-		String modules = moduleService.getModules().stream()
-				.map(module -> moduleFormat
-						.replace("{name}", module.getName())
-						.replace("{version}", module.getVersion())
-						.replace("{authors}", String.join(", ", module.getAuthors()))
-				).collect(Collectors.joining("\n"));
+		String modules = Serializer.template(moduleFormat)
+				.stream(moduleService.getModules().stream())
+				.placeholders(module -> Map.of(
+						"name", module.getName(),
+						"version", module.getVersion(),
+						"authors", String.join(", ", module.getAuthors())
+				))
+				.render();
 
 		Component component = Serializer.serialize(SerializerContent.builder()
 				.receiver(actor)
 				.message(message)
 				.placeholders(Map.of(
-						"{serverVersion}", Constants.SERVER_VERSION.name(),
-						"{pluginVersion}", Constants.VERSION,
-						"{serverPlatform}", PlatformType.getType().name(),
-						"{pluginPlatform}", PluginType.getType().name(),
-						"{javaVersion}", System.getProperty("java.version"),
-						"{os}", System.getProperty("os.name"),
-						"{modules}", modules
+						"serverVersion", Constants.SERVER_VERSION.name(),
+						"pluginVersion", Constants.VERSION,
+						"serverPlatform", PlatformType.getType().name(),
+						"pluginPlatform", PluginType.getType().name(),
+						"javaVersion", System.getProperty("java.version"),
+						"os", System.getProperty("os.name"),
+						"modules", modules
 				))
 				.build());
 

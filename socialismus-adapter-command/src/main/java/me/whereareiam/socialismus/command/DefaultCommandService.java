@@ -14,6 +14,7 @@ import me.whereareiam.commandant.exception.format.ExceptionFormatting;
 import me.whereareiam.commandant.model.message.ExceptionMessages;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.serializer.SerializerEngine;
+import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.command.definition.CommandDefinitionAdapter;
 import me.whereareiam.socialismus.command.executor.*;
 import me.whereareiam.socialismus.command.suggestion.CrossPlayerProvider;
@@ -176,7 +177,7 @@ public class DefaultCommandService implements CommandService {
 
 	private boolean isSubcommand(@NotNull CommandDefinition definition) {
 		String usage = definition.getUsage();
-		return usage != null && usage.contains("{command}");
+		return usage != null && usage.contains(Serializer.placeholder("command"));
 	}
 
 	private @NotNull List<String> resolveRootAliases(@Nullable CommandDefinition definition) {

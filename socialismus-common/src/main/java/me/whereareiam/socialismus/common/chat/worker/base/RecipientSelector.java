@@ -5,7 +5,6 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Serializer;
-import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.event.chat.recipient.RecipientsSelectedEvent;
 import me.whereareiam.socialismus.logging.Logger;
@@ -15,6 +14,7 @@ import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -137,7 +137,7 @@ public class RecipientSelector {
 				SerializerContent.builder()
 						.receiver(sender)
 						.message(messages.getNoNearbyPlayers())
-						.placeholder("{radius}", String.valueOf(radius))
+						.placeholder("radius", String.valueOf(radius))
 						.build()
 		));
 	}

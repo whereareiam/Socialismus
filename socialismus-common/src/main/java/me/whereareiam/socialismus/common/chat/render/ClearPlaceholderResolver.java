@@ -7,13 +7,15 @@ import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.model.chat.render.ChatRenderContext;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.chat.render.ChatRenderContext;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+
+import java.util.Map;
 
 @Singleton
 public class ClearPlaceholderResolver implements ChatPlaceholderResolver {
@@ -80,9 +82,10 @@ public class ClearPlaceholderResolver implements ChatPlaceholderResolver {
 		FormattedChatMessage message = context.getMessage();
 		int messageId = message != null ? message.getId() : 0;
 
-		String clickCommand = "/" + usage
-				.replace("{command}", command)
-				.replace("{alias}", alias)
+		String clickCommand = "/" + Serializer.renderTemplate(usage, Map.of(
+				"command", command,
+				"alias", alias
+		))
 				.replace("[context]", String.valueOf(messageId));
 
 		SocialismusPlayer serializerPlayer = sender == null ? recipient : sender;

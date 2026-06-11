@@ -4,21 +4,17 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.model.chat.render.ChatRenderContext;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import me.whereareiam.socialismus.service.chat.render.ChatMessageTransformer;
 import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
+import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
@@ -119,7 +115,7 @@ public class DefaultChatRenderService implements ChatRenderService {
 		if (replacement == null) return base;
 
 		return base.replaceText(TextReplacementConfig.builder()
-				.matchLiteral("{" + key + "}")
+				.matchLiteral(Serializer.placeholder(key))
 				.replacement(replacement)
 				.build());
 	}

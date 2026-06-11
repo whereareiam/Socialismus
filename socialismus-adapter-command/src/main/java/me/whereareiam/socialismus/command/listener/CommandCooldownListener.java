@@ -31,7 +31,7 @@ public class CommandCooldownListener implements CooldownActiveListener<Actor> {
 		actor.sendMessage(Serializer.serialize(SerializerContent.builder()
 				.receiver(actor)
 				.message(messages.get().getCommands().getCooldown())
-				.placeholder("{time}", timeFormatted)
+				.placeholder("time", timeFormatted)
 				.build()));
 	}
 }

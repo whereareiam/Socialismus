@@ -14,8 +14,8 @@ guice = "7.0.0"
 annotations = "26.0.1"
 attache = "dev-58f53b4"
 configura = "dev-8cde90a"
-keystone = "dev-90d39d2"
-commandant = "dev-866e0f7"
+keystone = "dev-fcd11fd"
+commandant = "dev-42806f6"
 
 # testing
 junit = "6.0.1"

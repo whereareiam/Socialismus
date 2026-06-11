@@ -1,16 +1,13 @@
 # IDE files
 *.iml
 .idea/
+.run/Spawner_*.run.xml
 
 # Temporary files
 *build/
 *bin/
-
-# Gradle files
-.gradle
-
-# Local dev scenarios
 dev/server/
 
-# Generated IntelliJ run configurations
-.run/Spawner_*.run.xml
+# General
+.gradle
+.kotlin

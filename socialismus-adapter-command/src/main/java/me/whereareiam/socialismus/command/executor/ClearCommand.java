@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.commandant.annotation.Definition;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.model.SerializerContent;
-import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import net.kyori.adventure.text.Component;
@@ -107,7 +107,7 @@ public class ClearCommand {
 			actor.sendMessage(Serializer.serialize(SerializerContent.builder()
 					.receiver(actor)
 					.message(successMessage)
-					.placeholder("{amount}", String.valueOf(count))
+					.placeholder("amount", String.valueOf(count))
 					.build())
 			);
 		} else {
@@ -126,7 +126,7 @@ public class ClearCommand {
 		actor.sendMessage(Serializer.serialize(SerializerContent.builder()
 				.receiver(actor)
 				.message(failureMessage)
-				.placeholder("{id}", String.valueOf(id))
+				.placeholder("id", String.valueOf(id))
 				.build())
 		);
 	}
