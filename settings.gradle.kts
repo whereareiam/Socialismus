@@ -45,8 +45,14 @@ project(":platform-bukkit").projectDir = file("socialismus-platform/platform-buk
 include(":socialismus-adapter-command")
 project(":socialismus-adapter-command").projectDir = file("socialismus-adapter-command")
 
-include(":socialismus-adapter-module")
-project(":socialismus-adapter-module").projectDir = file("socialismus-adapter-module")
+include(":socialismus-module")
+project(":socialismus-module").projectDir = file("socialismus-module")
+
+include(":socialismus-module:module-api")
+project(":socialismus-module:module-api").projectDir = file("socialismus-module/module-api")
+
+include(":socialismus-module:module")
+project(":socialismus-module:module").projectDir = file("socialismus-module/module")
 
 include(":integration-bstats")
 project(":integration-bstats").projectDir = file("socialismus-integration/integration-bstats")

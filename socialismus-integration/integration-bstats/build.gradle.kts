@@ -3,5 +3,6 @@ plugins {
 }
 
 dependencies {
+    compileOnly(project(":socialismus-module:module-api"))
     compileOnly(libs.bundles.bStats)
 }

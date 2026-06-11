@@ -6,7 +6,7 @@ val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 dependencies {
     add("implementation", project(":socialismus-adapter-command"))
-    add("implementation", project(":socialismus-adapter-module"))
+    add("implementation", project(":socialismus-module:module"))
     add("implementation", project(":socialismus-api"))
     add("implementation", project(":socialismus-common"))
     add("implementation", project(":integration-bstats"))

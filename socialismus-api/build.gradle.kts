@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.buildconfig)
 }
 
+group = "me.whereareiam.socialismus"
+
 dependencies {
     compileOnly(libs.ormlite)
     compileOnlyApi(libs.guice)
@@ -30,7 +32,7 @@ buildConfig {
 }
 
 toolkitPublish {
-    artifactId.set("Socialismus")
+    artifactId.set("api")
 
     pom {
         description.set("Public API for Socialismus - Minecraft communication management plugin")

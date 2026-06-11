@@ -68,6 +68,6 @@ public class ChatsProvider extends DefaultConfigProvider<List<Chat>> {
 
 	@SuppressWarnings("unchecked")
 	private static Class<? extends List<Chat>> listType() {
-		return (Class<? extends List<Chat>>) List.class;
+		return (Class<? extends List<Chat>>) (Class<?>) List.class;
 	}
 }

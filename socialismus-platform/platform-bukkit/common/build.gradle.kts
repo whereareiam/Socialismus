@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    compileOnly(project(":socialismus-module:module-api"))
     implementation(projects.socialismusApi)
     implementation(projects.integrationBstats)
 

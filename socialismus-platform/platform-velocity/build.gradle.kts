@@ -11,6 +11,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 dependencies {
+    compileOnly(project(":socialismus-module:module-api"))
     implementation(projects.integrationPapiproxybridge)
 
     compileOnly(libs.bundles.velocity)

@@ -1,6 +1,6 @@
-name: @projectName@
+name: ${projectName}
 main: me.whereareiam.socialismus.platform.bukkit.BukkitSocialismus
-version: '@projectVersion@'
+version: '${projectVersion}'
 api-version: '1.16'
 author: whereareiam
 softdepend: [

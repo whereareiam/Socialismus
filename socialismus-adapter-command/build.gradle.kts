@@ -4,6 +4,8 @@ plugins {
 }
 
 dependencies {
+    compileOnly(project(":socialismus-module:module-api"))
+
     attache(libs.cloud.core)
     attache(libs.cloud.annotations)
     attache(libs.cloud.cooldowns)

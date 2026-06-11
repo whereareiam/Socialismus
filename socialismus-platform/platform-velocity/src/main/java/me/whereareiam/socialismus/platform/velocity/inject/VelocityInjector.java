@@ -5,10 +5,10 @@ import com.google.inject.Injector;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
-import me.whereareiam.socialismus.adapter.module.ModuleConfiguration;
 import me.whereareiam.socialismus.command.CommandConfiguration;
 import me.whereareiam.socialismus.common.CommonConfiguration;
 import me.whereareiam.socialismus.common.CommonInjector;
+import me.whereareiam.socialismus.module.ModuleConfiguration;
 import me.whereareiam.socialismus.platform.velocity.VelocitySocialismus;
 
 import java.nio.file.Path;

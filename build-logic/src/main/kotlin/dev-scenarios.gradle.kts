@@ -12,7 +12,7 @@ val scenarios = spawner.readProperty("scenarios")
 
 scenarios.registerScenario("normal") { scenario ->
     scenario.addPaper("paper") { paper ->
-        paper.setInt("port", 25566)
+        paper.setInt("port", 25565)
         paper.setBoolean("onlineMode", false)
         paper.addInstall("plugins", paperShadowJar.flatMap { it.archiveFile })
         paper.addModrinth("lKEzGugV", "PlaceholderAPI.jar", "plugins")

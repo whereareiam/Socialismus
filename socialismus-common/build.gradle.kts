@@ -6,6 +6,8 @@ plugins {
 }
 
 dependencies {
+    compileOnly(project(":socialismus-module:module-api"))
+
     implementation(libs.attache.standalone)
 
     attache(libs.guice)
