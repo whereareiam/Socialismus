@@ -1,0 +1,17 @@
+changelog:
+  categories:
+    - title: "What’s new"
+      labels:
+        - feature
+
+    - title: "Enhancements"
+      labels:
+        - change
+
+    - title: "Fixes"
+      labels:
+        - bug
+
+  exclude:
+    labels:
+      - skip-changelog

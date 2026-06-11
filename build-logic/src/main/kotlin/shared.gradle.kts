@@ -37,6 +37,7 @@ dependencies {
     add("testImplementation", libs.findLibrary("commandant").get())
     add("testImplementation", libs.findLibrary("keystone").get())
     add("testImplementation", libs.findLibrary("guice").get())
+    add("testImplementation", libs.findBundle("adventure").get())
     add("testImplementation", libs.findBundle("testing").get())
     add("testRuntimeOnly", libs.findLibrary("junit-platform").get())
 
