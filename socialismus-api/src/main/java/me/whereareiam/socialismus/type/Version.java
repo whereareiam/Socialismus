@@ -1,29 +1,33 @@
 package me.whereareiam.socialismus.type;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Represents Minecraft server versions supported by the plugin.
- * Provides utility methods for version comparison and conversion.
+ * Provides utility methods for version parsing and comparison.
  */
 public enum Version {
 	/**
-	 * Represents an unknown or unrecognized version
+	 * Represents an unknown or unresolved server version.
 	 */
 	UNKNOWN,
+
 	/**
-	 * Represents an unsupported or invalid version
+	 * Represents an unsupported or invalid server version.
 	 */
 	UNSUPPORTED,
 
 	/**
-	 * Represents the future version, used for pre-release or upcoming versions
+	 * Represents a server version newer than the latest version known by the plugin.
 	 */
 	FUTURE,
 
 	/**
-	 * Minecraft versions from 1.16 to 26.1.2
+	 * Concrete Minecraft versions currently recognized by the plugin.
 	 */
 	V_1_16,
 	V_1_16_1,
@@ -64,161 +68,184 @@ public enum Version {
 	V_26_1_1,
 	V_26_1_2;
 
-	/**
-	 * Converts a version string to its corresponding Version enum.
-	 *
-	 * @param version the version string (e.g., "1.16.5")
-	 * @return the corresponding Version enum, or UNSUPPORTED if invalid
-	 */
-	public static Version of(String version) {
-		if (version == null || version.isEmpty()) return Version.UNSUPPORTED;
+	private static final Map<String, Version> CONCRETE_VERSIONS;
+	private static final @NotNull Version LATEST;
 
-		// Extract the leading numeric version components, ignoring revision/build
-		// suffixes such as "-R0.1-SNAPSHOT" (Spigot/Bukkit) or ".build.63-stable"
-		// (Paper's 26.1+ versioning scheme). For example,
-		// "26.1.2.build.63-stable" -> [26, 1, 2].
-		int[] currentParts = leadingNumericComponents(version.split("[\\s-]")[0]);
-		if (currentParts.length == 0) return Version.UNSUPPORTED;
+	private final int[] components;
+	private final String release;
 
-		StringBuilder name = new StringBuilder("V");
-		for (int part : currentParts) {
-			name.append("_").append(part);
+	Version() {
+		if (!name().startsWith("V_")) {
+			components = new int[0];
+			release = null;
+			return;
 		}
 
-		try {
-			return Version.valueOf(name.toString());
-		} catch (IllegalArgumentException e) {
-			Version latest = getLatest();
-			if (latest == UNSUPPORTED) {
-				return UNSUPPORTED;
+		release = name().substring(2).replace('_', '.');
+		components = parseReleaseComponents(release);
+	}
+
+	static {
+		Map<String, Version> concreteVersions = new LinkedHashMap<>();
+		Version latest = UNSUPPORTED;
+
+		for (Version version : values()) {
+			if (!version.isConcreteVersion()) continue;
+			concreteVersions.put(version.release, version);
+
+			if (latest == UNSUPPORTED || compareConcreteVersions(version, latest) > 0) {
+				latest = version;
 			}
-
-			int[] latestParts = versionComponents(latest);
-
-			int minLength = Math.min(latestParts.length, currentParts.length);
-			for (int i = 0; i < minLength; i++) {
-				if (currentParts[i] > latestParts[i]) {
-					return FUTURE;
-				} else if (currentParts[i] < latestParts[i]) {
-					return UNSUPPORTED;
-				}
-			}
-
-			if (currentParts.length > latestParts.length) {
-				return FUTURE;
-			}
-
-			return UNSUPPORTED;
 		}
+
+		CONCRETE_VERSIONS = Map.copyOf(concreteVersions);
+		LATEST = latest;
 	}
 
 	/**
-	 * Extracts the leading run of numeric, dot-separated components from a raw
-	 * version token, stopping at the first non-numeric segment. This strips
-	 * build/revision suffixes (e.g. Paper's "26.1.2.build.63") so the underlying
-	 * Minecraft version can be matched.
+	 * Resolves a raw server version string to a known {@link Version}.
 	 *
-	 * @param version the raw version token (already trimmed of "-"/whitespace tails)
-	 * @return the leading numeric components, or an empty array if none are present
+	 * <p>The parser accepts plain versions such as {@code 1.21.4} and server build
+	 * strings such as {@code 1.21.4-R0.1-SNAPSHOT} or
+	 * {@code 26.1.2.build.63-stable}. Unknown versions newer than the latest
+	 * supported release are classified as {@link #FUTURE}; older or malformed
+	 * values are classified as {@link #UNSUPPORTED}.</p>
+	 *
+	 * @param version the raw version string to parse
+	 * @return the resolved version classification
 	 */
-	private static int[] leadingNumericComponents(String version) {
-		String[] parts = version.split("\\.");
-		int count = 0;
-		while (count < parts.length && parts[count].matches("\\d+")) {
-			count++;
-		}
+	public static @NotNull Version of(@Nullable String version) {
+		if (version == null) return UNSUPPORTED;
 
-		int[] result = new int[count];
-		for (int i = 0; i < count; i++) {
-			result[i] = Integer.parseInt(parts[i]);
-		}
+		String normalized = version.trim();
+		if (normalized.isEmpty()) return UNSUPPORTED;
 
-		return result;
+		int[] parsedComponents = parseLeadingComponents(normalized);
+		if (parsedComponents.length == 0) return UNSUPPORTED;
+
+		Version resolved = CONCRETE_VERSIONS.get(joinComponents(parsedComponents));
+		if (resolved != null) return resolved;
+		if (!LATEST.isConcreteVersion()) return UNSUPPORTED;
+
+		return compareComponents(parsedComponents, LATEST.components) > 0
+				? FUTURE
+				: UNSUPPORTED;
 	}
 
 	/**
-	 * Gets the latest supported version.
+	 * Returns the latest supported concrete version.
 	 *
-	 * @return the latest Version enum, or UNSUPPORTED if no valid versions exist
+	 * @return the latest supported version, or {@link #UNSUPPORTED} if no concrete
+	 * versions are registered
 	 */
-	public static Version getLatest() {
-		return Arrays.stream(Version.values())
-				.filter(Version::isConcreteVersion)
-				.max(Comparator.comparing(Version::versionComponents, Version::compareComponents))
-				.orElse(UNSUPPORTED);
+	public static @NotNull Version getLatest() {
+		return LATEST;
 	}
 
 	/**
-	 * Checks if version1 is lower than version2.
+	 * Determines whether one version is lower than another.
 	 *
-	 * @param version1 the first version to compare
-	 * @param version2 the second version to compare
-	 * @return true if version1 is lower than version2
+	 * @param version1 the version to test
+	 * @param version2 the version to compare against
+	 * @return {@code true} when {@code version1} is lower than {@code version2}
 	 */
-	public static boolean isLowerThan(Version version1, Version version2) {
+	public static boolean isLowerThan(@NotNull Version version1, @NotNull Version version2) {
 		return compare(version1, version2) < 0;
 	}
 
 	/**
-	 * Checks if version1 is higher than version2.
+	 * Determines whether one version is higher than another.
 	 *
-	 * @param version1 the first version to compare
-	 * @param version2 the second version to compare
-	 * @return true if version1 is higher than version2
+	 * @param version1 the version to test
+	 * @param version2 the version to compare against
+	 * @return {@code true} when {@code version1} is higher than {@code version2}
 	 */
-	public static boolean isHigherThan(Version version1, Version version2) {
+	public static boolean isHigherThan(@NotNull Version version1, @NotNull Version version2) {
 		return compare(version1, version2) > 0;
 	}
 
 	/**
-	 * Checks if this version is at least the specified version.
+	 * Determines whether this version is at least the supplied version.
 	 *
-	 * @param version the version to compare against
-	 * @return true if this version is equal to or higher than the specified version
+	 * @param version the minimum version to compare against
+	 * @return {@code true} when this version is equal to or higher than {@code version}
 	 */
-	public boolean isAtLeast(Version version) {
-		return !isLowerThan(this, version);
+	public boolean isAtLeast(@NotNull Version version) {
+		return compare(this, version) >= 0;
 	}
 
-	private static int compare(Version version1, Version version2) {
-		if (version1 == version2) {
-			return 0;
-		}
-
-		if (version1 == FUTURE) {
-			return 1;
-		}
-
-		if (version2 == FUTURE) {
-			return -1;
-		}
-
-		boolean version1Concrete = isConcreteVersion(version1);
-		boolean version2Concrete = isConcreteVersion(version2);
-
-		if (version1Concrete && version2Concrete) {
-			return compareComponents(versionComponents(version1), versionComponents(version2));
-		}
-
-		if (version1Concrete) {
-			return 1;
-		}
-
-		if (version2Concrete) {
-			return -1;
-		}
-
-		return Integer.compare(version1.ordinal(), version2.ordinal());
+	private boolean isConcreteVersion() {
+		return release != null;
 	}
 
-	private static boolean isConcreteVersion(Version version) {
-		return version.name().startsWith("V_");
+	private static int[] parseLeadingComponents(String version) {
+		String[] parts = version.split("[\\s-]", 2)[0].split("\\.");
+		int count = 0;
+
+		while (count < parts.length && isNumeric(parts[count])) {
+			count++;
+		}
+
+		int[] parsed = new int[count];
+		for (int i = 0; i < count; i++) {
+			parsed[i] = Integer.parseInt(parts[i]);
+		}
+
+		return parsed;
 	}
 
-	private static int[] versionComponents(Version version) {
-		return Arrays.stream(version.name().substring(2).split("_"))
-				.mapToInt(Integer::parseInt)
-				.toArray();
+	private static boolean isNumeric(String value) {
+		if (value.isEmpty()) {
+			return false;
+		}
+
+		for (int i = 0; i < value.length(); i++) {
+			if (!Character.isDigit(value.charAt(i))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static String joinComponents(int[] components) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < components.length; i++) {
+			if (i > 0) {
+				builder.append('.');
+			}
+
+			builder.append(components[i]);
+		}
+
+		return builder.toString();
+	}
+
+	private static int[] parseReleaseComponents(String release) {
+		String[] parts = release.split("\\.");
+		int[] parsed = new int[parts.length];
+		for (int i = 0; i < parts.length; i++) {
+			parsed[i] = Integer.parseInt(parts[i]);
+		}
+
+		return parsed;
+	}
+
+	private static int compare(@NotNull Version left, @NotNull Version right) {
+		if (left == right) return 0;
+		if (left == FUTURE) return 1;
+		if (right == FUTURE) return -1;
+		if (left.isConcreteVersion()) return right.isConcreteVersion()
+				? compareConcreteVersions(left, right)
+				: 1;
+
+		if (right.isConcreteVersion()) return -1;
+
+		return Integer.compare(left.ordinal(), right.ordinal());
+	}
+
+	private static int compareConcreteVersions(@NotNull Version version1, @NotNull Version version2) {
+		return compareComponents(version1.components, version2.components);
 	}
 
 	private static int compareComponents(int[] left, int[] right) {

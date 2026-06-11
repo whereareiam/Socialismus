@@ -4,50 +4,74 @@ import me.whereareiam.socialismus.type.Version;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Version Tests")
 class VersionTest {
 	@Test
-	@DisplayName("Should keep the latest supported release when patch numbers reach double digits")
+	@DisplayName("Should keep the latest supported release in semantic order")
 	void getLatestUsesSemanticVersionOrdering() {
 		assertEquals(Version.V_26_1_2, Version.getLatest());
 	}
 
 	@Test
-	@DisplayName("Should resolve the new Minecraft version format to concrete enum values")
-	void ofResolvesNewMinecraftVersionFormat() {
-		assertEquals(Version.V_26_1, Version.of("26.1"));
-		assertEquals(Version.V_26_1_1, Version.of("26.1.1"));
-		assertEquals(Version.V_26_1_2, Version.of("26.1.2"));
+	@DisplayName("Should resolve supported plain version strings")
+	void ofResolvesSupportedPlainVersions() {
+		assertResolvesTo("1.16", Version.V_1_16);
+		assertResolvesTo("1.21.4", Version.V_1_21_4);
+		assertResolvesTo("26.1", Version.V_26_1);
+		assertResolvesTo("26.1.1", Version.V_26_1_1);
+		assertResolvesTo("26.1.2", Version.V_26_1_2);
 	}
 
 	@Test
-	@DisplayName("Should treat newer new-format Minecraft versions as future versions")
-	void ofRecognizesFutureMinecraftVersionFormats() {
-		assertEquals(Version.FUTURE, Version.of("26.1.3"));
-		assertEquals(Version.FUTURE, Version.of("26.2"));
+	@DisplayName("Should resolve supported version strings with server build suffixes")
+	void ofResolvesSupportedVersionsWithBuildSuffixes() {
+		assertResolvesTo("1.21.4-R0.1-SNAPSHOT", Version.V_1_21_4);
+		assertResolvesTo("26.1.build.1-stable", Version.V_26_1);
+		assertResolvesTo("26.1.2.build.63-stable", Version.V_26_1_2);
+		assertResolvesTo(" 26.1.2.build.63-stable ", Version.V_26_1_2);
 	}
 
 	@Test
-	@DisplayName("Should strip Bukkit/Paper build suffixes when resolving versions")
-	void ofStripsServerBuildSuffixes() {
-		// Paper 26.1+ getBukkitVersion(), e.g. "26.1.2.build.63-stable"
-		assertEquals(Version.V_26_1_2, Version.of("26.1.2.build.63-stable"));
-		// Legacy Spigot/Bukkit getBukkitVersion() format
-		assertEquals(Version.V_1_21_4, Version.of("1.21.4-R0.1-SNAPSHOT"));
-		assertEquals(Version.V_26_1, Version.of("26.1.build.1-stable"));
-		// A genuinely newer release with a build suffix is still in the future
-		assertEquals(Version.FUTURE, Version.of("26.1.3.build.1-stable"));
+	@DisplayName("Should classify malformed and older versions as unsupported")
+	void ofRejectsUnsupportedVersions() {
+		assertResolvesTo(null, Version.UNSUPPORTED);
+		assertResolvesTo("", Version.UNSUPPORTED);
+		assertResolvesTo("   ", Version.UNSUPPORTED);
+		assertResolvesTo("abc", Version.UNSUPPORTED);
+		assertResolvesTo("1.15.2", Version.UNSUPPORTED);
+		assertResolvesTo("26.0.9", Version.UNSUPPORTED);
 	}
 
 	@Test
-	@DisplayName("Future versions should compare higher than supported releases")
+	@DisplayName("Should classify unknown newer versions as future")
+	void ofRecognizesFutureVersions() {
+		assertResolvesTo("26.1.3", Version.FUTURE);
+		assertResolvesTo("26.1.3.build.1-stable", Version.FUTURE);
+		assertResolvesTo("26.1.2.1", Version.FUTURE);
+		assertResolvesTo("26.2", Version.FUTURE);
+		assertResolvesTo("27.0", Version.FUTURE);
+	}
+
+	@Test
+	@DisplayName("Future versions should compare above supported releases")
 	void futureVersionsCompareAboveSupportedVersions() {
 		assertTrue(Version.isHigherThan(Version.FUTURE, Version.V_1_20_6));
 		assertFalse(Version.isLowerThan(Version.FUTURE, Version.V_1_20_6));
 		assertTrue(Version.FUTURE.isAtLeast(Version.V_1_20_6));
+	}
+
+	@Test
+	@DisplayName("Concrete versions should compare using numeric components")
+	void concreteVersionsCompareUsingSemanticOrdering() {
+		assertTrue(Version.isHigherThan(Version.V_1_21_10, Version.V_1_21_9));
+		assertTrue(Version.isLowerThan(Version.V_26_1_1, Version.V_26_1_2));
+		assertTrue(Version.V_26_1_2.isAtLeast(Version.V_26_1_1));
+		assertFalse(Version.V_1_20_5.isAtLeast(Version.V_1_20_6));
+	}
+
+	private static void assertResolvesTo(String rawVersion, Version expected) {
+		assertEquals(expected, Version.of(rawVersion));
 	}
 }
