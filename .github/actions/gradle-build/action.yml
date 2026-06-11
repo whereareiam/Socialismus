@@ -1,0 +1,94 @@
+name: Gradle build
+description: Set up Java, run a Gradle build, upload test results, and publish a test report.
+
+inputs:
+  java-version:
+    description: Java version to install.
+    required: false
+    default: '21'
+  java-distribution:
+    description: Java distribution to install.
+    required: false
+    default: temurin
+  gradle-command:
+    description: Gradle command to execute.
+    required: true
+  ignore-test-failures:
+    description: Whether to append the ignore-test-failures property to the Gradle command.
+    required: false
+    default: 'false'
+  ignore-test-failures-property:
+    description: Gradle property used when ignore-test-failures is enabled.
+    required: false
+    default: -PignoreTestFailures=true
+  upload-test-results:
+    description: Whether to upload raw test result artifacts.
+    required: false
+    default: 'true'
+  test-results-artifact-name:
+    description: Artifact name for uploaded test results.
+    required: false
+    default: Test results
+  test-results-path:
+    description: Glob path for test result artifacts and reports.
+    required: false
+    default: |
+      **/build/test-results/test/*.xml
+      **/build/reports/tests/test/
+  use-test-reporter:
+    description: Whether to publish a GitHub test report.
+    required: false
+    default: 'true'
+  skip-test-reporter-on-forks:
+    description: Whether to skip the test reporter on forked pull requests.
+    required: false
+    default: 'false'
+  test-report-name:
+    description: Name shown in the GitHub test report.
+    required: false
+    default: Gradle test report
+  test-reporter-fail-on-error:
+    description: Whether the test reporter should fail if parsing or publishing results fails.
+    required: false
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+        check-latest: true
+
+    - name: Build
+      shell: bash
+      run: |
+        command='${{ inputs.gradle-command }}'
+
+        if [ '${{ inputs.ignore-test-failures }}' = 'true' ]; then
+          command="$command ${{ inputs.ignore-test-failures-property }}"
+        fi
+
+        echo "Running: $command"
+        eval "$command"
+
+    - name: Upload test results
+      if: ${{ always() && inputs.upload-test-results == 'true' }}
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ inputs.test-results-artifact-name }}
+        path: ${{ inputs.test-results-path }}
+
+    - name: Test report
+      if: ${{ !cancelled() && inputs.use-test-reporter == 'true' && (inputs.skip-test-reporter-on-forks != 'true' || github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+      uses: dorny/test-reporter@v3
+      with:
+        name: ${{ inputs.test-report-name }}
+        path: '**/build/test-results/test/*.xml'
+        reporter: java-junit
+        use-actions-summary: 'true'
+        list-suites: failed
+        list-tests: failed
+        fail-on-error: ${{ inputs.test-reporter-fail-on-error }}

@@ -4,10 +4,12 @@
 .run/Spawner_*.run.xml
 
 # Temporary files
-*build/
-*bin/
 dev/server/
+!.github/actions/gradle-build/
+!.github/actions/gradle-build/action.yml
+build/
+bin/
 
 # General
-.gradle
+.gradle/
 .kotlin
