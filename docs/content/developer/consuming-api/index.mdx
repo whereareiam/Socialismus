@@ -1,0 +1,360 @@
+---
+title: Consuming the API
+description: How to depend on Socialismus API artifacts from another plugin, addon, or module.
+---
+
+This page explains the supported ways to consume Socialismus from your own code.
+
+There are two main integration paths:
+
+- addon plugins that run alongside Socialismus and depend on the published base API
+- Socialismus modules that are loaded through Socialismus itself and depend on the module API
+
+## Coordinates
+
+Socialismus currently publishes two main API artifacts:
+
+- addon/plugin API
+  - group: `me.whereareiam.socialismus`
+  - artifact: `api`
+- module API
+  - group: `me.whereareiam.socialismus.module`
+  - artifact: `api`
+
+For both addon plugins and modules, `compileOnly` or the equivalent provided-scope dependency is usually the right choice.
+Socialismus provides these APIs at runtime, so you should not shade or relocate them into your own jar.
+
+## Repositories
+
+Socialismus publishes API artifacts to these Maven repositories:
+
+- release repository: [https://maven.whereareiam.me/release](https://maven.whereareiam.me/release)
+- development repository: [https://maven.whereareiam.me/development](https://maven.whereareiam.me/development)
+
+## Adding the dependency
+
+<ContentTabs items={["Addon Plugin", "Socialismus Module"]}>
+  <ContentTab value="Addon Plugin">
+    Use the base API artifact when your plugin runs next to Socialismus instead of being loaded by it.
+
+    `me.whereareiam.socialismus:api` is the correct dependency for shared contracts, models, events, serializers, and common types.
+
+    ### Gradle Kotlin DSL
+
+```kotlin
+repositories {
+    maven("https://maven.whereareiam.me/release")
+}
+
+dependencies {
+    compileOnly("me.whereareiam.socialismus:api:<version>")
+}
+```
+
+    ### Gradle Groovy DSL
+
+```groovy
+repositories {
+    maven { url = uri("https://maven.whereareiam.me/release") }
+}
+
+dependencies {
+    compileOnly "me.whereareiam.socialismus:api:<version>"
+}
+```
+
+    ### Maven
+
+```xml
+<repositories>
+  <repository>
+    <id>socialismus-release</id>
+    <url>https://maven.whereareiam.me/release</url>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>me.whereareiam.socialismus</groupId>
+    <artifactId>api</artifactId>
+    <version>&lt;version&gt;</version>
+    <scope>provided</scope>
+  </dependency>
+</dependencies>
+```
+  </ContentTab>
+  <ContentTab value="Socialismus Module">
+    Use the module API artifact when you are building an actual Socialismus module.
+
+    `me.whereareiam.socialismus.module:api` already depends on `me.whereareiam.socialismus:api`, so you usually only need the module API dependency.
+
+    ### Gradle Kotlin DSL
+
+```kotlin
+repositories {
+    maven("https://maven.whereareiam.me/release")
+}
+
+dependencies {
+    compileOnly("me.whereareiam.socialismus.module:api:<version>")
+}
+```
+
+    ### Gradle Groovy DSL
+
+```groovy
+repositories {
+    maven { url = uri("https://maven.whereareiam.me/release") }
+}
+
+dependencies {
+    compileOnly "me.whereareiam.socialismus.module:api:<version>"
+}
+```
+
+    ### Maven
+
+```xml
+<repositories>
+  <repository>
+    <id>socialismus-release</id>
+    <url>https://maven.whereareiam.me/release</url>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>me.whereareiam.socialismus.module</groupId>
+    <artifactId>api</artifactId>
+    <version>&lt;version&gt;</version>
+    <scope>provided</scope>
+  </dependency>
+</dependencies>
+```
+  </ContentTab>
+</ContentTabs>
+
+If you intentionally target development builds instead of releases, switch the repository URL to the development repository and use the matching development version.
+
+## Versioning semantics
+
+Socialismus currently publishes two main version streams:
+
+- release versions such as `1.0.0`
+- development versions such as `dev-91e1b65`
+
+In practice:
+
+- release versions are published to the release repository from GitHub release tags
+- development versions are published to the development repository from branch builds
+- development versions usually use `<branch>-<short-commit-sha>`, so the `dev` branch produces versions like `dev-91e1b65`
+
+If you are writing a normal addon plugin or module for production, prefer release versions.
+Use development versions only when you intentionally depend on unreleased changes.
+
+## Javadocs
+
+Use these links to browse the generated API documentation for the latest published release and latest published development build:
+
+- Socialismus API latest release: <MavenVersionLink
+    metadataUrl="https://maven.whereareiam.me/release/me/whereareiam/socialismus/api/maven-metadata.xml"
+    hrefTemplate="https://maven.whereareiam.me/javadoc/release/me/whereareiam/socialismus/api/{version}"
+    selector="release"
+  />
+- Socialismus API latest development build: <MavenVersionLink
+    metadataUrl="https://maven.whereareiam.me/development/me/whereareiam/socialismus/api/maven-metadata.xml"
+    hrefTemplate="https://maven.whereareiam.me/javadoc/development/me/whereareiam/socialismus/api/{version}"
+    selector="latest"
+  />
+- Socialismus module API latest release: <MavenVersionLink
+    metadataUrl="https://maven.whereareiam.me/release/me/whereareiam/socialismus/module/api/maven-metadata.xml"
+    hrefTemplate="https://maven.whereareiam.me/javadoc/release/me/whereareiam/socialismus/module/api/{version}"
+    selector="release"
+  />
+- Socialismus module API latest development build: <MavenVersionLink
+    metadataUrl="https://maven.whereareiam.me/development/me/whereareiam/socialismus/module/api/maven-metadata.xml"
+    hrefTemplate="https://maven.whereareiam.me/javadoc/development/me/whereareiam/socialismus/module/api/{version}"
+    selector="latest"
+  />
+
+## Declaring a dependency on Socialismus
+
+Even when you only use the published API, your plugin should still declare that it depends on Socialismus if the integration is required at runtime.
+
+<ContentTabs items={["Velocity", "Paper or Bukkit"]}>
+  <ContentTab value="Velocity">
+```java
+import com.velocitypowered.api.plugin.Dependency;
+import com.velocitypowered.api.plugin.Plugin;
+
+@Plugin(
+    id = "example-socialismus-addon",
+    name = "ExampleSocialismusAddon",
+    version = "1.0.0",
+    dependencies = {
+        @Dependency(id = "socialismus")
+    }
+)
+public final class ExampleSocialismusAddon {
+}
+```
+  </ContentTab>
+  <ContentTab value="Paper or Bukkit">
+```yaml
+name: ExampleSocialismusAddon
+version: 1.0.0
+main: com.example.ExampleSocialismusAddon
+depend: [Socialismus]
+```
+  </ContentTab>
+</ContentTabs>
+
+If your Socialismus integration is optional, use an optional dependency instead and guard your code accordingly.
+
+## Initialization and lifecycle
+
+Do not assume the API is ready the moment your addon plugin class is loaded.
+
+The main rules are:
+
+- check `SocialismusAPI.isInitialized()` before accessing services directly
+- or wait until Socialismus has finished bootstrapping and then resolve services
+
+The API entry point is `SocialismusAPI`.
+That class exposes both generic `getService(...)` access and convenience methods for common services.
+
+Platform startup and lifecycle integration depend on the platform your addon targets.
+
+<ContentTabs items={["Velocity", "Paper or Bukkit"]}>
+  <ContentTab value="Velocity">
+    A Velocity addon should wait until its own platform lifecycle is ready, and then resolve Socialismus services only after Socialismus itself is initialized.
+
+    Velocity plugins can also declare plugin dependencies directly in `@Plugin`.
+    That affects plugin load order.
+    If your addon really depends on Socialismus, declare it as a required dependency so Velocity loads Socialismus before your addon.
+    If your integration is optional, declare it as optional and still guard your API usage with `SocialismusAPI.isInitialized()`.
+
+```java
+import com.google.inject.Inject;
+import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.plugin.Dependency;
+import com.velocitypowered.api.plugin.Plugin;
+import me.whereareiam.socialismus.SocialismusAPI;
+
+@Plugin(
+    id = "example-socialismus-addon",
+    name = "ExampleSocialismusAddon",
+    version = "1.0.0",
+    dependencies = {
+        @Dependency(id = "socialismus")
+    }
+)
+public final class ExampleSocialismusAddon {
+    @Inject
+    public ExampleSocialismusAddon() {
+    }
+
+    @Subscribe
+    public void onProxyInitialization(ProxyInitializeEvent event) {
+        if (!SocialismusAPI.isInitialized()) {
+            return;
+        }
+
+        // Safe place to resolve Socialismus services
+        SocialismusAPI.getPlayerRegistry();
+    }
+}
+```
+  </ContentTab>
+  <ContentTab value="Paper or Bukkit">
+    A Bukkit or Paper addon should declare a plugin dependency and resolve Socialismus services from `onEnable()` or later.
+
+```java
+import me.whereareiam.socialismus.SocialismusAPI;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public final class ExampleSocialismusAddon extends JavaPlugin {
+    @Override
+    public void onEnable() {
+        if (!SocialismusAPI.isInitialized()) {
+            return;
+        }
+
+        // Safe place to resolve Socialismus services
+        SocialismusAPI.getChatContainerService();
+    }
+}
+```
+  </ContentTab>
+</ContentTabs>
+
+## Basic service usage example
+
+```java
+import me.whereareiam.socialismus.SocialismusAPI;
+import me.whereareiam.socialismus.service.container.ChatContainerService;
+
+public final class ExampleAddon {
+    public void printChats() {
+        if (!SocialismusAPI.isInitialized()) {
+            return;
+        }
+
+        ChatContainerService chatContainerService = SocialismusAPI.getChatContainerService();
+        chatContainerService.getChats().forEach(chat ->
+            System.out.println(chat.getId())
+        );
+    }
+}
+```
+
+## Resolving services generically
+
+If there is no convenience method for the service you want, use `getService(...)`.
+
+```java
+import me.whereareiam.socialismus.SocialismusAPI;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
+
+public final class ExampleAddon {
+    public PlayerRegistry playerRegistry() {
+        return SocialismusAPI.getService(PlayerRegistry.class);
+    }
+}
+```
+
+## Common services worth using
+
+These are some of the most useful API entry points for addon plugins and modules:
+
+- `SocialismusAPI.getPlayerRegistry()` for reading and updating tracked `SocialismusPlayer` data
+- `SocialismusAPI.getChatContainerService()` for listing and inspecting loaded chats
+- `SocialismusAPI.getChatCoordinationService()` for entering the message coordination pipeline
+- `SocialismusAPI.getChatHistoryService()` for removing tracked chat history entries
+- `SocialismusAPI.getChatRenderService()` for rendering a formatted message for a recipient
+- `SocialismusAPI.getCommandService()` for registering or inspecting Socialismus commands
+- `SocialismusAPI.getModuleService()` if you intentionally integrate with the Socialismus module system
+- `SocialismusAPI.getEventManager()` for registering or calling Socialismus events
+
+## Player lookup example
+
+```java
+import me.whereareiam.socialismus.SocialismusAPI;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
+
+import java.util.UUID;
+
+public final class ExampleAddon {
+    public void printPlayer(UUID uniqueId) {
+        if (!SocialismusAPI.isInitialized()) {
+            return;
+        }
+
+        PlayerRegistry playerRegistry = SocialismusAPI.getPlayerRegistry();
+        playerRegistry.getPlayerData(uniqueId).ifPresent(player ->
+            System.out.println(player.getUsername() + " -> " + player.getUniqueId())
+        );
+    }
+}
+```

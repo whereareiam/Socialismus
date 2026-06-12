@@ -1,0 +1,37 @@
+---
+title: Overview
+description: Conceptual guide to Socialismus configuration areas and responsibilities.
+---
+
+This section explains Socialismus configuration as a set of concepts, not as one specific file syntax.
+That is intentional: Socialismus can choose its config representation at runtime, so the important thing is understanding what each config area means first.
+
+## Format-agnostic by design
+
+Socialismus does not have to be documented as "the YAML plugin" or "the JSON plugin."
+The runtime selects a configuration format from a marker file in the data directory, with `type=YAML` as the default behavior in the current codebase.
+Some explanations include examples where that helps, while others stay descriptive when the setting type is simple enough without one.
+
+Because of that, this documentation describes:
+
+- what each configuration area controls
+- how the pieces relate to each other
+- when you should edit one config area instead of another
+
+<Callout title="Setting flags" type="warn">
+  Some settings are marked with flags such as <Badge type="warning">Advanced</Badge>, <Badge type="warning">Warning</Badge>, <Badge type="error">Danger</Badge>, or <Badge type="info">Reserved</Badge>.
+  These flags show that a setting is intentionally configurable, but should be changed with more care than ordinary options. Unmarked settings are normal day-to-day configuration.
+</Callout>
+
+## Common value formats
+
+Across configuration areas, values commonly appear in a few recurring forms:
+
+- booleans such as `true` and `false`
+- bare numbers such as log levels, priorities, history sizes, filler sizes, or updater intervals
+- enum-like uppercase strings such as `"MINIMESSAGE"` or event priorities such as `"LOWEST"`
+- maps keyed by command id, participant group, or fully qualified event class name
+- lists of chat definitions, triggers, formats, requirements, aliases, or authors
+- identifiers such as chat ids, permission nodes, server identifiers, and trigger symbols
+
+For clarity, quoted strings are the safest style to document and maintain when a value is not obviously numeric or boolean.

@@ -1,0 +1,418 @@
+---
+title: Settings
+description: Field-by-field explanation of Socialismus' core settings configuration area.
+---
+
+## Level
+
+`level` controls how much Socialismus writes to the logger.
+
+| Value | Effect                     |
+|-------|----------------------------|
+| `0`   | errors only                |
+| `1`   | warnings and errors        |
+| `2`   | info, warnings, and errors |
+| `3`   | adds debug logging         |
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+level: 3
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "level": 3
+}
+```
+  </Tab>
+</Tabs>
+
+Use `2` for normal operation and `3` when you are actively debugging chat routing, listeners, or synchronization behavior.
+
+## serialization
+
+`serialization` controls how Socialismus turns configured message strings into components.
+
+### type
+
+- Takes: `"MINIMESSAGE"`, `"GSON"`, `"LEGACY_AMPERSAND"`, `"LEGACY_SECTION"`, or `"PLAIN"`
+- Current default: `"MINIMESSAGE"`
+- Affects: the default serializer adapter used by Socialismus message rendering
+
+`MINIMESSAGE` is the normal choice for modern Socialismus configuration.
+Use a legacy adapter only when you intentionally want older color-code conventions to be your primary format.
+
+### enableLegacyColors
+
+<Badge type="warning">Warning</Badge>
+
+- Takes: `true` or `false`
+- Current default: `false`
+- Affects: whether legacy `&` and `§` color codes are converted during serialization
+
+This is useful when you want to keep `MINIMESSAGE` as the main format but still accept legacy color codes in input or migrated config content.
+It is marked as a warning because this translation adds extra work during message serialization, so each serialized message becomes slightly more expensive.
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+serialization:
+  type: "MINIMESSAGE"
+  enableLegacyColors: true
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "serialization": {
+    "type": "MINIMESSAGE",
+    "enableLegacyColors": true
+  }
+}
+```
+  </Tab>
+</Tabs>
+
+## synchronization
+
+`synchronization` controls whether this Socialismus instance participates in network synchronization and what identifier it uses when it does.
+
+### enabled
+
+<Badge type="warning">Warning</Badge>
+
+- Takes: `true` or `false`
+- Current default: `false`
+- Affects: whether Socialismus starts synchronization bridges at all
+
+Leave this disabled on standalone setups.
+Enable it only when you intentionally run Socialismus with synchronization-capable infrastructure and matching companion components.
+
+### server
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: a non-empty string
+- Current default: a generated random UUID string
+- Affects: the identifier Socialismus uses as this instance's synchronization origin
+
+This value is used to tag synchronized chat, history, and player-state events so Socialismus can tell local and remote traffic apart.
+For real synchronized networks, set this to a stable, explicit identifier per node instead of relying on the generated default.
+
+### useRealServerName
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: `true` or `false`
+- Current default: `false`
+- Affects: whether synchronized player server-state keeps the real backend server name instead of the configured synchronization identifier
+
+This is mainly relevant on proxy-style synchronized setups.
+When it is enabled and Socialismus knows the player's actual server name, Socialismus stores that real server name on the synchronized player state.
+When it is disabled, Socialismus stores the configured synchronization identifier instead.
+
+### crossPlayerSync
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether cross-player synchronization starts when synchronization itself is enabled
+
+This matters only when `synchronization.enabled` is already `true`.
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+synchronization:
+  enabled: true
+  server: "proxy-1"
+  useRealServerName: false
+  crossPlayerSync: true
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "synchronization": {
+    "enabled": true,
+    "server": "proxy-1",
+    "useRealServerName": false,
+    "crossPlayerSync": true
+  }
+}
+```
+  </Tab>
+</Tabs>
+
+## updater
+
+`updater` controls release and development-build update checks for the core Socialismus plugin.
+
+### checkForUpdates
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether the updater scheduler runs at all
+
+### warnAboutUpdates
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether release builds warn when a newer published release exists
+
+### warnAboutLocalBuilds
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether Socialismus warns when it detects a local `DEV` build
+
+### warnAboutDevBuilds
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether branch-style development builds warn when they are behind newer dev builds
+
+### interval
+
+<Badge type="warning">Warning</Badge>
+
+- Takes: a positive number
+- Current default: `1`
+- Affects: how often Socialismus reruns the updater scheduler
+
+The current runtime code treats this value as hours when scheduling checks, even though the field comment in the model still says minutes.
+Document and tune it as hours unless the runtime behavior changes.
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+updater:
+  checkForUpdates: true
+  warnAboutUpdates: true
+  warnAboutLocalBuilds: true
+  warnAboutDevBuilds: true
+  interval: 6
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "updater": {
+    "checkForUpdates": true,
+    "warnAboutUpdates": true,
+    "warnAboutLocalBuilds": true,
+    "warnAboutDevBuilds": true,
+    "interval": 6
+  }
+}
+```
+  </Tab>
+</Tabs>
+
+## commands
+
+`commands` controls command-manager behavior rather than command definitions themselves.
+
+### useBrigadier
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: `true` or `false`
+- Current default: `false`
+- Affects: whether the legacy Paper command manager registers native Brigadier support when that capability exists
+
+This is mainly relevant on Paper-side setups where the underlying Cloud command manager exposes Brigadier support.
+
+### useAsyncCompletions
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether asynchronous command completions are registered when the current command manager supports them
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+commands:
+  useBrigadier: false
+  useAsyncCompletions: true
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "commands": {
+    "useBrigadier": false,
+    "useAsyncCompletions": true
+  }
+}
+```
+  </Tab>
+</Tabs>
+
+## misc
+
+`misc` contains general runtime toggles that do not fit better in serialization, synchronization, commands, or listeners.
+
+### disableJoinNotification
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether Socialismus suppresses join-notification behavior tied to its player lifecycle handling
+
+### disableQuitNotification
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether Socialismus suppresses quit-notification behavior tied to its player lifecycle handling
+
+### vanillaSending
+
+<Badge type="warning">Warning</Badge>
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether formatted chat messages start in vanilla-sending mode
+
+This setting influences whether Bukkit or Paper chat handling continues through the platform's vanilla message path or is treated as fully custom Socialismus broadcast handling.
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+misc:
+  disableJoinNotification: true
+  disableQuitNotification: true
+  vanillaSending: true
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "misc": {
+    "disableJoinNotification": true,
+    "disableQuitNotification": true,
+    "vanillaSending": true
+  }
+}
+```
+  </Tab>
+</Tabs>
+
+## listeners
+
+Listener settings control whether selected platform listeners are registered and what priority they use.
+Platform-specific listener classes and registration details depend on the platform integration in use.
+
+### events
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: a map keyed by fully qualified event class name
+- Affects: registration and priority for matching listeners
+
+<ContentTabs items={["Velocity", "Paper", "Bukkit"]}>
+  <ContentTab value="Velocity">
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+listeners:
+  events:
+    com.velocitypowered.api.event.player.PlayerChatEvent:
+      register: true
+      priority: "LOWEST"
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "listeners": {
+    "events": {
+      "com.velocitypowered.api.event.player.PlayerChatEvent": {
+        "register": true,
+        "priority": "LOWEST"
+      }
+    }
+  }
+}
+```
+  </Tab>
+</Tabs>
+  </ContentTab>
+  <ContentTab value="Paper">
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+listeners:
+  events:
+    io.papermc.paper.event.player.AsyncChatEvent:
+      register: true
+      priority: "LOWEST"
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "listeners": {
+    "events": {
+      "io.papermc.paper.event.player.AsyncChatEvent": {
+        "register": true,
+        "priority": "LOWEST"
+      }
+    }
+  }
+}
+```
+  </Tab>
+</Tabs>
+  </ContentTab>
+  <ContentTab value="Bukkit">
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+listeners:
+  events:
+    org.bukkit.event.player.AsyncPlayerChatEvent:
+      register: true
+      priority: "LOWEST"
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "listeners": {
+    "events": {
+      "org.bukkit.event.player.AsyncPlayerChatEvent": {
+        "register": true,
+        "priority": "LOWEST"
+      }
+    }
+  }
+}
+```
+  </Tab>
+</Tabs>
+  </ContentTab>
+</ContentTabs>
+
+#### register
+
+<Badge type="warning">Warning</Badge>
+
+- Takes: `true` or `false`
+- Affects: whether that event listener is registered at all
+
+If you set this to `false`, Socialismus skips registration for that specific listener.
+That can be useful for advanced integration experiments, but it can also break chat, join, quit, world-change, or synchronization-related behavior depending on the event.
+
+#### priority
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: `"LOWEST"`, `"LOW"`, `"NORMAL"`, `"HIGH"`, or `"HIGHEST"`
+- Affects: the Socialismus listener priority used for that listener, which is then mapped onto the current platform's event-priority model
+
+If the event entry exists but no priority is set, the current code falls back to `NORMAL`.
