@@ -1,0 +1,28 @@
+---
+title: Overview
+description: Modular Minecraft chat plugin documentation.
+---
+
+# Socialismus
+
+Socialismus is a module-extendable social plugin for Minecraft servers and proxies.
+
+It is built around one core idea:
+social features should not be hard-coded into one giant plugin.
+
+Most social plugins bundle every feature into the base product from the start.
+Socialismus takes a different approach. The base plugin focuses on flexible chat foundations, while additional
+behavior is added through modules that can be installed based on the network's needs.
+
+That means the core can stay focused on customizable chat behavior and shared infrastructure.
+Announcements can be a module.
+Chat bubbles can be a module.
+Private messaging and similar utilities can be a module.
+If your network needs something else later, the extension model is already part of the design.
+
+## Why the module model matters
+
+- You are not forced to ship every social feature in the base plugin.
+- Networks can install only the modules they actually want.
+- New features can be added without turning the core into a pile of unrelated special cases.
+- Module authors can build on the same platform, chat, and synchronization foundations.

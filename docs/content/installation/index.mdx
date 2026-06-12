@@ -1,0 +1,43 @@
+---
+title: Installation
+description: Choose the right installation path for your Socialismus setup.
+---
+
+# Installation
+
+Socialismus installation in this section is split into three operator paths:
+
+- [Normal installation](./normal/index.mdx) for straightforward installs on either a backend server or a proxy
+- [Split installation](./split/index.mdx) for setups where proxy and backend both run Socialismus but handle different chat responsibilities
+- [Synchronization](./synchronization/index.mdx) for setups where chat state or delivery should be synchronized through SocialismusRedis or SocialismusChannelizer
+
+## Download paths
+
+<ContentTabs items={["GitHub Releases", "GitHub Development Builds", "Modrinth Releases"]}>
+  <ContentTab value="GitHub Releases">
+    Use [GitHub releases](https://github.com/whereareiam/Socialismus/releases) when you want stable published versions.
+
+    This path is best when you want a normal released build of the base plugin.
+  </ContentTab>
+  <ContentTab value="GitHub Development Builds">
+    Use [Development builds](https://github.com/whereareiam/Socialismus/actions/workflows/development.yml) when you want the newest build from the dev branch.
+
+    This path is best when you want the latest changes before they are packaged as a release.
+  </ContentTab>
+  <ContentTab value="Modrinth Releases">
+    Use [Modrinth releases](https://modrinth.com/plugin/socialismus) when you want published downloads from the Modrinth project page.
+
+    This path is best when you prefer released downloads from Modrinth.
+  </ContentTab>
+</ContentTabs>
+
+All installation guides in this section explain which files you need and how to download them from those sources.
+
+## Module scope
+
+The installation walkthroughs in this section will focus on installing the base Socialismus plugin first.
+That is a documentation scope choice, not a product limit.
+
+Socialismus is designed to grow through modules, so optional features such as bubbles, announcements, private messaging,
+and similar social systems can be added later through module installs.
+Those extension-specific setup guides will fit under the broader Extensions section.

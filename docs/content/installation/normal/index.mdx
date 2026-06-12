@@ -1,0 +1,27 @@
+---
+title: Normal Installation
+description: Standard installation path for a simple Socialismus setup on a backend server or proxy.
+---
+
+Use this path when you want to install Socialismus in a straightforward way on one runtime.
+That can be a normal backend server setup or a proxy-only setup, depending on where you want the chat logic to live.
+
+This is the right path for simple installs, baseline chat configuration, and environments where you do not need split chat responsibilities or synchronization yet.
+
+## Scope
+
+This guide covers the basic installation needs most users expect from the base Socialismus plugin.
+It focuses on getting one runtime working cleanly first, whether that runtime is a backend server or a proxy.
+
+Module-specific setup is outside the scope of this page.
+Those broader extension choices belong in the Extensions section.
+
+## What this path assumes
+
+- one Socialismus runtime is enough for the setup
+- you want a standard install instead of a split proxy/backend layout
+- synchronization is not required yet
+- the base plugin features are enough for the first rollout
+
+If you want the proxy and backend to both run Socialismus with different chat responsibilities, use [Split installation](../split/index.mdx).
+If you want chat state or delivery to be synchronized across runtimes, use [Synchronization](../synchronization/index.mdx).

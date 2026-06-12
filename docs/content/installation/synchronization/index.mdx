@@ -1,0 +1,26 @@
+---
+title: Synchronization
+description: Installation path for setups that synchronize Socialismus behavior across runtimes.
+---
+
+Use this path when you want Socialismus runtimes to exchange synchronized chat behavior through SocialismusRedis or SocialismusChannelizer.
+This is the right path for environments where backend or proxy runtimes should no longer behave as isolated installs.
+
+The detailed backend and proxy synchronization variants will be documented inside this section later.
+
+## Scope
+
+This guide covers synchronization-oriented installation for Socialismus.
+It focuses on when and why synchronization should be enabled, and on the infrastructure modules that make it possible.
+
+The exact synchronization provider choice and runtime-specific setup steps will be expanded later.
+
+## What this path assumes
+
+- more than one Socialismus runtime is involved, or one runtime must coordinate with another layer
+- synchronized chat behavior is required
+- SocialismusRedis or SocialismusChannelizer will be part of the environment
+- you are ready to treat synchronization as part of the installation design instead of an afterthought
+
+If you only need a simple single-runtime setup, use [Normal installation](../normal/index.mdx).
+If you need separated proxy/backend chat roles without synchronized behavior first, use [Split installation](../split/index.mdx).

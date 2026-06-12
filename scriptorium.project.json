@@ -1,0 +1,63 @@
+{
+  "name": "Socialismus",
+  "description": "Improve communication between your players in a modern way",
+  "logo": "docs/assets/logo.png",
+  "favicon": "docs/assets/favicon-32.png",
+  "state": {
+    "bundling": {
+      "captions": [
+        "Sorting modules by dependency and bad intent.",
+        "Checking platform, version, and emotional compatibility.",
+        "Negotiating with the fallback chat.",
+        "Verifying that this message has the required paperwork.",
+        "Selecting a chat with maximum priority and minimum dignity.",
+        "Counting percent signs and calling it engineering.",
+        "Publishing gossip onto the sync bus.",
+        "Synchronizing formatted nonsense across servers.",
+        "Untangling cross-server drama.",
+        "Replaying chat history like nothing weird happened.",
+        "Sending tiny screams through Channelizer.",
+        "Handing the megaphone to Chirper.",
+        "Aligning players, placeholders, and poor life choices."
+      ]
+    }
+  },
+  "urls": {
+    "github": "https://github.com/whereareiam/Socialismus"
+  },
+  "links": [
+    {
+      "type": "icon",
+      "label": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/whereareiam/Socialismus",
+      "external": true
+    },
+    {
+      "type": "icon",
+      "label": "Discord",
+      "icon": "discord",
+      "url": "https://discord.arcadeya.com",
+      "external": true
+    }
+  ],
+  "versions": {
+    "home": "dev",
+    "include": [
+      { "type": "branch", "pattern": "release/*" },
+      { "type": "tag", "pattern": "*" }
+    ],
+    "meta": {
+      "dev": {
+        "label": "Development",
+        "theme": {
+          "primary": "hsl(28 100% 56%)",
+          "primaryForeground": "hsl(0 0% 7%)",
+          "ring": "hsl(28 100% 56%)",
+          "accent": "hsla(28 100% 56% / 0.14)",
+          "accentForeground": "hsl(28 100% 86%)"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Docs",
+  "pages": [
+    "---Getting Started---",
+    "index",
+    "installation",
+    "---Extensions---",
+    "modules",
+    "addons",
+    "---Reference---",
+    "support",
+    "faq"
+  ]
+}

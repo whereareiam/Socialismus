@@ -1,0 +1,27 @@
+---
+title: Split Installation
+description: Installation path for setups where proxy and backend both run Socialismus with different chat responsibilities.
+---
+
+Use this path when you want to run Socialismus on both the proxy and the backend, but not for the same job.
+This is the right path for environments where one layer handles network-wide or staff-facing chats while another layer handles local or gameplay-facing chats.
+
+A common example is a proxy-side staff chat together with backend-side local and global chats.
+
+## Scope
+
+This guide covers the installation shape where Socialismus is intentionally split across proxy and backend runtimes.
+It focuses on role separation between those runtimes, not on synchronized delivery between them.
+
+Synchronization-specific setup is outside the scope of this page.
+If the split setup also needs shared synchronized behavior, that belongs in [Synchronization](../synchronization/index.mdx).
+
+## What this path assumes
+
+- both proxy and backend will run Socialismus
+- those runtimes will not all serve the same chat responsibilities
+- you already know which chats should live on the proxy side and which should live on the backend side
+- the setup can be understood as role separation first, not as synchronization first
+
+If only one runtime needs Socialismus, use [Normal installation](../normal/index.mdx).
+If the setup needs synchronized chat delivery or shared runtime coordination, use [Synchronization](../synchronization/index.mdx).
