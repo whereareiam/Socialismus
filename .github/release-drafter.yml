@@ -1,0 +1,57 @@
+name-template: "$RESOLVED_VERSION"
+tag-template: "$RESOLVED_VERSION"
+change-template: "* $TITLE by @$AUTHOR in [#$NUMBER]($URL)"
+change-title-escapes: "\\<*_&"
+category-template: "## $TITLE"
+no-changes-template: "* No changes"
+template: |
+  # Update $RESOLVED_VERSION - [Short subtitle]
+
+  <!-- Replace the subtitle and summary before publishing the release. -->
+  [1-2 sentence summary of the release.]
+
+  # Changelog
+
+  $CHANGES
+
+  # Support
+
+  If you need help with setup, configuration, or upgrades, join us on [Discord](https://discord.arcadeya.com). If you find a bug or want to suggest a feature, use [GitHub](https://github.com/whereareiam/Socialismus).
+
+categories:
+  - title: "What’s new"
+    exclusive: true
+    labels:
+      - "feature"
+
+  - title: "Enhancements"
+    exclusive: true
+    labels:
+      - "change"
+
+  - title: "Fixes"
+    exclusive: true
+    labels:
+      - "bug"
+
+  - title: "Dependencies"
+    exclusive: true
+    labels:
+      - "dependencies"
+
+exclude-labels:
+  - "skip-changelog"
+
+version-resolver:
+  major:
+    labels:
+      - "major"
+  minor:
+    labels:
+      - "feature"
+  patch:
+    labels:
+      - "change"
+      - "bug"
+      - "dependencies"
+  default: patch

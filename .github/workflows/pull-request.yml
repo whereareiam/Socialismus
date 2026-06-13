@@ -23,29 +23,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate-release-source:
-    if: github.event_name == 'pull_request_target'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-
-    steps:
-      - name: Verify release pull requests come from dev
-        env:
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
-          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          case "${BASE_REF}" in
-            release|release/*)
-              if [ "${HEAD_REF}" != "dev" ] || [ "${HEAD_REPO}" != "${REPOSITORY}" ]; then
-                echo "Pull requests into ${BASE_REF} must come from the ${REPOSITORY}:dev branch."
-                exit 1
-              fi
-              ;;
-          esac
-
   require-label:
     if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest

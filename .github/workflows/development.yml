@@ -7,22 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  validate-ref:
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Reject release refs for manual development publish
-        run: |
-          case "${GITHUB_REF_NAME}" in
-            release|release/*)
-              echo "Manual development publish is not allowed from ${GITHUB_REF_NAME}."
-              exit 1
-              ;;
-          esac
-
   prepare:
-    needs: validate-ref
-    if: always() && (github.event_name != 'workflow_dispatch' || needs.validate-ref.result == 'success')
     runs-on: ubuntu-latest
     outputs:
       name: ${{ steps.details.outputs.name }}

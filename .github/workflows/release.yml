@@ -2,7 +2,7 @@ name: Release build
 
 on:
   release:
-    types: [ created ]
+    types: [ published ]
   workflow_dispatch:
     inputs:
       release-tag:
@@ -101,6 +101,13 @@ jobs:
           mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}-BUKKIT.jar output/${{ needs.prepare.outputs.name }}-BUKKIT-${{ needs.prepare.outputs.version }}.jar
           mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}-VELOCITY.jar output/${{ needs.prepare.outputs.name }}-VELOCITY-${{ needs.prepare.outputs.version }}.jar
 
+      - name: Format BBCode release notes
+        uses: whereareiam/blockops/actions/release/format-release-notes@v3
+        with:
+          format: bbcode
+          release-body: ${{ needs.prepare.outputs.release-body }}
+          output-file: output/release-notes-bbcode.txt
+
       - name: Release
         uses: softprops/action-gh-release@v3
         with:
@@ -110,6 +117,7 @@ jobs:
             output/${{ needs.prepare.outputs.name }}-PAPER-${{ needs.prepare.outputs.version }}.jar
             output/${{ needs.prepare.outputs.name }}-BUKKIT-${{ needs.prepare.outputs.version }}.jar
             output/${{ needs.prepare.outputs.name }}-VELOCITY-${{ needs.prepare.outputs.version }}.jar
+            output/release-notes-bbcode.txt
 
       - name: Upload distribution artifacts
         uses: actions/upload-artifact@v6
