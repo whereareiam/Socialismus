@@ -7,7 +7,7 @@ spawner = "dev-56440cd"
 toolkit = "dev-8c0271b"
 
 # compile time processing
-lombok = "1.18.42"
+lombok = "1.18.46"
 
 # general
 guice = "7.0.0"
