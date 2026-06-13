@@ -37,7 +37,7 @@ bStats = "3.2.1"
 
 # adventure
 adventure = "4.25.0"
-adventure-minimessage = "4.25.0"
+adventure-minimessage = "5.1.1"
 adventure-legacy = "4.24.0"
 adventure-plain = "4.25.0"
 adventure-gson = "4.23.0"
