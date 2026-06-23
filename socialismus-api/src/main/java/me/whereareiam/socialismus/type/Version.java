@@ -66,7 +66,8 @@ public enum Version {
 	V_1_21_11,
 	V_26_1,
 	V_26_1_1,
-	V_26_1_2;
+	V_26_1_2,
+	V_26_2;
 
 	private static final Map<String, Version> CONCRETE_VERSIONS;
 	private static final @NotNull Version LATEST;
