@@ -5,11 +5,6 @@ plugins {
     alias(libs.plugins.attache)
 }
 
-tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = JavaVersion.VERSION_21.toString()
-    targetCompatibility = JavaVersion.VERSION_21.toString()
-}
-
 dependencies {
     compileOnly(project(":socialismus-module:module-api"))
     implementation(projects.integrationPapiproxybridge)
