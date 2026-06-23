@@ -36,19 +36,19 @@ papiProxyBridge = "1.8.4"
 bStats = "3.2.1"
 
 # adventure
-adventure = "4.25.0"
+adventure = "5.1.1"
 adventure-minimessage = "5.1.1"
-adventure-legacy = "4.24.0"
+adventure-legacy = "5.1.1"
 adventure-plain = "5.1.1"
-adventure-gson = "4.23.0"
+adventure-gson = "5.1.1"
 adventure-platform-bukkit = "4.4.1"
 
 # cloud
 cloud-core = "2.0.0"
-cloud-paper = "2.0.0-beta.15"
-cloud-velocity = "2.0.0-beta.15"
+cloud-paper = "2.0.0-beta.16"
+cloud-velocity = "2.0.0-beta.16"
 cloud-cooldown = "1.0.0-rc.1"
-cloud-minecraft-extras = "2.0.0-beta.15"
+cloud-minecraft-extras = "2.0.0-beta.16"
 
 # brigadier
 brigadier = "1.0.500"
