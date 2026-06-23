@@ -3,10 +3,6 @@ plugins {
 }
 
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-val buildVersion = providers.environmentVariable("VERSION").orElse("dev")
-
-group = "me.whereareiam"
-version = buildVersion.get()
 
 tasks.withType<JavaCompile>().configureEach {
     sourceCompatibility = JavaVersion.VERSION_21.toString()

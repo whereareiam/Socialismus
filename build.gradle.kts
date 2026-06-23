@@ -1,9 +1,16 @@
 import me.whereareiam.attache.plugin.gradle.extension.AttacheExtension
 
+val buildVersion = System.getenv("VERSION") ?: "dev"
+
 plugins {
     alias(libs.plugins.attache)
     alias(libs.plugins.spawner)
     id("dev-scenarios")
+}
+
+allprojects {
+    group = "me.whereareiam"
+    version = buildVersion
 }
 
 extensions.configure<AttacheExtension>("attache") {
