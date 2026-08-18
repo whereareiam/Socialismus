@@ -9,6 +9,7 @@ import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.config.message.CommandMessages;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import net.kyori.adventure.text.Component;
@@ -47,6 +48,8 @@ public class ReloadCommand {
 			Component component = Serializer.serialize(sender, reload.getReloaded());
 			sender.sendMessage(component);
 		} catch (Exception e) {
+			Logger.severe("Failed to reload configuration", e);
+
 			Component component = Serializer.serialize(SerializerContent.builder()
 					.receiver(sender)
 					.message(reload.getException())
