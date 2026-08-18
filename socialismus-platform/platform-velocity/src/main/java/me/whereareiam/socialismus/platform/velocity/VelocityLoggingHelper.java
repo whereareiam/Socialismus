@@ -30,6 +30,12 @@ public class VelocityLoggingHelper implements LoggingHelper {
     }
 
     @Override
+    public void severe(String message, Throwable throwable) {
+        if (settings.get().getLevel() >= 0)
+            logger.error(message, throwable);
+    }
+
+    @Override
     public void severe(String message, Object... objects) {
         if (settings.get().getLevel() >= 0)
             logger.error(String.format(message, objects));

@@ -6,6 +6,7 @@ import lombok.Setter;
 import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.model.config.Settings;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BukkitLoggingHelper implements LoggingHelper {
@@ -28,6 +29,12 @@ public class BukkitLoggingHelper implements LoggingHelper {
 	public void warn(String message, Object... objects) {
 		if (settings.get().getLevel() >= 1)
 			logger.warning(String.format(message, objects));
+	}
+
+	@Override
+	public void severe(String message, Throwable throwable) {
+		if (settings.get().getLevel() >= 0)
+			logger.log(Level.SEVERE, message, throwable);
 	}
 
 	@Override

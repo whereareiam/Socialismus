@@ -27,6 +27,17 @@ public interface LoggingHelper {
 	void warn(String message, Object... objects);
 
 	/**
+	 * Logs a severe error message and preserves the throwable cause when the
+	 * platform supports stack-trace logging.
+	 *
+	 * @param message the message to log
+	 * @param throwable the failure associated with the message
+	 */
+	default void severe(String message, Throwable throwable) {
+		severe(message + ": " + throwable);
+	}
+
+	/**
 	 * Logs a severe error message.
 	 *
 	 * @param message the message template to log
