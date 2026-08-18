@@ -54,20 +54,23 @@ project(":socialismus-module:module-api").projectDir = file("socialismus-module/
 include(":socialismus-module:module")
 project(":socialismus-module:module").projectDir = file("socialismus-module/module")
 
+include(":socialismus-modules")
+project(":socialismus-modules").projectDir = file("socialismus-modules")
+
 include(":module-chirper")
-project(":module-chirper").projectDir = file("socialismus-module/module-chirper")
+project(":module-chirper").projectDir = file("socialismus-modules/module-chirper")
 
 include(":module-chirper-api")
-project(":module-chirper-api").projectDir = file("socialismus-module/module-chirper/chirper-api")
+project(":module-chirper-api").projectDir = file("socialismus-modules/module-chirper/chirper-api")
 
 include(":module-chirper-common")
-project(":module-chirper-common").projectDir = file("socialismus-module/module-chirper/chirper-common")
+project(":module-chirper-common").projectDir = file("socialismus-modules/module-chirper/chirper-common")
 
 include(":module-chirper-command")
-project(":module-chirper-command").projectDir = file("socialismus-module/module-chirper/chirper-command")
+project(":module-chirper-command").projectDir = file("socialismus-modules/module-chirper/chirper-command")
 
 include(":module-chirper-runtime")
-project(":module-chirper-runtime").projectDir = file("socialismus-module/module-chirper/chirper-bootstrap")
+project(":module-chirper-runtime").projectDir = file("socialismus-modules/module-chirper/chirper-bootstrap")
 
 include(":integration-bstats")
 project(":integration-bstats").projectDir = file("socialismus-integration/integration-bstats")

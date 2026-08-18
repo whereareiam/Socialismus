@@ -8,7 +8,6 @@ tasks.register("moduleArtifacts") {
 
     dependsOn(
         ":socialismus-module:module-api:build",
-        ":socialismus-module:module:build",
-        ":module-chirper:chirperModules"
+        ":socialismus-module:module:build"
     )
 }
