@@ -9,7 +9,7 @@ public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessag
 	@Override
 	public DialogueMessages supply(DialogueMessages dialogueMessages) {
 		// Default values
-		DialogueMessages.Commands commands = dialogueMessages.getCommands();
+		DialogueMessages.Commands commands = new DialogueMessages.Commands();
 
 		DialogueMessages.Commands.Message message = new DialogueMessages.Commands.Message();
 		message.setNoRecipient("{prefix}<white>Recipient not found");
@@ -17,6 +17,13 @@ public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessag
 		message.setSenderFormat("<gold><bold>PM</bold> <dark_gray>| <gray>{senderName} <dark_gray>-> <gray>{recipientName}: <white>{message}");
 		message.setRecipientFormat("<gold><bold>PM</bold> <dark_gray>| <gray>{senderName} <dark_gray>-> <gray>{recipientName}: <white>{message}");
 		commands.setMessage(message);
+
+		DialogueMessages.Commands.Reply reply = new DialogueMessages.Commands.Reply();
+		reply.setNoPreviousSender("{prefix}<white>No previous sender found.");
+		reply.setNoConversations("{prefix}<white>No conversations found.");
+		reply.setConversationListHeader("{prefix}<white>Recent conversations:");
+		reply.setConversationListEntry("<gray>{index}. <white>{player}");
+		commands.setReply(reply);
 
 		dialogueMessages.setCommands(commands);
 
