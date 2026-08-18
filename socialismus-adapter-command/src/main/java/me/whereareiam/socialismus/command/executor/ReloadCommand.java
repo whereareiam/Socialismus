@@ -50,7 +50,7 @@ public class ReloadCommand {
 			Component component = Serializer.serialize(SerializerContent.builder()
 					.receiver(sender)
 					.message(reload.getException())
-					.placeholder("error", e.getMessage())
+					.placeholder("exception", e.getMessage())
 					.build());
 			sender.sendMessage(component);
 		}
