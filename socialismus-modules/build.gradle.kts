@@ -10,6 +10,7 @@ tasks.register("moduleArtifacts") {
         ":module-chirper:chirperModules",
         ":module-bubbler:bubblerModules",
         ":module-essentials:essentialsModules",
-        ":module-redis:redisModules"
+        ":module-redis:redisModules",
+        ":module-channelizer:channelizerModules"
     )
 }

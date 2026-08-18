@@ -121,6 +121,21 @@ project(":module-redis-common").projectDir = file("socialismus-modules/module-re
 include(":module-redis-runtime")
 project(":module-redis-runtime").projectDir = file("socialismus-modules/module-redis/redis-bootstrap")
 
+include(":module-channelizer")
+project(":module-channelizer").projectDir = file("socialismus-modules/module-channelizer")
+
+include(":module-channelizer-api")
+project(":module-channelizer-api").projectDir = file("socialismus-modules/module-channelizer/channelizer-api")
+
+include(":module-channelizer-common")
+project(":module-channelizer-common").projectDir = file("socialismus-modules/module-channelizer/channelizer-common")
+
+include(":module-channelizer-platform-bukkit")
+project(":module-channelizer-platform-bukkit").projectDir = file("socialismus-modules/module-channelizer/channelizer-platform/platform-bukkit")
+
+include(":module-channelizer-runtime")
+project(":module-channelizer-runtime").projectDir = file("socialismus-modules/module-channelizer/channelizer-bootstrap")
+
 include(":integration-bstats")
 project(":integration-bstats").projectDir = file("socialismus-integration/integration-bstats")
 
