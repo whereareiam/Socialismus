@@ -21,13 +21,13 @@
 
 ## Free modules
 
-- [Chirper](https://github.com/whereareiam/Chirper) - The loudmouth of the server! Make sure your announcements are
+- [Chirper](./modules/module-chirper) - The loudmouth of the server! Make sure your announcements are
   heard by all. Ideal for rallying the troops or just making sure everyone knows it’s pizza night.
-- [Bubbler](https://github.com/whereareiam/Bubbler) - The chat bubble artist! Elevate your conversations
+- [Bubbler](./modules/module-bubbler) - The chat bubble artist! Elevate your conversations
   with
   animated
   bubbles that hover above players’ heads. Great for adding a splash of creativity to your chat.
-- [Essentials](https://github.com/whereareiam/Essentials) - The essential toolkit! A collection of useful
+- [Essentials](./modules/module-essentials) - The essential toolkit! A collection of useful
   features
   that can extend your chat experience. Great for adding a touch of convenience to your server.
 - [Mentionator](https://github.com/whereareiam/Mentionator) *[WIP]* - The @mention maestro! Summon anyone and everyone
@@ -52,10 +52,10 @@
 
 ### Infrastructure modules
 
-- [SocialismusRedis](https://github.com/whereareiam/SocialismusRedis) - The resource provider! Enables caching and
+- [SocialismusRedis](./modules/module-redis) - The resource provider! Enables caching and
   synchronization features for other modules using Redis.
 
-- [SocialismusChannelizer](https://github.com/whereareiam/SocialismusChannelizer) - The resource provider! Enables synchronization feature for other modules using BungeeCord channels.
+- [SocialismusChannelizer](./modules/module-channelizer) - The resource provider! Enables synchronization feature for other modules using BungeeCord channels.
 
 ## Premium modules
 
