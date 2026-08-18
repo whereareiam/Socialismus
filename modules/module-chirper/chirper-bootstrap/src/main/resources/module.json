@@ -15,7 +15,7 @@
   ],
   "dependencies": [
     {
-      "version": "dev-7e469f0",
+      "version": "@dependency@",
       "type": "BASE"
     }
   ],

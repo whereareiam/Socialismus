@@ -22,7 +22,8 @@ tasks.named<Copy>("processResources").configure {
         filter<ReplaceTokens>(
             "tokens" to mapOf(
                 "projectName" to "SocialismusChannelizer",
-                "projectVersion" to project.version
+                "projectVersion" to project.version,
+                "dependency" to rootProject.extra["socialismusModuleDependencyPattern"]
             )
         )
     }
