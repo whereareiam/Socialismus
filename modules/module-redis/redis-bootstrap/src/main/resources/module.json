@@ -1,0 +1,33 @@
+{
+  "name": "@projectName@",
+  "version": "@projectVersion@",
+  "authors": [
+    "whereareiam"
+  ],
+  "supportedPlatforms": [
+    "VELOCITY",
+    "PAPER",
+    "BUKKIT",
+    "FOLIA"
+  ],
+  "supportedVersions": [
+    "ALL"
+  ],
+  "dependencies": [
+    {
+      "version": "@dependency@",
+      "type": "BASE"
+    }
+  ],
+  "updater": {
+    "release": {
+      "provider": "GITHUB",
+      "id": "whereareiam/SocialismusRedis"
+    },
+    "dev": {
+      "provider": "GITHUB",
+      "id": "whereareiam/SocialismusRedis"
+    }
+  },
+  "main": "me.whereareiam.socialismus.module.redis.SocialismusRedis"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@projectName@",
+  "version": "@projectVersion@",
+  "authors": [
+    "whereareiam"
+  ],
+  "supportedPlatforms": [
+    "PAPER",
+    "BUKKIT",
+    "SPIGOT",
+    "FOLIA"
+  ],
+  "supportedVersions": [
+    "ALL"
+  ],
+  "dependencies": [
+    {
+      "version": "@dependency@",
+      "type": "BASE"
+    }
+  ],
+  "updater": {
+    "release": {
+      "provider": "MODRINTH",
+      "id": "q8KT1H5f"
+    },
+    "dev": {
+      "provider": "GITHUB",
+      "id": "whereareiam/SocialismusChannelizer"
+    }
+  },
+  "main": "me.whereareiam.socialismus.module.channelizer.SocialismusChannelizer"
+}

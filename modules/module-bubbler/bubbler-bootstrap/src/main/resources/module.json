@@ -1,0 +1,73 @@
+{
+  "name": "@projectName@",
+  "version": "@projectVersion@",
+  "authors": [
+    "whereareiam"
+  ],
+  "supportedPlatforms": [
+    "PAPER",
+    "BUKKIT",
+    "SPIGOT",
+    "FOLIA"
+  ],
+  "supportedVersions": [
+    "V_26_1_2",
+    "V_26_1_1",
+    "V_26_1",
+    "V_1_21_11",
+    "V_1_21_10",
+    "V_1_21_9",
+    "V_1_21_8",
+    "V_1_21_7",
+    "V_1_21_6",
+    "V_1_21_5",
+    "V_1_21_4",
+    "V_1_21_3",
+    "V_1_21_2",
+    "V_1_21_1",
+    "V_1_21",
+    "V_1_20_6",
+    "V_1_20_5",
+    "V_1_20_4",
+    "V_1_20_3",
+    "V_1_20_2",
+    "V_1_20_1",
+    "V_1_20",
+    "V_1_19_4",
+    "V_1_19_3",
+    "V_1_19_2",
+    "V_1_19_1",
+    "V_1_19",
+    "V_1_18_1",
+    "V_1_18",
+    "V_1_17_1",
+    "V_1_17",
+    "V_1_16_5",
+    "V_1_16_4",
+    "V_1_16_3",
+    "V_1_16_2",
+    "V_1_16_1",
+    "V_1_16"
+  ],
+  "dependencies": [
+    {
+      "version": "@dependency@",
+      "type": "BASE"
+    },
+    {
+      "name": "PacketEvents",
+      "type": "INTEGRATION"
+    }
+  ],
+  "updater": {
+    "release": {
+      "provider": "MODRINTH",
+      "id": "whereareiam/Bubbler"
+    },
+    "dev": {
+      "provider": "GITHUB",
+      "id": "whereareiam/Bubbler"
+    }
+  },
+  "main": "me.whereareiam.socialismus.module.bubbler.Bubbler"
+}

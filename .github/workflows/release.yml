@@ -87,19 +87,13 @@ jobs:
           VERSION: ${{ needs.prepare.outputs.version }}
           PUBLISH_REALM: release
         with:
-          gradle-command: ./gradlew --no-daemon test build pluginJars publish -Dsocialismus.liveApiTests=true
+          gradle-command: ./gradlew --no-daemon test jars publish -Dsocialismus.liveApiTests=true
 
       - name: Create output directory
         run: mkdir output
 
-      - name: Move API
-        run: mv socialismus-api/build/libs/socialismus-api-${{ needs.prepare.outputs.version }}.jar output/${{ needs.prepare.outputs.name }}-API-${{ needs.prepare.outputs.version }}.jar
-
-      - name: Move platform jars
-        run: |
-          mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}-PAPER.jar output/${{ needs.prepare.outputs.name }}-PAPER-${{ needs.prepare.outputs.version }}.jar
-          mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}-BUKKIT.jar output/${{ needs.prepare.outputs.name }}-BUKKIT-${{ needs.prepare.outputs.version }}.jar
-          mv build/libs/${{ needs.prepare.outputs.name }}-${{ needs.prepare.outputs.version }}-VELOCITY.jar output/${{ needs.prepare.outputs.name }}-VELOCITY-${{ needs.prepare.outputs.version }}.jar
+      - name: Move jars
+        run: cp build/jars/*.jar output/
 
       - name: Format BBCode release notes
         uses: whereareiam/blockops/actions/release/format-release-notes@v3
@@ -113,10 +107,7 @@ jobs:
         with:
           tag_name: ${{ needs.prepare.outputs.release-tag }}
           files: |
-            output/${{ needs.prepare.outputs.name }}-API-${{ needs.prepare.outputs.version }}.jar
-            output/${{ needs.prepare.outputs.name }}-PAPER-${{ needs.prepare.outputs.version }}.jar
-            output/${{ needs.prepare.outputs.name }}-BUKKIT-${{ needs.prepare.outputs.version }}.jar
-            output/${{ needs.prepare.outputs.name }}-VELOCITY-${{ needs.prepare.outputs.version }}.jar
+            output/*.jar
             output/release-notes-bbcode.txt
 
       - name: Upload distribution artifacts

@@ -24,6 +24,7 @@ dependencyResolutionManagement {
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://repo.william278.net/releases/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+        maven("https://repo.codemc.io/repository/maven-releases/")
     }
 }
 
@@ -53,6 +54,87 @@ project(":socialismus-module:module-api").projectDir = file("socialismus-module/
 
 include(":socialismus-module:module")
 project(":socialismus-module:module").projectDir = file("socialismus-module/module")
+
+include(":modules")
+project(":modules").projectDir = file("modules")
+
+include(":module-chirper")
+project(":module-chirper").projectDir = file("modules/module-chirper")
+
+include(":module-chirper-api")
+project(":module-chirper-api").projectDir = file("modules/module-chirper/chirper-api")
+
+include(":module-chirper-common")
+project(":module-chirper-common").projectDir = file("modules/module-chirper/chirper-common")
+
+include(":module-chirper-command")
+project(":module-chirper-command").projectDir = file("modules/module-chirper/chirper-command")
+
+include(":module-chirper-runtime")
+project(":module-chirper-runtime").projectDir = file("modules/module-chirper/chirper-bootstrap")
+
+include(":module-bubbler")
+project(":module-bubbler").projectDir = file("modules/module-bubbler")
+
+include(":module-bubbler-api")
+project(":module-bubbler-api").projectDir = file("modules/module-bubbler/bubbler-api")
+
+include(":module-bubbler-common")
+project(":module-bubbler-common").projectDir = file("modules/module-bubbler/bubbler-common")
+
+include(":module-bubbler-command")
+project(":module-bubbler-command").projectDir = file("modules/module-bubbler/bubbler-command")
+
+include(":module-bubbler-runtime")
+project(":module-bubbler-runtime").projectDir = file("modules/module-bubbler/bubbler-bootstrap")
+
+include(":module-essentials")
+project(":module-essentials").projectDir = file("modules/module-essentials")
+
+include(":module-essentials-api")
+project(":module-essentials-api").projectDir = file("modules/module-essentials/essentials-api")
+
+include(":module-essentials-common")
+project(":module-essentials-common").projectDir = file("modules/module-essentials/essentials-common")
+
+include(":module-essentials-command")
+project(":module-essentials-command").projectDir = file("modules/module-essentials/essentials-command")
+
+include(":module-essentials-feature")
+project(":module-essentials-feature").projectDir = file("modules/module-essentials/essentials-feature")
+
+include(":module-essentials-dialogue")
+project(":module-essentials-dialogue").projectDir = file("modules/module-essentials/essentials-feature/dialogue")
+
+include(":module-essentials-runtime")
+project(":module-essentials-runtime").projectDir = file("modules/module-essentials/essentials-bootstrap")
+
+include(":module-redis")
+project(":module-redis").projectDir = file("modules/module-redis")
+
+include(":module-redis-api")
+project(":module-redis-api").projectDir = file("modules/module-redis/redis-common-api")
+
+include(":module-redis-common")
+project(":module-redis-common").projectDir = file("modules/module-redis/redis-common")
+
+include(":module-redis-runtime")
+project(":module-redis-runtime").projectDir = file("modules/module-redis/redis-bootstrap")
+
+include(":module-channelizer")
+project(":module-channelizer").projectDir = file("modules/module-channelizer")
+
+include(":module-channelizer-api")
+project(":module-channelizer-api").projectDir = file("modules/module-channelizer/channelizer-api")
+
+include(":module-channelizer-common")
+project(":module-channelizer-common").projectDir = file("modules/module-channelizer/channelizer-common")
+
+include(":module-channelizer-platform-bukkit")
+project(":module-channelizer-platform-bukkit").projectDir = file("modules/module-channelizer/channelizer-platform/platform-bukkit")
+
+include(":module-channelizer-runtime")
+project(":module-channelizer-runtime").projectDir = file("modules/module-channelizer/channelizer-bootstrap")
 
 include(":integration-bstats")
 project(":integration-bstats").projectDir = file("socialismus-integration/integration-bstats")

@@ -21,3 +21,8 @@ tasks.withType<ShadowJar>().configureEach {
 tasks.named<Jar>("jar").configure {
     dependsOn(tasks.named("shadowJar"))
 }
+
+tasks.named<Copy>("processResources").configure {
+    inputs.property("projectVersion", project.version)
+    inputs.property("socialismusDependency", rootProject.extra["socialismusModuleDependencyPattern"])
+}
