@@ -1,0 +1,39 @@
+{
+  "name": "@projectName@",
+  "version": "@projectVersion@",
+  "authors": [
+    "whereareiam"
+  ],
+  "supportedPlatforms": [
+    "PAPER",
+    "BUKKIT",
+    "FOLIA",
+    "VELOCITY"
+  ],
+  "supportedVersions": [
+    "ALL"
+  ],
+  "dependencies": [
+    {
+      "version": "(2\\.0\\.[0-9]+(-RC[0-9]+)?|2\\.1\\.0(-RC[0-9]+)?|dev.*)",
+      "type": "BASE"
+    }
+  ],
+  "requirements": [
+    {
+      "type": "SYNC",
+      "optional": true
+    }
+  ],
+  "updater": {
+    "release": {
+      "provider": "MODRINTH",
+      "id": "whereareiam/Essentials"
+    },
+    "dev": {
+      "provider": "GITHUB",
+      "id": "whereareiam/Essentials"
+    }
+  },
+  "main": "me.whereareiam.socialismus.module.essentials.Essentials"
+}

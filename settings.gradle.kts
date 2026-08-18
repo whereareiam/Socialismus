@@ -88,6 +88,27 @@ project(":module-bubbler-command").projectDir = file("socialismus-modules/module
 include(":module-bubbler-runtime")
 project(":module-bubbler-runtime").projectDir = file("socialismus-modules/module-bubbler/bubbler-bootstrap")
 
+include(":module-essentials")
+project(":module-essentials").projectDir = file("socialismus-modules/module-essentials")
+
+include(":module-essentials-api")
+project(":module-essentials-api").projectDir = file("socialismus-modules/module-essentials/essentials-api")
+
+include(":module-essentials-common")
+project(":module-essentials-common").projectDir = file("socialismus-modules/module-essentials/essentials-common")
+
+include(":module-essentials-command")
+project(":module-essentials-command").projectDir = file("socialismus-modules/module-essentials/essentials-command")
+
+include(":module-essentials-feature")
+project(":module-essentials-feature").projectDir = file("socialismus-modules/module-essentials/essentials-feature")
+
+include(":module-essentials-dialogue")
+project(":module-essentials-dialogue").projectDir = file("socialismus-modules/module-essentials/essentials-feature/dialogue")
+
+include(":module-essentials-runtime")
+project(":module-essentials-runtime").projectDir = file("socialismus-modules/module-essentials/essentials-bootstrap")
+
 include(":integration-bstats")
 project(":integration-bstats").projectDir = file("socialismus-integration/integration-bstats")
 

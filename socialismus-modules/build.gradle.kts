@@ -8,6 +8,7 @@ tasks.register("moduleArtifacts") {
 
     dependsOn(
         ":module-chirper:chirperModules",
-        ":module-bubbler:bubblerModules"
+        ":module-bubbler:bubblerModules",
+        ":module-essentials:essentialsModules"
     )
 }
