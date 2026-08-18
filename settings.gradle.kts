@@ -24,6 +24,7 @@ dependencyResolutionManagement {
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://repo.william278.net/releases/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+        maven("https://repo.codemc.io/repository/maven-releases/")
     }
 }
 
@@ -71,6 +72,21 @@ project(":module-chirper-command").projectDir = file("socialismus-modules/module
 
 include(":module-chirper-runtime")
 project(":module-chirper-runtime").projectDir = file("socialismus-modules/module-chirper/chirper-bootstrap")
+
+include(":module-bubbler")
+project(":module-bubbler").projectDir = file("socialismus-modules/module-bubbler")
+
+include(":module-bubbler-api")
+project(":module-bubbler-api").projectDir = file("socialismus-modules/module-bubbler/bubbler-api")
+
+include(":module-bubbler-common")
+project(":module-bubbler-common").projectDir = file("socialismus-modules/module-bubbler/bubbler-common")
+
+include(":module-bubbler-command")
+project(":module-bubbler-command").projectDir = file("socialismus-modules/module-bubbler/bubbler-command")
+
+include(":module-bubbler-runtime")
+project(":module-bubbler-runtime").projectDir = file("socialismus-modules/module-bubbler/bubbler-bootstrap")
 
 include(":integration-bstats")
 project(":integration-bstats").projectDir = file("socialismus-integration/integration-bstats")

@@ -6,5 +6,8 @@ tasks.register("moduleArtifacts") {
     group = "build"
     description = "Builds all migrated Socialismus module artifacts."
 
-    dependsOn(":module-chirper:chirperModules")
+    dependsOn(
+        ":module-chirper:chirperModules",
+        ":module-bubbler:bubblerModules"
+    )
 }

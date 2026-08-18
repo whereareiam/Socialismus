@@ -24,6 +24,7 @@ mockito = "5.20.0"
 # resouces
 ormlite = "6.1"
 jedis = "7.0.0"
+packetevents = "2.12.2"
 
 # platform api versions
 velocity = "3.5.0-SNAPSHOT"
@@ -83,6 +84,7 @@ attache-common = { group = "me.whereareiam", name = "attache-common", version.re
 
 # resources
 ormlite = { group = "com.j256.ormlite", name = "ormlite-core", version.ref = "ormlite" }
+packetevents = { group = "com.github.retrooper", name = "packetevents-spigot", version.ref = "packetevents" }
 
 # platform api
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
