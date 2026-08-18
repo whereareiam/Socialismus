@@ -109,6 +109,18 @@ project(":module-essentials-dialogue").projectDir = file("socialismus-modules/mo
 include(":module-essentials-runtime")
 project(":module-essentials-runtime").projectDir = file("socialismus-modules/module-essentials/essentials-bootstrap")
 
+include(":module-redis")
+project(":module-redis").projectDir = file("socialismus-modules/module-redis")
+
+include(":module-redis-api")
+project(":module-redis-api").projectDir = file("socialismus-modules/module-redis/redis-common-api")
+
+include(":module-redis-common")
+project(":module-redis-common").projectDir = file("socialismus-modules/module-redis/redis-common")
+
+include(":module-redis-runtime")
+project(":module-redis-runtime").projectDir = file("socialismus-modules/module-redis/redis-bootstrap")
+
 include(":integration-bstats")
 project(":integration-bstats").projectDir = file("socialismus-integration/integration-bstats")
 
