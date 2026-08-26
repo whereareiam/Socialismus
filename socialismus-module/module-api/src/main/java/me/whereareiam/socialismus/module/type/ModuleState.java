@@ -31,6 +31,11 @@ public enum ModuleState {
 	ERROR,
 
 	/**
+	 * Module is waiting for an external platform component to become enabled.
+	 */
+	WAITING_FOR_DEPENDENCY,
+
+	/**
 	 * Module state cannot be determined
 	 */
 	UNKNOWN

@@ -57,6 +57,14 @@ public class ModuleManager implements ModuleService {
 	}
 
 	@Override
+	public void loadPendingModules() {
+		modules.stream()
+				.filter(module -> module.getState() == ModuleState.WAITING_FOR_DEPENDENCY)
+				.forEach(lifecycleController::loadModule);
+		modules.forEach(lifecycleController::enableModule);
+	}
+
+	@Override
 	public void unloadModules() {
 		Logger.info("Unloading modules...");
 		modules.forEach(lifecycleController::disableModule);

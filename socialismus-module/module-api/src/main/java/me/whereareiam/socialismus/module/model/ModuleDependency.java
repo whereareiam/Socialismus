@@ -1,11 +1,10 @@
 package me.whereareiam.socialismus.module.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.module.type.DependencyType;
+
+import java.util.List;
 
 /**
  * Represents a dependency relationship between modules in the Socialismus plugin system.
@@ -34,4 +33,11 @@ public class ModuleDependency {
 	 * The type of dependency relationship
 	 */
 	private DependencyType type;
+
+	/**
+	 * API package prefixes a {@link DependencyType#PLATFORM_COMPONENT} dependency
+	 * exposes to this module. Each prefix must end with a period.
+	 */
+	@Builder.Default
+	private List<String> apiPackages = List.of();
 }

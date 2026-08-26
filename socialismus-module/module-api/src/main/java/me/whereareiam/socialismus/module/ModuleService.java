@@ -19,6 +19,12 @@ public interface ModuleService {
     void loadModules();
 
     /**
+     * Attempts to load modules that were waiting for a platform component
+     * dependency to become enabled.
+     */
+    void loadPendingModules();
+
+    /**
      * Unloads all currently active modules from the system
      */
     void unloadModules();
