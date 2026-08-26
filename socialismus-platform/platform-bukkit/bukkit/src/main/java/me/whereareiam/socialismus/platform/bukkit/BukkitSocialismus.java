@@ -39,8 +39,7 @@ public class BukkitSocialismus extends JavaPlugin {
 		BukkitLibraryManager libraryManager = new BukkitLibraryManager(this, ".libraries");
 		libraryManager.setVerbosityMode(VerbosityMode.SUMMARY);
 		libraryManager.addMavenCentral();
-		libraryManager.addRepository("https://maven.whereareiam.me/release");
-		libraryManager.addRepository("https://maven.whereareiam.me/development");
+		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
 		libraryManager.loadDescriptors();
 
 		new BukkitInjector(this, dataPath);

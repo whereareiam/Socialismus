@@ -71,6 +71,7 @@ jobs:
     permissions:
       contents: write
       checks: write
+      id-token: write
       packages: write
 
     steps:
@@ -82,12 +83,17 @@ jobs:
       - name: Build project
         uses: ./.github/actions/gradle-build
         env:
-          PUBLISH_USER: ${{ secrets.PUBLISH_USER }}
-          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
           VERSION: ${{ needs.prepare.outputs.version }}
-          PUBLISH_REALM: release
         with:
-          gradle-command: ./gradlew --no-daemon test jars publish -Dsocialismus.liveApiTests=true
+          gradle-command: ./gradlew --no-daemon test jars -Dsocialismus.liveApiTests=true
+
+      - name: Publish Maven artifacts
+        uses: whereareiam/devops/actions/registry/maven-publish@v2
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        with:
+          visibility: public
+          command: ./gradlew --no-daemon publish
 
       - name: Create output directory
         run: mkdir output

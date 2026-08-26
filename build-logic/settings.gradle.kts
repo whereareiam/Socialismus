@@ -4,8 +4,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        maven("https://maven.whereareiam.me/release")
-        maven("https://maven.whereareiam.me/development")
+        maven("https://registry.whereareiam.me/maven/packages")
     }
 }
 
@@ -13,8 +12,7 @@ dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        maven("https://maven.whereareiam.me/release")
-        maven("https://maven.whereareiam.me/development")
+        maven("https://registry.whereareiam.me/maven/packages")
     }
 
     versionCatalogs {
