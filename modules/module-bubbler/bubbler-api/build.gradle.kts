@@ -2,6 +2,8 @@ plugins {
     id("api")
 }
 
+group = "me.whereareiam.socialismus.module"
+
 dependencies {
     compileOnly(libs.packetevents)
 }
