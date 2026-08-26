@@ -3,11 +3,13 @@ package me.whereareiam.socialismus.platform.paper;
 import me.whereareiam.attache.platform.paper.PaperLibraryManager;
 import me.whereareiam.attache.type.VerbosityMode;
 import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
 import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.platform.BukkitLoggingHelper;
+import me.whereareiam.socialismus.platform.BukkitModuleDependencyListener;
 import me.whereareiam.socialismus.platform.paper.inject.PaperInjector;
 import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.Version;
@@ -52,6 +54,10 @@ public class PaperSocialismus extends JavaPlugin {
 		// Signal that the plugin is ready for normal operation
 		EventUtil.callEvent(new PluginReadyEvent(), () -> {
 		});
+		Bukkit.getPluginManager().registerEvents(
+				CommonInjector.getInjector().getInstance(BukkitModuleDependencyListener.class),
+				this
+		);
 	}
 
 	@Override

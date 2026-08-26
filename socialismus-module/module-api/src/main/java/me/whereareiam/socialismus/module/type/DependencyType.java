@@ -12,6 +12,14 @@ public enum DependencyType {
 	 */
 	INTEGRATION,
 
+
+	/**
+	 * A plugin supplied by the active server platform. These dependencies expose
+	 * their declared API packages to the module without becoming a Socialismus
+	 * core integration.
+	 */
+	PLATFORM_COMPONENT,
+
 	/**
 	 * Feature modules that add specific functionality to the plugin.
 	 * These are optional components that can be installed to enhance the plugin.
