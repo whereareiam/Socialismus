@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.module.resolver;
 
+import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 @Singleton
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class ModuleDependencyResolver implements ModuleResolver {
 	private final ModuleService moduleService;
 	private final Provider<Set<Integration>> integrations;
