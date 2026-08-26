@@ -39,8 +39,7 @@ public class PaperSocialismus extends JavaPlugin {
 		PaperLibraryManager libraryManager = new PaperLibraryManager(this, ".libraries");
 		libraryManager.setVerbosityMode(VerbosityMode.SUMMARY);
 		libraryManager.addMavenCentral();
-		libraryManager.addRepository("https://maven.whereareiam.me/release");
-		libraryManager.addRepository("https://maven.whereareiam.me/development");
+		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
 		libraryManager.loadDescriptors();
 
 		new PaperInjector(this, dataPath);

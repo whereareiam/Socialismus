@@ -4,7 +4,7 @@
 shadow = "9.3.0"
 buildconfig = "5.7.1"
 spawner = "dev-56440cd"
-toolkit = "dev-8c0271b"
+toolkit = "0.2.0"
 
 # compile time processing
 lombok = "1.18.46"

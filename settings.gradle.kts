@@ -7,7 +7,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        maven("https://maven.whereareiam.me/development")
+        maven("https://registry.whereareiam.me/maven/packages")
     }
 }
 
@@ -17,8 +17,7 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
 
-        maven("https://maven.whereareiam.me/release")
-        maven("https://maven.whereareiam.me/development")
+        maven("https://registry.whereareiam.me/maven/packages")
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")

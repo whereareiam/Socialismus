@@ -24,12 +24,11 @@ Socialismus currently publishes two main API artifacts:
 For both addon plugins and modules, `compileOnly` or the equivalent provided-scope dependency is usually the right choice.
 Socialismus provides these APIs at runtime, so you should not shade or relocate them into your own jar.
 
-## Repositories
+## Repository
 
-Socialismus publishes API artifacts to these Maven repositories:
+Socialismus publishes API artifacts to the public Maven repository:
 
-- release repository: [https://maven.whereareiam.me/release](https://maven.whereareiam.me/release)
-- development repository: [https://maven.whereareiam.me/development](https://maven.whereareiam.me/development)
+- public repository: [https://registry.whereareiam.me/maven/packages](https://registry.whereareiam.me/maven/packages)
 
 ## Adding the dependency
 
@@ -43,7 +42,7 @@ Socialismus publishes API artifacts to these Maven repositories:
 
 ```kotlin
 repositories {
-    maven("https://maven.whereareiam.me/release")
+    maven("https://registry.whereareiam.me/maven/packages")
 }
 
 dependencies {
@@ -55,7 +54,7 @@ dependencies {
 
 ```groovy
 repositories {
-    maven { url = uri("https://maven.whereareiam.me/release") }
+    maven { url = uri("https://registry.whereareiam.me/maven/packages") }
 }
 
 dependencies {
@@ -69,7 +68,7 @@ dependencies {
 <repositories>
   <repository>
     <id>socialismus-release</id>
-    <url>https://maven.whereareiam.me/release</url>
+    <url>https://registry.whereareiam.me/maven/packages</url>
   </repository>
 </repositories>
 
@@ -92,7 +91,7 @@ dependencies {
 
 ```kotlin
 repositories {
-    maven("https://maven.whereareiam.me/release")
+    maven("https://registry.whereareiam.me/maven/packages")
 }
 
 dependencies {
@@ -104,7 +103,7 @@ dependencies {
 
 ```groovy
 repositories {
-    maven { url = uri("https://maven.whereareiam.me/release") }
+    maven { url = uri("https://registry.whereareiam.me/maven/packages") }
 }
 
 dependencies {
@@ -118,7 +117,7 @@ dependencies {
 <repositories>
   <repository>
     <id>socialismus-release</id>
-    <url>https://maven.whereareiam.me/release</url>
+    <url>https://registry.whereareiam.me/maven/packages</url>
   </repository>
 </repositories>
 
@@ -134,7 +133,7 @@ dependencies {
   </ContentTab>
 </ContentTabs>
 
-If you intentionally target development builds instead of releases, switch the repository URL to the development repository and use the matching development version.
+If you intentionally target development builds instead of releases, use the matching development version from the public repository.
 
 ## Versioning semantics
 
@@ -143,10 +142,10 @@ Socialismus currently publishes two main version streams:
 - release versions such as `1.0.0`
 - development versions such as `dev-91e1b65`
 
-In practice:
+Both kinds of version are published to the public `packages` repository:
 
-- release versions are published to the release repository from GitHub release tags
-- development versions are published to the development repository from branch builds
+- release versions are built from GitHub release tags
+- development versions are built from branch builds
 - development versions usually use `<branch>-<short-commit-sha>`, so the `dev` branch produces versions like `dev-91e1b65`
 
 If you are writing a normal addon plugin or module for production, prefer release versions.
@@ -154,26 +153,26 @@ Use development versions only when you intentionally depend on unreleased change
 
 ## Javadocs
 
-Use these links to browse the generated API documentation for the latest published release and latest published development build:
+Each published API includes a Javadoc JAR in the public `packages` repository:
 
 - Socialismus API latest release: <MavenVersionLink
-    metadataUrl="https://maven.whereareiam.me/release/me/whereareiam/socialismus/api/maven-metadata.xml"
-    hrefTemplate="https://maven.whereareiam.me/javadoc/release/me/whereareiam/socialismus/api/{version}"
+    metadataUrl="https://registry.whereareiam.me/maven/packages/me/whereareiam/socialismus/api/maven-metadata.xml"
+    hrefTemplate="https://registry.whereareiam.me/maven/packages/me/whereareiam/socialismus/api/{version}/api-{version}-javadoc.jar"
     selector="release"
   />
 - Socialismus API latest development build: <MavenVersionLink
-    metadataUrl="https://maven.whereareiam.me/development/me/whereareiam/socialismus/api/maven-metadata.xml"
-    hrefTemplate="https://maven.whereareiam.me/javadoc/development/me/whereareiam/socialismus/api/{version}"
+    metadataUrl="https://registry.whereareiam.me/maven/packages/me/whereareiam/socialismus/api/maven-metadata.xml"
+    hrefTemplate="https://registry.whereareiam.me/maven/packages/me/whereareiam/socialismus/api/{version}/api-{version}-javadoc.jar"
     selector="latest"
   />
 - Socialismus module API latest release: <MavenVersionLink
-    metadataUrl="https://maven.whereareiam.me/release/me/whereareiam/socialismus/module/api/maven-metadata.xml"
-    hrefTemplate="https://maven.whereareiam.me/javadoc/release/me/whereareiam/socialismus/module/api/{version}"
+    metadataUrl="https://registry.whereareiam.me/maven/packages/me/whereareiam/socialismus/module/api/maven-metadata.xml"
+    hrefTemplate="https://registry.whereareiam.me/maven/packages/me/whereareiam/socialismus/module/api/{version}/api-{version}-javadoc.jar"
     selector="release"
   />
 - Socialismus module API latest development build: <MavenVersionLink
-    metadataUrl="https://maven.whereareiam.me/development/me/whereareiam/socialismus/module/api/maven-metadata.xml"
-    hrefTemplate="https://maven.whereareiam.me/javadoc/development/me/whereareiam/socialismus/module/api/{version}"
+    metadataUrl="https://registry.whereareiam.me/maven/packages/me/whereareiam/socialismus/module/api/maven-metadata.xml"
+    hrefTemplate="https://registry.whereareiam.me/maven/packages/me/whereareiam/socialismus/module/api/{version}/api-{version}-javadoc.jar"
     selector="latest"
   />
 

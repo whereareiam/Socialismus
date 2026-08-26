@@ -58,8 +58,7 @@ public class VelocitySocialismus {
 		VelocityLibraryManager libraryManager = new VelocityLibraryManager(proxyServer, pluginContainer, logger, dataPath, ".libraries");
 		libraryManager.setVerbosityMode(VerbosityMode.SUMMARY);
 		libraryManager.addMavenCentral();
-		libraryManager.addRepository("https://maven.whereareiam.me/release");
-		libraryManager.addRepository("https://maven.whereareiam.me/development");
+		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
 		libraryManager.loadDescriptors();
 
 		new VelocityInjector(
