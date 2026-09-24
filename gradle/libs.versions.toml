@@ -49,7 +49,7 @@ cloud-core = "2.0.0"
 cloud-paper = "2.0.0-beta.16"
 cloud-velocity = "2.0.0-beta.16"
 cloud-cooldown = "1.0.0-rc.1"
-cloud-minecraft-extras = "2.0.0-beta.16"
+cloud-minecraft-extras = "2.0.0-SNAPSHOT"
 
 # brigadier
 brigadier = "1.0.500"
