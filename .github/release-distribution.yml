@@ -15,6 +15,8 @@ supported_paper_game_versions: &supported_paper_game_versions
   - "26.1"
   - "26.1.1"
   - "26.1.2"
+  - "26.2"
+  - "26.3"
 
 supported_bukkit_game_versions: &supported_bukkit_game_versions
   - "1.16"
@@ -55,6 +57,8 @@ supported_bukkit_game_versions: &supported_bukkit_game_versions
   - "26.1"
   - "26.1.1"
   - "26.1.2"
+  - "26.2"
+  - "26.3"
 
 supported_velocity_game_versions: &supported_velocity_game_versions
   - "1.16"
@@ -95,6 +99,8 @@ supported_velocity_game_versions: &supported_velocity_game_versions
   - "26.1"
   - "26.1.1"
   - "26.1.2"
+  - "26.2"
+  - "26.3"
 
 release:
   classification:
