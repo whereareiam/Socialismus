@@ -45,11 +45,11 @@ adventure-gson = "5.1.1"
 adventure-platform-bukkit = "4.4.1"
 
 # cloud
-cloud-core = "2.0.0"
-cloud-paper = "2.0.0-beta.16"
-cloud-velocity = "2.0.0-beta.16"
+cloud-core = "2.1.0"
+cloud-paper = "2.0.1"
+cloud-velocity = "2.0.1"
 cloud-cooldown = "1.0.0-rc.1"
-cloud-minecraft-extras = "2.0.0-beta.16"
+cloud-minecraft-extras = "2.0.1"
 
 # brigadier
 brigadier = "1.0.500"

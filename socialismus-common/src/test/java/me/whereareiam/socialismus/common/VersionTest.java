@@ -11,7 +11,7 @@ class VersionTest {
 	@Test
 	@DisplayName("Should keep the latest supported release in semantic order")
 	void getLatestUsesSemanticVersionOrdering() {
-		assertEquals(Version.V_26_2, Version.getLatest());
+		assertEquals(Version.V_26_3, Version.getLatest());
 	}
 
 	@Test
@@ -23,6 +23,7 @@ class VersionTest {
 		assertResolvesTo("26.1.1", Version.V_26_1_1);
 		assertResolvesTo("26.1.2", Version.V_26_1_2);
 		assertResolvesTo("26.2", Version.V_26_2);
+		assertResolvesTo("26.3", Version.V_26_3);
 	}
 
 	@Test
@@ -32,6 +33,7 @@ class VersionTest {
 		assertResolvesTo("26.1.build.1-stable", Version.V_26_1);
 		assertResolvesTo("26.1.2.build.63-stable", Version.V_26_1_2);
 		assertResolvesTo("26.2.build.1-stable", Version.V_26_2);
+		assertResolvesTo("26.3.build.40-alpha", Version.V_26_3);
 		assertResolvesTo(" 26.1.2.build.63-stable ", Version.V_26_1_2);
 	}
 
@@ -46,14 +48,14 @@ class VersionTest {
 		assertResolvesTo("26.0.9", Version.UNSUPPORTED);
 		assertResolvesTo("26.1.3", Version.UNSUPPORTED);
 		assertResolvesTo("26.1.2.1", Version.UNSUPPORTED);
+		assertResolvesTo("26.2.1", Version.UNSUPPORTED);
 	}
 
 	@Test
 	@DisplayName("Should classify unknown newer versions as future")
 	void ofRecognizesFutureVersions() {
-		assertResolvesTo("26.2.1", Version.FUTURE);
-		assertResolvesTo("26.2.1.build.1-stable", Version.FUTURE);
-		assertResolvesTo("26.3", Version.FUTURE);
+		assertResolvesTo("26.3.1", Version.FUTURE);
+		assertResolvesTo("26.3.1.build.1-stable", Version.FUTURE);
 		assertResolvesTo("27.0", Version.FUTURE);
 	}
 
@@ -71,6 +73,7 @@ class VersionTest {
 		assertTrue(Version.isHigherThan(Version.V_1_21_10, Version.V_1_21_9));
 		assertTrue(Version.isLowerThan(Version.V_26_1_1, Version.V_26_1_2));
 		assertTrue(Version.V_26_1_2.isAtLeast(Version.V_26_1_1));
+		assertTrue(Version.isHigherThan(Version.V_26_3, Version.V_26_2));
 		assertFalse(Version.V_1_20_5.isAtLeast(Version.V_1_20_6));
 	}
 
