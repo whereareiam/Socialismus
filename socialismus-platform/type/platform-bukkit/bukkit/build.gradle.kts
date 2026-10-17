@@ -25,10 +25,25 @@ dependencies {
     attache(libs.adventure.plain)
     attache(libs.adventure.gson)
     attache(libs.adventure.platform.bukkit)
+    // adventure-platform-bukkit asks for Adventure 4; declaring these keeps its Adventure on the version above.
+    attache(libs.adventure.legacy)
+    attache(libs.adventure.json.legacy)
+    attache(libs.adventure.nbt)
     attache(libs.cloud.paper)
     attache(libs.cloud.minecraft.extras)
 }
 
+// Relocated, so the Adventure the jar loads never meets the one some servers ship.
+val adventureRelocations = mapOf(
+    "net.kyori.adventure" to "me.whereareiam.socialismus.library.adventure",
+    "net.kyori.option" to "me.whereareiam.socialismus.library.option"
+)
+
+attache {
+    // Every library the jar downloads, also those other projects declare, such as Cloud, Commandant and Keystone.
+    adventureRelocations.forEach { (pattern, relocatedPattern) -> relocate(pattern.replace(".", "{}"), relocatedPattern) }
+}
+
 tasks.withType<ShadowJar>().configureEach {
-    relocate("net.kyori.adventure", "me.whereareiam.socialismus.library.adventure")
+    adventureRelocations.forEach { (pattern, relocatedPattern) -> relocate(pattern, relocatedPattern) }
 }
