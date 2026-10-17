@@ -6,10 +6,12 @@ import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.model.chat.message.ChatMessage;
-import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatMessageFactory;
+import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
+import me.whereareiam.socialismus.listener.DynamicListener;
+import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import net.kyori.adventure.text.Component;
 
 import java.util.Collection;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class PlayerChatListener implements DynamicListener<PlayerChatEvent> {
 	private final ProxyServer proxyServer;
 	private final ChatCoordinator chatCoordinator;
+	private final ChatBroadcaster chatBroadcaster;
 	private final ChatMessageFactory chatMessageFactory;
 
 	public void onEvent(PlayerChatEvent event) {
@@ -33,8 +36,12 @@ public class PlayerChatListener implements DynamicListener<PlayerChatEvent> {
 				content
 		);
 
-		chatCoordinator.coordinate(chatMessage);
-
+		FormattedChatMessage formatted = chatCoordinator.coordinate(chatMessage);
 		event.setResult(PlayerChatEvent.ChatResult.denied());
+
+		// Velocity cannot hand a formatted message back to its chat event, so one left for vanilla sending, as the
+		// default settings leave every message, is broadcast here instead of not at all.
+		if (!formatted.isCancelled() && formatted.isVanillaSending())
+			chatBroadcaster.broadcast(formatted);
 	}
 }
