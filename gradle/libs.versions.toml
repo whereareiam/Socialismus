@@ -40,7 +40,7 @@ bStats = "3.2.1"
 adventure = "5.1.1"
 adventure-minimessage = "5.1.1"
 adventure-legacy = "5.1.1"
-adventure-plain = "5.1.1"
+adventure-plain = "5.2.0"
 adventure-gson = "5.1.1"
 adventure-platform-bukkit = "4.4.1"
 
