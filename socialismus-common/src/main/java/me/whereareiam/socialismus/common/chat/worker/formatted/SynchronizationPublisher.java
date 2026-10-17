@@ -4,11 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.Worker;
-import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.ChatSync;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 
 @Singleton
@@ -16,22 +16,22 @@ public class SynchronizationPublisher {
 	private final ChatSyncBus syncBus;
 
 	// Configs
-	private final Provider<ChatSettings> chatSettings;
+	private final Provider<ChatSync> chatSync;
 
 	@Inject
 	public SynchronizationPublisher(
 			WorkerProcessor<FormattedChatMessage> workerProcessor,
 			ChatSyncBus syncBus,
-			Provider<ChatSettings> chatSettings
+			Provider<ChatSync> chatSync
 	) {
 		this.syncBus = syncBus;
-		this.chatSettings = chatSettings;
+		this.chatSync = chatSync;
 
 		workerProcessor.addWorker(new Worker<>(this::publish, 50, true, false));
 	}
 
 	private FormattedChatMessage publish(FormattedChatMessage msg) {
-		if (!chatSettings.get().getSynchronization().isEnabled()) return msg;
+		if (!chatSync.get().isEnabled()) return msg;
 		if (msg.getOrigin() != null && !msg.getOrigin().equals(Constants.Synchronization.IDENTIFIER)) return msg;
 		if (determineRadius(msg) > 0) return msg;
 

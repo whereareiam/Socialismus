@@ -5,7 +5,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.command.CommandManagerProvider;
-import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.platform.paper.mapper.CommandSenderMapper;
 import me.whereareiam.socialismus.platform.paper.mapper.CommandSourceStackMapper;
 import org.bukkit.plugin.Plugin;
@@ -23,12 +23,12 @@ public class PaperCommandManagerProvider extends CommandManagerProvider {
 
 	@Inject
 	public PaperCommandManagerProvider(
-			Provider<Settings> settings,
+			Provider<Commands> commands,
 			Plugin plugin,
 			CommandSenderMapper commandSenderMapper,
 			CommandSourceStackMapper commandSourceStackMapper
 	) {
-		super(settings);
+		super(commands);
 		this.plugin = plugin;
 		this.commandSenderMapper = commandSenderMapper;
 		this.commandSourceStackMapper = commandSourceStackMapper;
@@ -42,10 +42,10 @@ public class PaperCommandManagerProvider extends CommandManagerProvider {
 				commandSenderMapper
 		);
 
-		if (commandManager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER) && settings.get().getCommands().isUseBrigadier())
+		if (commandManager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER) && commands.get().getBehavior().isUseBrigadier())
 			commandManager.registerBrigadier();
 
-		if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION) && settings.get().getCommands().isUseAsyncCompletions())
+		if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION) && commands.get().getBehavior().isUseAsyncCompletions())
 			commandManager.registerAsynchronousCompletions();
 
 		return commandManager;

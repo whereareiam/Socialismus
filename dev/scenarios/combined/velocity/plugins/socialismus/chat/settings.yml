@@ -1,0 +1,14 @@
+fallback:
+  enabled: false
+  chat: "fallback"
+history:
+  fillerSize: 100
+  historySize: 1000
+  permission: "socialismus.admin"
+  bypassPermission: "socialismus.admin"
+notifications:
+  noChat: true
+  noFormat: true
+  noPlayers: false
+  noNearbyPlayers: false
+  emptyMessage: true

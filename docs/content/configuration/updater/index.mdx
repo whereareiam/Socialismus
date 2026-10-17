@@ -1,0 +1,66 @@
+---
+title: Updater
+description: Field-by-field explanation of Socialismus' update checks.
+---
+
+`updater` controls release and development-build update checks for Socialismus.
+
+## check
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether Socialismus looks for new versions at all
+
+## interval
+
+- Takes: a duration such as `"30m"`, `"1h"` or `"1d"`
+- Current default: `"1h"`
+- Affects: how often Socialismus looks for new versions
+
+A duration of zero turns the checks off. A bare number counts minutes.
+
+## warn
+
+### updates
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether release builds warn when a newer published release exists
+
+### localBuilds
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether Socialismus warns when it detects a local `DEV` build
+
+### devBuilds
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether branch-style development builds warn when they are behind newer dev builds
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+check: true
+interval: "6h"
+warn:
+  updates: true
+  localBuilds: true
+  devBuilds: true
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "check": true,
+  "interval": "6h",
+  "warn": {
+    "updates": true,
+    "localBuilds": true,
+    "devBuilds": true
+  }
+}
+```
+  </Tab>
+</Tabs>

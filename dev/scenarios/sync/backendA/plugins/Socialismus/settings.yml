@@ -1,26 +1,8 @@
+_version: 3
 level: 2
 serialization:
   type: "MINIMESSAGE"
   enableLegacyColors: false
-synchronization:
-  enabled: true
-  server: "sync-backend-a"
-  useRealServerName: false
-  crossPlayerSync: true
-updater:
-  checkForUpdates: true
-  warnAboutUpdates: true
-  warnAboutLocalBuilds: true
-  warnAboutDevBuilds: true
-  interval: 1
-commands:
-  useBrigadier: false
-  useAsyncCompletions: true
-misc:
-  disableJoinNotification: true
-  disableQuitNotification: true
-  allowLegacyParsing: false
-  vanillaSending: true
 listeners:
   events:
     org.bukkit.event.player.PlayerJoinEvent:
@@ -38,3 +20,7 @@ listeners:
     org.bukkit.event.player.PlayerChangedWorldEvent:
       register: true
       priority: "LOWEST"
+vanilla:
+  joinMessage: false
+  quitMessage: false
+  sending: true

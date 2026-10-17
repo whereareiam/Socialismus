@@ -5,7 +5,7 @@ import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.config.Sync;
 import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.socialismus.type.ResourceType;
@@ -14,11 +14,11 @@ import me.whereareiam.socialismus.type.ResourceType;
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class SyncServiceProvider implements Provider<SyncService> {
 	private final ResourceRegistry registry;
-	private final Provider<Settings> settings;
+	private final Provider<Sync> syncSettings;
 
 	@Override
 	public SyncService get() {
-		if (!settings.get().getSynchronization().isEnabled())
+		if (!syncSettings.get().isEnabled())
 			return new DummySyncService();
 
 		Object svc = registry.get(ResourceType.SYNC)

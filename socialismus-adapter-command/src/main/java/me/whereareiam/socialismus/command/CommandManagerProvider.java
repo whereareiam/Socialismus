@@ -4,14 +4,14 @@ import com.google.inject.Provider;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.Version;
 import org.incendo.cloud.CommandManager;
 
 @RequiredArgsConstructor
 public abstract class CommandManagerProvider implements Provider<CommandManager<Actor>> {
-	protected final Provider<Settings> settings;
+	protected final Provider<Commands> commands;
 
 	private CommandManager<Actor> commandManager;
 
@@ -22,7 +22,7 @@ public abstract class CommandManagerProvider implements Provider<CommandManager<
 		commandManager = switch (PlatformType.getType()) {
 			case BUKKIT, SPIGOT -> createLegacyCommandManager();
 			case FOLIA, PAPER -> {
-				if (Constants.SERVER_VERSION.isAtLeast(Version.V_1_20_5) && settings.get().getCommands().isUseBrigadier())
+				if (Constants.SERVER_VERSION.isAtLeast(Version.V_1_20_5) && commands.get().getBehavior().isUseBrigadier())
 					yield createPaperCommandManager();
 
 				yield createLegacyCommandManager();

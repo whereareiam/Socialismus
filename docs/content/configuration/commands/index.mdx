@@ -1,0 +1,49 @@
+---
+title: Commands
+description: Field-by-field explanation of Socialismus' command behavior.
+---
+
+`commands` holds how commands behave as a whole, under `behavior`, and the definition of each command, under `commands`.
+
+## behavior
+
+`behavior` controls the command manager rather than any one command definition.
+
+### useBrigadier
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: `true` or `false`
+- Current default: `false`
+- Affects: whether the legacy Paper command manager registers native Brigadier support when that capability exists
+
+This is mainly relevant on Paper-side setups where the underlying Cloud command manager exposes Brigadier support.
+
+### useAsyncCompletions
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether asynchronous command completions are registered when the current command manager supports them
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+behavior:
+  useBrigadier: false
+  useAsyncCompletions: true
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "behavior": {
+    "useBrigadier": false,
+    "useAsyncCompletions": true
+  }
+}
+```
+  </Tab>
+</Tabs>
+

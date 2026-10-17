@@ -1,7 +1,10 @@
 ---
 title: Settings
-description: Field-by-field explanation of Socialismus' core settings configuration area.
+description: Field-by-field explanation of Socialismus' core settings document.
 ---
+
+`settings` holds the log level, how messages are serialized, what Socialismus changes about the server's own behaviour, and how it listens to events.
+Sync, the updater, commands and chats have [documents of their own](../index.mdx#where-each-setting-lives).
 
 ## Level
 
@@ -29,7 +32,7 @@ level: 3
   </Tab>
 </Tabs>
 
-Use `2` for normal operation and `3` when you are actively debugging chat routing, listeners, or synchronization behavior.
+Use `2` for normal operation and `3` when you are actively debugging chat routing, listeners, or sync behavior.
 
 ## serialization
 
@@ -75,227 +78,49 @@ serialization:
   </Tab>
 </Tabs>
 
-## synchronization
+## vanilla
 
-`synchronization` controls whether this Socialismus instance participates in network synchronization and what identifier it uses when it does.
+`vanilla` switches what the server itself does that Socialismus can take over.
 
-### enabled
-
-<Badge type="warning">Warning</Badge>
+### joinMessage
 
 - Takes: `true` or `false`
 - Current default: `false`
-- Affects: whether Socialismus starts synchronization bridges at all
+- Affects: whether the server's own message about a joining player, such as "Alice joined the game", is shown
 
-Leave this disabled on standalone setups.
-Enable it only when you intentionally run Socialismus with synchronization-capable infrastructure and matching companion components.
-
-### server
-
-<Badge type="warning">Advanced</Badge>
-
-- Takes: a non-empty string
-- Current default: a generated random UUID string
-- Affects: the identifier Socialismus uses as this instance's synchronization origin
-
-This value is used to tag synchronized chat, history, and player-state events so Socialismus can tell local and remote traffic apart.
-For real synchronized networks, set this to a stable, explicit identifier per node instead of relying on the generated default.
-
-### useRealServerName
-
-<Badge type="warning">Advanced</Badge>
+### quitMessage
 
 - Takes: `true` or `false`
 - Current default: `false`
-- Affects: whether synchronized player server-state keeps the real backend server name instead of the configured synchronization identifier
+- Affects: whether the server's own message about a leaving player is shown
 
-This is mainly relevant on proxy-style synchronized setups.
-When it is enabled and Socialismus knows the player's actual server name, Socialismus stores that real server name on the synchronized player state.
-When it is disabled, Socialismus stores the configured synchronization identifier instead.
-
-### crossPlayerSync
-
-<Badge type="warning">Advanced</Badge>
-
-- Takes: `true` or `false`
-- Current default: `true`
-- Affects: whether cross-player synchronization starts when synchronization itself is enabled
-
-This matters only when `synchronization.enabled` is already `true`.
-
-<Tabs items={["YAML", "JSON"]}>
-  <Tab value="YAML">
-```yaml
-synchronization:
-  enabled: true
-  server: "proxy-1"
-  useRealServerName: false
-  crossPlayerSync: true
-```
-  </Tab>
-  <Tab value="JSON">
-```json
-{
-  "synchronization": {
-    "enabled": true,
-    "server": "proxy-1",
-    "useRealServerName": false,
-    "crossPlayerSync": true
-  }
-}
-```
-  </Tab>
-</Tabs>
-
-## updater
-
-`updater` controls release and development-build update checks for the core Socialismus plugin.
-
-### checkForUpdates
-
-- Takes: `true` or `false`
-- Current default: `true`
-- Affects: whether the updater scheduler runs at all
-
-### warnAboutUpdates
-
-- Takes: `true` or `false`
-- Current default: `true`
-- Affects: whether release builds warn when a newer published release exists
-
-### warnAboutLocalBuilds
-
-- Takes: `true` or `false`
-- Current default: `true`
-- Affects: whether Socialismus warns when it detects a local `DEV` build
-
-### warnAboutDevBuilds
-
-- Takes: `true` or `false`
-- Current default: `true`
-- Affects: whether branch-style development builds warn when they are behind newer dev builds
-
-### interval
-
-<Badge type="warning">Warning</Badge>
-
-- Takes: a positive number
-- Current default: `1`
-- Affects: how often Socialismus reruns the updater scheduler
-
-The current runtime code treats this value as hours when scheduling checks, even though the field comment in the model still says minutes.
-Document and tune it as hours unless the runtime behavior changes.
-
-<Tabs items={["YAML", "JSON"]}>
-  <Tab value="YAML">
-```yaml
-updater:
-  checkForUpdates: true
-  warnAboutUpdates: true
-  warnAboutLocalBuilds: true
-  warnAboutDevBuilds: true
-  interval: 6
-```
-  </Tab>
-  <Tab value="JSON">
-```json
-{
-  "updater": {
-    "checkForUpdates": true,
-    "warnAboutUpdates": true,
-    "warnAboutLocalBuilds": true,
-    "warnAboutDevBuilds": true,
-    "interval": 6
-  }
-}
-```
-  </Tab>
-</Tabs>
-
-## commands
-
-`commands` controls command-manager behavior rather than command definitions themselves.
-
-### useBrigadier
-
-<Badge type="warning">Advanced</Badge>
-
-- Takes: `true` or `false`
-- Current default: `false`
-- Affects: whether the legacy Paper command manager registers native Brigadier support when that capability exists
-
-This is mainly relevant on Paper-side setups where the underlying Cloud command manager exposes Brigadier support.
-
-### useAsyncCompletions
-
-<Badge type="warning">Advanced</Badge>
-
-- Takes: `true` or `false`
-- Current default: `true`
-- Affects: whether asynchronous command completions are registered when the current command manager supports them
-
-<Tabs items={["YAML", "JSON"]}>
-  <Tab value="YAML">
-```yaml
-commands:
-  useBrigadier: false
-  useAsyncCompletions: true
-```
-  </Tab>
-  <Tab value="JSON">
-```json
-{
-  "commands": {
-    "useBrigadier": false,
-    "useAsyncCompletions": true
-  }
-}
-```
-  </Tab>
-</Tabs>
-
-## misc
-
-`misc` contains general runtime toggles that do not fit better in serialization, synchronization, commands, or listeners.
-
-### disableJoinNotification
-
-- Takes: `true` or `false`
-- Current default: `true`
-- Affects: whether Socialismus suppresses join-notification behavior tied to its player lifecycle handling
-
-### disableQuitNotification
-
-- Takes: `true` or `false`
-- Current default: `true`
-- Affects: whether Socialismus suppresses quit-notification behavior tied to its player lifecycle handling
-
-### vanillaSending
+### sending
 
 <Badge type="warning">Warning</Badge>
 
 - Takes: `true` or `false`
 - Current default: `true`
-- Affects: whether formatted chat messages start in vanilla-sending mode
+- Affects: whether a formatted chat message is handed back to the server's chat event, so other plugins see it, instead of being sent by Socialismus itself
 
-This setting influences whether Bukkit or Paper chat handling continues through the platform's vanilla message path or is treated as fully custom Socialismus broadcast handling.
+On Paper and Bukkit the message then continues through the server's own chat path.
+Velocity cannot take a message back, so Socialismus sends it there whatever this is set to.
 
 <Tabs items={["YAML", "JSON"]}>
   <Tab value="YAML">
 ```yaml
-misc:
-  disableJoinNotification: true
-  disableQuitNotification: true
-  vanillaSending: true
+vanilla:
+  joinMessage: false
+  quitMessage: false
+  sending: true
 ```
   </Tab>
   <Tab value="JSON">
 ```json
 {
-  "misc": {
-    "disableJoinNotification": true,
-    "disableQuitNotification": true,
-    "vanillaSending": true
+  "vanilla": {
+    "joinMessage": false,
+    "quitMessage": false,
+    "sending": true
   }
 }
 ```

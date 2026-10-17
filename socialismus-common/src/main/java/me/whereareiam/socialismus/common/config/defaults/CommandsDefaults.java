@@ -12,6 +12,11 @@ import java.util.Map;
 public class CommandsDefaults implements DefaultsProvider<Commands> {
 	@Override
 	public Commands supply(Commands commands) {
+		Commands.Behavior behavior = new Commands.Behavior();
+		behavior.setUseBrigadier(false);
+		behavior.setUseAsyncCompletions(true);
+		commands.setBehavior(behavior);
+
 		CommandDefinition main = CommandDefinition.builder()
 				.enabled(true)
 				.aliases(List.of("socialismus", "social"))

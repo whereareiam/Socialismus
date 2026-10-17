@@ -26,8 +26,11 @@ import me.whereareiam.socialismus.common.config.migration.SocialismusConfigMigra
 import me.whereareiam.socialismus.common.config.provider.CommandsProvider;
 import me.whereareiam.socialismus.common.config.provider.MessagesProvider;
 import me.whereareiam.socialismus.common.config.provider.SettingsProvider;
+import me.whereareiam.socialismus.common.config.provider.SyncProvider;
+import me.whereareiam.socialismus.common.config.provider.UpdaterProvider;
 import me.whereareiam.socialismus.common.config.provider.chat.ChatMessagesProvider;
 import me.whereareiam.socialismus.common.config.provider.chat.ChatSettingsProvider;
+import me.whereareiam.socialismus.common.config.provider.chat.ChatSyncProvider;
 import me.whereareiam.socialismus.common.config.provider.chat.ChatsProvider;
 import me.whereareiam.socialismus.common.config.resolver.FileSystemConfigurationTypeResolver;
 import me.whereareiam.socialismus.common.container.ChatContainer;
@@ -52,10 +55,13 @@ import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.ChatSync;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.config.Sync;
+import me.whereareiam.socialismus.model.config.Updater;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
@@ -118,6 +124,13 @@ public class CommonConfiguration extends AbstractModule {
 		bind(SettingsProvider.class);
 		bind(Settings.class).toProvider(SettingsProvider.class);
 
+		// Right after the settings: loading it sets the sync constants that the documents after it read.
+		bind(SyncProvider.class);
+		bind(Sync.class).toProvider(SyncProvider.class);
+
+		bind(UpdaterProvider.class);
+		bind(Updater.class).toProvider(UpdaterProvider.class);
+
 		bind(MessagesProvider.class);
 		bind(Messages.class).toProvider(MessagesProvider.class);
 
@@ -132,6 +145,9 @@ public class CommonConfiguration extends AbstractModule {
 
 		bind(ChatSettingsProvider.class).asEagerSingleton();
 		bind(ChatSettings.class).toProvider(ChatSettingsProvider.class);
+
+		bind(ChatSyncProvider.class).asEagerSingleton();
+		bind(ChatSync.class).toProvider(ChatSyncProvider.class);
 
 		bind(ChatMessagesProvider.class).asEagerSingleton();
 		bind(ChatMessages.class).toProvider(ChatMessagesProvider.class);
@@ -241,7 +257,7 @@ public class CommonConfiguration extends AbstractModule {
 	@Singleton
 	@Named("chatPath")
 	Path provideChatPath() {
-		return ensureDirectory(dataPath.resolve("chats"), "chats");
+		return ensureDirectory(dataPath.resolve("chat"), "chat");
 	}
 
 	@Provides

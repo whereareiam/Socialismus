@@ -7,7 +7,7 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.ProxyServer;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.command.CommandManagerProvider;
-import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.platform.velocity.mapper.CommandSourceMapper;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.execution.ExecutionCoordinator;
@@ -23,12 +23,12 @@ public class VelocityCommandManagerProvider extends CommandManagerProvider {
 
 	@Inject
 	public VelocityCommandManagerProvider(
-			Provider<Settings> settings,
+			Provider<Commands> commands,
 			PluginContainer plugin,
 			ProxyServer proxyServer,
 			CommandSourceMapper commandSourceMapper
 	) {
-		super(settings);
+		super(commands);
 		this.plugin = plugin;
 		this.proxyServer = proxyServer;
 		this.commandSourceMapper = commandSourceMapper;

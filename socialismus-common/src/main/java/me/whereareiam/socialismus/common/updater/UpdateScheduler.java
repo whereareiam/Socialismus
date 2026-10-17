@@ -12,7 +12,7 @@ import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
 import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
 import me.whereareiam.socialismus.lifecycle.StartupPhase;
 import me.whereareiam.socialismus.logging.Logger;
-import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.config.Updater;
 import me.whereareiam.socialismus.model.scheduler.PeriodicalRunnableTask;
 import me.whereareiam.socialismus.model.update.UpdateConfiguration;
 import me.whereareiam.socialismus.model.update.UpdateSource;
@@ -26,12 +26,11 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Checks for new versions of Socialismus at the interval the settings name, from the moment Socialismus handles
- * players. After a reload it schedules the checks again with the reloaded settings.
+ * Checks for new versions of Socialismus at the interval the updater document names, from the moment Socialismus handles
+ * players. After a reload it schedules the checks again with the reloaded updater document.
  */
 @Singleton
 public final class UpdateScheduler implements RuntimeLifecycle, EventListener {
-	private static final long MS_PER_HOUR = 3_600_000L;
 	private static final int BRANCH_UPDATE_LIMIT = 50;
 	private static final String UPDATER_MODULE = "main";
 
@@ -49,19 +48,19 @@ public final class UpdateScheduler implements RuntimeLifecycle, EventListener {
 					.build())
 			.build();
 
-	private final Provider<Settings> settings;
+	private final Provider<Updater> updater;
 	private final Scheduler scheduler;
 	private final UpdateProviderRegistry providers;
 	private final EventManager eventManager;
 
 	@Inject
 	public UpdateScheduler(
-			Provider<Settings> settings,
+			Provider<Updater> updater,
 			Scheduler scheduler,
 			UpdateProviderRegistry providers,
 			EventManager eventManager
 	) {
-		this.settings = settings;
+		this.updater = updater;
 		this.scheduler = scheduler;
 		this.providers = providers;
 		this.eventManager = eventManager;
@@ -91,15 +90,15 @@ public final class UpdateScheduler implements RuntimeLifecycle, EventListener {
 	}
 
 	private void schedule() {
-		var cfg = settings.get().getUpdater();
-		if (!cfg.isCheckForUpdates() || cfg.getInterval() <= 0) {
+		Updater cfg = updater.get();
+		if (!cfg.isCheck() || cfg.getInterval() == null || cfg.getInterval().isZero() || cfg.getInterval().isNegative()) {
 			Logger.debug("Update checking is disabled");
 			return;
 		}
 
 		scheduler.schedule(
 				PeriodicalRunnableTask.builder()
-						.period(cfg.getInterval() * MS_PER_HOUR)
+						.period(cfg.getInterval().toMillis())
 						.runnable(this::runOnce)
 						.module(UPDATER_MODULE)
 						.delay(0)
@@ -107,25 +106,25 @@ public final class UpdateScheduler implements RuntimeLifecycle, EventListener {
 				true
 		);
 
-		Logger.debug("Update scheduler started with interval: %d hours", cfg.getInterval());
+		Logger.debug("Update scheduler started with interval: %s", cfg.getInterval());
 	}
 
 	private void runOnce() {
-		checkEntry("Socialismus", Constants.VERSION, CORE_SPEC, settings.get().getUpdater());
+		checkEntry("Socialismus", Constants.VERSION, CORE_SPEC, updater.get());
 	}
 
 	private void checkEntry(
 			String name,
 			String current,
 			UpdateConfiguration spec,
-			Settings.Updater cfg
+			Updater cfg
 	) {
 		// nothing configured?
 		if (spec.getRelease() == null && spec.getDev() == null) return;
 
 		// 1) LOCAL DEV exact build
 		if ("DEV".equalsIgnoreCase(current)) {
-			if (cfg.isWarnAboutLocalBuilds()) {
+			if (cfg.getWarn().isLocalBuilds()) {
 				Logger.info(AnsiColor.RED +
 						"You are running a local dev build of " + name + "." +
 						AnsiColor.RESET);
@@ -135,7 +134,7 @@ public final class UpdateScheduler implements RuntimeLifecycle, EventListener {
 
 		// 2) branch/CI build (anything not matching release‐pattern)
 		if (!isReleaseVersion(current)) {
-			if (cfg.isWarnAboutDevBuilds() && spec.getDev() != null) {
+			if (cfg.getWarn().isDevBuilds() && spec.getDev() != null) {
 				var devSpec = spec.getDev();
 				UpdateProvider prov = providers.by(devSpec);
 				warnAheadBehindBranches(current, name, prov, devSpec);
@@ -144,7 +143,7 @@ public final class UpdateScheduler implements RuntimeLifecycle, EventListener {
 		}
 
 		// 3) release build
-		if (cfg.isWarnAboutUpdates() && spec.getRelease() != null) {
+		if (cfg.getWarn().isUpdates() && spec.getRelease() != null) {
 			var relSpec = spec.getRelease();
 			UpdateProvider prov = providers.by(relSpec);
 			try {

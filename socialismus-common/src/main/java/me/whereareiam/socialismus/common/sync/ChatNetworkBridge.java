@@ -5,12 +5,12 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.logging.Logger;
-import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.ChatSync;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import net.kyori.adventure.text.Component;
@@ -26,12 +26,12 @@ public class ChatNetworkBridge implements ChatSyncBus {
 	private final SerializationService serializationService;
 	private final ChatCoordinator coordinator;
 
-	private final Provider<ChatSettings> chatSettings;
+	private final Provider<ChatSync> chatSync;
 
 	private final Component emptyComponent = Component.empty();
 
 	public void initialize() {
-		if (!chatSettings.get().getSynchronization().isEnabled())
+		if (!chatSync.get().isEnabled())
 			return;
 
 		subscribe();
@@ -39,7 +39,7 @@ public class ChatNetworkBridge implements ChatSyncBus {
 
 	@Override
 	public void publish(FormattedChatMessage message) {
-		if (!chatSettings.get().getSynchronization().isEnabled())
+		if (!chatSync.get().isEnabled())
 			return;
 
 		try {
@@ -55,7 +55,7 @@ public class ChatNetworkBridge implements ChatSyncBus {
 
 	@Override
 	public void subscribe() {
-		if (!chatSettings.get().getSynchronization().isEnabled())
+		if (!chatSync.get().isEnabled())
 			return;
 
 		sync.subscribe(CHANNEL, (channel, payload) -> handleEvent(payload));
@@ -71,7 +71,7 @@ public class ChatNetworkBridge implements ChatSyncBus {
 
 			if (message.getFormat() != null
 					&& !message.getFormat().equals(emptyComponent)
-					&& chatSettings.get().getSynchronization().isPreserveFormat()) {
+					&& chatSync.get().isPreserveFormat()) {
 				coordinator.coordinate(message);
 				return;
 			}

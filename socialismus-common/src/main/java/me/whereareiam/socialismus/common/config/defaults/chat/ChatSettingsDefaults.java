@@ -8,15 +8,17 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 public class ChatSettingsDefaults implements DefaultsProvider<ChatSettings> {
 	@Override
 	public ChatSettings supply(ChatSettings chatSettings) {
-		chatSettings.setNotifyNoChat(true);
-		chatSettings.setNotifyNoFormat(true);
-		chatSettings.setNotifyNoPlayers(false);
-		chatSettings.setNotifyNoNearbyPlayers(false);
-		chatSettings.setNotifyEmptyMessage(true);
+		ChatSettings.Notifications notifications = new ChatSettings.Notifications();
+		notifications.setNoChat(true);
+		notifications.setNoFormat(true);
+		notifications.setNoPlayers(false);
+		notifications.setNoNearbyPlayers(false);
+		notifications.setEmptyMessage(true);
+		chatSettings.setNotifications(notifications);
 
 		ChatSettings.FallbackChatSettings fallback = new ChatSettings.FallbackChatSettings();
 		fallback.setEnabled(true);
-		fallback.setChatId("fallback");
+		fallback.setChat("fallback");
 		chatSettings.setFallback(fallback);
 
 		ChatSettings.ChatHistorySettings history = new ChatSettings.ChatHistorySettings();
@@ -25,12 +27,6 @@ public class ChatSettingsDefaults implements DefaultsProvider<ChatSettings> {
 		history.setPermission("socialismus.admin");
 		history.setBypassPermission("socialismus.admin");
 		chatSettings.setHistory(history);
-
-		ChatSettings.SynchronizationSettings synchronization = new ChatSettings.SynchronizationSettings();
-		synchronization.setEnabled(false);
-		synchronization.setPreserveFormat(true);
-		synchronization.setClearHistory(false);
-		chatSettings.setSynchronization(synchronization);
 
 		return chatSettings;
 	}

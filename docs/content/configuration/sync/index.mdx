@@ -1,0 +1,73 @@
+---
+title: Sync
+description: Field-by-field explanation of how Socialismus takes part in a synced network.
+---
+
+`sync` controls whether this Socialismus instance syncs with other servers, through SocialismusRedis or SocialismusChannelizer, and under which identifier.
+What chats do when synced is in `chat/sync`.
+
+## enabled
+
+<Badge type="warning">Warning</Badge>
+
+- Takes: `true` or `false`
+- Current default: `false`
+- Affects: whether Socialismus starts synchronization bridges at all
+
+Leave this disabled on standalone setups.
+Enable it only when you intentionally run Socialismus with synchronization-capable infrastructure and matching companion components.
+
+## server
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: a non-empty string
+- Current default: a generated random UUID string
+- Affects: the identifier Socialismus uses as this instance's synchronization origin
+
+This value is used to tag synchronized chat, history, and player-state events so Socialismus can tell local and remote traffic apart.
+For real synchronized networks, set this to a stable, explicit identifier per node instead of relying on the generated default.
+
+## useRealServerName
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: `true` or `false`
+- Current default: `false`
+- Affects: whether synchronized player server-state keeps the real backend server name instead of the configured synchronization identifier
+
+This is mainly relevant on proxy-style synchronized setups.
+When it is enabled and Socialismus knows the player's actual server name, Socialismus stores that real server name on the synchronized player state.
+When it is disabled, Socialismus stores the configured synchronization identifier instead.
+
+## crossPlayerSync
+
+<Badge type="warning">Advanced</Badge>
+
+- Takes: `true` or `false`
+- Current default: `true`
+- Affects: whether cross-player synchronization starts when synchronization itself is enabled
+
+This matters only when `enabled` is already `true`.
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+enabled: true
+server: "proxy-1"
+useRealServerName: false
+crossPlayerSync: true
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "enabled": true,
+  "server": "proxy-1",
+  "useRealServerName": false,
+  "crossPlayerSync": true
+}
+```
+  </Tab>
+</Tabs>
+

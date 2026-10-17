@@ -94,7 +94,9 @@ class ChatSelectorTest {
 		when(containerService.getChatBySymbol("!")).thenReturn(List.of(chat));
 
 		ChatSettings settings = new ChatSettings();
-		settings.setNotifyEmptyMessage(notifyEmptyMessage);
+		ChatSettings.Notifications notifications = new ChatSettings.Notifications();
+		notifications.setEmptyMessage(notifyEmptyMessage);
+		settings.setNotifications(notifications);
 		ChatSettings.FallbackChatSettings fallback = new ChatSettings.FallbackChatSettings();
 		fallback.setEnabled(false);
 		settings.setFallback(fallback);

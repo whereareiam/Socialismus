@@ -74,7 +74,7 @@ public class FormatSelector {
 	}
 
 	private void notifyAboutAbsentFormat(FormattedChatMessage msg) {
-		if (!chatSettings.get().isNotifyNoFormat()) return;
+		if (!chatSettings.get().getNotifications().isNoFormat()) return;
 
 		msg.getSender().sendMessage(
 				Serializer.serialize(msg.getSender(), chatMessages.get().getNoChatMatch())

@@ -20,7 +20,7 @@ public class PlayerQuitListener implements DynamicListener<PlayerQuitEvent> {
 	}
 
 	public void onEvent(PlayerQuitEvent event) {
-		if (settings.get().getMisc().isDisableQuitNotification()) event.setQuitMessage(null);
+		if (!settings.get().getVanilla().isQuitMessage()) event.setQuitMessage(null);
 
 		playerRegistry.removePlayerData(event.getPlayer().getUniqueId());
 	}
