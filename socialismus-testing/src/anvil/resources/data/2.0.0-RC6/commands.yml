@@ -1,0 +1,65 @@
+commands:
+  help:
+    enabled: true
+    aliases:
+      - "help"
+    permission: ""
+    description: "Help command"
+    usage: "{command} {alias} [page]"
+    cooldown:
+      enabled: true
+      duration: 2
+      group: "global"
+    arguments:
+      page: "Page"
+  debug:
+    enabled: true
+    aliases:
+      - "debug"
+    permission: "socialismus.admin"
+    description: "Debug command"
+    usage: "{command} {alias}"
+    cooldown:
+      enabled: true
+      duration: 2
+      group: "global"
+    arguments: {}
+  reload:
+    enabled: true
+    aliases:
+      - "reload"
+    permission: "socialismus.admin"
+    description: "Reload command"
+    usage: "{command} {alias}"
+    cooldown:
+      enabled: true
+      duration: 2
+      group: "global"
+    arguments: {}
+  clear:
+    enabled: true
+    aliases:
+      - "clear"
+      - "clearchat"
+    permission: "socialismus.admin"
+    description: "Clear command"
+    usage: "{command} {alias} [context]"
+    cooldown:
+      enabled: true
+      duration: 2
+      group: "global"
+    arguments:
+      context: "Context"
+  main:
+    enabled: true
+    aliases:
+      - "socialismus"
+      - "social"
+    permission: ""
+    description: "Main command"
+    usage: "{alias}"
+    cooldown:
+      enabled: true
+      duration: 2
+      group: "global"
+    arguments: {}

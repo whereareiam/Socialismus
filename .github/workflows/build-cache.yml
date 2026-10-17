@@ -15,12 +15,13 @@ permissions:
   contents: read
 
 jobs:
-  # Pull requests read the caches of dev but never write them, so the checks would download the dependencies
-  # and compile everything again.
-  build:
+  # Pull requests read the caches of dev but never write them, so the checks would compile everything and download
+  # Anvil's servers again. A job restores the latest Gradle entry of a job with its own id first, which makes the
+  # journey jobs, the longest of the checks, pick this one.
+  journeys:
     name: Prepare for the checks
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
         with:
@@ -32,6 +33,16 @@ jobs:
           java-version: "25"
           toolchain-versions: "21"
 
+      - uses: whereareiam/anvil-actions/setup@v1
+
       # Every cacheable task the checks run before their tests.
-      - name: Compile the project and its tests
-        run: ./gradlew --no-daemon testClasses assembleDistribution
+      - name: Compile the project, its tests and journeys
+        run: ./gradlew --no-daemon testClasses anvilClasses assembleDistribution
+
+      # One journey starts Velocity in front of Paper, the servers the suites use, so Anvil saves them for the
+      # journey jobs.
+      - name: Prepare the servers of the journeys
+        run: >-
+          ./gradlew --no-daemon :socialismus-testing:anvilPlatformTest
+          --tests 'me.whereareiam.socialismus.testing.platform.PlatformStartTest.velocityJarRunsOnVelocity'
+

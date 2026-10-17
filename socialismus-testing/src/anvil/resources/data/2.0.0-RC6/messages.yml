@@ -1,0 +1,72 @@
+prefix: "<gold>Kept <dark_gray>| "
+commands:
+  cooldown: "{prefix}<white>You must wait <gray>{time} seconds</gray> before using this command again</white>"
+  cancelled: "{prefix}<white>Command execution has been <red>cancelled</red></white>"
+  exceptions:
+    noPermission: "{prefix}<white>You don't have \"<gray>{content}</gray>\" permission to use this command.</white>"
+    executionError: "{prefix}<white>An error occurred while executing the command:</white> <gray>{content}</gray>"
+    invalidSyntax: "{prefix}<white>Invalid syntax, please use:</white> <yellow>/{content}</yellow>"
+    invalidSyntaxBoolean: "{prefix}<white>You tried to use <gray>{content}</gray> as a boolean, but it's not a valid value, please use <green>true</green> or <red>false</red>.</white>"
+    invalidSyntaxNumber: "{prefix}<white>You tried to use <gray>{content}</gray> as a number, but it's not a valid value, please use a valid number.</white>"
+    invalidSyntaxString: "{prefix}<white>You tried to use <gray>{content}</gray> as a string, but it's not a valid value, please use a valid string.</white>"
+    invalidSender: "{prefix}<white>You cannot execute this command from this context.</white>"
+  arguments:
+    recipient: "Recipient"
+    bool: "true/false"
+    id: "ID"
+    message: "Message"
+    page: "Page"
+    context: "Name/ID/Amount"
+  format:
+    format: "<gray>{command}</gray>"
+    argument: "<gray>[{argument}]</gray>"
+    optionalArgument: "<gray>({argument})</gray>"
+  pagination:
+    showPaginationIfOnePage: false
+    format: "\n {previous}<white>Pagination</white> <gray>[{current}/{max}]</gray>{next} \n"
+    showPreviousEvenIfFirst: false
+    previousTagFormat: "<red><click:run_command:/social help {previousPage}>«</red> "
+    showNextEvenIfLast: false
+    nextTagFormat: " <green><click:run_command:/social help {nextPage}>»</green>"
+  help:
+    format:
+      - " "
+      - "<gold><bold> Socialismus</bold> <white>Command help"
+      - " "
+      - "{commands}"
+      - "{pagination}"
+    commandFormat: "  <yellow>/{command}{arguments}</yellow> <dark_gray>- <white>{description}"
+    noCommands: "  <red>No commands found</red>"
+    argumentFormat:
+      argument: "<gray>[{argument}]</gray>"
+      optionalArgument: "<gray>({argument})</gray>"
+    commandsPerPage: 7
+  debugCommand:
+    format:
+      - " "
+      - "<gold><bold> Socialismus</bold> <white>Debug"
+      - "<white>  Server version: <gray>{serverVersion}</gray>"
+      - "<white>  Plugin version: <gray>{pluginVersion}</gray>"
+      - " "
+      - "<white>  Server platform: <aqua>{serverPlatform}</aqua>"
+      - "<white>  Plugin platform: <aqua>{pluginPlatform}</aqua>"
+      - " "
+      - "<white>  Java version: <yellow>{javaVersion}</yellow>"
+      - "<white>  Operating system: <yellow>{os}</yellow>"
+      - " "
+      - "<white>  Modules: "
+      - "{modules}"
+      - " "
+    moduleFormat: "<dark_gray>   - <hover:show_text:\"<white>Made by {authors}\"><green>{name}</green> <gray>[{version}]</gray></hover>"
+  reloadCommand:
+    reloading: "{prefix}<white>Reloading configuration, some features may still require a server restart...</white>"
+    reloaded: "{prefix}<white>Configuration reloaded <green>successfully</green>!</white>"
+    exception: "{prefix}<white>An error occurred while reloading the configuration:</white> <gray>{exception}</gray>"
+  clearCommand:
+    bypassUser: "{prefix}<white>You can't clear chat history from this user</white>"
+    noUserHistory: "{prefix}<white>No chat history found for user <gray>{playerName}</gray></white>"
+    noIdHistory: "{prefix}<white>No chat history found for ID <gray>{id}</gray></white>"
+    noHistory: "{prefix}<white>No chat history found</white>"
+    notEnoughHistory: "{prefix}<white>Not enough chat history entries to clear</white>"
+    cleared: "{prefix}<white>Successfully deleted message from chat history</white>"
+    clearedAmount: "{prefix}<white>Successfully cleared <gray>{amount}</gray>x chat history entries</white>"

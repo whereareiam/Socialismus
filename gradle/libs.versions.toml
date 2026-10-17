@@ -18,6 +18,7 @@ configura = "2.1.0"
 keystone = "1.0.0"
 commandant = "1.0.0"
 strata = "3.2.0"
+anvil = "1.0.0"
 
 # testing
 junit = "6.0.1"
@@ -78,6 +79,7 @@ keystone = { group = "me.whereareiam", name = "keystone", version.ref = "keyston
 commandant = { group = "me.whereareiam", name = "commandant", version.ref = "commandant" }
 commandant-common = { group = "me.whereareiam", name = "commandant-common", version.ref = "commandant" }
 strata = { group = "me.whereareiam", name = "strata", version.ref = "strata" }
+anvil-protocol-mcprotocol = { group = "me.whereareiam.anvil", name = "protocol-mcprotocol", version.ref = "anvil" }
 strata-adapter-configura = { group = "me.whereareiam", name = "strata-adapter-configura", version.ref = "strata" }
 
 # attache
@@ -150,3 +152,9 @@ attache = { id = "me.whereareiam.attache", version.ref = "attache" }
 spawner = { id = "me.whereareiam.spawner", version.ref = "spawner" }
 toolkit-distribution = { id = "me.whereareiam.toolkit.distribution", version.ref = "toolkit" }
 toolkit-versioning = { id = "me.whereareiam.toolkit.versioning", version.ref = "toolkit" }
+anvil = { id = "me.whereareiam.anvil", version.ref = "anvil" }
+anvil-junit = { id = "me.whereareiam.anvil.junit", version.ref = "anvil" }
+anvil-capability-default = { id = "me.whereareiam.anvil.capability.default", version.ref = "anvil" }
+anvil-platform-paper = { id = "me.whereareiam.anvil.platform.paper", version.ref = "anvil" }
+anvil-platform-spigot = { id = "me.whereareiam.anvil.platform.spigot", version.ref = "anvil" }
+anvil-platform-velocity = { id = "me.whereareiam.anvil.platform.velocity", version.ref = "anvil" }
