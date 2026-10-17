@@ -112,6 +112,8 @@ adventure-minimessage = { group = "net.kyori", name = "adventure-text-minimessag
 adventure-legacy = { group = "net.kyori", name = "adventure-text-serializer-legacy", version.ref = "adventure-legacy" }
 adventure-plain = { group = "net.kyori", name = "adventure-text-serializer-plain", version.ref = "adventure-plain" }
 adventure-gson = { group = "net.kyori", name = "adventure-text-serializer-gson", version.ref = "adventure-gson" }
+adventure-json-legacy = { group = "net.kyori", name = "adventure-text-serializer-json-legacy-impl", version.ref = "adventure" }
+adventure-nbt = { group = "net.kyori", name = "adventure-nbt", version.ref = "adventure" }
 adventure-platform-bukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventure-platform-bukkit" }
 
 # cloud
