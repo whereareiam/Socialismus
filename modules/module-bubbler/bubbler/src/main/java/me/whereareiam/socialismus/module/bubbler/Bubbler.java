@@ -6,11 +6,13 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.bubbler.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.bubbler.common.CommonConfiguration;
+import me.whereareiam.socialismus.module.bubbler.common.config.migration.BubblerConfigMigrations;
 import me.whereareiam.socialismus.module.bubbler.common.listener.BubbleTransitionListener;
 import me.whereareiam.socialismus.module.bubbler.common.listener.ChatBroadcastListener;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
@@ -19,7 +21,9 @@ import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.strata.Strata;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
@@ -31,6 +35,8 @@ public class Bubbler extends SocialisticModule {
 
 	@Override
 	public void onLoad() {
+		new Strata(List.of(BubblerConfigMigrations.on(Config.configured(), workingPath))).migrate();
+
 		EventManager eventManager = parentInjector.getInstance(EventManager.class);
 
 		injector =

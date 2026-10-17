@@ -13,10 +13,11 @@ lombok = "1.18.46"
 # general
 guice = "7.0.0"
 annotations = "26.0.1"
-attache = "1.1.0"
+attache = "1.1.1"
 configura = "2.1.0"
 keystone = "1.0.0"
 commandant = "1.0.0"
+strata = "3.2.0"
 
 # testing
 junit = "6.0.1"
@@ -76,6 +77,8 @@ configura-feature-polymorphic-api = { group = "me.whereareiam.configura.feature"
 keystone = { group = "me.whereareiam", name = "keystone", version.ref = "keystone" }
 commandant = { group = "me.whereareiam", name = "commandant", version.ref = "commandant" }
 commandant-common = { group = "me.whereareiam", name = "commandant-common", version.ref = "commandant" }
+strata = { group = "me.whereareiam", name = "strata", version.ref = "strata" }
+strata-adapter-configura = { group = "me.whereareiam", name = "strata-adapter-configura", version.ref = "strata" }
 
 # attache
 attache-standalone = { group = "me.whereareiam", name = "attache-standalone", version.ref = "attache" }

@@ -14,6 +14,8 @@ dependencies {
     compileOnlyApi(libs.configura.feature.postprocess.api)
     compileOnlyApi(libs.configura.feature.polymorphic.api)
     compileOnlyApi(libs.keystone)
+    compileOnlyApi(libs.strata)
+    compileOnlyApi(libs.strata.adapter.configura)
     compileOnlyApi(libs.bundles.adventure)
 }
 

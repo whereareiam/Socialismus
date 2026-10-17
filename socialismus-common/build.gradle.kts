@@ -17,9 +17,18 @@ dependencies {
     attache(libs.configura.feature.polymorphic)
     attache(libs.commandant)
     attache(libs.keystone)
+    attache(libs.strata)
+    attache(libs.strata.adapter.configura)
 }
 
 extensions.configure<AttacheExtension>("attache") {
+    library(libs.strata.adapter.configura) {
+        // It asks for Configura 2.0.0; Socialismus ships its own, newer Configura.
+        excludeTransitive("me.whereareiam", "configura")
+        relocate("com{}fasterxml{}jackson", "me.whereareiam.socialismus.library.jackson")
+        relocate("org{}yaml{}snakeyaml", "me.whereareiam.socialismus.library.snakeyaml")
+    }
+
     library(libs.guice) {
         relocate("com{}google{}inject", "me.whereareiam.socialismus.library.guice")
         relocate("com{}google{}common", "me.whereareiam.socialismus.library.guava")
