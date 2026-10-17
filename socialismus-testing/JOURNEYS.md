@@ -50,16 +50,20 @@ One Paper server unless stated otherwise.
 - [x] A message reaches every player in the format of the chat it matched **first**
 - [x] A symbol trigger picks its chat and is stripped from the message, such as `!` for global chat **first**
 - [x] Local chat reaches only the players within its radius **first**
-- [ ] A permission requirement decides who may send in a chat and who receives it
-- [ ] A world requirement keeps a chat to the players of its worlds
-- [ ] A placeholder or message requirement selects the chat
-- [ ] The chat with the highest priority wins when several match
-- [ ] A chat shows each recipient the format whose requirements they meet
-- [ ] A command trigger and a regex trigger send to their chat
-- [ ] A disabled chat is skipped
-- [ ] A message that matches no chat gets the no-chat message
-- [ ] Chats from several files in `chats/` are all loaded
-- [ ] MiniMessage and legacy serialization render the same format
+- [x] A permission requirement decides who may send in a chat and who receives it
+- [x] A world requirement keeps a chat to the players of its worlds
+- [x] A message requirement selects the chat by the sender's previous message
+- [ ] A placeholder requirement selects the chat when PlaceholderAPI is installed
+- [x] The chat with the highest priority wins when several match
+- [x] A message takes the last format whose requirements its sender meets
+- [ ] A chat shows each recipient the format whose requirements they meet: Socialismus picks one
+  format for the sender and does not read a format's recipient requirements yet
+- [x] A regex trigger sends to its chat
+- [ ] A command trigger sends to its chat: Socialismus reads command triggers but does not act on them yet
+- [x] A disabled chat is skipped
+- [x] A message that matches no chat gets the no-chat message
+- [x] Chats from several files in `chat/list/` are all loaded
+- [x] Legacy serialization renders a format as MiniMessage does
 - [ ] PlaceholderAPI placeholders are filled in formats when PlaceholderAPI is installed
 
 ## commands
