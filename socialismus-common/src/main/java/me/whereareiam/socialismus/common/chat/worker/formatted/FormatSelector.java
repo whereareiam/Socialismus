@@ -77,7 +77,7 @@ public class FormatSelector {
 		if (!chatSettings.get().getNotifications().isNoFormat()) return;
 
 		msg.getSender().sendMessage(
-				Serializer.serialize(msg.getSender(), chatMessages.get().getNoChatMatch())
+				Serializer.serialize(msg.getSender(), chatMessages.get().getNoFormatMatch())
 		);
 	}
 }

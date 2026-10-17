@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  */
 @Tag("chat")
 class ChatFormatTest {
+	private static final String NO_FORMAT = "No format fits this message";
+
 	@Test
 	@Socialismus(configure = StaffFormat.class)
 	void messageTakesTheLastFormatWhoseRequirementsTheSenderMeets(ScenarioContext anvil) {
@@ -31,6 +33,18 @@ class ChatFormatTest {
 
 		bob.chat("from a player");
 		alice.sees("[G] Bob: from a player");
+	}
+
+	@Test
+	@Socialismus(configure = StaffOnlyFormat.class)
+	void messageWhoseSenderMeetsNoFormatGetsTheNoFormatMessage(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+		Player bob = Player.joins(anvil, "Bob");
+
+		alice.chat("without a format");
+
+		alice.sees(NO_FORMAT);
+		bob.neverSees("without a format");
 	}
 
 	@Test
@@ -58,6 +72,20 @@ class ChatFormatTest {
 									requirements(permission("socialismus.chat.staff"), null))
 					))
 					.build());
+		}
+	}
+
+	/**
+	 * Global chat has only a format for its staff, so a player without the permission meets none of its formats.
+	 */
+	static final class StaffOnlyFormat implements Consumer<ServerFiles> {
+		@Override
+		public void accept(ServerFiles files) {
+			files.chats(chat("global", 0, "", 0, "[Staff] {playerName}: {message}").toBuilder()
+					.formats(List.of(new ChatFormat("[Staff] {playerName}: {message}",
+							requirements(permission("socialismus.chat.staff"), null))))
+					.build());
+			files.put(CHAT_MESSAGES, Map.of("noFormatMatch", NO_FORMAT));
 		}
 	}
 
