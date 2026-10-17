@@ -24,7 +24,7 @@ mockito = "5.20.0"
 # resouces
 ormlite = "6.1"
 jedis = "7.5.2"
-packetevents = "2.12.2"
+packetevents = "2.14.0"
 
 # platform api versions
 velocity = "3.5.0-SNAPSHOT"
