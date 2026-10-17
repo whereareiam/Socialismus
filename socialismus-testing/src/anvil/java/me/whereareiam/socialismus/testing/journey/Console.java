@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.regex.Pattern;
 
 /**
  * The console of the process that runs Socialismus: runs commands as the console and reads what the process
@@ -19,6 +20,7 @@ import java.time.Duration;
  */
 public final class Console {
 	private static final Duration TIMEOUT = Duration.ofSeconds(15);
+	private static final Pattern ANSI_CODE = Pattern.compile("\u001B\\[[;\\d]*m");
 
 	private final ScenarioContext anvil;
 	private final String process;
@@ -58,7 +60,8 @@ public final class Console {
 	}
 
 	/**
-	 * Returns what the process printed since it started, from its log.
+	 * Returns what the process printed since it started, from its log, without colour codes, which Spigot keeps in
+	 * its log and Paper and Velocity leave out.
 	 */
 	@NotNull
 	public String log() {
@@ -67,7 +70,7 @@ public final class Console {
 				: anvil.processes().server(process).workDirectory();
 		Path log = workspace.resolve("logs/latest.log");
 		try {
-			return Files.readString(log, StandardCharsets.UTF_8);
+			return ANSI_CODE.matcher(Files.readString(log, StandardCharsets.UTF_8)).replaceAll("");
 		} catch (IOException failure) {
 			throw new UncheckedIOException("Could not read " + log, failure);
 		}
