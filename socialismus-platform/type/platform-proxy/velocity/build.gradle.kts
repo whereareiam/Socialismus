@@ -5,6 +5,7 @@ plugins {
 
 platform {
     name.set("VELOCITY")
+    descriptors.add("velocity-plugin.json")
 }
 
 dependencies {

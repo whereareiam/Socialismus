@@ -7,6 +7,8 @@ plugins {
 
 platform {
     name.set("BUKKIT")
+    // Its shared classes use a relocated Adventure, so they differ from those of Paper and Velocity.
+    bundled.set(false)
 }
 
 dependencies {

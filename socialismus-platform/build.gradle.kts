@@ -7,6 +7,7 @@ tasks.register("platformModules") {
     description = "Builds all Socialismus platform modules."
 
     dependsOn(
+        ":socialismus-platform:bundle:build",
         ":platform-bukkit:build",
         ":platform-proxy:build"
     )

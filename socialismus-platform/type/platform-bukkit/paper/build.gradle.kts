@@ -5,6 +5,7 @@ plugins {
 
 platform {
     name.set("PAPER")
+    descriptors.add("paper-plugin.yml")
 }
 
 // The Paper API of 26.x is built for Java 25.

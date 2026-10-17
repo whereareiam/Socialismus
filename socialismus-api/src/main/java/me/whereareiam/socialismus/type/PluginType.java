@@ -51,17 +51,21 @@ public enum PluginType {
 
 	/**
 	 * Determines the plugin type by reading the manifest file.
-	 * This method checks the Plugin-Type attribute in the JAR's manifest.
+	 * This method checks the Plugin-Type attribute in the JAR's manifest; a jar that carries several platforms,
+	 * such as the bundle, names none of them there, so the type set during runtime is returned instead.
 	 *
-	 * @return The {@link PluginType} based on the manifest information
-	 * @throws IllegalStateException if the plugin type cannot be determined
+	 * @return The {@link PluginType} based on the manifest information, or the one set during runtime
 	 */
 	public static PluginType getType() {
 		String pluginType = getPluginTypeFromManifest();
-		if (pluginType != null)
-			return PluginType.valueOf(pluginType);
+		if (pluginType != null) {
+			try {
+				return PluginType.valueOf(pluginType);
+			} catch (IllegalArgumentException ignored) {
+			}
+		}
 
-		throw new IllegalStateException("Unknown plugin type");
+		return getExactType();
 	}
 
 	/**

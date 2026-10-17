@@ -31,6 +31,7 @@ tasks.register("pluginJars") {
 
     dependsOn(
         ":socialismus-api:jar",
+        ":socialismus-platform:bundle:shadowJar",
         ":platform-proxy-velocity:shadowJar",
         ":platform-bukkit-bukkit:shadowJar",
         ":platform-bukkit-paper:shadowJar"
@@ -40,6 +41,8 @@ tasks.register("pluginJars") {
 // Files a development build or a release ships; assembleDistribution writes them to build/distribution.
 toolkitDistribution {
     file("API", ":socialismus-api", "jar")
+    // The bundle runs on Paper and Velocity; Modrinth takes each platform's jar on its own.
+    file("BUNDLE", ":socialismus-platform:bundle", "shadowJar")
     file("PAPER", ":platform-bukkit-paper", "shadowJar")
     file("BUKKIT", ":platform-bukkit-bukkit", "shadowJar")
     file("VELOCITY", ":platform-proxy-velocity", "shadowJar")

@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import me.whereareiam.socialismus.buildlogic.packaging.PlatformCollectionExtension
 import me.whereareiam.socialismus.buildlogic.packaging.PlatformExtension
 
 plugins {
@@ -7,6 +8,7 @@ plugins {
 
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 val platform = extensions.create<PlatformExtension>("platform")
+val platformCollection = PlatformCollectionExtension.of(project)
 
 dependencies {
     add("implementation", project(":socialismus-api"))
@@ -38,4 +40,9 @@ tasks.named<ProcessResources>("processResources").configure {
             )
         )
     }
+}
+
+afterEvaluate {
+    if (platform.bundled.get())
+        platformCollection.memberPaths.add(project.path)
 }
