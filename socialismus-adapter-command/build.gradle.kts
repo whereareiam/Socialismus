@@ -1,10 +1,10 @@
 plugins {
-    id("shared")
+    id("module-java")
     alias(libs.plugins.attache)
 }
 
 dependencies {
-    compileOnly(project(":socialismus-module:module-api"))
+    compileOnly(projects.socialismusModule.moduleApi)
 
     attache(libs.cloud.core)
     attache(libs.cloud.annotations)

@@ -1,12 +1,14 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
-    id("platform")
+    id("packaging-platform-jar")
     alias(libs.plugins.attache)
 }
 
+platform {
+    name.set("VELOCITY")
+}
+
 dependencies {
-    compileOnly(project(":socialismus-module:module-api"))
+    compileOnly(projects.socialismusModule.moduleApi)
     implementation(projects.integrationPapiproxybridge)
 
     compileOnly(libs.bundles.velocity)
@@ -15,12 +17,4 @@ dependencies {
     implementation(libs.bundles.bStats.velocity)
 
     attache(libs.cloud.velocity)
-}
-
-tasks.withType<ShadowJar>().configureEach {
-    archiveClassifier.set("VELOCITY")
-
-    manifest {
-        attributes["Plugin-Type"] = "VELOCITY"
-    }
 }

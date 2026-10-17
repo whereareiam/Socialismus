@@ -1,7 +1,9 @@
 plugins {
-    id("shared")
+    id("module-java")
 }
 
 dependencies {
-    implementation(project(":socialismus-module:module-api"))
+    api(projects.socialismusModule.moduleApi)
+
+    implementation(projects.socialismusModule.moduleCommon)
 }

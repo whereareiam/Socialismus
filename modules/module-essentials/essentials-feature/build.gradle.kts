@@ -1,9 +1,9 @@
 plugins {
-    id("shared")
+    id("module-java")
 }
 
 dependencies {
-    implementation(project(":module-essentials-dialogue"))
-    compileOnly(project(":module-essentials-api"))
-    testImplementation(project(":module-essentials-api"))
+    implementation(projects.moduleEssentialsDialogue)
+    compileOnly(projects.moduleEssentialsApi)
+    testImplementation(projects.moduleEssentialsApi)
 }

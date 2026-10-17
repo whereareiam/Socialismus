@@ -1,21 +1,19 @@
 import me.whereareiam.attache.plugin.gradle.extension.AttacheExtension
-import org.gradle.api.tasks.Sync
-
-val buildVersion = System.getenv("VERSION") ?: "dev"
-val socialismusModuleDependencyPattern =
-    "((?:[0-9]+\\\\.){2}[0-9]+(?:-[A-Za-z0-9._-]+)?|dev(?:-[A-Za-z0-9._-]+)?)"
-
-extra["socialismusModuleDependencyPattern"] = socialismusModuleDependencyPattern
+import me.whereareiam.toolkit.versioning.extension.ToolkitVersioningExtension
 
 plugins {
     alias(libs.plugins.attache)
     alias(libs.plugins.spawner)
+    alias(libs.plugins.toolkit.distribution)
+    alias(libs.plugins.toolkit.versioning)
     id("dev-scenarios")
 }
 
 allprojects {
-    group = "me.whereareiam"
-    version = buildVersion
+    version = rootProject.extensions
+        .getByType(ToolkitVersioningExtension::class.java)
+        .resolvedVersion()
+        .get()
 }
 
 extensions.configure<AttacheExtension>("attache") {
@@ -25,19 +23,11 @@ extensions.configure<AttacheExtension>("attache") {
     repository("https://registry.whereareiam.me/maven/packages")
 }
 
-val moduleArtifactNames = listOf(
-    "Chirper",
-    "Bubbler",
-    "Essentials",
-    "SocialismusRedis",
-    "SocialismusChannelizer"
-)
-
-defaultTasks("jars")
+defaultTasks("pluginJars")
 
 tasks.register("pluginJars") {
     group = "build"
-    description = "Builds the shaded Socialismus jars for all supported runtimes."
+    description = "Builds the shaded Socialismus jars for all supported platforms."
 
     dependsOn(
         ":socialismus-api:jar",
@@ -47,39 +37,15 @@ tasks.register("pluginJars") {
     )
 }
 
-tasks.register("moduleJars") {
-    group = "build"
-    description = "Builds all migrated Socialismus module jars."
-
-    dependsOn(":modules:moduleArtifacts")
-}
-
-tasks.register<Sync>("jars") {
-    group = "build"
-    description = "Builds and collects Socialismus and module jars."
-
-    dependsOn("pluginJars", "moduleJars")
-
-    from(layout.buildDirectory.dir("libs")) {
-        include("${rootProject.name}-$buildVersion-PAPER.jar")
-        include("${rootProject.name}-$buildVersion-BUKKIT.jar")
-        include("${rootProject.name}-$buildVersion-VELOCITY.jar")
-        moduleArtifactNames.forEach { include("$it-$buildVersion.jar") }
-
-        eachFile {
-            name = when (name) {
-                "${rootProject.name}-$buildVersion-PAPER.jar" -> "${rootProject.name}-PAPER-$buildVersion.jar"
-                "${rootProject.name}-$buildVersion-BUKKIT.jar" -> "${rootProject.name}-BUKKIT-$buildVersion.jar"
-                "${rootProject.name}-$buildVersion-VELOCITY.jar" -> "${rootProject.name}-VELOCITY-$buildVersion.jar"
-                else -> name
-            }
-        }
-    }
-
-    from(project(":socialismus-api").layout.buildDirectory.dir("libs")) {
-        include("socialismus-api-$buildVersion.jar")
-        rename("socialismus-api-$buildVersion.jar", "${rootProject.name}-API-$buildVersion.jar")
-    }
-
-    into(layout.buildDirectory.dir("jars"))
+// Files a development build or a release ships; assembleDistribution writes them to build/distribution.
+toolkitDistribution {
+    file("API", ":socialismus-api", "jar")
+    file("PAPER", ":platform-bukkit-paper", "shadowJar")
+    file("BUKKIT", ":platform-bukkit-bukkit", "shadowJar")
+    file("VELOCITY", ":platform-velocity", "shadowJar")
+    file("Chirper", ":module-chirper", "shadowJar")
+    file("Bubbler", ":module-bubbler", "shadowJar")
+    file("Essentials", ":module-essentials", "shadowJar")
+    file("Redis", ":module-redis", "shadowJar")
+    file("Channelizer", ":module-channelizer", "shadowJar")
 }

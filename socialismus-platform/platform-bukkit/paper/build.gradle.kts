@@ -1,14 +1,17 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
-    id("platform")
-    id("platform-descriptor")
+    id("packaging-platform-jar")
     alias(libs.plugins.attache)
 }
 
-tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = JavaVersion.VERSION_25.toString()
-    targetCompatibility = JavaVersion.VERSION_25.toString()
+platform {
+    name.set("PAPER")
+}
+
+// The Paper API of 26.x is built for Java 25.
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
 }
 
 dependencies {
@@ -22,12 +25,4 @@ dependencies {
 
     attache(libs.cloud.paper)
     attache(libs.cloud.minecraft.extras)
-}
-
-tasks.withType<ShadowJar>().configureEach {
-    archiveClassifier.set("PAPER")
-
-    manifest {
-        attributes["Plugin-Type"] = "PAPER"
-    }
 }

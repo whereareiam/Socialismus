@@ -4,7 +4,8 @@
 shadow = "9.3.0"
 buildconfig = "5.7.1"
 spawner = "dev-56440cd"
-toolkit = "0.2.0"
+toolkit = "0.3.0"
+freefair = "9.5.0"
 
 # compile time processing
 lombok = "1.18.46"
@@ -58,7 +59,8 @@ brigadier = "1.0.500"
 
 # compile time processing
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
-shadow-gradle-plugin = { group = "com.gradleup.shadow", name = "shadow-gradle-plugin", version.ref = "shadow" }
+lombok-plugin = { group = "io.freefair.gradle", name = "lombok-plugin", version.ref = "freefair" }
+shadow = { group = "com.gradleup.shadow", name = "shadow-gradle-plugin", version.ref = "shadow" }
 toolkit-publish-maven = { group = "me.whereareiam.toolkit", name = "publish-maven", version.ref = "toolkit" }
 
 # general
@@ -143,3 +145,5 @@ shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
 attache = { id = "me.whereareiam.attache", version.ref = "attache" }
 spawner = { id = "me.whereareiam.spawner", version.ref = "spawner" }
+toolkit-distribution = { id = "me.whereareiam.toolkit.distribution", version.ref = "toolkit" }
+toolkit-versioning = { id = "me.whereareiam.toolkit.versioning", version.ref = "toolkit" }

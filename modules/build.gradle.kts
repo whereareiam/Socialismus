@@ -4,13 +4,13 @@ plugins {
 
 tasks.register("moduleArtifacts") {
     group = "build"
-    description = "Builds all migrated Socialismus module artifacts."
+    description = "Builds the jars of all official Socialismus modules."
 
     dependsOn(
-        ":module-chirper:chirperModules",
-        ":module-bubbler:bubblerModules",
-        ":module-essentials:essentialsModules",
-        ":module-redis:redisModules",
-        ":module-channelizer:channelizerModules"
+        ":module-chirper:build",
+        ":module-bubbler:build",
+        ":module-essentials:build",
+        ":module-redis:build",
+        ":module-channelizer:build"
     )
 }

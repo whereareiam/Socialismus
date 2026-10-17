@@ -1,8 +1,8 @@
 plugins {
-    id("shared")
+    id("module-java")
 }
 
 dependencies {
-    compileOnly(project(":module-chirper-api"))
-    testImplementation(project(":module-chirper-api"))
+    compileOnly(projects.moduleChirperApi)
+    testImplementation(projects.moduleChirperApi)
 }

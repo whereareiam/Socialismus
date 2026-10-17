@@ -1,9 +1,9 @@
 plugins {
-    id("shared")
+    id("module-java")
 }
 
 dependencies {
     compileOnly(libs.packetevents)
-    compileOnly(project(":module-bubbler-api"))
-    testImplementation(project(":module-bubbler-api"))
+    compileOnly(projects.moduleBubblerApi)
+    testImplementation(projects.moduleBubblerApi)
 }

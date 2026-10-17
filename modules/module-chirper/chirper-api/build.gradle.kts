@@ -1,5 +1,5 @@
 plugins {
-    id("api")
+    id("module-api")
 }
 
 group = "me.whereareiam.socialismus.module"

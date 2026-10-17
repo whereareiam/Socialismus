@@ -1,5 +1,49 @@
 # AGENTS.md
 
+## Build, Test, And Validation
+
+### Common Commands
+
+- `./gradlew test`
+- `./gradlew pluginJars` (the shaded plugin jars of every platform)
+- `./gradlew test assembleDistribution` (what the CI checks run)
+
+`assembleDistribution` collects the shipped files under their final names in `build/distribution/`; the root `toolkitDistribution` block declares them, and workflows upload that directory as it is. `VERSION` sets the version, `dev` by default.
+
+### Convention Plugins
+
+A module's build file holds its role, dependencies and metadata; shared behaviour lives in `build-logic`:
+
+| Plugin | For |
+| --- | --- |
+| `module-java` | every Java module: Java 21 toolchain, Lombok, the libraries Socialismus provides at runtime, JUnit |
+| `module-api` | a published API: `module-java` plus Maven publishing |
+| `packaging-shaded-jar` | a jar that bundles its dependencies, with the relocations of `packaging-relocations` |
+| `packaging-platform-jar` | a plugin jar; `platform { name.set("PAPER") }` names its classifier and `Plugin-Type` and it fills `plugin.yml` and `paper-plugin.yml` |
+| `packaging-module-jar` | the jar of a Socialismus module; `socialismusModule { name.set("Chirper") }` names the jar and fills `module.json` |
+
+The modules compile with Java 21 whichever Java runs Gradle; `platform-bukkit-paper` uses a Java 25 toolchain, because the Paper API of 26.x is built for Java 25.
+
+### Module Families
+
+A family is a folder holding its assembly, which only wires the parts together, beside its `-api` and `-common`:
+
+```text
+socialismus-module/
+  module/           assembly: ModuleConfiguration     :socialismus-module:module
+  module-api/       contracts for modules              :socialismus-module:module-api
+  module-common/    loading, resolving, providers      :socialismus-module:module-common
+
+modules/module-chirper/
+  chirper/          assembly, the Chirper jar          :module-chirper
+  chirper-api/                                         :module-chirper-api
+  chirper-common/                                      :module-chirper-common
+  chirper-command/                                     :module-chirper-command
+```
+
+- logic belongs in `-common`, never in the assembly
+- add a further side, such as `-command`, only when it exists; a small family starts with its assembly alone
+
 ## Branching And Pull Requests
 
 ### Branch Flow
@@ -10,7 +54,7 @@
 
 ### Pull Request Checks
 
-- Every pull request gets the metadata check (title and label) and the checks: `test` and `jars`.
+- Every pull request gets the metadata check (title and label) and the checks: `test` and `assembleDistribution`.
 - Label a pull request with exactly one of `feature`, `change`, `bug`, `dependencies`, or with `skip-changelog`; `major` may accompany a category.
 - Add `module:chirper`, `module:bubbler`, `module:essentials`, `module:redis` or `module:channelizer` when a pull request or issue concerns that module's jar; work on the plugin itself carries no such label.
 - A run keeps as artifacts only what someone downloads: `socialismus-plugins-<version>` from a development build or release, and `test-results` when a test failed.

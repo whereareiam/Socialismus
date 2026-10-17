@@ -1,9 +1,12 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    id("platform")
-    id("platform-descriptor")
+    id("packaging-platform-jar")
     alias(libs.plugins.attache)
+}
+
+platform {
+    name.set("BUKKIT")
 }
 
 dependencies {
@@ -26,11 +29,5 @@ dependencies {
 }
 
 tasks.withType<ShadowJar>().configureEach {
-    archiveClassifier.set("BUKKIT")
-
-    manifest {
-        attributes["Plugin-Type"] = "BUKKIT"
-    }
-
     relocate("net.kyori.adventure", "me.whereareiam.socialismus.library.adventure")
 }

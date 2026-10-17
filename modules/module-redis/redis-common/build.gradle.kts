@@ -1,9 +1,9 @@
 plugins {
-    id("shared")
+    id("module-java")
 }
 
 dependencies {
     compileOnly(libs.jedis)
-    compileOnly(project(":module-redis-api"))
-    testImplementation(project(":module-redis-api"))
+    compileOnly(projects.moduleRedisApi)
+    testImplementation(projects.moduleRedisApi)
 }

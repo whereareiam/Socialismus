@@ -57,16 +57,17 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
 
-      # platform-bukkit-paper compiles for Java 25 with the JDK that runs Gradle.
+      # The modules compile with a Java 21 toolchain, platform-bukkit-paper with Java 25.
       - uses: whereareiam/devops/primitive/setup/gradle@v3
         with:
           java-version: "25"
+          toolchain-versions: "21"
 
-      # jars collects the plugin, API and module jars under their final names in build/jars.
+      # assembleDistribution collects the plugin, API and module jars under their final names in build/distribution.
       - name: Build and test
         env:
           VERSION: ${{ steps.identity.outputs.version }}
-        run: ./gradlew --no-daemon test jars
+        run: ./gradlew --no-daemon test assembleDistribution
 
       - uses: whereareiam/devops/primitive/report/junit/publish@v3
         if: always()
@@ -79,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: socialismus-plugins-${{ steps.identity.outputs.version }}
-          path: build/jars/
+          path: build/distribution/
           if-no-files-found: error
           compression-level: 0
           retention-days: 14
