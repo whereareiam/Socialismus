@@ -47,11 +47,12 @@ modules/module-chirper/
 
 ### Platforms
 
-Platforms are grouped under `socialismus-platform/type/` by what their members share; `bundle/` beside it builds one jar for several platforms:
+Platforms are grouped under `socialismus-platform/type/` by what their members share; beside it, `common/` holds what every platform shares and `bundle/` builds one jar for several platforms:
 
 ```text
 socialismus-platform/
   bundle/               PAPER and VELOCITY in one jar  :socialismus-platform:bundle
+  common/               shared by every platform       :socialismus-platform:common
   type/
     platform-bukkit/    the Bukkit API
       common/           shared by Bukkit and Paper     :platform-bukkit-common
@@ -61,6 +62,7 @@ socialismus-platform/
       velocity/         VELOCITY jar                   :platform-proxy-velocity
 ```
 
+- `common/` starts Socialismus (`PlatformInjector`), binds the integrations every platform offers (`PlatformConfiguration`), keeps scheduled tasks (`PlatformScheduler`) and reports the shared bStats charts (`PlatformMetrics`); a platform adds only what its own API needs
 - the bundle merges the classes of its platforms, so it only carries platforms whose shared classes are identical; Bukkit relocates Adventure and sets `bundled.set(false)`
 - `./gradlew runDevBundle` starts Velocity and Paper with the bundle jar
 - a new platform joins the group it shares code with, such as BungeeCord in `platform-proxy/`; a group gets its `common/` once two members share something

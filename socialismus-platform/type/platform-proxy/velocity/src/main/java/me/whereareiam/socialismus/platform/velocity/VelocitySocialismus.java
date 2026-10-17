@@ -16,7 +16,7 @@ import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
-import me.whereareiam.socialismus.platform.velocity.inject.VelocityInjector;
+import me.whereareiam.socialismus.platform.common.PlatformInjector;
 import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.Version;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -61,12 +61,7 @@ public class VelocitySocialismus {
 		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
 		libraryManager.loadDescriptors();
 
-		new VelocityInjector(
-				this,
-				pluginContainer,
-				proxyServer,
-				dataPath
-		);
+		PlatformInjector.create(dataPath, new VelocityInjectorConfiguration(this, pluginContainer, proxyServer));
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
 

@@ -7,20 +7,18 @@ import com.velocitypowered.api.scheduler.ScheduledTask;
 import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
 import me.whereareiam.socialismus.model.scheduler.PeriodicalRunnableTask;
 import me.whereareiam.socialismus.model.scheduler.RunnableTask;
-import me.whereareiam.socialismus.service.Scheduler;
+import me.whereareiam.socialismus.platform.common.PlatformScheduler;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Runs tasks on Velocity's scheduler, which runs every task off the main thread.
+ */
 @Singleton
-public class VelocityScheduler implements Scheduler {
+public class VelocityScheduler extends PlatformScheduler<ScheduledTask> {
 	private final VelocitySocialismus socialismus;
 	private final com.velocitypowered.api.scheduler.Scheduler velocityScheduler;
-	private final Map<String, Map<Integer, ScheduledTask>> tasks = new ConcurrentHashMap<>();
-
-	private static final AtomicInteger ID_GENERATOR = new AtomicInteger(1);
 
 	@Inject
 	public VelocityScheduler(
@@ -31,96 +29,35 @@ public class VelocityScheduler implements Scheduler {
 		this.velocityScheduler = proxyServer.getScheduler();
 	}
 
-	private int ensureId(RunnableTask task) {
-		int existing = task.getId();
-		if (existing <= 0) {
-			int id = ID_GENERATOR.getAndIncrement();
-			task.setId(id);
-			return id;
-		}
-
-		return existing;
-	}
-
 	@Override
-	public void schedule(RunnableTask runnableTask) {
-		int id = ensureId(runnableTask);
-
-		ScheduledTask task = velocityScheduler
+	@NotNull
+	protected ScheduledTask start(@NotNull RunnableTask runnableTask, boolean async) {
+		return velocityScheduler
 				.buildTask(socialismus, runnableTask.getRunnable())
 				.schedule();
-
-		tasks
-				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
-				.put(id, task);
 	}
 
 	@Override
-	public void schedule(DelayedRunnableTask runnableTask) {
-		int id = ensureId(runnableTask);
-
-		ScheduledTask task = velocityScheduler
+	@NotNull
+	protected ScheduledTask start(@NotNull DelayedRunnableTask runnableTask, boolean async) {
+		return velocityScheduler
 				.buildTask(socialismus, runnableTask.getRunnable())
 				.delay(Duration.ofMillis(runnableTask.getDelay()))
 				.schedule();
-
-		tasks
-				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
-				.put(id, task);
 	}
 
 	@Override
-	public void schedule(PeriodicalRunnableTask runnableTask) {
-		int id = ensureId(runnableTask);
-
-		ScheduledTask task = velocityScheduler
+	@NotNull
+	protected ScheduledTask start(@NotNull PeriodicalRunnableTask runnableTask, boolean async) {
+		return velocityScheduler
 				.buildTask(socialismus, runnableTask.getRunnable())
 				.delay(Duration.ofMillis(runnableTask.getDelay()))
 				.repeat(Duration.ofMillis(runnableTask.getPeriod()))
 				.schedule();
-
-		tasks
-				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
-				.put(id, task);
 	}
 
 	@Override
-	public void schedule(RunnableTask runnableTask, boolean async) {
-		schedule(runnableTask);
-	}
-
-	@Override
-	public void schedule(DelayedRunnableTask runnableTask, boolean async) {
-		schedule(runnableTask);
-	}
-
-	@Override
-	public void schedule(PeriodicalRunnableTask runnableTask, boolean async) {
-		schedule(runnableTask);
-	}
-
-	@Override
-	public void cancel(RunnableTask runnableTask) {
-		Map<Integer, ScheduledTask> moduleTasks = tasks.get(runnableTask.getModule());
-		if (moduleTasks != null) {
-			Integer id = runnableTask.getId();
-			ScheduledTask task = moduleTasks.remove(id);
-			if (task != null)
-				task.cancel();
-			if (moduleTasks.isEmpty())
-				tasks.remove(runnableTask.getModule());
-		}
-	}
-
-	@Override
-	public void cancel(DelayedRunnableTask runnableTask) {
-		cancel((RunnableTask) runnableTask);
-	}
-
-	@Override
-	public void cancelByModule(String module) {
-		Map<Integer, ScheduledTask> moduleTasks = tasks.remove(module);
-		if (moduleTasks != null)
-			moduleTasks.values().forEach(ScheduledTask::cancel);
+	protected void stop(@NotNull ScheduledTask task) {
+		task.cancel();
 	}
 }

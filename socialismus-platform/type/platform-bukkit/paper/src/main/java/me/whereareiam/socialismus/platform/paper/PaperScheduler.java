@@ -6,21 +6,19 @@ import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import me.whereareiam.socialismus.model.scheduler.DelayedRunnableTask;
 import me.whereareiam.socialismus.model.scheduler.PeriodicalRunnableTask;
 import me.whereareiam.socialismus.model.scheduler.RunnableTask;
-import me.whereareiam.socialismus.service.Scheduler;
+import me.whereareiam.socialismus.platform.common.PlatformScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Runs tasks on Paper's asynchronous scheduler, which also works on Folia; every task runs off the main thread.
+ */
 @Singleton
-public class PaperScheduler implements Scheduler {
+public class PaperScheduler extends PlatformScheduler<ScheduledTask> {
 	private final Plugin plugin;
-	private final Map<String, Map<Integer, ScheduledTask>> tasks = new ConcurrentHashMap<>();
-
-	private static final AtomicInteger ID_GENERATOR = new AtomicInteger(1);
 
 	@Inject
 	public PaperScheduler(Plugin plugin) {
@@ -37,95 +35,36 @@ public class PaperScheduler implements Scheduler {
 		}
 	}
 
-	private int ensureId(RunnableTask task) {
-		int existing = task.getId();
-		if (existing <= 0) {
-			int generated = ID_GENERATOR.getAndIncrement();
-			task.setId(generated);
-
-			return generated;
-		}
-		return existing;
-	}
-
 	@Override
-	public void schedule(RunnableTask runnableTask) {
-		int id = ensureId(runnableTask);
-		ScheduledTask task = Bukkit.getAsyncScheduler()
+	@NotNull
+	protected ScheduledTask start(@NotNull RunnableTask runnableTask, boolean async) {
+		return Bukkit.getAsyncScheduler()
 				.runNow(plugin, t -> runnableTask.getRunnable().run());
-
-		tasks
-				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
-				.put(id, task);
 	}
 
 	@Override
-	public void schedule(DelayedRunnableTask runnableTask) {
-		int id = ensureId(runnableTask);
-		ScheduledTask task = Bukkit.getAsyncScheduler()
+	@NotNull
+	protected ScheduledTask start(@NotNull DelayedRunnableTask runnableTask, boolean async) {
+		return Bukkit.getAsyncScheduler()
 				.runDelayed(plugin,
 						t -> runnableTask.getRunnable().run(),
 						runnableTask.getDelay(),
 						TimeUnit.MILLISECONDS);
-
-		tasks
-				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
-				.put(id, task);
 	}
 
 	@Override
-	public void schedule(PeriodicalRunnableTask runnableTask) {
-		int id = ensureId(runnableTask);
-		ScheduledTask task = Bukkit.getAsyncScheduler()
+	@NotNull
+	protected ScheduledTask start(@NotNull PeriodicalRunnableTask runnableTask, boolean async) {
+		return Bukkit.getAsyncScheduler()
 				.runAtFixedRate(plugin,
 						t -> runnableTask.getRunnable().run(),
 						runnableTask.getDelay(),
 						runnableTask.getPeriod(),
 						TimeUnit.MILLISECONDS);
-
-		tasks
-				.computeIfAbsent(runnableTask.getModule(), m -> new ConcurrentHashMap<>())
-				.put(id, task);
 	}
 
 	@Override
-	public void schedule(RunnableTask runnableTask, boolean async) {
-		schedule(runnableTask);
-	}
-
-	@Override
-	public void schedule(DelayedRunnableTask runnableTask, boolean async) {
-		schedule(runnableTask);
-	}
-
-	@Override
-	public void schedule(PeriodicalRunnableTask runnableTask, boolean async) {
-		schedule(runnableTask);
-	}
-
-	@Override
-	public void cancel(RunnableTask runnableTask) {
-		Map<Integer, ScheduledTask> moduleTasks = tasks.get(runnableTask.getModule());
-		if (moduleTasks != null) {
-			Integer id = runnableTask.getId();
-			ScheduledTask task = moduleTasks.remove(id);
-			if (task != null)
-				task.cancel();
-			if (moduleTasks.isEmpty())
-				tasks.remove(runnableTask.getModule());
-		}
-	}
-
-	@Override
-	public void cancel(DelayedRunnableTask runnableTask) {
-		cancel((RunnableTask) runnableTask);
-	}
-
-	@Override
-	public void cancelByModule(String module) {
-		Map<Integer, ScheduledTask> moduleTasks = tasks.remove(module);
-		if (moduleTasks != null) {
-			moduleTasks.values().forEach(ScheduledTask::cancel);
-		}
+	protected void stop(@NotNull ScheduledTask task) {
+		task.cancel();
 	}
 }

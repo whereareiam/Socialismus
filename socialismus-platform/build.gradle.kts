@@ -8,6 +8,7 @@ tasks.register("platformModules") {
 
     dependsOn(
         ":socialismus-platform:bundle:build",
+        ":socialismus-platform:common:build",
         ":platform-bukkit:build",
         ":platform-proxy:build"
     )
