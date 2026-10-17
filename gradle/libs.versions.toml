@@ -2,7 +2,7 @@
 
 # plugins
 shadow = "9.3.0"
-buildconfig = "5.7.1"
+buildconfig = "6.1.2"
 spawner = "dev-56440cd"
 toolkit = "0.3.0"
 freefair = "9.5.0"
@@ -20,17 +20,17 @@ commandant = "1.0.0"
 
 # testing
 junit = "6.0.1"
-mockito = "5.20.0"
+mockito = "5.24.0"
 
 # resouces
 ormlite = "6.1"
 jedis = "7.5.2"
-packetevents = "2.12.2"
+packetevents = "2.14.0"
 
 # platform api versions
-velocity = "3.5.0-SNAPSHOT"
+velocity = "3.5.1"
 spigot = "26.1.2-R0.1-SNAPSHOT"
-paper = "26.1.2.build.+"
+paper = "26.3.build.+"
 
 # platform integrations
 placeholderAPI = "2.11.6"
@@ -38,11 +38,11 @@ papiProxyBridge = "1.8.4"
 bStats = "3.2.1"
 
 # adventure
-adventure = "5.1.1"
-adventure-minimessage = "5.1.1"
-adventure-legacy = "5.1.1"
-adventure-plain = "5.1.1"
-adventure-gson = "5.1.1"
+adventure = "5.2.0"
+adventure-minimessage = "5.2.0"
+adventure-legacy = "5.2.0"
+adventure-plain = "5.2.0"
+adventure-gson = "5.2.0"
 adventure-platform-bukkit = "4.4.1"
 
 # cloud
