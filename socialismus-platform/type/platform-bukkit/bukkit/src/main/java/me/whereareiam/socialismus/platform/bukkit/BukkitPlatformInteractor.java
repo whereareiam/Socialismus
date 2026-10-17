@@ -5,13 +5,13 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.type.BroadcastTarget;
-import me.whereareiam.socialismus.platform.AbstractPlatformInteractor;
+import me.whereareiam.socialismus.platform.bukkit.common.AbstractBukkitPlatformInteractor;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
-public class BukkitPlatformInteractor extends AbstractPlatformInteractor {
+public class BukkitPlatformInteractor extends AbstractBukkitPlatformInteractor {
 	private final Provider<BukkitAudiences> audiences;
 
 	@Override

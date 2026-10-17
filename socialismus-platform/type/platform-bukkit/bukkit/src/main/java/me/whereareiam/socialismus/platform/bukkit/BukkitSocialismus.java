@@ -7,10 +7,11 @@ import me.whereareiam.socialismus.common.CommonInjector;
 import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
 import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
-import me.whereareiam.socialismus.platform.BukkitIntegrityChecker;
-import me.whereareiam.socialismus.platform.BukkitLoggingHelper;
-import me.whereareiam.socialismus.platform.BukkitModuleDependencyListener;
-import me.whereareiam.socialismus.platform.bukkit.inject.BukkitInjector;
+import me.whereareiam.socialismus.platform.bukkit.common.BukkitCommonConfiguration;
+import me.whereareiam.socialismus.platform.bukkit.common.BukkitIntegrityChecker;
+import me.whereareiam.socialismus.platform.bukkit.common.BukkitLoggingHelper;
+import me.whereareiam.socialismus.platform.bukkit.common.BukkitModuleDependencyListener;
+import me.whereareiam.socialismus.platform.common.PlatformInjector;
 import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.Version;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -42,7 +43,7 @@ public class BukkitSocialismus extends JavaPlugin {
 		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
 		libraryManager.loadDescriptors();
 
-		new BukkitInjector(this, dataPath);
+		PlatformInjector.create(dataPath, new BukkitInjectorConfiguration(this), new BukkitCommonConfiguration(this));
 
 		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
 	}
