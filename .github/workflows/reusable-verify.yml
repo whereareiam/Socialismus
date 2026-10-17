@@ -124,3 +124,19 @@ jobs:
           reports: |
             **/build/reports/tests/**
             socialismus-testing/build/anvil/**/logs/latest.log
+
+  # The one check the dev ruleset requires, so a new journey suite needs no change to the ruleset.
+  result:
+    name: Result
+    needs: [build, journeys]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every job to pass
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for result in $RESULTS; do
+            [[ "$result" == "success" ]] || { echo "::error::A job of the checks ended with $result."; exit 1; }
+          done
