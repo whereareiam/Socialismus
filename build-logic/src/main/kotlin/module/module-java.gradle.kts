@@ -27,6 +27,8 @@ dependencies {
     add("compileOnly", libs.findLibrary("configura-feature-polymorphic").get())
     add("compileOnly", libs.findLibrary("commandant").get())
     add("compileOnly", libs.findLibrary("keystone").get())
+    add("compileOnly", libs.findLibrary("strata").get())
+    add("compileOnly", libs.findLibrary("strata-adapter-configura").get())
     add("compileOnly", libs.findBundle("adventure").get())
     add("implementation", libs.findLibrary("attache-common").get())
 
@@ -39,6 +41,8 @@ dependencies {
     add("testImplementation", libs.findLibrary("configura-feature-polymorphic").get())
     add("testImplementation", libs.findLibrary("commandant").get())
     add("testImplementation", libs.findLibrary("keystone").get())
+    add("testImplementation", libs.findLibrary("strata").get())
+    add("testImplementation", libs.findLibrary("strata-adapter-configura").get())
     add("testImplementation", libs.findBundle("adventure").get())
 
     if (path != ":socialismus-api") {
