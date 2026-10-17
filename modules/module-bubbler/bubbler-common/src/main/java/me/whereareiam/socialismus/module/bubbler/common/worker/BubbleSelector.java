@@ -63,7 +63,7 @@ public class BubbleSelector {
 	}
 
 	private void notifyAboutAbsentBubble(BubbleMessage bubbleMessage) {
-		if (!bubblerSettings.get().getNotify().isNotifyNoBubbleSelected()) return;
+		if (!bubblerSettings.get().getNotifications().isNoBubbleSelected()) return;
 
 		bubbleMessage.getSender().sendMessage(
 				Serializer.serialize(bubbleMessage.getSender(), bubblerMessages.get().getNoBubbleSelected())

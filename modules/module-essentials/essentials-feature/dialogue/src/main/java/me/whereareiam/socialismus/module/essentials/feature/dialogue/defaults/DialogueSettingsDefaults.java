@@ -8,9 +8,9 @@ import me.whereareiam.socialismus.module.essentials.feature.dialogue.config.Dial
 public class DialogueSettingsDefaults implements DefaultsProvider<DialogueSettings> {
 	@Override
 	public DialogueSettings supply(DialogueSettings dialogueSettings) {
-		DialogueSettings.Synchronization synchronization = new DialogueSettings.Synchronization();
-		synchronization.setEnabled(false);
-		dialogueSettings.setSynchronization(synchronization);
+		DialogueSettings.Sync sync = new DialogueSettings.Sync();
+		sync.setEnabled(false);
+		dialogueSettings.setSync(sync);
 
 		DialogueSettings.MessageHistory messageHistory = new DialogueSettings.MessageHistory();
 		messageHistory.setEnabled(true);

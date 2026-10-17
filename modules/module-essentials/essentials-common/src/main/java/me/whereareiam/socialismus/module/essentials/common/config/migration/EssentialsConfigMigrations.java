@@ -54,6 +54,7 @@ public final class EssentialsConfigMigrations {
 						List.of("messages", "commands"),
 						List.of("features", "features/dialogue")
 				))
+				.migration(DialogueSyncMigration.VERSION, DialogueSyncMigration.NAME, new DialogueSyncMigration(extension))
 				.build();
 	}
 }

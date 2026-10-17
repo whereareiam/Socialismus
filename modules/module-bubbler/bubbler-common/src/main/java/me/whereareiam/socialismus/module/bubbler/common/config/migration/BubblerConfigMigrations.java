@@ -54,6 +54,7 @@ public final class BubblerConfigMigrations {
 						List.of("messages", "commands"),
 						List.of("bubbles")
 				))
+				.migration(NotificationsMigration.VERSION, NotificationsMigration.NAME, new NotificationsMigration(extension))
 				.build();
 	}
 }

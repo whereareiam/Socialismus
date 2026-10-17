@@ -1,0 +1,43 @@
+package me.whereareiam.socialismus.module.essentials.common.config.migration;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import me.whereareiam.configura.Config;
+import me.whereareiam.configura.Configura;
+import me.whereareiam.configura.type.Format;
+import me.whereareiam.strata.Strata;
+import me.whereareiam.strata.adapter.configura.StrataFeature;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class EssentialsConfigMigrationsTest {
+	private final Configura configura = Config.builder().format(Format.YAML).feature(new StrataFeature()).build();
+
+	@TempDir
+	Path workingPath;
+
+	@Test
+	void renamesTheDialogueSync() throws IOException {
+		Files.writeString(workingPath.resolve("settings.yml"), "announce: true\n");
+		Path dialogue = Files.createDirectories(workingPath.resolve("features/dialogue"));
+		Files.writeString(dialogue.resolve("settings.yml"), """
+				synchronization:
+				  enabled: true
+				reply:
+				  enabled: true
+				""");
+
+		new Strata(List.of(EssentialsConfigMigrations.on(configura, workingPath))).migrate();
+
+		JsonNode settings = configura.readNode(dialogue.resolve("settings.yml"));
+		assertFalse(settings.has("synchronization"));
+		assertTrue(settings.path("sync").path("enabled").asBoolean());
+		assertTrue(settings.path("reply").path("enabled").asBoolean());
+	}
+}

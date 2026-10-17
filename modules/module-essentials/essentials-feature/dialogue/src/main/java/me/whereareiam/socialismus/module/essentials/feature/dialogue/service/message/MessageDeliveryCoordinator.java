@@ -39,7 +39,7 @@ public class MessageDeliveryCoordinator {
 	}
 
 	public void handleUndeliverableMessage(Dialogue dialogue, boolean delivered) {
-		if (!delivered && !settings.get().getSynchronization().isEnabled()) {
+		if (!delivered && !settings.get().getSync().isEnabled()) {
 			localDialogueService.notifyUndeliverable(dialogue);
 		}
 	}
