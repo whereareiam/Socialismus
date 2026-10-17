@@ -20,6 +20,7 @@ import me.whereareiam.socialismus.common.chat.render.ClearPlaceholderResolver;
 import me.whereareiam.socialismus.common.chat.render.DefaultChatRenderService;
 import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
 import me.whereareiam.socialismus.common.config.SocialismusConfiguraModule;
+import me.whereareiam.socialismus.common.config.migration.SocialismusConfigMigrations;
 import me.whereareiam.socialismus.common.config.provider.CommandsProvider;
 import me.whereareiam.socialismus.common.config.provider.MessagesProvider;
 import me.whereareiam.socialismus.common.config.provider.SettingsProvider;
@@ -72,6 +73,8 @@ import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import me.whereareiam.socialismus.type.ConfigurationType;
 import me.whereareiam.socialismus.type.module.ProviderType;
 import me.whereareiam.socialismus.util.EventUtil;
+import me.whereareiam.strata.Strata;
+import me.whereareiam.strata.adapter.configura.StrataFeature;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -194,9 +197,21 @@ public class CommonConfiguration extends AbstractModule {
 		EventUtil.initialize(eventManager);
 	}
 
+	/**
+	 * Brings the documents of an older installation up to date before any of them is read, then installs the shared
+	 * Configura instance. A failed migration stops the startup, so Socialismus does not run on a directory it could
+	 * not upgrade.
+	 */
 	@Inject
-	void initializeConfigura(Configura configura) {
+	void initializeConfigura(Configura configura, Strata strata) {
+		strata.migrate();
 		Config.setConfigured(configura);
+	}
+
+	@Provides
+	@Singleton
+	Strata provideStrata(Configura configura, @Named("dataPath") Path dataPath) {
+		return new Strata(List.of(SocialismusConfigMigrations.on(configura, dataPath)));
 	}
 
 	@Provides
@@ -248,6 +263,7 @@ public class CommonConfiguration extends AbstractModule {
 				.module(new SocialismusConfiguraModule())
 				.feature(PostProcessFeature.defaults())
 				.feature(polymorphic)
+				.feature(new StrataFeature())
 				.build();
 	}
 

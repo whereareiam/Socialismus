@@ -4,11 +4,13 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.essentials.api.feature.FeatureManager;
 import me.whereareiam.socialismus.module.essentials.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.essentials.common.CommonConfiguration;
+import me.whereareiam.socialismus.module.essentials.common.config.migration.EssentialsConfigMigrations;
 import me.whereareiam.socialismus.module.essentials.feature.FeatureConfiguration;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -17,6 +19,9 @@ import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.resource.CacheService;
 import me.whereareiam.socialismus.service.resource.sync.SyncService;
+import me.whereareiam.strata.Strata;
+
+import java.util.List;
 
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class Essentials extends SocialisticModule {
@@ -34,6 +39,8 @@ public class Essentials extends SocialisticModule {
 
 	@Override
 	public void onLoad() {
+		new Strata(List.of(EssentialsConfigMigrations.on(Config.configured(), workingPath))).migrate();
+
 		injector =
 				Guice.createInjector(
 						new EssentialsInjectorConfiguration(
