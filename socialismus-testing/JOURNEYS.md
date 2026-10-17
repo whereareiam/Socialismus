@@ -56,6 +56,7 @@ One Paper server unless stated otherwise.
 - [ ] A placeholder requirement selects the chat when PlaceholderAPI is installed
 - [x] The chat with the highest priority wins when several match
 - [x] A message takes the last format whose requirements its sender meets
+- [x] A message whose sender meets none of its chat's formats gets the no-format message
 - [ ] A chat shows each recipient the format whose requirements they meet: Socialismus picks one
   format for the sender and does not read a format's recipient requirements yet
 - [x] A regex trigger sends to its chat
