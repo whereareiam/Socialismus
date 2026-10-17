@@ -37,7 +37,7 @@ papiProxyBridge = "1.8.4"
 bStats = "3.2.1"
 
 # adventure
-adventure = "5.1.1"
+adventure = "5.2.0"
 adventure-minimessage = "5.1.1"
 adventure-legacy = "5.1.1"
 adventure-plain = "5.1.1"
