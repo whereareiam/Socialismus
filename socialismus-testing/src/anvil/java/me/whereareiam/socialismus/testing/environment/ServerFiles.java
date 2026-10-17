@@ -4,17 +4,30 @@ import me.whereareiam.anvil.api.scenario.ScenarioContext;
 import me.whereareiam.configura.Config;
 import me.whereareiam.configura.Configura;
 import me.whereareiam.configura.type.Format;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
+import me.whereareiam.socialismus.model.chat.trigger.RegexChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
+import me.whereareiam.socialismus.model.requirement.Requirement;
+import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.socialismus.model.requirement.RequirementKey;
+import me.whereareiam.socialismus.model.requirement.type.MessageRequirement;
+import me.whereareiam.socialismus.model.requirement.type.PermissionRequirement;
+import me.whereareiam.socialismus.model.requirement.type.WorldRequirement;
+import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.type.chat.TriggerType;
+import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
+import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +48,10 @@ import java.util.Map;
 public final class ServerFiles {
 	/** The file a journey's chats are written to; Socialismus reads every file in {@code chat/list/}. */
 	public static final String CHATS = "chat/list/default.yml";
+	/** The chat settings: the fallback chat and which notices a sender gets. */
+	public static final String CHAT_SETTINGS = "chat/settings.yml";
+	/** The messages of chat, such as the notice that no chat matched. */
+	public static final String CHAT_MESSAGES = "chat/messages.yml";
 
 	// The documents journeys write hold no Adventure types, so plain YAML writes them as Socialismus does.
 	private static final Configura CONFIGURA = Config.builder()
@@ -50,6 +67,16 @@ public final class ServerFiles {
 	 */
 	public void chats(@NotNull Chat... chats) {
 		put(CHATS, Map.of("chats", List.of(chats)));
+	}
+
+	/**
+	 * Replaces the chats of one file in {@code chat/list/}, for a journey with chats in several files.
+	 *
+	 * @param file  the file's name, extension included
+	 * @param chats the chats of the file
+	 */
+	public void chatsIn(@NotNull String file, @NotNull Chat... chats) {
+		put("chat/list/" + file, Map.of("chats", List.of(chats)));
 	}
 
 	/**
@@ -97,6 +124,89 @@ public final class ServerFiles {
 				.formats(List.of(new ChatFormat(format, Map.of())))
 				.requirements(Map.of())
 				.build();
+	}
+
+	/**
+	 * Describes a chat that a message matching a regular expression selects, kept as it was written.
+	 *
+	 * @param id       the chat's identifier
+	 * @param priority which chat wins when several match; the highest
+	 * @param pattern  the expression the whole message matches
+	 * @param format   the format, with {@code {playerName}} and {@code {message}}
+	 */
+	@NotNull
+	public static Chat regexChat(@NotNull String id, int priority, @NotNull String pattern, @NotNull String format) {
+		return chat(id, priority, "", 0, format).toBuilder()
+				.triggers(List.of(RegexChatTrigger.builder()
+						.type(TriggerType.REGEX)
+						.strip(false)
+						.radius(0)
+						.pattern(pattern)
+						.build()))
+				.build();
+	}
+
+	/**
+	 * Returns the requirements of a chat or format: the sender meets {@code sender}, a recipient meets
+	 * {@code recipient}; either may be null for none.
+	 */
+	@NotNull
+	public static Map<Participants, RequirementGroup> requirements(
+			@Nullable RequirementGroup sender,
+			@Nullable RequirementGroup recipient
+	) {
+		Map<Participants, RequirementGroup> requirements = new EnumMap<>(Participants.class);
+		if (sender != null) requirements.put(Participants.SENDER, sender);
+		if (recipient != null) requirements.put(Participants.RECIPIENT, recipient);
+
+		return requirements;
+	}
+
+	/**
+	 * Returns a group a player meets when they meet the given requirement.
+	 */
+	@NotNull
+	public static <T extends Requirement> RequirementGroup meets(@NotNull RequirementKey<T> key, @NotNull T requirement) {
+		return RequirementGroup.builder()
+				.operator(RequirementOperatorType.AND)
+				.groups(RequirementGroup.of(key, requirement))
+				.build();
+	}
+
+	/**
+	 * Returns a group a player meets when they hold every given permission.
+	 */
+	@NotNull
+	public static RequirementGroup permission(@NotNull String... permissions) {
+		return meets(Constants.Requirements.PERMISSION, PermissionRequirement.builder()
+				.condition(RequirementConditionType.HAS)
+				.expected("true")
+				.permissions(List.of(permissions))
+				.build());
+	}
+
+	/**
+	 * Returns a group a player meets when they stand in one of the given worlds.
+	 */
+	@NotNull
+	public static RequirementGroup world(@NotNull String... worlds) {
+		return meets(Constants.Requirements.WORLD, WorldRequirement.builder()
+				.condition(RequirementConditionType.CONTAINS)
+				.expected("true")
+				.worlds(List.of(worlds))
+				.build());
+	}
+
+	/**
+	 * Returns a group a player meets when their previous chat message was exactly the given one.
+	 */
+	@NotNull
+	public static RequirementGroup previousMessage(@NotNull String message) {
+		return meets(Constants.Requirements.MESSAGE, MessageRequirement.builder()
+				.condition(RequirementConditionType.EQUALS)
+				.expected("true")
+				.messages(List.of(message))
+				.build());
 	}
 
 	/**

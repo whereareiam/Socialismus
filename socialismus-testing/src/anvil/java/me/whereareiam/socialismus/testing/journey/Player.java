@@ -131,6 +131,28 @@ public final class Player {
 		return this;
 	}
 
+	/**
+	 * Moves the player into another dimension through the server's console, for a journey that needs players in
+	 * different worlds.
+	 *
+	 * @param dimension the dimension, such as {@code minecraft:the_nether}
+	 */
+	@NotNull
+	public Player travelsTo(@NotNull String dimension) {
+		Console.of(anvil).run("execute in " + dimension + " run tp " + name + " 0 100 0")
+				.printed("Teleported " + name);
+		return this;
+	}
+
+	/**
+	 * Makes the player a server operator, which grants every permission the server does not deny it.
+	 */
+	@NotNull
+	public Player op() {
+		Console.of(anvil).run("op " + name).printed("Made " + name + " a server operator");
+		return this;
+	}
+
 	@NotNull
 	public String name() {
 		return name;
