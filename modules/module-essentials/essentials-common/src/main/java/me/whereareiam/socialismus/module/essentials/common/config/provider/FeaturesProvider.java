@@ -24,6 +24,6 @@ public class FeaturesProvider extends ConfigProvider<FeaturesConfig> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(FeaturesDefaults.class), FeaturesConfig.class);
+		return super.configura().withDefaults(FeaturesDefaults.class);
 	}
 }

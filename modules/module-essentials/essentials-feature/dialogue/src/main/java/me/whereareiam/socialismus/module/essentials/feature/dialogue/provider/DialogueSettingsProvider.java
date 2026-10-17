@@ -24,6 +24,6 @@ public class DialogueSettingsProvider extends ConfigProvider<DialogueSettings> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(DialogueSettingsDefaults.class), DialogueSettings.class);
+		return super.configura().withDefaults(DialogueSettingsDefaults.class);
 	}
 }

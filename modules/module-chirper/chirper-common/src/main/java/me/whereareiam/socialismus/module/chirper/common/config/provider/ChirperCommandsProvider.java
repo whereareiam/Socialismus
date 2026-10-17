@@ -24,6 +24,6 @@ public class ChirperCommandsProvider extends ConfigProvider<ChirperCommands> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(ChirperCommandsDefaults.class), ChirperCommands.class);
+		return super.configura().withDefaults(ChirperCommandsDefaults.class);
 	}
 }

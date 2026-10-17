@@ -24,6 +24,6 @@ public class EssentialsMessagesProvider extends ConfigProvider<EssentialsMessage
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(EssentialsMessagesDefaults.class), EssentialsMessages.class);
+		return super.configura().withDefaults(EssentialsMessagesDefaults.class);
 	}
 }

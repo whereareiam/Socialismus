@@ -13,10 +13,10 @@ lombok = "1.18.46"
 # general
 guice = "7.0.0"
 annotations = "26.0.1"
-attache = "dev-58f53b4"
-configura = "dev-43bc95a"
-keystone = "dev-fcd11fd"
-commandant = "dev-42806f6"
+attache = "1.1.0"
+configura = "2.1.0"
+keystone = "1.0.0"
+commandant = "1.0.0"
 
 # testing
 junit = "6.0.1"

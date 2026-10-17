@@ -4,7 +4,7 @@ import com.google.inject.Provider;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.keystone.serializer.SerializerEngine;
-import me.whereareiam.keystone.template.MessageTemplate;
+import me.whereareiam.keystone.template.message.MessageTemplate;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 

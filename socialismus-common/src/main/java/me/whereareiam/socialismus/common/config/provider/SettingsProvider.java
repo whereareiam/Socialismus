@@ -20,6 +20,6 @@ public class SettingsProvider extends DefaultConfigProvider<Settings> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(SettingsDefaults.class), Settings.class);
+		return super.configura().withDefaults(SettingsDefaults.class);
 	}
 }

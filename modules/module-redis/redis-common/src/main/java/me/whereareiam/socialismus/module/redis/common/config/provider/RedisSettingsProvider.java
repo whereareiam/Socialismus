@@ -24,6 +24,6 @@ public class RedisSettingsProvider extends ConfigProvider<RedisSettings> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(RedisSettingsDefaults.class), RedisSettings.class);
+		return super.configura().withDefaults(RedisSettingsDefaults.class);
 	}
 }

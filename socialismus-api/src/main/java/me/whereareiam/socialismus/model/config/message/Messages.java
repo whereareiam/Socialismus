@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.model.config.message;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.whereareiam.configura.ConfigDocument;
 
 /**
  * Configuration class for managing messages in the Socialismus plugin.
@@ -15,7 +14,7 @@ import me.whereareiam.configura.ConfigDocument;
 @Getter
 @Setter
 @ToString
-public class Messages extends ConfigDocument {
+public class Messages {
 		/**
 		 * The global prefix used for all plugin messages
 		 */

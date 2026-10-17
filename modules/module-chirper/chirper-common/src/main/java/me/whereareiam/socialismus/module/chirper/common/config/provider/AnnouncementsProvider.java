@@ -66,7 +66,7 @@ public class AnnouncementsProvider extends ConfigProvider<List<Announcement>> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(AnnouncementsDefaults.class), AnnouncementsConfig.class);
+		return super.configura().withDefaults(AnnouncementsDefaults.class);
 	}
 
 	private List<Announcement> addAnnouncementsFromConfig(Path path) {

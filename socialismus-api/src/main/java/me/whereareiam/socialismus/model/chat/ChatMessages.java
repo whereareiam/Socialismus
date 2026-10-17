@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.model.chat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.whereareiam.configura.ConfigDocument;
 
 /**
  * Configuration model for chat-related messages and formats.
@@ -16,7 +15,7 @@ import me.whereareiam.configura.ConfigDocument;
 @Getter
 @Setter
 @ToString
-public class ChatMessages extends ConfigDocument {
+public class ChatMessages {
     /**
      * Message shown when no players are online.
      */

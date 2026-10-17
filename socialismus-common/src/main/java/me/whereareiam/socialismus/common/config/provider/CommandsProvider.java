@@ -20,6 +20,6 @@ public class CommandsProvider extends DefaultConfigProvider<Commands> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(CommandsDefaults.class), Commands.class);
+		return super.configura().withDefaults(CommandsDefaults.class);
 	}
 }

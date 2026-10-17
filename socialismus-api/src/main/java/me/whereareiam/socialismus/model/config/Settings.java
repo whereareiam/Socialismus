@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.model.config;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.whereareiam.configura.ConfigDocument;
 import me.whereareiam.configura.feature.postprocess.api.PostProcess;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.Event;
@@ -25,7 +24,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class Settings extends ConfigDocument {
+public class Settings {
 	/**
 	 * Debug level for logging
 	 */
