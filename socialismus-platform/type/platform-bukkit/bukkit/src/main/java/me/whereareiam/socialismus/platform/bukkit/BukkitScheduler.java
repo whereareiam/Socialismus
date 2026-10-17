@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @Singleton
 public class BukkitScheduler extends PlatformScheduler<BukkitTask> {
-	private static final long MS_TO_TICKS = 20L;
+	private static final long MILLIS_PER_TICK = 50L;
 
 	private final Plugin plugin;
 
@@ -36,7 +36,7 @@ public class BukkitScheduler extends PlatformScheduler<BukkitTask> {
 	@Override
 	@NotNull
 	protected BukkitTask start(@NotNull DelayedRunnableTask runnableTask, boolean async) {
-		long delayInTicks = runnableTask.getDelay() / MS_TO_TICKS;
+		long delayInTicks = toTicks(runnableTask.getDelay());
 
 		return async
 				? Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnableTask.getRunnable(), delayInTicks)
@@ -46,12 +46,20 @@ public class BukkitScheduler extends PlatformScheduler<BukkitTask> {
 	@Override
 	@NotNull
 	protected BukkitTask start(@NotNull PeriodicalRunnableTask runnableTask, boolean async) {
-		long delayInTicks = runnableTask.getDelay() / MS_TO_TICKS;
-		long periodInTicks = runnableTask.getPeriod() / MS_TO_TICKS;
+		long delayInTicks = toTicks(runnableTask.getDelay());
+		// A timer needs a period of at least one tick.
+		long periodInTicks = Math.max(1L, toTicks(runnableTask.getPeriod()));
 
 		return async
 				? Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnableTask.getRunnable(), delayInTicks, periodInTicks)
 				: Bukkit.getScheduler().runTaskTimer(plugin, runnableTask.getRunnable(), delayInTicks, periodInTicks);
+	}
+
+	/**
+	 * Converts milliseconds to server ticks of 50 ms, rounding down; a delay under one tick runs on the next tick.
+	 */
+	static long toTicks(long millis) {
+		return Math.max(0L, millis / MILLIS_PER_TICK);
 	}
 
 	@Override
