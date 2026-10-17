@@ -2,9 +2,11 @@ import org.gradle.jvm.tasks.Jar
 
 evaluationDependsOn(":platform-proxy-velocity")
 evaluationDependsOn(":platform-bukkit-paper")
+evaluationDependsOn(":socialismus-platform:bundle")
 
 val velocityShadowJar = project(":platform-proxy-velocity").tasks.named("shadowJar", Jar::class.java)
 val paperShadowJar = project(":platform-bukkit-paper").tasks.named("shadowJar", Jar::class.java)
+val bundleShadowJar = project(":socialismus-platform:bundle").tasks.named("shadowJar", Jar::class.java)
 
 val spawner = extensions.getByName("spawner")
 (spawner.readProperty("serverDir") as DirectoryProperty).set(layout.projectDirectory.dir("dev/server"))
@@ -35,6 +37,27 @@ scenarios.registerScenario("combined") { scenario ->
         paper.setBoolean("onlineMode", false)
         paper.setDirectory("rootOverlayDir", "dev/scenarios/combined/backend")
         paper.addInstall("plugins", paperShadowJar.flatMap { it.archiveFile })
+        paper.addModrinth("lKEzGugV", "PlaceholderAPI.jar", "plugins")
+    }
+}
+
+// The combined network with the bundle jar on the proxy and on the backend.
+scenarios.registerScenario("bundle") { scenario ->
+    scenario.addVelocity("proxy") { velocity ->
+        velocity.setInt("port", 25565)
+        velocity.setBoolean("onlineMode", false)
+        velocity.setString("forwardingMode", "legacy")
+        velocity.setDirectory("rootOverlayDir", "dev/scenarios/combined/velocity")
+        velocity.addServer("backend", "127.0.0.1:25566")
+        velocity.setTryServers("backend")
+        velocity.addInstall("plugins", bundleShadowJar.flatMap { it.archiveFile })
+    }
+
+    scenario.addPaper("backend") { paper ->
+        paper.setInt("port", 25566)
+        paper.setBoolean("onlineMode", false)
+        paper.setDirectory("rootOverlayDir", "dev/scenarios/combined/backend")
+        paper.addInstall("plugins", bundleShadowJar.flatMap { it.archiveFile })
         paper.addModrinth("lKEzGugV", "PlaceholderAPI.jar", "plugins")
     }
 }

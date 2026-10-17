@@ -39,6 +39,9 @@ project(":socialismus-integration").projectDir = file("socialismus-integration")
 include(":socialismus-platform")
 project(":socialismus-platform").projectDir = file("socialismus-platform")
 
+include(":socialismus-platform:bundle")
+project(":socialismus-platform:bundle").projectDir = file("socialismus-platform/bundle")
+
 include(":platform-bukkit")
 project(":platform-bukkit").projectDir = file("socialismus-platform/type/platform-bukkit")
 

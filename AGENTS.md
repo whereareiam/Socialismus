@@ -20,6 +20,7 @@ A module's build file holds its role, dependencies and metadata; shared behaviou
 | `module-api` | a published API: `module-java` plus Maven publishing |
 | `packaging-shaded-jar` | a jar that bundles its dependencies, with the relocations of `packaging-relocations` |
 | `packaging-platform-jar` | a plugin jar; `platform { name.set("PAPER") }` names its classifier and `Plugin-Type` and it fills `plugin.yml` and `paper-plugin.yml` |
+| `packaging-bundle-jar` | the bundle jar: every platform whose `platform` block keeps `bundled`, with the descriptors it lists in `descriptors` |
 | `packaging-module-jar` | the jar of a Socialismus module; `socialismusModule { name.set("Chirper") }` names the jar and fills `module.json` |
 
 The modules compile with Java 21 whichever Java runs Gradle; `platform-bukkit-paper` uses a Java 25 toolchain, because the Paper API of 26.x is built for Java 25.
@@ -46,18 +47,22 @@ modules/module-chirper/
 
 ### Platforms
 
-Platforms are grouped under `socialismus-platform/type/` by what their members share:
+Platforms are grouped under `socialismus-platform/type/` by what their members share; `bundle/` beside it builds one jar for several platforms:
 
 ```text
-socialismus-platform/type/
-  platform-bukkit/      the Bukkit API
-    common/             shared by Bukkit and Paper     :platform-bukkit-common
-    bukkit/             BUKKIT jar                     :platform-bukkit-bukkit
-    paper/              PAPER jar                      :platform-bukkit-paper
-  platform-proxy/       proxies
-    velocity/           VELOCITY jar                   :platform-proxy-velocity
+socialismus-platform/
+  bundle/               PAPER and VELOCITY in one jar  :socialismus-platform:bundle
+  type/
+    platform-bukkit/    the Bukkit API
+      common/           shared by Bukkit and Paper     :platform-bukkit-common
+      bukkit/           BUKKIT jar                     :platform-bukkit-bukkit
+      paper/            PAPER jar                      :platform-bukkit-paper
+    platform-proxy/     proxies
+      velocity/         VELOCITY jar                   :platform-proxy-velocity
 ```
 
+- the bundle merges the classes of its platforms, so it only carries platforms whose shared classes are identical; Bukkit relocates Adventure and sets `bundled.set(false)`
+- `./gradlew runDevBundle` starts Velocity and Paper with the bundle jar
 - a new platform joins the group it shares code with, such as BungeeCord in `platform-proxy/`; a group gets its `common/` once two members share something
 
 ## Branching And Pull Requests
