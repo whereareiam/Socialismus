@@ -2,7 +2,7 @@
 
 # plugins
 shadow = "9.3.0"
-buildconfig = "5.7.1"
+buildconfig = "6.1.2"
 spawner = "dev-56440cd"
 toolkit = "0.3.0"
 freefair = "9.5.0"
