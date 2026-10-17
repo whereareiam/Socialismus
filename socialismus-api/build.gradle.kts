@@ -1,5 +1,5 @@
 plugins {
-    id("api")
+    id("module-api")
     alias(libs.plugins.buildconfig)
 }
 

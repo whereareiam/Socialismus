@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.jvm.tasks.Jar
 
 plugins {
-    id("shared")
-    id("relocations")
+    id("module-java")
+    id("packaging-relocations")
 }
 
 tasks.withType<ShadowJar>().configureEach {
@@ -13,16 +13,11 @@ tasks.withType<ShadowJar>().configureEach {
 
     if (providers.gradleProperty("output").isPresent) {
         destinationDirectory.set(file(providers.gradleProperty("output").get()))
-    } else if (project.path != ":platform-bukkit-common") {
+    } else {
         destinationDirectory.set(defaultDestination)
     }
 }
 
 tasks.named<Jar>("jar").configure {
     dependsOn(tasks.named("shadowJar"))
-}
-
-tasks.named<Copy>("processResources").configure {
-    inputs.property("projectVersion", project.version)
-    inputs.property("socialismusDependency", rootProject.extra["socialismusModuleDependencyPattern"])
 }

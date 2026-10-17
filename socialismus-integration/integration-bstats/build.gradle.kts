@@ -1,8 +1,8 @@
 plugins {
-    id("integration")
+    id("module-java")
 }
 
 dependencies {
-    compileOnly(project(":socialismus-module:module-api"))
+    compileOnly(projects.socialismusModule.moduleApi)
     compileOnly(libs.bundles.bStats)
 }

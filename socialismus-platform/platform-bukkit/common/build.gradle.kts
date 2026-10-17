@@ -1,9 +1,9 @@
 plugins {
-    id("runtime")
+    id("module-java")
 }
 
 dependencies {
-    compileOnly(project(":socialismus-module:module-api"))
+    compileOnly(projects.socialismusModule.moduleApi)
     implementation(projects.socialismusApi)
     implementation(projects.integrationBstats)
 

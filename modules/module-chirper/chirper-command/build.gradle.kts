@@ -1,10 +1,10 @@
 plugins {
-    id("shared")
+    id("module-java")
 }
 
 dependencies {
     compileOnly(libs.commandant)
     compileOnly(libs.cloud.annotations)
-    compileOnly(project(":module-chirper-api"))
-    testImplementation(project(":module-chirper-api"))
+    compileOnly(projects.moduleChirperApi)
+    testImplementation(projects.moduleChirperApi)
 }

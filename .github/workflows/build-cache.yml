@@ -26,11 +26,12 @@ jobs:
         with:
           persist-credentials: false
 
-      # platform-bukkit-paper compiles for Java 25 with the JDK that runs Gradle.
+      # The modules compile with a Java 21 toolchain, platform-bukkit-paper with Java 25.
       - uses: whereareiam/devops/primitive/setup/gradle@v3
         with:
           java-version: "25"
+          toolchain-versions: "21"
 
       # Every cacheable task the checks run before their tests.
       - name: Compile the project and its tests
-        run: ./gradlew --no-daemon testClasses jars
+        run: ./gradlew --no-daemon testClasses assembleDistribution

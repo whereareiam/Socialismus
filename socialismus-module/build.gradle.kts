@@ -7,7 +7,8 @@ tasks.register("moduleArtifacts") {
     description = "Builds all Socialismus module artifacts."
 
     dependsOn(
+        ":socialismus-module:module:build",
         ":socialismus-module:module-api:build",
-        ":socialismus-module:module:build"
+        ":socialismus-module:module-common:build"
     )
 }

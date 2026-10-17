@@ -1,12 +1,12 @@
 import me.whereareiam.attache.plugin.gradle.extension.AttacheExtension
 
 plugins {
-    id("shared")
+    id("module-java")
     alias(libs.plugins.attache)
 }
 
 dependencies {
-    compileOnly(project(":socialismus-module:module-api"))
+    compileOnly(projects.socialismusModule.moduleApi)
 
     implementation(libs.attache.standalone)
 

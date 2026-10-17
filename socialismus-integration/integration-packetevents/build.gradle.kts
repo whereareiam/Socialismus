@@ -1,3 +1,3 @@
 plugins {
-    id("integration")
+    id("module-java")
 }

@@ -1,11 +1,11 @@
 plugins {
-    id("api")
+    id("module-api")
 }
 
 group = "me.whereareiam.socialismus.module"
 
 dependencies {
-    api(project(":socialismus-api"))
+    api(projects.socialismusApi)
 }
 
 toolkitPublish {

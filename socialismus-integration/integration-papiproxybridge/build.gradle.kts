@@ -1,5 +1,5 @@
 plugins {
-    id("integration")
+    id("module-java")
 }
 
 dependencies {
