@@ -135,7 +135,7 @@ public class ChatSelector {
 	}
 
 	private Optional<InternalChat> findDefaultSymbolChat(ChatSettings settings) {
-		String fallbackId = settings.getFallback().getChatId();
+		String fallbackId = settings.getFallback().getChat();
 
 		return containerService.getChats().stream()
 				.filter(c -> !Objects.equals(c.getId(), fallbackId))
@@ -160,7 +160,7 @@ public class ChatSelector {
 	}
 
 	private Optional<Pair> findRegexChat(String plain, ChatSettings settings) {
-		String fallbackId = settings.getFallback().getChatId();
+		String fallbackId = settings.getFallback().getChat();
 		return containerService.getChats().stream()
 				.filter(c -> !Objects.equals(c.getId(), fallbackId))
 				.sorted(BY_PRIORITY_DESC)
@@ -223,7 +223,7 @@ public class ChatSelector {
 			List<InternalChat> sameSymbol = containerService.getChatBySymbol(symbol);
 			InternalChat alt = sameSymbol.stream()
 					.filter(c -> !Objects.equals(c, current))
-					.filter(c -> !Objects.equals(c.getId(), settings.getFallback().getChatId()))
+					.filter(c -> !Objects.equals(c.getId(), settings.getFallback().getChat()))
 					.sorted(BY_PRIORITY_DESC)
 					.filter(c -> meetsSenderRequirements(c, msg))
 					.findFirst()
@@ -238,7 +238,7 @@ public class ChatSelector {
 		ChatSettings.FallbackChatSettings fb = settings.getFallback();
 		if (!fb.isEnabled()) return null;
 
-		Optional<InternalChat> fallback = containerService.getChat(fb.getChatId());
+		Optional<InternalChat> fallback = containerService.getChat(fb.getChat());
 		if (fallback.isEmpty())
 			return ChatMatch.FALLBACK_MISSING;
 
@@ -252,7 +252,7 @@ public class ChatSelector {
 	}
 
 	private void notifyNoMatchOrFallback(ChatMessage message, ChatSettings settings, boolean fallbackMissing) {
-		if (!settings.isNotifyNoChat()) return;
+		if (!settings.getNotifications().isNoChat()) return;
 
 		ChatMessages msgs = chatMessagesProvider.get();
 
@@ -265,7 +265,7 @@ public class ChatSelector {
 	}
 
 	private void notifyEmptyMessage(ChatMessage message, ChatSettings settings) {
-		if (!settings.isNotifyEmptyMessage()) return;
+		if (!settings.getNotifications().isEmptyMessage()) return;
 
 		String emptyMessage = chatMessagesProvider.get().getEmptyMessage();
 		if (emptyMessage == null || emptyMessage.isBlank()) return;

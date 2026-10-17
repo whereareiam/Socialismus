@@ -26,7 +26,7 @@ public class FormattedChatMessageProcessor implements WorkerProcessor<FormattedC
 		FormattedChatMessage formattedChatMessage = FormattedChatMessage.from(
 				chatMessage,
 				Component.empty(),
-				settings.get().getMisc().isVanillaSending()
+				settings.get().getVanilla().isSending()
 		);
 
 		for (Worker<FormattedChatMessage> worker : workers) {

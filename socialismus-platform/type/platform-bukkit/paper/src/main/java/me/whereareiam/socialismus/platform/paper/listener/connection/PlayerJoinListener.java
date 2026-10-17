@@ -17,7 +17,7 @@ public class PlayerJoinListener implements DynamicListener<PlayerJoinEvent> {
 	private final PlayerRegistry playerRegistry;
 
 	public void onEvent(PlayerJoinEvent event) {
-		if (settings.get().getMisc().isDisableJoinNotification())
+		if (!settings.get().getVanilla().isJoinMessage())
 			event.joinMessage(null);
 
 		Player player = event.getPlayer();

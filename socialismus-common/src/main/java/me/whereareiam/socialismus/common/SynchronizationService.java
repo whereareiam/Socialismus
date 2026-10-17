@@ -10,14 +10,14 @@ import me.whereareiam.socialismus.common.chat.worker.formatted.SynchronizationPu
 import me.whereareiam.socialismus.common.sync.ChatHistoryNetworkBridge;
 import me.whereareiam.socialismus.common.sync.ChatNetworkBridge;
 import me.whereareiam.socialismus.common.sync.CrossPlayerSyncBridge;
-import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.config.Sync;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class SynchronizationService {
 	private final Injector injector;
-	private final Provider<Settings> settings;
+	private final Provider<Sync> syncSettings;
 
 	public void initialize() {
 		if (!Constants.Synchronization.SYNCHRONIZATION) return;
@@ -33,7 +33,7 @@ public class SynchronizationService {
 	}
 
 	public void applyTo(SocialismusPlayer player, String actualServerName) {
-		var sync = settings.get().getSynchronization();
+		var sync = syncSettings.get();
 		if (!Constants.Synchronization.SYNCHRONIZATION) return;
 
 		if (sync.isUseRealServerName() && actualServerName != null) {

@@ -15,10 +15,10 @@ import java.util.OptionalInt;
 
 /**
  * The migrations of Socialismus's configuration, which bring the documents of an older installation into the layout
- * this build reads. They cover the settings, messages and commands documents and everything under {@code chats/};
- * every module migrates its own working directory. On startup the ones an installation has not seen yet run in
- * order, before any document is loaded, and the number of the last one is kept as {@code _version} at the top of
- * the settings document.
+ * this build reads. They cover the settings, messages, commands, sync and updater documents and everything under
+ * {@code chat/}, and {@code chats/} where earlier builds kept the chats; every module migrates its own working
+ * directory. On startup the ones an installation has not seen yet run in order, before any document is loaded, and
+ * the number of the last one is kept as {@code _version} at the top of the settings document.
  * <p>
  * To add a migration, append it with the next number and never change or renumber one that was released. A
  * migration with real logic becomes a class of its own that is listed here.
@@ -56,6 +56,7 @@ public final class SocialismusConfigMigrations {
 						List.of("messages", "commands"),
 						List.of("chats")
 				))
+				.migration(ConfigLayoutMigration.VERSION, ConfigLayoutMigration.NAME, new ConfigLayoutMigration(dataPath, extension))
 				.build();
 	}
 }

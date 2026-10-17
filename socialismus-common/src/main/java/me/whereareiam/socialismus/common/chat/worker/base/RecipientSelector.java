@@ -68,7 +68,7 @@ public class RecipientSelector {
 					.collect(Collectors.toSet());
 
 			// If nobody nearby (<=1 usually means only the sender), optionally notify & cancel
-			if (recipients.size() <= 1 && settings.isNotifyNoNearbyPlayers()) {
+			if (recipients.size() <= 1 && settings.getNotifications().isNoNearbyPlayers()) {
 				sendNoNearbyPlayersMessage(sender, radius, messages);
 				chatMessage.setCancelled(true);
 				return chatMessage;
@@ -90,7 +90,7 @@ public class RecipientSelector {
 			return chatMessage;
 		}
 
-		if (finalRecipients.size() == 1 && settings.isNotifyNoPlayers()) {
+		if (finalRecipients.size() == 1 && settings.getNotifications().isNoPlayers()) {
 			sender.sendMessage(Serializer.serialize(sender, messages.getNoPlayers()));
 			chatMessage.setCancelled(true);
 		}

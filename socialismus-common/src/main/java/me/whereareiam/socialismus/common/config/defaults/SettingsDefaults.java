@@ -11,7 +11,6 @@ import me.whereareiam.socialismus.type.Version;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Singleton
 public class SettingsDefaults implements DefaultsProvider<Settings> {
@@ -24,31 +23,11 @@ public class SettingsDefaults implements DefaultsProvider<Settings> {
 		serialization.setEnableLegacyColors(false);
 		settings.setSerialization(serialization);
 
-		Settings.Synchronization synchronization = new Settings.Synchronization();
-		synchronization.setEnabled(false);
-		synchronization.setServer(UUID.randomUUID().toString());
-		synchronization.setUseRealServerName(false);
-		synchronization.setCrossPlayerSync(true);
-		settings.setSynchronization(synchronization);
-
-		Settings.Commands commands = new Settings.Commands();
-		commands.setUseAsyncCompletions(true);
-		commands.setUseBrigadier(false);
-		settings.setCommands(commands);
-
-		Settings.Miscellaneous misc = new Settings.Miscellaneous();
-		misc.setDisableJoinNotification(true);
-		misc.setDisableQuitNotification(true);
-		misc.setVanillaSending(true);
-		settings.setMisc(misc);
-
-		Settings.Updater updater = new Settings.Updater();
-		updater.setCheckForUpdates(true);
-		updater.setWarnAboutUpdates(true);
-		updater.setWarnAboutLocalBuilds(true);
-		updater.setWarnAboutDevBuilds(true);
-		updater.setInterval(1);
-		settings.setUpdater(updater);
+		Settings.Vanilla vanilla = new Settings.Vanilla();
+		vanilla.setJoinMessage(false);
+		vanilla.setQuitMessage(false);
+		vanilla.setSending(true);
+		settings.setVanilla(vanilla);
 
 		Settings.Listeners listeners = new Settings.Listeners();
 		if (PlatformType.isProxy())

@@ -1,0 +1,4 @@
+enabled: true
+server: "sync-backend-b"
+useRealServerName: false
+crossPlayerSync: true

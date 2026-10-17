@@ -33,8 +33,8 @@ import java.util.Map;
  * }</pre>
  */
 public final class ServerFiles {
-	/** The file a journey's chats are written to; Socialismus reads every file in {@code chats/}. */
-	public static final String CHATS = "chats/chats-default.yml";
+	/** The file a journey's chats are written to; Socialismus reads every file in {@code chat/list/}. */
+	public static final String CHATS = "chat/list/default.yml";
 
 	// The documents journeys write hold no Adventure types, so plain YAML writes them as Socialismus does.
 	private static final Configura CONFIGURA = Config.builder()

@@ -27,19 +27,27 @@ public class ChatsProvider extends DefaultConfigProvider<List<Chat>> {
 			@Named("chatPath") Path dataPath,
 			Registry<Reloadable> registry
 	) {
-		super(dataPath, "", listType(), registry);
+		// Every file in chat/list holds chats; the chat documents sit next to that folder.
+		super(dataPath.resolve("list"), "", listType(), registry);
 	}
 
 	@Override
 	protected List<Chat> load() {
 		List<Chat> loaded = new ArrayList<>();
+		try {
+			Files.createDirectories(getPath());
+		} catch (IOException e) {
+			Logger.severe("Failed to create the chat list directory", e);
+			return Collections.emptyList();
+		}
+
 		try (Stream<Path> paths = Files.list(getPath())) {
 			paths.filter(path -> !Files.isDirectory(path)).forEach(path -> {
 				String fileName = path.getFileName().toString();
 				int dotIndex = fileName.lastIndexOf('.');
 				String baseName = dotIndex == -1 ? fileName : fileName.substring(0, dotIndex);
 
-				if (baseName.startsWith("messages") || baseName.startsWith("settings") || baseName.isEmpty()) return;
+				if (baseName.isEmpty()) return;
 
 				loaded.addAll(addChatsFromConfig(path.getParent().resolve(baseName)));
 			});
@@ -48,7 +56,7 @@ public class ChatsProvider extends DefaultConfigProvider<List<Chat>> {
 			return Collections.emptyList();
 		}
 
-		if (loaded.isEmpty()) loaded.addAll(addChatsFromConfig(getPath().resolve("chats-default")));
+		if (loaded.isEmpty()) loaded.addAll(addChatsFromConfig(getPath().resolve("default")));
 
 		loaded.removeIf(chat -> loaded.stream().anyMatch(c -> c != chat && c.getId().equals(chat.getId())));
 		return loaded;

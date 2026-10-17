@@ -5,7 +5,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.command.CommandManagerProvider;
-import me.whereareiam.socialismus.model.config.Settings;
+import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.platform.bukkit.mapper.CommandSenderMapper;
 import org.bukkit.plugin.Plugin;
 import org.incendo.cloud.CommandManager;
@@ -22,11 +22,11 @@ public class BukkitCommandManagerProvider extends CommandManagerProvider {
 
 	@Inject
 	public BukkitCommandManagerProvider(
-			Provider<Settings> settings,
+			Provider<Commands> commands,
 			Plugin plugin,
 			CommandSenderMapper commandSenderMapper
 	) {
-		super(settings);
+		super(commands);
 		this.plugin = plugin;
 		this.commandSenderMapper = commandSenderMapper;
 	}

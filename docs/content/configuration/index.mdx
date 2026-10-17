@@ -23,12 +23,36 @@ Because of that, this documentation describes:
   These flags show that a setting is intentionally configurable, but should be changed with more care than ordinary options. Unmarked settings are normal day-to-day configuration.
 </Callout>
 
+## Where each setting lives
+
+```text
+plugins/Socialismus/
+├── settings.yml          level, serialization, vanilla, listeners
+├── messages.yml          prefix, command messages
+├── commands.yml          behavior, commands
+├── sync.yml              whether and how this server syncs with others
+├── updater.yml           update checks
+├── chat/
+│   ├── settings.yml      notifications, fallback chat, history
+│   ├── messages.yml      what players are told about their chat messages
+│   ├── sync.yml          what chats do when synced
+│   └── list/             every file here holds chats, under any name
+└── modules/<Module>/     each module's own documents
+```
+
+On a Velocity proxy the folder is `plugins/socialismus/`.
+
+## Upgrading the layout
+
+`settings` starts with `_version`, which counts the upgrades of the data directory. On its first start a new release moves every setting, message and chat you changed to the place it reads it from, and copies each file it changes to `.strata/backup/` first. Do not edit or remove `_version`.
+
 ## Common value formats
 
 Across configuration areas, values commonly appear in a few recurring forms:
 
 - booleans such as `true` and `false`
-- bare numbers such as log levels, priorities, history sizes, filler sizes, or updater intervals
+- bare numbers such as log levels, priorities, history sizes, or filler sizes
+- durations such as `"30s"`, `"10m"`, `"1h"` or `"1d12h"`; a bare number counts minutes
 - enum-like uppercase strings such as `"MINIMESSAGE"` or event priorities such as `"LOWEST"`
 - maps keyed by command id, participant group, or fully qualified event class name
 - lists of chat definitions, triggers, formats, requirements, aliases, or authors

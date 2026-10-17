@@ -1,0 +1,4 @@
+enabled: false
+server: "combined-proxy"
+useRealServerName: false
+crossPlayerSync: true

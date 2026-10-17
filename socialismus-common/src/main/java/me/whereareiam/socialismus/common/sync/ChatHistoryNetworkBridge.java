@@ -5,7 +5,6 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.common.chat.ChatHistoryController;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.EventManager;
@@ -15,7 +14,8 @@ import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveByIdEvent;
 import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveByPlayerEvent;
 import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveEvent;
 import me.whereareiam.socialismus.logging.Logger;
-import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.ChatSync;
+import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.socialismus.service.sync.ChatHistorySyncBus;
 
@@ -31,14 +31,14 @@ public class ChatHistoryNetworkBridge implements EventListener, ChatHistorySyncB
 	private final SyncService sync;
 	private final SerializationService serializationService;
 	private final ChatHistoryController chatHistoryController;
-	private final Provider<ChatSettings> chatSettings;
+	private final Provider<ChatSync> chatSync;
 	private final EventManager eventManager;
 
 	private final Map<Class<? extends ChatHistoryRemoveEvent>, Consumer<ChatHistoryRemoveEvent>> eventHandlers = new HashMap<>();
 
 	public void initialize() {
-		if (!chatSettings.get().getSynchronization().isEnabled()
-				&& !chatSettings.get().getSynchronization().isClearHistory())
+		if (!chatSync.get().isEnabled()
+				&& !chatSync.get().isClearHistory())
 			return;
 
 		eventManager.register(this);
@@ -54,7 +54,7 @@ public class ChatHistoryNetworkBridge implements EventListener, ChatHistorySyncB
 
 	@SocialisticEvent
 	public void onChatHistoryRemove(ChatHistoryRemoveEvent event) {
-		if (!chatSettings.get().getSynchronization().isEnabled())
+		if (!chatSync.get().isEnabled())
 			return;
 
 		if (Constants.Synchronization.IDENTIFIER.equals(event.getOrigin()))
@@ -74,14 +74,14 @@ public class ChatHistoryNetworkBridge implements EventListener, ChatHistorySyncB
 
 	@Override
 	public void subscribe() {
-		if (!chatSettings.get().getSynchronization().isEnabled())
+		if (!chatSync.get().isEnabled())
 			return;
 
 		sync.subscribe(CHANNEL, (channel, payload) -> handleEvent(payload));
 	}
 
 	private void handleEvent(byte[] payload) {
-		if (!chatSettings.get().getSynchronization().isClearHistory())
+		if (!chatSync.get().isClearHistory())
 			return;
 
 		try {

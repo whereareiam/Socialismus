@@ -102,7 +102,7 @@ public class ChatContainer implements ChatContainerService, EventListener {
 	@Override
 	public List<InternalChat> getChatBySymbol(String symbol) {
 		return chats.values().stream()
-				.filter(chat -> !chat.getId().equals(chatSettings.get().getFallback().getChatId()))
+				.filter(chat -> !chat.getId().equals(chatSettings.get().getFallback().getChat()))
 				.filter(chat -> chat.getTriggers() != null && chat.getTriggers().stream()
 						.anyMatch(t -> t.getType() == TriggerType.SYMBOL && symbol.equals(((SymbolChatTrigger) t).getSymbol())))
 				.sorted(Comparator.comparingInt(Chat::getPriority).reversed())

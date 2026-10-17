@@ -1,0 +1,6 @@
+check: true
+warn:
+  updates: true
+  localBuilds: true
+  devBuilds: true
+interval: "1h"

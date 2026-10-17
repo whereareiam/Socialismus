@@ -5,41 +5,17 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Configuration model for chat system settings.
- * Contains global settings that control chat behavior, notifications,
- * fallback options, and chat history management.
- *
- * <p>This singleton class stores configuration values that are
- * loaded from the plugin's configuration file.</p>
+ * The settings of chatting, {@code chat/settings} in the data directory: notifications, the fallback chat and chat
+ * history. What chats do when synced is in {@link ChatSync}.
  */
 @Getter
 @Setter
 @ToString
 public class ChatSettings {
 	/**
-	 * Whether to notify when no chat channel is found.
+	 * What players are told when their message goes nowhere.
 	 */
-	private boolean notifyNoChat;
-
-	/**
-	 * Whether to notify when no format is found.
-	 */
-	private boolean notifyNoFormat;
-
-	/**
-	 * Whether to notify when no players are available.
-	 */
-	private boolean notifyNoPlayers;
-
-	/**
-	 * Whether to notify when no nearby players are found.
-	 */
-	private boolean notifyNoNearbyPlayers;
-
-	/**
-	 * Whether to notify when a trigger is used without any message content.
-	 */
-	private boolean notifyEmptyMessage;
+	private Notifications notifications;
 
 	/**
 	 * Settings for fallback chat behavior.
@@ -51,10 +27,6 @@ public class ChatSettings {
 	 */
 	private ChatHistorySettings history;
 
-	/**
-	 * Whether to synchronize chat messages across servers.
-	 */
-	private SynchronizationSettings synchronization;
 
 	/**
 	 * Configuration class for fallback chat settings.
@@ -72,7 +44,7 @@ public class ChatSettings {
 		/**
 		 * The identifier of the fallback chat channel.
 		 */
-		private String chatId;
+		private String chat;
 	}
 
 	/**
@@ -104,12 +76,36 @@ public class ChatSettings {
 		private String bypassPermission;
 	}
 
+	/**
+	 * What players are told when their message goes nowhere.
+	 */
 	@Getter
 	@Setter
 	@ToString
-	public static class SynchronizationSettings {
-		private boolean enabled;
-		private boolean preserveFormat;
-		private boolean clearHistory;
+	public static class Notifications {
+		/**
+		 * Whether to tell the sender that no chat matched.
+		 */
+		private boolean noChat;
+
+		/**
+		 * Whether to tell the sender that no format matched.
+		 */
+		private boolean noFormat;
+
+		/**
+		 * Whether to tell the sender that no other player is online.
+		 */
+		private boolean noPlayers;
+
+		/**
+		 * Whether to tell the sender that no player is within the chat's radius.
+		 */
+		private boolean noNearbyPlayers;
+
+		/**
+		 * Whether to tell the sender that a trigger was used without any message.
+		 */
+		private boolean emptyMessage;
 	}
 }
