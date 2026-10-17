@@ -6,7 +6,6 @@ import me.whereareiam.socialismus.testing.environment.ServerFiles;
 import me.whereareiam.socialismus.testing.environment.Socialismus;
 import me.whereareiam.socialismus.testing.journey.Console;
 import me.whereareiam.socialismus.testing.journey.Player;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -27,11 +26,9 @@ class PlatformStartTest {
 	}
 
 	@Test
-	@Disabled("The BUKKIT jar does not start on Spigot yet: Attache downloads Adventure and Cloud without the "
-			+ "relocation its code refers to, and cannot download Brigadier")
 	@Socialismus(network = Network.SPIGOT, configure = GlobalChat.class)
 	void bukkitJarRunsOnSpigot(ScenarioContext anvil) {
-		startsAndChats(anvil, "Platform: BUKKIT [BUKKIT]");
+		startsAndChats(anvil, "Platform: SPIGOT [BUKKIT]");
 	}
 
 	@Test

@@ -40,8 +40,8 @@ journeys marked **first**:
 - [x] a "Live Tests" section in `AGENTS.md`
 
 The first wave found three bugs: `/socialismus reload` sometimes kept the old chats, chat reached
-nobody on Velocity, and the BUKKIT jar does not start on Spigot. The Spigot journey stays disabled
-until its fix lands.
+nobody on Velocity, and the BUKKIT jar did not start on Spigot. Their journeys run now that the fixes
+have landed.
 
 ## chat
 
@@ -73,7 +73,7 @@ One Paper server unless stated otherwise.
 ## platform
 
 - [x] The PAPER jar starts on the latest Paper and a player chats **first**
-- [ ] The BUKKIT jar starts on the latest Spigot and a player chats **first**, added but disabled until the jar starts on Spigot
+- [x] The BUKKIT jar starts on the latest Spigot and a player chats **first**
 - [x] The VELOCITY jar starts on Velocity alone and a player chats **first**
 - [x] The BUNDLE jar starts on Paper and on Velocity **first**
 - [ ] The PAPER jar starts on Paper 1.20.6, the oldest it supports
