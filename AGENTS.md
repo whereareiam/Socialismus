@@ -10,6 +10,10 @@
 
 `assembleDistribution` collects the shipped files under their final names in `build/distribution/`; the root `toolkitDistribution` block declares them, and workflows upload that directory as it is. `VERSION` sets the version, `dev` by default.
 
+### Live Tests
+
+`socialismus-testing/JOURNEYS.md` plans the live player journeys, run through Anvil, by suite. Tick a journey off in the pull request that adds it, and add one there when a feature needs it.
+
 ### Convention Plugins
 
 A module's build file holds its role, dependencies and metadata; shared behaviour lives in `build-logic`:
