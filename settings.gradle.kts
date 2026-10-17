@@ -24,11 +24,16 @@ dependencyResolutionManagement {
         maven("https://repo.william278.net/releases/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://repo.codemc.io/repository/maven-releases/")
+        maven("https://repo.opencollab.dev/main/")
+        maven("https://repo.opencollab.dev/maven-snapshots/")
     }
 }
 
 include(":socialismus-api")
 project(":socialismus-api").projectDir = file("socialismus-api")
+
+include(":socialismus-testing")
+project(":socialismus-testing").projectDir = file("socialismus-testing")
 
 include(":socialismus-common")
 project(":socialismus-common").projectDir = file("socialismus-common")

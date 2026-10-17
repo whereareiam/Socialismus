@@ -1,0 +1,73 @@
+chats:
+  - id: "fallback"
+    priority: 0
+    enabled: true
+    triggers:
+      - type: "SYMBOL"
+        strip: true
+        radius: 0
+        symbol: ""
+    formats:
+      - format: "{clear}<gray>[Before upgrade] {playerName}: <white>{message}"
+        requirements: {}
+    requirements: {}
+  - id: "local"
+    priority: 0
+    enabled: true
+    triggers:
+      - type: "SYMBOL"
+        strip: true
+        radius: 200
+        symbol: ""
+    formats:
+      - format: "{clear}<gray>[L] {playerName}: <white>{message}"
+        requirements: {}
+      - format: "{clear}<gray>[L] {playerName}: <gold>{message}"
+        requirements:
+          SENDER:
+            operator: "AND"
+            groups:
+              socialismus:permission:
+                condition: "HAS"
+                expected: "true"
+                permissions:
+                  - "socialismus.admin"
+    requirements:
+      RECIPIENT:
+        operator: "AND"
+        groups:
+          socialismus:permission:
+            condition: "HAS"
+            expected: "true"
+            permissions:
+              - "socialismus.chat.local"
+      SENDER:
+        operator: "AND"
+        groups:
+          socialismus:permission:
+            condition: "HAS"
+            expected: "true"
+            permissions:
+              - "socialismus.chat.local"
+  - id: "global"
+    priority: 1
+    enabled: true
+    triggers:
+      - type: "SYMBOL"
+        strip: true
+        radius: 0
+        symbol: "!"
+    formats:
+      - format: "{clear}<gray>[G] {playerName}: <white>{message}"
+        requirements: {}
+      - format: "{clear}<gray>[G] {playerName}: <gold>{message}"
+        requirements:
+          SENDER:
+            operator: "AND"
+            groups:
+              socialismus:permission:
+                condition: "HAS"
+                expected: "true"
+                permissions:
+                  - "socialismus.admin"
+    requirements: {}

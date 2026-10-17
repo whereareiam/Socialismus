@@ -63,11 +63,12 @@ jobs:
           java-version: "25"
           toolchain-versions: "21"
 
-      # assembleDistribution collects the plugin, API and module jars under their final names in build/distribution.
+      # assembleDistribution collects the plugin, API and module jars under their final names in build/distribution;
+      # anvilTest checks that every journey belongs to exactly one suite.
       - name: Build and test
         env:
           VERSION: ${{ steps.identity.outputs.version }}
-        run: ./gradlew --no-daemon test assembleDistribution
+        run: ./gradlew --no-daemon test :socialismus-testing:anvilTest assembleDistribution
 
       - uses: whereareiam/devops/primitive/report/junit/publish@v3
         if: always()
@@ -84,3 +85,42 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 14
+
+  journeys:
+    name: Journeys (${{ matrix.suite }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # The suites of socialismus-testing/build.gradle.kts that have journeys; socialismus-testing/JOURNEYS.md
+        # plans the others.
+        suite: [chat, commands, platform, upgrade]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - uses: whereareiam/devops/primitive/setup/gradle@v3
+        with:
+          java-version: "25"
+          toolchain-versions: "21"
+
+      # The servers and prepared workspaces the build cache job on dev left, instead of downloading them again.
+      - uses: whereareiam/anvil-actions/setup@v1
+
+      - name: Run the ${{ matrix.suite }} journeys
+        env:
+          SUITE: ${{ matrix.suite }}
+        run: ./gradlew --no-daemon ":socialismus-testing:anvil${SUITE^}Test"
+
+      # A failed journey keeps its network, whose logs tell what the servers did.
+      - uses: whereareiam/devops/primitive/report/junit/publish@v3
+        if: always()
+        with:
+          name: Journey results (${{ matrix.suite }})
+          artifact-name: test-results-journeys-${{ matrix.suite }}
+          reports: |
+            **/build/reports/tests/**
+            socialismus-testing/build/anvil/**/logs/latest.log

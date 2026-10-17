@@ -1,0 +1,7 @@
+noPlayers: "{prefix}<white>Your message was not sent because there are no players online."
+noChatMatch: "{prefix}<white>No chat matching criteria found."
+noFormatMatch: "{prefix}<white>No format matching criteria found."
+noFallbackChat: "{prefix}<white>No fallback chat found."
+noNearbyPlayers: "{prefix}<white>No nearby players found, within a radius of <gray>{radius}</gray> blocks."
+clearFormat:
+  format: "<gray>[<red>X</red>]</gray> "
