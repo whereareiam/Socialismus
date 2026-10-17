@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.platform.bukkit.actor.console.BukkitSocialismusCommandConsole;
 import me.whereareiam.socialismus.platform.bukkit.actor.player.BukkitSocialismusCommandPlayer;
+import me.whereareiam.socialismus.platform.bukkit.actor.sender.BukkitSocialismusCommandSender;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -32,7 +33,7 @@ public class CommandSenderMapper implements SenderMapper<CommandSender, Actor> {
 		if (source instanceof Player player)
 			return new BukkitSocialismusCommandPlayer(player, source, bukkitAudiences);
 
-		throw new UnsupportedOperationException("Unsupported command sender type: " + source.getClass().getName());
+		return new BukkitSocialismusCommandSender(source, bukkitAudiences);
 	}
 
 	@Override
@@ -43,6 +44,9 @@ public class CommandSenderMapper implements SenderMapper<CommandSender, Actor> {
 
 		if (actor instanceof BukkitSocialismusCommandConsole commandConsole)
 			return commandConsole.getCommandSender();
+
+		if (actor instanceof BukkitSocialismusCommandSender commandSender)
+			return commandSender.getCommandSender();
 
 		// If base types are passed, it means they were created outside command context
 		throw new UnsupportedOperationException(
