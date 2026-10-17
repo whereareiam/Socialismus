@@ -40,7 +40,10 @@ include(":socialismus-platform")
 project(":socialismus-platform").projectDir = file("socialismus-platform")
 
 include(":platform-bukkit")
-project(":platform-bukkit").projectDir = file("socialismus-platform/platform-bukkit")
+project(":platform-bukkit").projectDir = file("socialismus-platform/type/platform-bukkit")
+
+include(":platform-proxy")
+project(":platform-proxy").projectDir = file("socialismus-platform/type/platform-proxy")
 
 include(":socialismus-adapter-command")
 project(":socialismus-adapter-command").projectDir = file("socialismus-adapter-command")
@@ -135,14 +138,14 @@ project(":integration-papiproxybridge").projectDir = file("socialismus-integrati
 include(":integration-placeholderapi")
 project(":integration-placeholderapi").projectDir = file("socialismus-integration/integration-placeholderapi")
 
-include(":platform-velocity")
-project(":platform-velocity").projectDir = file("socialismus-platform/platform-velocity")
+include(":platform-proxy-velocity")
+project(":platform-proxy-velocity").projectDir = file("socialismus-platform/type/platform-proxy/velocity")
 
 include(":platform-bukkit-common")
-project(":platform-bukkit-common").projectDir = file("socialismus-platform/platform-bukkit/common")
+project(":platform-bukkit-common").projectDir = file("socialismus-platform/type/platform-bukkit/common")
 
 include(":platform-bukkit-bukkit")
-project(":platform-bukkit-bukkit").projectDir = file("socialismus-platform/platform-bukkit/bukkit")
+project(":platform-bukkit-bukkit").projectDir = file("socialismus-platform/type/platform-bukkit/bukkit")
 
 include(":platform-bukkit-paper")
-project(":platform-bukkit-paper").projectDir = file("socialismus-platform/platform-bukkit/paper")
+project(":platform-bukkit-paper").projectDir = file("socialismus-platform/type/platform-bukkit/paper")
