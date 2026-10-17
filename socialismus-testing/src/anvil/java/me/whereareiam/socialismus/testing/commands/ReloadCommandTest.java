@@ -5,7 +5,6 @@ import me.whereareiam.socialismus.testing.environment.ServerFiles;
 import me.whereareiam.socialismus.testing.environment.Socialismus;
 import me.whereareiam.socialismus.testing.journey.Console;
 import me.whereareiam.socialismus.testing.journey.Player;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +20,6 @@ import static me.whereareiam.socialismus.testing.environment.ServerFiles.chat;
 @Tag("commands")
 class ReloadCommandTest {
 	@Test
-	@Disabled("Reload keeps the old chats when the chat container reloads before the chats document, which the "
-			+ "reloadables do in no particular order; the lifecycle refactor makes only documents reloadable")
 	@Socialismus(configure = FirstFormat.class)
 	void appliesAChangedFormatWithoutARestart(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");

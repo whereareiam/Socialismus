@@ -19,6 +19,8 @@ import me.whereareiam.socialismus.command.definition.CommandDefinitionAdapter;
 import me.whereareiam.socialismus.command.executor.*;
 import me.whereareiam.socialismus.command.suggestion.CrossPlayerProvider;
 import me.whereareiam.socialismus.command.suggestion.PlayerSuggestionProvider;
+import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
+import me.whereareiam.socialismus.lifecycle.StartupPhase;
 import me.whereareiam.socialismus.model.CommandDefinition;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.message.Messages;
@@ -36,11 +38,12 @@ import java.util.*;
 
 /**
  * Implementation of DefaultCommandService for managing and registering commands.
- * Initializes all commands at plugin startup and registers exception handlers.
+ * Registers the commands of the core and their exception handlers when the runtime starts, after the integrations,
+ * so the messages of the commands take their placeholders.
  */
 @Singleton
-public class DefaultCommandService implements CommandService {
-	private final SerializerEngine serializer;
+public class DefaultCommandService implements CommandService, RuntimeLifecycle {
+	private final Provider<SerializerEngine> serializer;
 	private final Provider<Messages> messagesProvider;
 	private final Provider<Commands> commandsProvider;
 	private final Provider<CommandManager<Actor>> commandManagerProvider;
@@ -51,7 +54,7 @@ public class DefaultCommandService implements CommandService {
 
 	@Inject
 	public DefaultCommandService(
-			@NotNull SerializerEngine serializer,
+			@NotNull Provider<SerializerEngine> serializer,
 			@NotNull Provider<Messages> messagesProvider,
 			@NotNull Provider<Commands> commandsProvider,
 			@NotNull Provider<CommandManager<Actor>> commandManagerProvider,
@@ -62,8 +65,6 @@ public class DefaultCommandService implements CommandService {
 		this.serializer = serializer;
 		this.commandManagerProvider = commandManagerProvider;
 		this.injector = injector;
-
-		initialize();
 	}
 
 	@Override
@@ -109,6 +110,12 @@ public class DefaultCommandService implements CommandService {
 		return allDefinitions;
 	}
 
+	@Override
+	public @NotNull StartupPhase phase() {
+		return StartupPhase.RUNTIME;
+	}
+
+	@Override
 	public void initialize() {
 		CommandManager<Actor> commandManager = commandManagerProvider.get();
 
@@ -122,6 +129,13 @@ public class DefaultCommandService implements CommandService {
 				injector.getInstance(ClearCommand.class)
 		);
 		registerExceptionHandlers(commandManager);
+	}
+
+	/**
+	 * Leaves the commands registered: the server removes them with the plugin.
+	 */
+	@Override
+	public void shutdown() {
 	}
 
 	private void registerInternal(@NotNull Object @NotNull ... commandInstances) {
@@ -214,7 +228,7 @@ public class DefaultCommandService implements CommandService {
 				commandManager,
 				collectArgumentDescriptions(),
 				messages.getCommands().getHelp().getArgumentFormat(),
-				serializer.getPlaceholderFormat()
+				serializer.get().getPlaceholderFormat()
 		));
 	}
 
@@ -240,7 +254,7 @@ public class DefaultCommandService implements CommandService {
 		ExceptionHandlerRegistrar.register(
 				commandManager,
 				exceptionMessages,
-				serializer,
+				serializer.get(),
 				Actor::getAudience,
 				ExceptionFormatting.builder()
 						.format(Permission.class, CloudPermissionFormatters.minimal())

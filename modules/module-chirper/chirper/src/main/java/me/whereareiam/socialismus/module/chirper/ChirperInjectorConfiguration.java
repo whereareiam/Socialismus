@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
@@ -17,6 +18,7 @@ public class ChirperInjectorConfiguration extends AbstractModule {
 	private final PlatformInteractor platformInteractor;
 
 	private final Registry<Reloadable> reloadableRegistry;
+	private final EventManager eventManager;
 	private final RequirementEvaluatorService requirementEvaluator;
 
 	private final CommandService commandService;
@@ -29,6 +31,7 @@ public class ChirperInjectorConfiguration extends AbstractModule {
 		bind(RequirementEvaluatorService.class).toInstance(requirementEvaluator);
 
 		bind(new TypeLiteral<Registry<Reloadable>>() {}).toInstance(reloadableRegistry);
+		bind(EventManager.class).toInstance(eventManager);
 
 		bind(CommandService.class).toInstance(commandService);
 		bind(PlayerRegistry.class).toInstance(playerRegistry);

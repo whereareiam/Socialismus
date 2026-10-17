@@ -13,13 +13,10 @@ import lombok.Getter;
 import me.whereareiam.attache.platform.velocity.VelocityLibraryManager;
 import me.whereareiam.attache.type.VerbosityMode;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
-import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
-import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
+import me.whereareiam.socialismus.common.Socialismus;
 import me.whereareiam.socialismus.platform.common.PlatformInjector;
 import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.Version;
-import me.whereareiam.socialismus.util.EventUtil;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -40,6 +37,7 @@ public class VelocitySocialismus {
 	@Getter
 	private final Logger logger;
 	private final Path dataPath;
+	private Socialismus socialismus;
 
 	@Inject
 	public VelocitySocialismus(ProxyServer proxyServer, PluginContainer pluginContainer, Logger logger, @DataDirectory Path dataPath) {
@@ -61,17 +59,15 @@ public class VelocitySocialismus {
 		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
 		libraryManager.loadDescriptors();
 
-		PlatformInjector.create(dataPath, new VelocityInjectorConfiguration(this, pluginContainer, proxyServer));
-
-		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {});
-
-		// Signal that the plugin is ready for normal operation
-		EventUtil.callEvent(new PluginReadyEvent(), () -> {});
+		socialismus = PlatformInjector.create(dataPath, new VelocityInjectorConfiguration(this, pluginContainer, proxyServer))
+				.getInstance(Socialismus.class);
+		socialismus.start();
 	}
 
 	@Subscribe
 	public void onProxyShutdownEvent(ProxyShutdownEvent event) {
-		// Signal shutdown so common core can clean up
-		EventUtil.callEvent(new PluginShutdownEvent(), () -> {});
+		if (socialismus == null) return;
+
+		socialismus.stop();
 	}
 }

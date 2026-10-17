@@ -1,29 +1,11 @@
 package me.whereareiam.socialismus.event.plugin;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import me.whereareiam.socialismus.event.base.CancellableEvent;
-import me.whereareiam.socialismus.event.base.Event;
+import me.whereareiam.socialismus.event.base.SynchronousEvent;
 
 /**
- * Event that is fired when the Socialismus plugin is being reloaded.
- * This event is cancellable and can be used to prevent or modify the reload process.
- *
- * <p>The event is triggered before the actual reload occurs, allowing addon developers
- * to perform cleanup operations or prevent the reload if necessary.</p>
- *
- * <p>Being a {@link CancellableEvent}, the reload process can be cancelled by setting
- * the cancelled flag to true.</p>
+ * Called by {@code /socialismus reload} once every configuration document has reloaded, whether or not some failed.
+ * What is built from documents, such as the chats, the integrations or the announcers of a module, rebuilds on it.
+ * It is called on the thread of the command, so the rebuild is done before the command answers.
  */
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
-public class PluginReloadedEvent implements Event, CancellableEvent {
-    /**
-     * Flag indicating whether the reload event has been cancelled.
-     */
-    private boolean cancelled;
+public class PluginReloadedEvent implements SynchronousEvent {
 }

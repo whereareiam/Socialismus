@@ -7,11 +7,13 @@ import me.whereareiam.commandant.Help;
 import me.whereareiam.commandant.annotation.Definition;
 import me.whereareiam.commandant.builder.HelpBuilder;
 import me.whereareiam.keystone.Actor;
-import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.event.EventListener;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.SocialisticEvent;
+import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
 import me.whereareiam.socialismus.model.CommandDefinition;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.CommandManager;
@@ -26,7 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Singleton
-public class HelpCommand implements Reloadable {
+public class HelpCommand implements EventListener {
 	private final Provider<Messages> messagesProvider;
 	private final Provider<CommandManager<Actor>> commandManagerProvider;
 	private final CommandService commandService;
@@ -39,12 +41,12 @@ public class HelpCommand implements Reloadable {
 			@NotNull Provider<Messages> messagesProvider,
 			@NotNull Provider<CommandManager<Actor>> commandManagerProvider,
 			@NotNull CommandService commandService,
-			@NotNull Registry<Reloadable> reloadableRegistry
+			@NotNull EventManager eventManager
 	) {
 		this.messagesProvider = messagesProvider;
 		this.commandManagerProvider = commandManagerProvider;
 		this.commandService = commandService;
-		reloadableRegistry.register(this);
+		eventManager.register(this);
 	}
 
 	@Definition("help")
@@ -117,8 +119,8 @@ public class HelpCommand implements Reloadable {
 				.collect(Collectors.toList());
 	}
 
-	@Override
-	public void reload() {
+	@SocialisticEvent
+	public void onReloaded(PluginReloadedEvent event) {
 		helpBuilder = null;
 		cachedArgumentDescriptions = null;
 	}

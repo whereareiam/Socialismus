@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.chirper.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.chirper.common.AnnouncerController;
@@ -37,6 +38,7 @@ public class Chirper extends SocialisticModule {
 						parentInjector.getInstance(Scheduler.class),
 						parentInjector.getInstance(PlatformInteractor.class),
 						reloadableRegistry,
+						parentInjector.getInstance(EventManager.class),
 						parentInjector.getInstance(RequirementEvaluatorService.class),
 						parentInjector.getInstance(CommandService.class),
 						parentInjector.getInstance(PlayerRegistry.class)
@@ -53,6 +55,7 @@ public class Chirper extends SocialisticModule {
 
 	@Override
 	public void onDisable() {
+		injector.getInstance(EventManager.class).unregister(injector.getInstance(AnnouncerController.class));
 		injector.getInstance(Scheduler.class).cancelByModule("chirper");
 	}
 

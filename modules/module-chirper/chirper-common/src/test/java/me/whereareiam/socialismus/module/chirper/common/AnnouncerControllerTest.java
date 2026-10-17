@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.module.chirper.common;
 
 import com.google.inject.Provider;
-import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.model.scheduler.PeriodicalRunnableTask;
@@ -9,7 +9,6 @@ import me.whereareiam.socialismus.module.chirper.api.AnnouncementBroadcaster;
 import me.whereareiam.socialismus.module.chirper.api.model.announcement.Announcement;
 import me.whereareiam.socialismus.module.chirper.api.model.announcer.Announcer;
 import me.whereareiam.socialismus.module.chirper.api.type.OrderType;
-import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +30,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AnnouncerControllerTest {
 	@Mock
-	private Registry<Reloadable> reloadableRegistry;
+	private EventManager eventManager;
 
 	@Mock
 	private Scheduler scheduler;
@@ -69,7 +68,7 @@ class AnnouncerControllerTest {
 		Announcer secondAnnouncer = announcer("second");
 
 		AnnouncerController controller = new AnnouncerController(
-				reloadableRegistry,
+				eventManager,
 				scheduler,
 				announcerProvider(List.of(firstAnnouncer, secondAnnouncer)),
 				announcementProvider(List.of(announcement("first"), announcement("second"))),
@@ -85,7 +84,7 @@ class AnnouncerControllerTest {
 	@Test
 	void initSchedulesAscendingAnnouncementsInNaturalOrder() {
 		AnnouncerController controller = new AnnouncerController(
-				reloadableRegistry,
+				eventManager,
 				scheduler,
 				announcerProvider(List.of(announcer(List.of("bravo", "alpha"), OrderType.ASCENDING))),
 				announcementProvider(List.of(announcement("bravo"), announcement("alpha"))),
@@ -107,7 +106,7 @@ class AnnouncerControllerTest {
 	@Test
 	void initSchedulesDescendingAnnouncementsInReverseOrder() {
 		AnnouncerController controller = new AnnouncerController(
-				reloadableRegistry,
+				eventManager,
 				scheduler,
 				announcerProvider(List.of(announcer(List.of("alpha", "bravo"), OrderType.DESCENDING))),
 				announcementProvider(List.of(announcement("alpha"), announcement("bravo"))),

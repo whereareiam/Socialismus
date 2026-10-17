@@ -4,15 +4,17 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventListener;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.SocialisticEvent;
 import me.whereareiam.socialismus.event.chat.ChatAddedEvent;
 import me.whereareiam.socialismus.event.chat.ChatUpdatedEvent;
+import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
-import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.type.chat.TriggerType;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -20,8 +22,12 @@ import me.whereareiam.socialismus.util.EventUtil;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Holds the chats of the chats document. They are loaded when the runtime starts and built again from the document
+ * after a reload.
+ */
 @Singleton
-public class ChatContainer implements ChatContainerService, Reloadable {
+public class ChatContainer implements ChatContainerService, EventListener {
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<List<Chat>> chatsProvider;
 
@@ -31,12 +37,19 @@ public class ChatContainer implements ChatContainerService, Reloadable {
 	public ChatContainer(
 			@Named("chats") Provider<List<Chat>> chatsProvider,
 			Provider<ChatSettings> chatSettings,
-			Registry<Reloadable> registry
+			EventManager eventManager
 	) {
 		this.chatsProvider = chatsProvider;
 		this.chatSettings = chatSettings;
 
-		registry.register(this);
+		eventManager.register(this);
+	}
+
+	/**
+	 * Replaces the held chats with those of the chats document.
+	 */
+	public void load() {
+		chats.clear();
 		chatsProvider.get().forEach(this::addChat);
 	}
 
@@ -101,9 +114,8 @@ public class ChatContainer implements ChatContainerService, Reloadable {
 		return new HashSet<>(chats.values());
 	}
 
-	@Override
-	public void reload() {
-		chats.clear();
-		chatsProvider.get().forEach(this::addChat);
+	@SocialisticEvent
+	public void onReloaded(PluginReloadedEvent event) {
+		load();
 	}
 }

@@ -14,10 +14,12 @@ import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
 import me.whereareiam.socialismus.common.chat.ChatHistoryController;
+import me.whereareiam.socialismus.common.chat.ChatLifecycle;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.render.ClearPlaceholderResolver;
 import me.whereareiam.socialismus.common.chat.render.DefaultChatRenderService;
+import me.whereareiam.socialismus.common.config.ConfigurationLifecycle;
 import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
 import me.whereareiam.socialismus.common.config.SocialismusConfiguraModule;
 import me.whereareiam.socialismus.common.config.migration.SocialismusConfigMigrations;
@@ -31,18 +33,22 @@ import me.whereareiam.socialismus.common.config.resolver.FileSystemConfiguration
 import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.container.ChatHistoryContainer;
 import me.whereareiam.socialismus.common.event.EventController;
+import me.whereareiam.socialismus.common.integration.IntegrationLifecycle;
+import me.whereareiam.socialismus.common.logging.LoggingLifecycle;
 import me.whereareiam.socialismus.common.player.DefaultPlayerRegistry;
 import me.whereareiam.socialismus.common.provider.*;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.common.requirement.RequirementRegistry;
 import me.whereareiam.socialismus.common.requirement.validation.*;
 import me.whereareiam.socialismus.common.sync.ChatNetworkBridge;
+import me.whereareiam.socialismus.common.updater.UpdateScheduler;
 import me.whereareiam.socialismus.common.updater.provider.GitHubProvider;
 import me.whereareiam.socialismus.common.updater.provider.ModrinthProvider;
 import me.whereareiam.socialismus.common.updater.provider.SpigotMCProvider;
 import me.whereareiam.socialismus.config.ConfigurationTypeResolver;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.integration.Integration;
+import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
@@ -94,6 +100,15 @@ public class CommonConfiguration extends AbstractModule {
 	protected void configure() {
 		requestInjection(this);
 
+		// Lifecycles, started phase by phase and within a phase in this order
+		Multibinder<RuntimeLifecycle> lifecycles = Multibinder.newSetBinder(binder(), RuntimeLifecycle.class);
+		lifecycles.addBinding().to(ConfigurationLifecycle.class);
+		lifecycles.addBinding().to(LoggingLifecycle.class);
+		lifecycles.addBinding().to(IntegrationLifecycle.class);
+		lifecycles.addBinding().to(ChatLifecycle.class);
+		lifecycles.addBinding().to(ConnectionLifecycle.class);
+		lifecycles.addBinding().to(UpdateScheduler.class);
+
 		// Configuration
 		bind(ConfigurationTypeResolver.class)
 				.to(FileSystemConfigurationTypeResolver.class)
@@ -126,7 +141,6 @@ public class CommonConfiguration extends AbstractModule {
 		bind(SerializationService.class).to(SerializationServiceAdapter.class);
 		bind(EventManager.class).to(EventController.class);
 		bind(PlayerRegistry.class).to(DefaultPlayerRegistry.class);
-		bind(Socialismus.class).asEagerSingleton();
 		bind(ChatCoordinationService.class).to(ChatCoordinator.class);
 		bind(ChatContainerService.class).to(ChatContainer.class);
 		bind(ChatHistoryContainerService.class).to(ChatHistoryContainer.class);
@@ -184,7 +198,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(new TypeLiteral<Registry<Reloadable>>() {
 		}).to(ReloadableProvider.class).asEagerSingleton();
 		bind(new TypeLiteral<Set<Reloadable>>() {
-		}).annotatedWith(Names.named("reloadables")).toProvider(ReloadableProvider.class).asEagerSingleton();
+		}).annotatedWith(Names.named("reloadables")).toProvider(ReloadableProvider.class);
 	}
 
 	@Inject
@@ -195,17 +209,6 @@ public class CommonConfiguration extends AbstractModule {
 	@Inject
 	void initializeEventUtil(EventManager eventManager) {
 		EventUtil.initialize(eventManager);
-	}
-
-	/**
-	 * Brings the documents of an older installation up to date before any of them is read, then installs the shared
-	 * Configura instance. A failed migration stops the startup, so Socialismus does not run on a directory it could
-	 * not upgrade.
-	 */
-	@Inject
-	void initializeConfigura(Configura configura, Strata strata) {
-		strata.migrate();
-		Config.setConfigured(configura);
 	}
 
 	@Provides
