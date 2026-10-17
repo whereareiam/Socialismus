@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     compileOnly(projects.socialismusModule.moduleApi)
+    compileOnly(projects.socialismusPlatform.common)
     implementation(projects.socialismusApi)
     implementation(projects.integrationBstats)
 

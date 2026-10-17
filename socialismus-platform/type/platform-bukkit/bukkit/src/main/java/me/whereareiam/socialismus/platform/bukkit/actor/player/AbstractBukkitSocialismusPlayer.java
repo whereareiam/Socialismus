@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.platform.bukkit.actor.player;
 
 import lombok.Getter;
-import me.whereareiam.socialismus.platform.AbstractBukkitPlayerBase;
+import me.whereareiam.socialismus.platform.bukkit.common.AbstractBukkitPlayerBase;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;

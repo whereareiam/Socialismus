@@ -13,6 +13,7 @@ val platformCollection = PlatformCollectionExtension.of(project)
 dependencies {
     add("implementation", project(":socialismus-api"))
     add("implementation", project(":socialismus-common"))
+    add("implementation", project(":socialismus-platform:common"))
     add("implementation", project(":socialismus-module:module"))
     add("implementation", project(":socialismus-adapter-command"))
     add("implementation", project(":integration-bstats"))
