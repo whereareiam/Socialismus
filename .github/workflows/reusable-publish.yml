@@ -29,7 +29,10 @@ jobs:
           ref: ${{ inputs.commit }}
           persist-credentials: false
 
+      # platform-bukkit-paper compiles for Java 25 with the JDK that runs Gradle.
       - uses: whereareiam/devops/primitive/setup/gradle@v3
+        with:
+          java-version: "25"
 
       - name: Publish API modules
         uses: whereareiam/devops/composite/package/maven/publish@v3

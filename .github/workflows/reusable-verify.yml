@@ -57,7 +57,10 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
 
+      # platform-bukkit-paper compiles for Java 25 with the JDK that runs Gradle.
       - uses: whereareiam/devops/primitive/setup/gradle@v3
+        with:
+          java-version: "25"
 
       # jars collects the plugin, API and module jars under their final names in build/jars.
       - name: Build and test
