@@ -13,12 +13,12 @@ public class BubblerSettingsDefaults implements DefaultsProvider<BubblerSettings
 		config.setMinRecipients(1);
 		config.setMaxQueueSize(30);
 
-		BubblerSettings.Notify notify = new BubblerSettings.Notify();
-		notify.setNotifyNoPlayers(true);
-		notify.setNotifyNoNearbyPlayers(true);
-		notify.setNotifyNoBubbleSelected(false);
+		BubblerSettings.Notifications notifications = new BubblerSettings.Notifications();
+		notifications.setNoPlayers(true);
+		notifications.setNoNearbyPlayers(true);
+		notifications.setNoBubbleSelected(false);
 
-		config.setNotify(notify);
+		config.setNotifications(notifications);
 
 		BubblerSettings.Animation animation = getAnimation();
 

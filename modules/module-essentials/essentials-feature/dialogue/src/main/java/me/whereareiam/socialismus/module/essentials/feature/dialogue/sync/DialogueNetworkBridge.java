@@ -34,7 +34,7 @@ public final class DialogueNetworkBridge {
 	}
 
 	public void publish(Dialogue pm) {
-		DialogueSettings.Synchronization syncSettings = settings.get().getSynchronization();
+		DialogueSettings.Sync syncSettings = settings.get().getSync();
 		if (!syncSettings.isEnabled()) return;
 
 		try {
@@ -47,7 +47,7 @@ public final class DialogueNetworkBridge {
 	}
 
 	public void subscribe() {
-		DialogueSettings.Synchronization syncSettings = settings.get().getSynchronization();
+		DialogueSettings.Sync syncSettings = settings.get().getSync();
 		if (!syncSettings.isEnabled()) return;
 
 		this.sync.subscribe(CHANNEL, (c, data) -> {
@@ -68,7 +68,7 @@ public final class DialogueNetworkBridge {
 	}
 
 	private void subscribeToDeliveryConfirmations() {
-		DialogueSettings.Synchronization syncSettings = settings.get().getSynchronization();
+		DialogueSettings.Sync syncSettings = settings.get().getSync();
 		if (!syncSettings.isEnabled()) return;
 
 		sync.subscribe(DELIVERY_CHANNEL, (c, data) -> {

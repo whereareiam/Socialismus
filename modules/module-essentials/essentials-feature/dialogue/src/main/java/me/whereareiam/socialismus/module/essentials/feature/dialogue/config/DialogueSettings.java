@@ -10,14 +10,14 @@ import lombok.ToString;
 @ToString
 @Singleton
 public class DialogueSettings {
-	private Synchronization synchronization;
+	private Sync sync;
 	private MessageHistory messageHistory;
 	private Reply reply;
 
 	@Getter
 	@Setter
 	@ToString
-	public static class Synchronization {
+	public static class Sync {
 		private boolean enabled;
 	}
 

@@ -12,16 +12,16 @@ public class BubblerSettings {
 	private BubbleType bubbleType;
 	private int minRecipients;
 	private int maxQueueSize;
-	private Notify notify;
+	private Notifications notifications;
 	private Animation animation;
 
 	@Getter
 	@Setter
 	@ToString
-	public static class Notify {
-		private boolean notifyNoPlayers;
-		private boolean notifyNoNearbyPlayers;
-		private boolean notifyNoBubbleSelected;
+	public static class Notifications {
+		private boolean noPlayers;
+		private boolean noNearbyPlayers;
+		private boolean noBubbleSelected;
 	}
 
 	@Getter
