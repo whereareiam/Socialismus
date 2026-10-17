@@ -27,7 +27,6 @@ dependencies {
     attache(libs.adventure.platform.bukkit)
     attache(libs.cloud.paper)
     attache(libs.cloud.minecraft.extras)
-    attache(libs.brigadier)
 }
 
 tasks.withType<ShadowJar>().configureEach {
