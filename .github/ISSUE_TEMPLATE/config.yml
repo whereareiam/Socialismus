@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Help with setup or configuration
+    url: https://discord.arcadeya.com
+    about: Ask on Discord for setup, configuration, and upgrade questions.
+  - name: Documentation
+    url: https://socialismus.whereareiam.me
+    about: Installation, configuration, and module guides.

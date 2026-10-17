@@ -1,0 +1,22 @@
+name: Pull request · Checks
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+concurrency:
+  group: pull-request-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  checks:
+    name: Checks
+    if: ${{ !github.event.pull_request.draft }}
+    uses: ./.github/workflows/reusable-verify.yml
+    with:
+      ref: ${{ github.sha }}
+      version: pr-${{ github.event.pull_request.number }}

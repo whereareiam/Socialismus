@@ -1,0 +1,40 @@
+name: Publish
+
+on:
+  workflow_call:
+    inputs:
+      commit:
+        description: Verified commit to publish.
+        required: true
+        type: string
+      version:
+        description: Verified artifact version.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  maven:
+    name: Maven artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.commit }}
+          persist-credentials: false
+
+      - uses: whereareiam/devops/primitive/setup/gradle@v3
+
+      - name: Publish API modules
+        uses: whereareiam/devops/composite/package/maven/publish@v3
+        env:
+          VERSION: ${{ inputs.version }}
+        with:
+          visibility: public
+          command: ./gradlew --no-daemon publish

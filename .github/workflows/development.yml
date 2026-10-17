@@ -1,66 +1,34 @@
 name: Development build
+run-name: "Development build of ${{ github.ref_name }}"
 
 on:
-  push:
-    branches:
-      - dev
   workflow_dispatch:
 
+concurrency:
+  group: development-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    outputs:
-      name: ${{ steps.details.outputs.name }}
-      version: ${{ steps.details.outputs.version }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Extract project details
-        id: details
-        run: |
-          echo "name=$(grep 'rootProject.name' settings.gradle.kts | awk -F "=" '{print $2}' | tr -d ' \"\n')" >> $GITHUB_OUTPUT
-          branch_name="${GITHUB_REF_NAME//\//-}"
-          echo "version=${branch_name}-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-
-  build:
-    needs: prepare
-    if: always() && needs.prepare.result == 'success'
-    runs-on: ubuntu-latest
+  verify:
+    name: Verify
     permissions:
       contents: read
       checks: write
+    uses: ./.github/workflows/reusable-verify.yml
+    with:
+      ref: ${{ github.sha }}
+      distribution: true
+
+  publish:
+    name: Publish
+    needs: verify
+    permissions:
+      contents: read
       id-token: write
-      packages: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Build project
-        uses: ./.github/actions/gradle-build
-        env:
-          VERSION: ${{ needs.prepare.outputs.version }}
-        with:
-          gradle-command: ./gradlew --no-daemon test jars -Dsocialismus.liveApiTests=true
-          ignore-test-failures: 'true'
-
-      - name: Publish Maven artifacts
-        uses: whereareiam/devops/actions/registry/maven-publish@v2
-        env:
-          VERSION: ${{ needs.prepare.outputs.version }}
-        with:
-          visibility: public
-          command: ./gradlew --no-daemon publish
-
-      - name: Create output directory
-        run: mkdir output
-
-      - name: Move jars
-        run: cp build/jars/*.jar output/
-
-      - name: Archive artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: Build artifacts
-          path: output/
+    uses: ./.github/workflows/reusable-publish.yml
+    with:
+      commit: ${{ needs.verify.outputs.commit }}
+      version: ${{ needs.verify.outputs.version }}

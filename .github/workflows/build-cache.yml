@@ -1,0 +1,33 @@
+name: Build cache
+run-name: "Build cache of ${{ github.ref_name }}"
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+concurrency:
+  group: build-cache-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Pull requests read the caches of dev but never write them, so the checks would download the dependencies
+  # and compile everything again.
+  build:
+    name: Prepare for the checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: whereareiam/devops/primitive/setup/gradle@v3
+
+      # Every cacheable task the checks run before their tests.
+      - name: Compile the project and its tests
+        run: ./gradlew --no-daemon testClasses jars

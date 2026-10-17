@@ -1,0 +1,82 @@
+name: Verify
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit, branch or tag to verify.
+        required: true
+        type: string
+      version:
+        description: Artifact version; defaults to <branch>-<short commit>.
+        required: false
+        type: string
+        default: ""
+      distribution:
+        description: Also upload the plugin and module jars as the socialismus-plugins-<version> artifact.
+        required: false
+        type: boolean
+        default: false
+    outputs:
+      version:
+        description: Artifact version that was verified.
+        value: ${{ jobs.build.outputs.version }}
+      commit:
+        description: Commit that was verified.
+        value: ${{ jobs.build.outputs.commit }}
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      version: ${{ steps.identity.outputs.version }}
+      commit: ${{ steps.identity.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - name: Resolve artifact identity
+        id: identity
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          set -euo pipefail
+          commit="$(git rev-parse HEAD)"
+          version="${REQUESTED_VERSION#v}"
+          [[ -n "$version" ]] || version="${BRANCH//\//-}-${commit::7}"
+          [[ "$version" =~ ^[A-Za-z0-9][A-Za-z0-9._+-]*$ ]] || { echo "Invalid artifact version: $version" >&2; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+
+      - uses: whereareiam/devops/primitive/setup/gradle@v3
+
+      # jars collects the plugin, API and module jars under their final names in build/jars.
+      - name: Build and test
+        env:
+          VERSION: ${{ steps.identity.outputs.version }}
+        run: ./gradlew --no-daemon test jars
+
+      - uses: whereareiam/devops/primitive/report/junit/publish@v3
+        if: always()
+        with:
+          name: Test results
+          artifact-name: test-results
+
+      - name: Upload distribution
+        if: inputs.distribution
+        uses: actions/upload-artifact@v6
+        with:
+          name: socialismus-plugins-${{ steps.identity.outputs.version }}
+          path: build/jars/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
