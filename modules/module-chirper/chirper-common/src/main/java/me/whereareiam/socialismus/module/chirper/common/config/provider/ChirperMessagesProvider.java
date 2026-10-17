@@ -24,6 +24,6 @@ public class ChirperMessagesProvider extends ConfigProvider<ChirperMessages> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(ChirperMessagesDefaults.class), ChirperMessages.class);
+		return super.configura().withDefaults(ChirperMessagesDefaults.class);
 	}
 }

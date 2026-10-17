@@ -24,6 +24,6 @@ public class DialogueMessagesProvider extends ConfigProvider<DialogueMessages> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(DialogueMessagesDefaults.class), DialogueMessages.class);
+		return super.configura().withDefaults(DialogueMessagesDefaults.class);
 	}
 }

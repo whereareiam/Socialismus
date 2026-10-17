@@ -21,6 +21,6 @@ public class ChatSettingsProvider extends DefaultConfigProvider<ChatSettings> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(ChatSettingsDefaults.class), ChatSettings.class);
+		return super.configura().withDefaults(ChatSettingsDefaults.class);
 	}
 }

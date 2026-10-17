@@ -3,8 +3,7 @@ package me.whereareiam.socialismus.common.updater.provider;
 import com.google.inject.Singleton;
 import lombok.Data;
 import me.whereareiam.configura.Config;
-import me.whereareiam.configura.reader.ConfigReader;
-import me.whereareiam.configura.type.Format;
+import me.whereareiam.configura.Configura;
 import me.whereareiam.socialismus.model.update.UpdateSource;
 import me.whereareiam.socialismus.service.UpdateProvider;
 
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class ModrinthProvider implements UpdateProvider {
-	private static final ConfigReader JSON_READER = Config.reader(Format.JSON);
+	private static final Configura JSON = Config.json();
 
 	@Override
 	public Optional<String> fetchLatest(UpdateSource source) throws IOException {
@@ -44,7 +43,7 @@ public class ModrinthProvider implements UpdateProvider {
 	}
 
 	List<ModrinthVersion> decodeVersions(InputStream in) throws IOException {
-		ModrinthVersion[] versions = JSON_READER.read(in, ModrinthVersion[].class);
+		ModrinthVersion[] versions = JSON.read(in, ModrinthVersion[].class);
 		return versions == null ? List.of() : Arrays.asList(versions);
 	}
 

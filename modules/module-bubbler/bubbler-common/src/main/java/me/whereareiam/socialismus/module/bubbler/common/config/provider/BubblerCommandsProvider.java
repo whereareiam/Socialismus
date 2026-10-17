@@ -24,6 +24,6 @@ public class BubblerCommandsProvider extends ConfigProvider<BubblerCommands> {
 
     @Override
     protected Configura configura() {
-        return versioned(super.configura().withDefaults(BubblerCommandsDefaults.class), BubblerCommands.class);
+        return super.configura().withDefaults(BubblerCommandsDefaults.class);
     }
 }

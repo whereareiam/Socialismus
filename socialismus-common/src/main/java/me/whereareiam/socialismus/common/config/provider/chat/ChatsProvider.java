@@ -56,7 +56,7 @@ public class ChatsProvider extends DefaultConfigProvider<List<Chat>> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(ChatDefaults.class), ChatsConfig.class);
+		return super.configura().withDefaults(ChatDefaults.class);
 	}
 
 	private List<Chat> addChatsFromConfig(Path path) {

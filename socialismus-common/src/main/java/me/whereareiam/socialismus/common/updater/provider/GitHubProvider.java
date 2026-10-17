@@ -3,8 +3,7 @@ package me.whereareiam.socialismus.common.updater.provider;
 import com.google.inject.Singleton;
 import lombok.Data;
 import me.whereareiam.configura.Config;
-import me.whereareiam.configura.reader.ConfigReader;
-import me.whereareiam.configura.type.Format;
+import me.whereareiam.configura.Configura;
 import me.whereareiam.socialismus.model.update.UpdateSource;
 import me.whereareiam.socialismus.service.UpdateProvider;
 
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class GitHubProvider implements UpdateProvider {
-    private static final ConfigReader JSON_READER = Config.reader(Format.JSON);
+    private static final Configura JSON = Config.json();
 
     @Override
     public Optional<String> fetchLatest(UpdateSource source) throws IOException {
@@ -38,12 +37,12 @@ public class GitHubProvider implements UpdateProvider {
     }
 
     Optional<String> decodeLatest(InputStream in) {
-        GitHubRelease release = JSON_READER.read(in, GitHubRelease.class);
+        GitHubRelease release = JSON.read(in, GitHubRelease.class);
         return Optional.ofNullable(release.tag_name);
     }
 
     List<String> decodeRecentUpdates(InputStream in) {
-        GitHubCommit[] commits = JSON_READER.read(in, GitHubCommit[].class);
+        GitHubCommit[] commits = JSON.read(in, GitHubCommit[].class);
         return Arrays.stream(commits)
                 .map(c -> c.sha)
                 .collect(Collectors.toList());

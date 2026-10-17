@@ -66,12 +66,9 @@ public class BubblesProvider extends ConfigProvider<List<Bubble>> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(
-				super.configura()
+		return super.configura()
 						.withDefaults(BubblesDefaults.class)
-						.withFeature(CommonConfiguration.createRequirementPolymorphicFeature()),
-				BubblesConfig.class
-		);
+						.withFeature(CommonConfiguration.createRequirementPolymorphicFeature());
 	}
 
 	private List<Bubble> addBubblesFromConfig(Path path) {

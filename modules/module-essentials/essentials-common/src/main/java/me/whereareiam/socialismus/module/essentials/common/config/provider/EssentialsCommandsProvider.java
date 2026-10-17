@@ -24,6 +24,6 @@ public class EssentialsCommandsProvider extends ConfigProvider<EssentialsCommand
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(EssentialsCommandsDefaults.class), EssentialsCommands.class);
+		return super.configura().withDefaults(EssentialsCommandsDefaults.class);
 	}
 }

@@ -20,6 +20,6 @@ public class MessagesProvider extends DefaultConfigProvider<Messages> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(MessagesDefaults.class), Messages.class);
+		return super.configura().withDefaults(MessagesDefaults.class);
 	}
 }

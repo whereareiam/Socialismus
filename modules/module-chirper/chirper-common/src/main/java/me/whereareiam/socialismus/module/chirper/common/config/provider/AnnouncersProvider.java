@@ -63,7 +63,7 @@ public class AnnouncersProvider extends ConfigProvider<List<Announcer>> {
 
 	@Override
 	protected Configura configura() {
-		return versioned(super.configura().withDefaults(AnnouncersDefaults.class), AnnouncersConfig.class);
+		return super.configura().withDefaults(AnnouncersDefaults.class);
 	}
 
 	private List<Announcer> addAnnouncersFromConfig(Path path) {

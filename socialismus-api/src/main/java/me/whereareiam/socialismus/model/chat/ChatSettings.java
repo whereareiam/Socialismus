@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.model.chat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.whereareiam.configura.ConfigDocument;
 
 /**
  * Configuration model for chat system settings.
@@ -16,7 +15,7 @@ import me.whereareiam.configura.ConfigDocument;
 @Getter
 @Setter
 @ToString
-public class ChatSettings extends ConfigDocument {
+public class ChatSettings {
 	/**
 	 * Whether to notify when no chat channel is found.
 	 */

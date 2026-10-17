@@ -11,8 +11,10 @@ import me.whereareiam.socialismus.service.SerializationService;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class SerializationServiceAdapter implements SerializationService {
+	// Synced messages carry players and components, which the Socialismus module serializes.
 	private final Configura configura = Config.builder()
 			.format(Format.JSON)
+			.module(new SocialismusConfiguraModule())
 			.build();
 
 	@Override
