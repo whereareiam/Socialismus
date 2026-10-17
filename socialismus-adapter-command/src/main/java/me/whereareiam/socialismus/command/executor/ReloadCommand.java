@@ -9,6 +9,7 @@ import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.config.ConfigProvider;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.config.message.CommandMessages;
 import me.whereareiam.socialismus.model.config.message.Messages;
@@ -16,6 +17,9 @@ import net.kyori.adventure.text.Component;
 import org.incendo.cloud.annotations.Command;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 @Singleton
@@ -38,10 +42,7 @@ public class ReloadCommand {
 		CommandMessages.ReloadCommand reload = messagesProvider.get().getCommands().getReloadCommand();
 
 		try {
-			// Reload all registered reloadable components
-			Set<Reloadable> reloadables = reloadablesProvider.get();
-			for (Reloadable reloadable : reloadables)
-				reloadable.reload();
+			inReloadOrder(reloadablesProvider.get()).forEach(Reloadable::reload);
 
 			reload = messagesProvider.get().getCommands().getReloadCommand();
 
@@ -57,5 +58,15 @@ public class ReloadCommand {
 					.build());
 			sender.sendMessage(component);
 		}
+	}
+
+	/**
+	 * Orders reloadables so the configuration documents reload first: what is built from them, such as the chats,
+	 * then reads what was just reloaded instead of what the document held before.
+	 */
+	static List<Reloadable> inReloadOrder(Collection<Reloadable> reloadables) {
+		return reloadables.stream()
+				.sorted(Comparator.comparing(reloadable -> !(reloadable instanceof ConfigProvider)))
+				.toList();
 	}
 }
