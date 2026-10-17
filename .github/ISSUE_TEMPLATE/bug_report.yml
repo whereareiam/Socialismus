@@ -1,0 +1,97 @@
+name: Bug report
+description: Something in Socialismus or one of its official modules does not work as documented.
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ask on [Discord](https://discord.arcadeya.com) for setup help.
+
+  - type: input
+    id: version
+    attributes:
+      label: Socialismus version
+      description: The version in the jar name, for example `2.0.0` or `dev-1a2b3c4`.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: build
+    attributes:
+      label: Build
+      options:
+        - Release (GitHub, Modrinth, SpigotMC, or another store)
+        - Development build
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform and version
+      description: Every server or proxy Socialismus runs on.
+      placeholder: Paper 1.21.11-120, Velocity 3.5.0
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: modules
+    attributes:
+      label: Modules
+      options:
+        - label: Chirper
+        - label: Bubbler
+        - label: Essentials
+        - label: SocialismusRedis
+        - label: SocialismusChannelizer
+
+  - type: input
+    id: other-modules
+    attributes:
+      label: Other modules and integrations
+      description: Names and versions of other modules and of plugins Socialismus integrates with, such as PlaceholderAPI or PacketEvents.
+      placeholder: PlaceholderAPI 2.11.6
+
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Installation
+      options:
+        - Normal (one server or one proxy)
+        - Split (proxy and backends with different chats)
+        - Synchronized through SocialismusRedis
+        - Synchronized through SocialismusChannelizer
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Join as a player named Alice
+        2. Send a message in the global chat ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Server or proxy log of the problem. Remove IP addresses you do not want to share.
+      render: text
+
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Configuration
+      description: Relevant parts of the configuration. Remove passwords and tokens.
+      render: yaml

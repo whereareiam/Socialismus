@@ -5,8 +5,6 @@
 
 # Temporary files
 dev/server/
-!.github/actions/gradle-build/
-!.github/actions/gradle-build/action.yml
 build/
 bin/
 

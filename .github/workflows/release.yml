@@ -1,182 +1,160 @@
-name: Release build
+name: Release
+run-name: "${{ github.event_name == 'release' && format('Release {0}', github.event.release.tag_name) || format('Republish {0}', inputs.release-tag) }}"
 
 on:
   release:
-    types: [ published ]
+    types: [published]
   workflow_dispatch:
     inputs:
       release-tag:
-        description: Release tag to rebuild and republish, for example 2.0.0-RC6
+        description: Tag of the existing release to republish to the stores, for example 2.0.0
         required: true
         type: string
       publication:
-        description: Optional publication name to republish, for example socialismus-paper-modrinth
+        description: Publication to republish, for example socialismus-paper-modrinth; empty republishes all of them
         required: false
-        default: ""
         type: string
+        default: ""
+
+concurrency:
+  group: release-${{ github.event.release.tag_name || inputs.release-tag }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
 
 jobs:
-  prepare:
+  resolve:
+    name: Resolve release
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
-      name: ${{ steps.details.outputs.name }}
-      version: ${{ steps.details.outputs.version }}
-      release-tag: ${{ steps.release.outputs.release-tag }}
-      release-name: ${{ steps.release.outputs.release-name }}
-      release-body: ${{ steps.release.outputs.release-body }}
-      release-url: ${{ steps.release.outputs.release-url }}
+      tag: ${{ steps.release.outputs.tag }}
+      name: ${{ steps.release.outputs.name }}
+      body: ${{ steps.release.outputs.body }}
+      url: ${{ steps.release.outputs.url }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.release-tag || github.ref }}
-
-      - name: Resolve release metadata
+      - name: Read release
         id: release
-        uses: actions/github-script@v8
         env:
-          INPUT_RELEASE_TAG: ${{ inputs.release-tag }}
-        with:
-          script: |
-            if (context.eventName === "release") {
-              const release = context.payload.release;
-              core.setOutput("release-tag", release.tag_name);
-              core.setOutput("release-name", release.name || "");
-              core.setOutput("release-body", release.body || "");
-              core.setOutput("release-url", release.html_url || "");
-              return;
-            }
-
-            const tag = process.env.INPUT_RELEASE_TAG;
-            const { data: release } = await github.rest.repos.getReleaseByTag({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag,
-            });
-
-            core.setOutput("release-tag", release.tag_name);
-            core.setOutput("release-name", release.name || "");
-            core.setOutput("release-body", release.body || "");
-            core.setOutput("release-url", release.html_url || "");
-
-      - name: Extract project details
-        id: details
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.release-tag }}
         run: |
-          echo "name=$(grep 'rootProject.name' settings.gradle.kts | awk -F "=" '{print $2}' | tr -d ' \"\n')" >> $GITHUB_OUTPUT
-          echo "version=${{ steps.release.outputs.release-tag }}" | sed 's/^version=v/version=/' >> $GITHUB_OUTPUT
+          set -euo pipefail
+          release="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG")"
+          # The stores take the version name from the subtitle and the changelog from the body.
+          if jq -e '(.body // "") | contains("[Short subtitle]") or contains("[1-2 sentence summary")' <<<"$release" >/dev/null; then
+            echo "::error::Release $TAG still has the subtitle or summary placeholder of the draft; fill in .github/release-notes.md or edit the release, then run this workflow again."
+            exit 1
+          fi
+          delimiter="release-$(openssl rand -hex 16)"
+          {
+            echo "tag=$(jq -r '.tag_name' <<<"$release")"
+            echo "name=$(jq -r '.name // ""' <<<"$release")"
+            echo "url=$(jq -r '.html_url' <<<"$release")"
+            echo "body<<$delimiter"
+            jq -r '.body // ""' <<<"$release"
+            echo "$delimiter"
+          } >> "$GITHUB_OUTPUT"
 
-  build:
-    needs: prepare
+  verify:
+    name: Verify
+    needs: resolve
+    permissions:
+      contents: read
+      checks: write
+    uses: ./.github/workflows/reusable-verify.yml
+    with:
+      ref: ${{ needs.resolve.outputs.tag }}
+      version: ${{ needs.resolve.outputs.tag }}
+      distribution: true
+
+  # A manual run only republishes to the stores; Maven and the GitHub release keep what the release published.
+  publish:
+    name: Publish
+    needs: verify
+    if: github.event_name == 'release'
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/reusable-publish.yml
+    with:
+      commit: ${{ needs.verify.outputs.commit }}
+      version: ${{ needs.verify.outputs.version }}
+
+  attach:
+    name: Attach files to the release
+    needs: [resolve, verify]
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
-      checks: write
-      id-token: write
-      packages: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+      - uses: actions/download-artifact@v6
         with:
-          ref: ${{ needs.prepare.outputs.release-tag }}
+          name: socialismus-plugins-${{ needs.verify.outputs.version }}
+          path: distribution
 
-      - name: Build project
-        uses: ./.github/actions/gradle-build
-        env:
-          VERSION: ${{ needs.prepare.outputs.version }}
-        with:
-          gradle-command: ./gradlew --no-daemon test jars -Dsocialismus.liveApiTests=true
-
-      - name: Publish Maven artifacts
-        uses: whereareiam/devops/actions/registry/maven-publish@v2
-        env:
-          VERSION: ${{ needs.prepare.outputs.version }}
-        with:
-          visibility: public
-          command: ./gradlew --no-daemon publish
-
-      - name: Create output directory
-        run: mkdir output
-
-      - name: Move jars
-        run: cp build/jars/*.jar output/
-
-      - name: Format BBCode release notes
-        uses: whereareiam/blockops/actions/release/format-release-notes@v3
+      - name: Format Spigot release notes
+        uses: whereareiam/blockops/primitive/release/notes/format@v4
         with:
           format: bbcode
-          release-body: ${{ needs.prepare.outputs.release-body }}
-          output-file: output/release-notes-bbcode.txt
+          release-body: ${{ needs.resolve.outputs.body }}
+          output-file: distribution/release-notes-bbcode.txt
 
-      - name: Release
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: ${{ needs.prepare.outputs.release-tag }}
-          files: |
-            output/*.jar
-            output/release-notes-bbcode.txt
+      - name: Upload files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          gh release upload "$TAG" distribution/* --clobber --repo "$GITHUB_REPOSITORY"
 
-      - name: Upload distribution artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: Release Artifacts
-          path: output/
-
-  resolve-distribution:
-    needs:
-      - prepare
-      - build
+  plan:
+    name: Plan store publications
+    needs: [resolve, verify]
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    timeout-minutes: 5
     outputs:
-      plan-json: ${{ steps.resolve.outputs.plan-json }}
-      matrix-json: ${{ steps.resolve.outputs.matrix-json }}
-
+      version: ${{ needs.verify.outputs.version }}
+      plan-json: ${{ steps.plan.outputs.plan-json }}
+      matrix-json: ${{ steps.plan.outputs.matrix-json }}
     steps:
-      - name: Checkout tagged release
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
-          ref: ${{ needs.prepare.outputs.release-tag }}
+          ref: ${{ needs.verify.outputs.commit }}
+          persist-credentials: false
 
-      - name: Resolve distribution plan
-        id: resolve
-        uses: whereareiam/blockops/actions/publish/resolve-distribution-plan@v2
+      - id: plan
+        uses: whereareiam/blockops/primitive/distribution/plan/resolve@v4
         with:
-          release-tag: ${{ needs.prepare.outputs.release-tag }}
-          release-name: ${{ needs.prepare.outputs.release-name }}
-          release-body: ${{ needs.prepare.outputs.release-body }}
-          release-url: ${{ needs.prepare.outputs.release-url }}
-          manifest-path: .github/release-distribution.yml
+          release-tag: ${{ needs.resolve.outputs.tag }}
+          release-name: ${{ needs.resolve.outputs.name }}
+          release-body: ${{ needs.resolve.outputs.body }}
+          release-url: ${{ needs.resolve.outputs.url }}
           targets: ${{ inputs.publication }}
 
-  publish-distribution:
-    needs:
-      - prepare
-      - resolve-distribution
-    if: ${{ needs.resolve-distribution.outputs.matrix-json != '[]' }}
+  stores:
     name: Publish ${{ matrix.publication.publication }}
+    needs: plan
+    if: needs.plan.outputs.matrix-json != '[]'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    environment: distribution-publish
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        publication: ${{ fromJson(needs.resolve-distribution.outputs.matrix-json) }}
-
+        publication: ${{ fromJson(needs.plan.outputs.matrix-json) }}
     steps:
-      - name: Download distribution artifacts
-        uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v6
         with:
-          name: Release Artifacts
-          path: output
+          name: socialismus-plugins-${{ needs.plan.outputs.version }}
+          path: distribution
 
-      - name: Publish distribution
-        uses: whereareiam/blockops/actions/publish/publish-publication@v2
+      - uses: whereareiam/blockops/primitive/distribution/publication/publish@v4
         with:
           provider-credentials: |
             modrinth: ${{ secrets.MODRINTH_TOKEN }}
-          plan-json: ${{ needs.resolve-distribution.outputs.plan-json }}
-          artifact-directory: output
+          plan-json: ${{ needs.plan.outputs.plan-json }}
+          artifact-directory: distribution
           publication: ${{ matrix.publication.publication }}

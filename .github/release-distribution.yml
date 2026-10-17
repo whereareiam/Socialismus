@@ -119,36 +119,40 @@ release:
 artifacts:
   socialismus-paper:
     file: Socialismus-PAPER-{version}.jar
-    platform: paper
-    loaders:
-      - folia
-      - paper
-      - purpur
-    game_versions: *supported_paper_game_versions
+    platforms:
+      paper:
+        loaders:
+          - folia
+          - paper
+          - purpur
+        game_versions: *supported_paper_game_versions
 
   socialismus-bukkit:
     file: Socialismus-BUKKIT-{version}.jar
-    platform: bukkit
-    loaders:
-      - bukkit
-      - paper
-      - purpur
-      - spigot
-    game_versions: *supported_bukkit_game_versions
+    platforms:
+      bukkit:
+        loaders:
+          - bukkit
+          - paper
+          - purpur
+          - spigot
+        game_versions: *supported_bukkit_game_versions
 
   socialismus-velocity:
     file: Socialismus-VELOCITY-{version}.jar
-    platform: velocity
-    loaders:
-      - velocity
-    game_versions: *supported_velocity_game_versions
+    platforms:
+      velocity:
+        loaders:
+          - velocity
+        game_versions: *supported_velocity_game_versions
 
 publications:
+  # Socialismus gets one Modrinth version per platform, each with its own jar.
   socialismus-paper-modrinth:
     provider:
       id: modrinth
       project_id: aeIrNw73
-      release_type_map:
+      release_type_map: &modrinth_release_types
         release: release
         beta: beta
         alpha: alpha
@@ -158,18 +162,12 @@ publications:
     provider:
       id: modrinth
       project_id: aeIrNw73
-      release_type_map:
-        release: release
-        beta: beta
-        alpha: alpha
+      release_type_map: *modrinth_release_types
     artifact: socialismus-bukkit
 
   socialismus-velocity-modrinth:
     provider:
       id: modrinth
       project_id: aeIrNw73
-      release_type_map:
-        release: release
-        beta: beta
-        alpha: alpha
+      release_type_map: *modrinth_release_types
     artifact: socialismus-velocity

@@ -1,0 +1,23 @@
+name: Pull request · Metadata
+
+on:
+  pull_request_target:
+    types: [opened, reopened, edited, synchronize, labeled, unlabeled]
+
+concurrency:
+  group: pull-request-metadata-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  pull-requests: read
+
+jobs:
+  metadata:
+    name: Title and labels
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Reads the pull request through the API and never checks out its code.
+      - uses: whereareiam/devops/primitive/pull-request/validate-metadata@v3
+        with:
+          title-format: "Category: Description"

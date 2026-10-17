@@ -1,57 +1,58 @@
 name-template: "$RESOLVED_VERSION"
 tag-template: "$RESOLVED_VERSION"
-change-template: "* $TITLE by @$AUTHOR in [#$NUMBER]($URL)"
+# The release drafter workflow sorts the changes by their title prefix; "API:" changes close the list for developers.
+change-template: "* $TITLE ([#$NUMBER]($URL))"
 change-title-escapes: "\\<*_&"
 category-template: "## $TITLE"
 no-changes-template: "* No changes"
+# The text between the markers comes from .github/release-notes.md when it names the resolved version.
 template: |
+  <!-- release-notes:start -->
   # Update $RESOLVED_VERSION - [Short subtitle]
 
-  <!-- Replace the subtitle and summary before publishing the release. -->
   [1-2 sentence summary of the release.]
+  <!-- release-notes:end -->
 
   # Changelog
 
   $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_TAG
 
   # Support
 
   If you need help with setup, configuration, or upgrades, join us on [Discord](https://discord.arcadeya.com). If you find a bug or want to suggest a feature, use [GitHub](https://github.com/whereareiam/Socialismus).
 
 categories:
+  - type: pre-exclude
+    when:
+      label: skip-changelog
+
   - title: "What’s new"
     exclusive: true
-    labels:
-      - "feature"
+    semver-increment: minor
+    when:
+      label: feature
 
   - title: "Enhancements"
     exclusive: true
-    labels:
-      - "change"
+    when:
+      label: change
 
   - title: "Fixes"
     exclusive: true
-    labels:
-      - "bug"
+    when:
+      label: bug
 
   - title: "Dependencies"
     exclusive: true
-    labels:
-      - "dependencies"
+    when:
+      label: dependencies
 
-exclude-labels:
-  - "skip-changelog"
+  - type: version-resolver
+    semver-increment: major
+    when:
+      label: major
 
-version-resolver:
-  major:
-    labels:
-      - "major"
-  minor:
-    labels:
-      - "feature"
-  patch:
-    labels:
-      - "change"
-      - "bug"
-      - "dependencies"
-  default: patch
+  - type: version-resolver
+    semver-increment: patch

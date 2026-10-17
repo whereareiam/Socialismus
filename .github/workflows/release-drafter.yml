@@ -1,4 +1,4 @@
-name: Release Drafter
+name: Release drafter
 
 on:
   push:
@@ -15,22 +15,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  update-release-draft:
+  draft:
+    name: Update draft
     runs-on: ubuntu-latest
-
     steps:
-      - name: Update release draft
-        id: drafter
+      - uses: actions/checkout@v7
+        with:
+          ref: dev
+          persist-credentials: false
+
+      - id: drafter
         uses: release-drafter/release-drafter@v7
         with:
           commitish: dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Regroup draft release
-        uses: whereareiam/blockops/actions/release/regroup-draft-release@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Group changes and add the release notes
+        uses: whereareiam/blockops/primitive/release/draft/regroup@v4
         with:
           release-id: ${{ steps.drafter.outputs.id }}
           release-body: ${{ steps.drafter.outputs.body }}
+          developer-prefixes: API
+          notes-file: .github/release-notes.md
+          version: ${{ steps.drafter.outputs.resolved_version }}
