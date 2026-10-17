@@ -91,7 +91,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v8
         with:
           name: socialismus-plugins-${{ needs.verify.outputs.version }}
           path: distribution
@@ -146,7 +146,7 @@ jobs:
       matrix:
         publication: ${{ fromJson(needs.plan.outputs.matrix-json) }}
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v8
         with:
           name: socialismus-plugins-${{ needs.plan.outputs.version }}
           path: distribution
