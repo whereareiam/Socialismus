@@ -1,0 +1,47 @@
+name: Pull request · Dependabot auto-merge
+
+# A run Dependabot starts gets only the secrets stored for Dependabot, not those of Actions.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  # Turns on auto-merge for minor and patch updates, so the pull request merges once the checks the dev
+  # ruleset requires pass; a major update waits for review. Reads the pull request through the API and never
+  # checks out its code.
+  auto-merge:
+    name: Enable auto-merge
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Fails unless every commit of the pull request is a verified commit of Dependabot.
+      - id: metadata
+        uses: dependabot/fetch-metadata@v3
+
+      # Auto-merge enabled with GITHUB_TOKEN would merge without starting the workflows of the push to dev,
+      # so the merge goes through the app. Workflows lets it merge updates of the workflow files.
+      - id: token
+        if: contains(fromJSON('["version-update:semver-minor", "version-update:semver-patch"]'), steps.metadata.outputs.update-type)
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.MERGE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MERGE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-workflows: write
+
+      - name: Merge once the checks pass
+        if: steps.token.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+          PULL_REQUEST: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge "$PULL_REQUEST" --auto --rebase

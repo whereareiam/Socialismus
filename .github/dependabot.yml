@@ -1,5 +1,7 @@
 version: 2
 updates:
+  # Minor and patch updates arrive together in one pull request, which merges itself once the checks pass;
+  # every major update gets a pull request of its own and waits for review.
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
@@ -9,7 +11,13 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - "dependencies"
+    groups:
+      gradle-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
+  # Workflow updates change nothing a reader of the release notices.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -18,4 +26,9 @@ updates:
       prefix: "Dependency"
     open-pull-requests-limit: 5
     labels:
-      - "dependencies"
+      - "skip-changelog"
+    groups:
+      actions-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
