@@ -30,7 +30,7 @@ jedis = "7.5.2"
 packetevents = "2.14.0"
 
 # platform api versions
-velocity = "3.5.1"
+velocity = "4.2.0"
 spigot = "26.3-R0.1-SNAPSHOT"
 paper = "26.3.build.+"
 
