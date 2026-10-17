@@ -31,7 +31,7 @@ tasks.register("pluginJars") {
 
     dependsOn(
         ":socialismus-api:jar",
-        ":platform-velocity:shadowJar",
+        ":platform-proxy-velocity:shadowJar",
         ":platform-bukkit-bukkit:shadowJar",
         ":platform-bukkit-paper:shadowJar"
     )
@@ -42,7 +42,7 @@ toolkitDistribution {
     file("API", ":socialismus-api", "jar")
     file("PAPER", ":platform-bukkit-paper", "shadowJar")
     file("BUKKIT", ":platform-bukkit-bukkit", "shadowJar")
-    file("VELOCITY", ":platform-velocity", "shadowJar")
+    file("VELOCITY", ":platform-proxy-velocity", "shadowJar")
     file("Chirper", ":module-chirper", "shadowJar")
     file("Bubbler", ":module-bubbler", "shadowJar")
     file("Essentials", ":module-essentials", "shadowJar")

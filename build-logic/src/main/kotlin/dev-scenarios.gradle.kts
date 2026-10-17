@@ -1,9 +1,9 @@
 import org.gradle.jvm.tasks.Jar
 
-evaluationDependsOn(":platform-velocity")
+evaluationDependsOn(":platform-proxy-velocity")
 evaluationDependsOn(":platform-bukkit-paper")
 
-val velocityShadowJar = project(":platform-velocity").tasks.named("shadowJar", Jar::class.java)
+val velocityShadowJar = project(":platform-proxy-velocity").tasks.named("shadowJar", Jar::class.java)
 val paperShadowJar = project(":platform-bukkit-paper").tasks.named("shadowJar", Jar::class.java)
 
 val spawner = extensions.getByName("spawner")

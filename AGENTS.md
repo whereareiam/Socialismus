@@ -44,6 +44,22 @@ modules/module-chirper/
 - logic belongs in `-common`, never in the assembly
 - add a further side, such as `-command`, only when it exists; a small family starts with its assembly alone
 
+### Platforms
+
+Platforms are grouped under `socialismus-platform/type/` by what their members share:
+
+```text
+socialismus-platform/type/
+  platform-bukkit/      the Bukkit API
+    common/             shared by Bukkit and Paper     :platform-bukkit-common
+    bukkit/             BUKKIT jar                     :platform-bukkit-bukkit
+    paper/              PAPER jar                      :platform-bukkit-paper
+  platform-proxy/       proxies
+    velocity/           VELOCITY jar                   :platform-proxy-velocity
+```
+
+- a new platform joins the group it shares code with, such as BungeeCord in `platform-proxy/`; a group gets its `common/` once two members share something
+
 ## Branching And Pull Requests
 
 ### Branch Flow
