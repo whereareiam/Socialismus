@@ -5,23 +5,32 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.AnsiColor;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventListener;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.SocialisticEvent;
+import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
+import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
+import me.whereareiam.socialismus.lifecycle.StartupPhase;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.scheduler.PeriodicalRunnableTask;
 import me.whereareiam.socialismus.model.update.UpdateConfiguration;
 import me.whereareiam.socialismus.model.update.UpdateSource;
-import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.UpdateProvider;
 import me.whereareiam.socialismus.type.module.ProviderType;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Checks for new versions of Socialismus at the interval the settings name, from the moment Socialismus handles
+ * players. After a reload it schedules the checks again with the reloaded settings.
+ */
 @Singleton
-public final class UpdateScheduler implements Reloadable {
+public final class UpdateScheduler implements RuntimeLifecycle, EventListener {
 	private static final long MS_PER_HOUR = 3_600_000L;
 	private static final int BRANCH_UPDATE_LIMIT = 50;
 	private static final String UPDATER_MODULE = "main";
@@ -43,22 +52,45 @@ public final class UpdateScheduler implements Reloadable {
 	private final Provider<Settings> settings;
 	private final Scheduler scheduler;
 	private final UpdateProviderRegistry providers;
+	private final EventManager eventManager;
 
 	@Inject
 	public UpdateScheduler(
 			Provider<Settings> settings,
 			Scheduler scheduler,
 			UpdateProviderRegistry providers,
-			Registry<Reloadable> reloadableRegistry
+			EventManager eventManager
 	) {
 		this.settings = settings;
 		this.scheduler = scheduler;
 		this.providers = providers;
-
-		reloadableRegistry.register(this);
+		this.eventManager = eventManager;
 	}
 
-	public void start() {
+	@Override
+	public @NotNull StartupPhase phase() {
+		return StartupPhase.CONNECTIONS;
+	}
+
+	@Override
+	public void initialize() {
+		schedule();
+		eventManager.register(this);
+	}
+
+	@Override
+	public void shutdown() {
+		eventManager.unregister(this);
+		scheduler.cancelByModule(UPDATER_MODULE);
+	}
+
+	@SocialisticEvent
+	public void onReloaded(PluginReloadedEvent event) {
+		scheduler.cancelByModule(UPDATER_MODULE);
+		schedule();
+	}
+
+	private void schedule() {
 		var cfg = settings.get().getUpdater();
 		if (!cfg.isCheckForUpdates() || cfg.getInterval() <= 0) {
 			Logger.debug("Update checking is disabled");
@@ -196,11 +228,5 @@ public final class UpdateScheduler implements Reloadable {
 		}
 
 		return 0;
-	}
-
-	@Override
-	public void reload() {
-		scheduler.cancelByModule(UPDATER_MODULE);
-		start();
 	}
 }

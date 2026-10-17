@@ -6,12 +6,14 @@ import com.google.inject.Singleton;
 import me.whereareiam.keystone.Serializers;
 import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
-import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventListener;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.SocialisticEvent;
+import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.SerializerIntegration;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.registry.base.Registry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -19,10 +21,10 @@ import java.util.Set;
 /**
  * Guice Provider for SerializerEngine instances.
  * Creates a SerializerEngine configured with Messages prefix and default settings.
- * Returns a singleton instance.
+ * Returns a singleton instance, built again after a reload from the reloaded documents.
  */
 @Singleton
-public class SerializerEngineProvider implements Provider<SerializerEngine>, Reloadable {
+public class SerializerEngineProvider implements Provider<SerializerEngine>, EventListener {
 	private final Provider<Messages> messagesProvider;
 	private final Provider<Settings> settingsProvider;
 	private final Provider<Set<Integration>> integrationsProvider;
@@ -33,13 +35,13 @@ public class SerializerEngineProvider implements Provider<SerializerEngine>, Rel
 			@NotNull Provider<Messages> messagesProvider,
 			@NotNull Provider<Settings> settingsProvider,
 			@NotNull Provider<Set<Integration>> integrationsProvider,
-			@NotNull Registry<Reloadable> reloadables
+			@NotNull EventManager eventManager
 	) {
 		this.messagesProvider = messagesProvider;
 		this.settingsProvider = settingsProvider;
 		this.integrationsProvider = integrationsProvider;
 
-		reloadables.register(this);
+		eventManager.register(this);
 	}
 
 	@Override
@@ -78,8 +80,8 @@ public class SerializerEngineProvider implements Provider<SerializerEngine>, Rel
 				if (integration.isAvailable()) ((SerializerIntegration) integration).registerDecorator(engine);
 	}
 
-	@Override
-	public void reload() {
+	@SocialisticEvent
+	public void onReloaded(PluginReloadedEvent event) {
 		engine = null;
 	}
 }

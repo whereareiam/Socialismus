@@ -1,88 +1,62 @@
 package me.whereareiam.socialismus.common;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.common.chat.worker.base.ChatSelector;
-import me.whereareiam.socialismus.common.chat.worker.base.RecipientResolver;
-import me.whereareiam.socialismus.common.chat.worker.base.RecipientSelector;
-import me.whereareiam.socialismus.common.chat.worker.formatted.FormatSelector;
-import me.whereareiam.socialismus.common.container.ChatContainer;
-import me.whereareiam.socialismus.common.integration.DefaultIntegrationManager;
-import me.whereareiam.socialismus.common.printer.WelcomeBannerPrinter;
-import me.whereareiam.socialismus.common.updater.UpdateScheduler;
-import me.whereareiam.socialismus.event.EventListener;
-import me.whereareiam.socialismus.event.EventManager;
-import me.whereareiam.socialismus.event.base.SocialisticEvent;
-import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
-import me.whereareiam.socialismus.event.plugin.PluginInitializedEvent;
-import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
-import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
-import me.whereareiam.socialismus.listener.ListenerRegistrar;
+import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
+import me.whereareiam.socialismus.lifecycle.StartupPhase;
 import me.whereareiam.socialismus.logging.Logger;
-import me.whereareiam.socialismus.logging.LoggingHelper;
-import me.whereareiam.socialismus.model.chat.ChatMessages;
-import me.whereareiam.socialismus.model.chat.ChatSettings;
-import me.whereareiam.socialismus.model.config.Settings;
-import me.whereareiam.socialismus.module.ModuleService;
-import me.whereareiam.socialismus.service.CommandService;
-import me.whereareiam.socialismus.util.EventUtil;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 /**
- * Core lifecycle coordinator for the Socialismus plugin.
+ * Starts and stops Socialismus: the bound {@link RuntimeLifecycle}s, phase by phase in the order of
+ * {@link StartupPhase}, and within a phase in the order they were bound. They stop in the reverse order.
  */
 @Singleton
-public final class Socialismus implements EventListener {
-	private final Injector injector;
+public final class Socialismus {
+	private final List<RuntimeLifecycle> lifecycles;
+	private final List<RuntimeLifecycle> started = new ArrayList<>();
 
 	@Inject
-	public Socialismus(
-			Injector injector,
-			EventManager eventManager
-	) {
-		this.injector = injector;
-
-		// Register this listener once the event system is available
-		eventManager.register(this);
+	public Socialismus(@NotNull Set<RuntimeLifecycle> lifecycles) {
+		this.lifecycles = lifecycles.stream()
+				.sorted(Comparator.comparing(RuntimeLifecycle::phase))
+				.toList();
 	}
 
-	@SocialisticEvent
-	public void onPluginBootstrapped(PluginBootstrappedEvent event) {
-		Logger.init(injector.getInstance(LoggingHelper.class));
-
-		// Load settings early
-		injector.getInstance(Settings.class);
+	/**
+	 * Starts every lifecycle. When one fails, the ones started before it, and the failed one itself, are stopped in
+	 * reverse and the failure is passed on.
+	 */
+	public synchronized void start() {
+		try {
+			for (RuntimeLifecycle lifecycle : lifecycles) {
+				started.add(lifecycle);
+				lifecycle.initialize();
+			}
+		} catch (RuntimeException | Error failure) {
+			stop();
+			throw failure;
+		}
 	}
 
-	@SocialisticEvent
-	public void onPluginReady(PluginReadyEvent event) {
-		// Bootstrap integrations after plugins are enabled
-		injector.getInstance(DefaultIntegrationManager.class);
-
-		// Initialize all component before first event is triggered, leads to faster response time
-		injector.getInstance(ChatContainer.class);
-		injector.getInstance(RecipientResolver.class);
-		injector.getInstance(ChatSelector.class);
-		injector.getInstance(RecipientSelector.class);
-		injector.getInstance(FormatSelector.class);
-		injector.getInstance(ChatMessages.class);
-		injector.getInstance(ChatSettings.class);
-
-		injector.getInstance(CommandService.class);
-		injector.getInstance(ModuleService.class).loadModules();
-		injector.getInstance(ListenerRegistrar.class).registerListeners();
-
-		injector.getInstance(SynchronizationService.class).initialize();
-
-		injector.getInstance(WelcomeBannerPrinter.class).print();
-		injector.getInstance(UpdateScheduler.class).start();
-
-		EventUtil.callEvent(new PluginInitializedEvent(), () -> {
-		});
-	}
-
-	@SocialisticEvent
-	public void onPluginShutdown(PluginShutdownEvent event) {
-		// Currently no explicit shutdown logic
+	/**
+	 * Stops the started lifecycles in reverse. A lifecycle that fails to stop is logged and the others still stop.
+	 * Stopping again, or before a start, does nothing.
+	 */
+	public synchronized void stop() {
+		for (int i = started.size() - 1; i >= 0; i--) {
+			RuntimeLifecycle lifecycle = started.get(i);
+			try {
+				lifecycle.shutdown();
+			} catch (RuntimeException failure) {
+				Logger.severe("Failed to stop " + lifecycle.getClass().getSimpleName(), failure);
+			}
+		}
+		started.clear();
 	}
 }

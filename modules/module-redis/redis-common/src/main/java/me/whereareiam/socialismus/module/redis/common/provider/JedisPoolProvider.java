@@ -3,27 +3,29 @@ package me.whereareiam.socialismus.module.redis.common.provider;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventListener;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.SocialisticEvent;
+import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
 import me.whereareiam.socialismus.exception.ModuleLifecycleException;
 import me.whereareiam.socialismus.module.redis.api.model.RedisSettings;
-import me.whereareiam.socialismus.registry.base.Registry;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 @Singleton
-public class JedisPoolProvider implements Provider<JedisPool>, Reloadable {
+public class JedisPoolProvider implements Provider<JedisPool>, EventListener {
 	private final Provider<RedisSettings> settings;
 	private JedisPool jedisPool;
 
 	@Inject
 	public JedisPoolProvider(
 			Provider<RedisSettings> settings,
-			Registry<Reloadable> reloadableRegistry
+			EventManager eventManager
 	) {
 		this.settings = settings;
 
-		reloadableRegistry.register(this);
+		eventManager.register(this);
 		get();
 	}
 
@@ -53,8 +55,8 @@ public class JedisPoolProvider implements Provider<JedisPool>, Reloadable {
 		}
 	}
 
-	@Override
-	public void reload() {
+	@SocialisticEvent
+	public void onReloaded(PluginReloadedEvent event) {
 		if (jedisPool != null)
 			jedisPool.close();
 

@@ -3,22 +3,28 @@ package me.whereareiam.socialismus.module.chirper.common;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventListener;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.event.base.SocialisticEvent;
+import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.scheduler.PeriodicalRunnableTask;
 import me.whereareiam.socialismus.module.chirper.api.AnnouncementBroadcaster;
 import me.whereareiam.socialismus.module.chirper.api.model.announcement.Announcement;
 import me.whereareiam.socialismus.module.chirper.api.model.announcer.Announcer;
 import me.whereareiam.socialismus.module.chirper.api.model.announcer.InternalAnnouncer;
-import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Schedules the announcers of Chirper and broadcasts their announcements. After a reload it schedules them again from
+ * the reloaded documents.
+ */
 @Singleton
-public class AnnouncerController implements Reloadable {
+public class AnnouncerController implements EventListener {
 	private final Scheduler scheduler;
 	private final Provider<List<Announcer>> announcerProvider;
 	private final Provider<List<Announcement>> announcementProvider;
@@ -29,7 +35,7 @@ public class AnnouncerController implements Reloadable {
 
 	@Inject
 	public AnnouncerController(
-			Registry<Reloadable> reloadableRegistry,
+			EventManager eventManager,
 			Scheduler scheduler,
 			Provider<List<Announcer>> announcerProvider,
 			Provider<List<Announcement>> announcementProvider,
@@ -42,7 +48,7 @@ public class AnnouncerController implements Reloadable {
 		this.broadcaster = broadcaster;
 		this.interactor = interactor;
 
-		reloadableRegistry.register(this);
+		eventManager.register(this);
 	}
 
 	public void init() {
@@ -129,8 +135,8 @@ public class AnnouncerController implements Reloadable {
 		return nextAnnouncement;
 	}
 
-	@Override
-	public void reload() {
+	@SocialisticEvent
+	public void onReloaded(PluginReloadedEvent event) {
 		announcers.clear();
 		scheduler.cancelByModule("chirper");
 		init();

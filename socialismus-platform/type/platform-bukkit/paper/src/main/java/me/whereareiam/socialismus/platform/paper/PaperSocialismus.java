@@ -1,12 +1,10 @@
 package me.whereareiam.socialismus.platform.paper;
 
+import com.google.inject.Injector;
 import me.whereareiam.attache.platform.paper.PaperLibraryManager;
 import me.whereareiam.attache.type.VerbosityMode;
 import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.common.CommonInjector;
-import me.whereareiam.socialismus.event.plugin.PluginBootstrappedEvent;
-import me.whereareiam.socialismus.event.plugin.PluginReadyEvent;
-import me.whereareiam.socialismus.event.plugin.PluginShutdownEvent;
+import me.whereareiam.socialismus.common.Socialismus;
 import me.whereareiam.socialismus.platform.bukkit.common.BukkitCommonConfiguration;
 import me.whereareiam.socialismus.platform.bukkit.common.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.platform.bukkit.common.BukkitLoggingHelper;
@@ -14,7 +12,6 @@ import me.whereareiam.socialismus.platform.bukkit.common.BukkitModuleDependencyL
 import me.whereareiam.socialismus.platform.common.PlatformInjector;
 import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.Version;
-import me.whereareiam.socialismus.util.EventUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,6 +22,7 @@ import java.util.logging.Logger;
 public class PaperSocialismus extends JavaPlugin {
 	private final Path dataPath = getDataFolder().toPath();
 	private final Logger logger = getLogger();
+	private Injector injector;
 
 	@Override
 	public void onLoad() {
@@ -43,27 +41,21 @@ public class PaperSocialismus extends JavaPlugin {
 		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
 		libraryManager.loadDescriptors();
 
-		PlatformInjector.create(dataPath, new PaperInjectorConfiguration(this), new BukkitCommonConfiguration(this));
-
-		EventUtil.callEvent(new PluginBootstrappedEvent(), () -> {
-		});
+		injector = PlatformInjector.create(dataPath, new PaperInjectorConfiguration(this), new BukkitCommonConfiguration(this));
 	}
 
 	@Override
 	public void onEnable() {
-		// Signal that the plugin is ready for normal operation
-		EventUtil.callEvent(new PluginReadyEvent(), () -> {
-		});
-		Bukkit.getPluginManager().registerEvents(
-				CommonInjector.getInjector().getInstance(BukkitModuleDependencyListener.class),
-				this
-		);
+		if (injector == null) return;
+
+		injector.getInstance(Socialismus.class).start();
+		Bukkit.getPluginManager().registerEvents(injector.getInstance(BukkitModuleDependencyListener.class), this);
 	}
 
 	@Override
 	public void onDisable() {
-		// Signal shutdown so common core can clean up
-		EventUtil.callEvent(new PluginShutdownEvent(), () -> {
-		});
+		if (injector == null) return;
+
+		injector.getInstance(Socialismus.class).stop();
 	}
 }

@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.redis.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.redis.common.config.migration.RedisConfigMigrations;
@@ -22,6 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class SocialismusRedis extends SocialisticModule implements ResourceProvider {
 	private final Registry<Reloadable> reloadableRegistry;
+	private final EventManager eventManager;
 	private Injector injector;
 
 	@Override
@@ -31,7 +33,8 @@ public class SocialismusRedis extends SocialisticModule implements ResourceProvi
 		injector =
 				Guice.createInjector(
 						new SocialismusRedisInjectorConfiguration(
-								reloadableRegistry
+								reloadableRegistry,
+								eventManager
 						),
 						new CommonConfiguration(workingPath));
 	}

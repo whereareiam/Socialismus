@@ -40,8 +40,8 @@ journeys marked **first**:
 - [x] a "Live Tests" section in `AGENTS.md`
 
 The first wave found three bugs: `/socialismus reload` sometimes kept the old chats, chat reached
-nobody on Velocity, and the BUKKIT jar does not start on Spigot. The reload and Spigot journeys stay
-disabled until their fixes land.
+nobody on Velocity, and the BUKKIT jar does not start on Spigot. The Spigot journey stays disabled
+until its fix lands.
 
 ## chat
 
@@ -65,7 +65,7 @@ One Paper server unless stated otherwise.
 ## commands
 
 - [x] `/socialismus help` lists the commands the player may use **first**
-- [ ] `/socialismus reload` applies a changed format without a restart **first**, added but disabled until the lifecycle refactor fixes the reload order
+- [x] `/socialismus reload` applies a changed format without a restart **first**
 - [ ] `/socialismus clear` clears the chat of the players
 - [ ] `/socialismus debug` reports the platform and version
 - [ ] A player without permission neither sees nor runs the administrator commands
