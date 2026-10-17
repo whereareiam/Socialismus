@@ -29,7 +29,7 @@ packetevents = "2.12.2"
 # platform api versions
 velocity = "3.5.0-SNAPSHOT"
 spigot = "26.1.2-R0.1-SNAPSHOT"
-paper = "26.1.2.build.+"
+paper = "26.3.build.181.+"
 
 # platform integrations
 placeholderAPI = "2.11.6"
