@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.chat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * The administrator commands: clearing the chat, reporting what runs, and staying out of reach of other players.
@@ -39,7 +40,8 @@ class AdminCommandsTest {
 		carol.sees("Successfully cleared 2x chat history entries");
 		alice.sees("[G] Alice: first");
 		alice.sees("[G] Alice: third");
-		alice.neverSees("spam");
+		assertFalse(alice.chatLines().contains("spam"), "Bob's messages are still in Alice's chat");
+		assertTrue(alice.chatLines().contains("[G] Alice: second"), "Alice's own messages left her chat");
 	}
 
 	@Test
