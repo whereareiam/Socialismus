@@ -17,9 +17,9 @@ public abstract class AbstractDialogueService {
 
 	protected Map<String, String> placeholders(Dialogue pm) {
 		return Map.of(
-				"{senderName}", pm.getSender().getUsername(),
-				"{recipientName}", pm.getRecipientName(),
-				"{message}", pm.getContent()
+				"senderName", pm.getSender().getUsername(),
+				"recipientName", pm.getRecipientName(),
+				"message", pm.getContent()
 		);
 	}
 
@@ -38,7 +38,7 @@ public abstract class AbstractDialogueService {
 		return Serializer.serialize(SerializerContent.builder()
 				.receiver(sender)
 				.message(tpl)
-				.placeholder("{recipientName}", recipient)
+				.placeholder("recipientName", recipient)
 				.build());
 	}
 }
