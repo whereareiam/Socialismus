@@ -145,7 +145,7 @@ public class AnnouncementsDefaults implements DefaultsProvider<AnnouncementsConf
 								).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
 								.build(),
 						AnnouncementType.SOUND, SoundAnnouncement.builder()
-								.sound("entity_player_levelup")
+								.sound("entity.player.levelup")
 								.settings(SoundAnnouncement.SoundAnnouncementSettings.builder()
 										.volume(1.0f)
 										.pitch(1.0f)

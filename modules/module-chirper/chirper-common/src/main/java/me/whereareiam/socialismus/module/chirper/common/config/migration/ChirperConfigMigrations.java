@@ -54,6 +54,7 @@ public final class ChirperConfigMigrations {
 						List.of("commands"),
 						List.of("announcements", "announcers")
 				))
+				.migration(SoundKeyMigration.VERSION, SoundKeyMigration.NAME, new SoundKeyMigration(workingPath, extension))
 				.build();
 	}
 }
