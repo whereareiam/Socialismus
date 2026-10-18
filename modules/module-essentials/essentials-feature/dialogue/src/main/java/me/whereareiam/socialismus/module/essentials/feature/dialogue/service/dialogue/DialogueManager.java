@@ -11,6 +11,7 @@ import me.whereareiam.socialismus.module.essentials.feature.dialogue.service.Rep
 import me.whereareiam.socialismus.module.essentials.feature.dialogue.service.conversation.ConversationService;
 import me.whereareiam.socialismus.module.essentials.feature.dialogue.service.message.MessageDeliveryCoordinator;
 import me.whereareiam.socialismus.module.essentials.feature.dialogue.service.message.MessageFactory;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 
 import java.util.Optional;
 
@@ -22,18 +23,23 @@ public final class DialogueManager {
 	private final ReplyValidator validator;
 	private final DialogueErrorHandler errorHandler;
 	private final MessageDeliveryCoordinator deliveryCoordinator;
+	private final PlayerRegistry playerRegistry;
 
 	public void send(SocialismusPlayer sender, String rawRecipient, String rawMessage) {
-		if (validator.isSelfMessage(sender, rawRecipient)) {
+		String recipient = playerRegistry.getPlayerData(rawRecipient)
+				.map(SocialismusPlayer::getUsername)
+				.orElse(rawRecipient);
+
+		if (validator.isSelfMessage(sender, recipient)) {
 			errorHandler.sendSelfMessageError(sender);
 			return;
 		}
 
 		ConversationThread thread = conversationService.getOrCreateConversation(
-				sender.getUsername(), rawRecipient);
+				sender.getUsername(), recipient);
 
-		Message message = messageFactory.createMessage(sender, rawRecipient, rawMessage, thread.getId());
-		Dialogue dialogue = messageFactory.createDialogue(sender, rawRecipient, rawMessage);
+		Message message = messageFactory.createMessage(sender, recipient, rawMessage, thread.getId());
+		Dialogue dialogue = messageFactory.createDialogue(sender, recipient, rawMessage);
 
 		deliveryCoordinator.processMessageDelivery(dialogue, message);
 		conversationService.addMessage(thread, message);

@@ -24,4 +24,22 @@ class PrivateMessageTest {
 		alice.sees("Alice -> Bob: hello");
 		alice.neverSees("An error occurred");
 	}
+
+	@Test
+	@Socialismus(modules = Module.ESSENTIALS)
+	void replyAnswersTheLastConversationPartner(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+		Player bob = Player.joins(anvil, "Bob");
+		Player carol = Player.joins(anvil, "Carol");
+		alice.command("message Bob from Alice");
+		bob.sees("Alice -> Bob: from Alice");
+		carol.command("message Bob from Carol");
+		bob.sees("Carol -> Bob: from Carol");
+
+		bob.command("reply thanks");
+
+		carol.sees("Bob -> Carol: thanks");
+		bob.sees("Bob -> Carol: thanks");
+		alice.neverSees("thanks");
+	}
 }

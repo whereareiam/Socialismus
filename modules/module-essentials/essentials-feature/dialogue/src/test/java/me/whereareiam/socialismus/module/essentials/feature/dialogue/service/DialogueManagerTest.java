@@ -8,6 +8,7 @@ import me.whereareiam.socialismus.module.essentials.feature.dialogue.service.dia
 import me.whereareiam.socialismus.module.essentials.feature.dialogue.service.dialogue.DialogueManager;
 import me.whereareiam.socialismus.module.essentials.feature.dialogue.service.message.MessageDeliveryCoordinator;
 import me.whereareiam.socialismus.module.essentials.feature.dialogue.service.message.MessageFactory;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +40,8 @@ class DialogueManagerTest {
 	private DialogueErrorHandler errorHandler;
 	@Mock
 	private MessageDeliveryCoordinator deliveryCoordinator;
+	@Mock
+	private PlayerRegistry playerRegistry;
 
 	private DialogueManager dialogueManager;
 
@@ -49,7 +52,8 @@ class DialogueManagerTest {
 				messageFactory,
 				validator,
 				errorHandler,
-				deliveryCoordinator
+				deliveryCoordinator,
+				playerRegistry
 		);
 	}
 
@@ -132,4 +136,24 @@ class DialogueManagerTest {
 		verify(deliveryCoordinator).processMessageDelivery(any(), any());
 	}
 
+	@Test
+	void shouldNameTheRecipientAsTheyAreOnline() {
+		// Given - conversations keep their partners in lower case
+		SocialismusPlayer sender = TestDataBuilder.mockPlayer("Bob");
+		SocialismusPlayer carol = TestDataBuilder.mockPlayer("Carol");
+		String message = "thanks";
+
+		ConversationThread thread = TestDataBuilder.conversationThreadBetween("Bob", "Carol").build();
+		when(validator.isReplyEnabled()).thenReturn(true);
+		when(conversationService.getLastConversationPartner("Bob")).thenReturn(Optional.of("carol"));
+		when(playerRegistry.getPlayerData("carol")).thenReturn(Optional.of(carol));
+		when(conversationService.getOrCreateConversation("Bob", "Carol")).thenReturn(thread);
+
+		// When
+		dialogueManager.sendReply(sender, message);
+
+		// Then
+		verify(messageFactory).createDialogue(sender, "Carol", message);
+		verify(messageFactory).createMessage(eq(sender), eq("Carol"), eq(message), anyString());
+	}
 }
