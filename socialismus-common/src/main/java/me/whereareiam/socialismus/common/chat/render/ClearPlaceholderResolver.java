@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
+import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 
@@ -22,17 +23,20 @@ public class ClearPlaceholderResolver implements ChatPlaceholderResolver {
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<ChatMessages> chatMessages;
 	private final Provider<Commands> commands;
+	private final RequirementEvaluatorService requirementEvaluator;
 
 	@Inject
 	public ClearPlaceholderResolver(
 			Provider<ChatSettings> chatSettings,
 			Provider<ChatMessages> chatMessages,
 			Provider<Commands> commands,
+			RequirementEvaluatorService requirementEvaluator,
 			Registry<ChatPlaceholderResolver> registry
 	) {
 		this.chatSettings = chatSettings;
 		this.chatMessages = chatMessages;
 		this.commands = commands;
+		this.requirementEvaluator = requirementEvaluator;
 		registry.register(this);
 	}
 
@@ -57,14 +61,12 @@ public class ClearPlaceholderResolver implements ChatPlaceholderResolver {
 		}
 
 		SocialismusPlayer sender = context.getSender();
-		String permission = settings.getHistory().getPermission();
-		String bypass = settings.getHistory().getBypassPermission();
-
-		if (permission == null || !recipient.hasPermission(permission)) {
+		ChatSettings.ChatHistorySettings history = settings.getHistory();
+		if (history.getRequirements() == null || !requirementEvaluator.check(history.getRequirements(), recipient)) {
 			return Component.empty();
 		}
 
-		if (sender != null && bypass != null && sender.hasPermission(bypass)) {
+		if (sender != null && history.getBypassRequirements() != null && requirementEvaluator.check(history.getBypassRequirements(), sender)) {
 			return Component.empty();
 		}
 

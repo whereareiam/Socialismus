@@ -3,6 +3,9 @@ package me.whereareiam.socialismus.model.chat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.whereareiam.configura.annotation.merge.Merge;
+import me.whereareiam.configura.type.merge.WhenPresent;
+import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 
 /**
  * The settings of chatting, {@code chat/settings} in the data directory: notifications, the fallback chat and chat
@@ -66,14 +69,18 @@ public class ChatSettings {
 		private int historySize;
 
 		/**
-		 * Permission required to access chat history.
+		 * Who may clear messages from chat history: the players who meet it see the clear button on the messages
+		 * they receive. Kept as written, so a group of one's own takes none of the default's requirements.
 		 */
-		private String permission;
+		@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+		private RequirementGroup requirements;
 
 		/**
-		 * Permission to bypass chat history restrictions.
+		 * Whose messages nobody clears: the messages of a sender who meets it carry no clear button, and
+		 * {@code /socialismus clear <player>} refuses to clear them. Kept as written, like {@link #requirements}.
 		 */
-		private String bypassPermission;
+		@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+		private RequirementGroup bypassRequirements;
 	}
 
 	/**

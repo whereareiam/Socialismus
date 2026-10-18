@@ -11,9 +11,11 @@ import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.service.PlatformInteractor;
+import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
+import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
@@ -27,7 +29,8 @@ public class ClearCommand {
 
 	private final ChatHistoryService chatHistory;
 	private final ChatHistoryContainerService containerService;
-	private final PlatformInteractor interactor;
+	private final PlayerRegistry playerRegistry;
+	private final RequirementEvaluatorService requirementEvaluator;
 
 	@Definition("clear")
 	@Command("socialismus clear [context]")
@@ -84,7 +87,7 @@ public class ClearCommand {
 			return;
 		}
 
-		if (interactor.hasPermission(context, chatSettings.get().getHistory().getBypassPermission())) {
+		if (bypasses(context)) {
 			actor.sendMessage(Serializer.serialize(actor, messages.get().getCommands().getClearCommand().getBypassUser()));
 			return;
 		}
@@ -95,6 +98,19 @@ public class ClearCommand {
 				messages.get().getCommands().getClearCommand().getClearedAmount(),
 				messages.get().getCommands().getClearCommand().getNoUserHistory()
 		);
+	}
+
+	/**
+	 * Returns whether the messages of a player are kept from clearing; only an online player can meet the bypass
+	 * requirements.
+	 */
+	private boolean bypasses(String username) {
+		RequirementGroup bypass = chatSettings.get().getHistory().getBypassRequirements();
+		if (bypass == null) return false;
+
+		return playerRegistry.getPlayerData(username)
+				.map(player -> requirementEvaluator.check(bypass, player))
+				.orElse(false);
 	}
 
 	private boolean hasMinimumMessages() {

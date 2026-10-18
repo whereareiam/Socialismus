@@ -68,6 +68,7 @@ One Paper server unless stated otherwise.
 - [x] A message that matches no chat gets the no-chat message
 - [x] Chats from several files in `chat/list/` are all loaded
 - [x] Legacy serialization renders a format as MiniMessage does
+- [x] Only the players who meet chat history's requirements see the clear button
 - [ ] PlaceholderAPI placeholders are filled in formats when PlaceholderAPI is installed
 
 ## commands
@@ -75,6 +76,7 @@ One Paper server unless stated otherwise.
 - [x] `/socialismus help` lists the commands the player may use **first**
 - [x] `/socialismus reload` applies a changed format without a restart **first**
 - [x] `/socialismus clear` clears the chat of the players
+- [x] `/socialismus clear` keeps the messages of a player who meets chat history's bypass requirements
 - [x] `/socialismus debug` reports the platform and version
 - [x] A player without permission neither sees nor runs the administrator commands
 
