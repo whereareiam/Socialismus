@@ -3,8 +3,11 @@ package me.whereareiam.socialismus.module.dialogue.common.delivery;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.module.dialogue.api.event.DialogueDeliveredEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
+import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
@@ -23,12 +26,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Local delivery")
 class LocalDeliveryTest {
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
+	private final EventManager eventManager = mock(EventManager.class);
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
 
@@ -55,7 +60,7 @@ class LocalDeliveryTest {
 				mock(RequirementEvaluatorService.class),
 				TestDataBuilder::defaultSettings
 		);
-		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, requirements));
+		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, requirements), eventManager);
 	}
 
 	@DisplayName("Fills the names and the message into both formats")
@@ -80,6 +85,20 @@ class LocalDeliveryTest {
 		assertEquals("Alice -> Bob: hello", received(bob));
 	}
 
+	@DisplayName("Tells the add-ons a message reached its recipient")
+	@Test
+	void announcesTheDelivery() {
+		when(playerRegistry.getPlayerData("Bob")).thenReturn(Optional.of(bob));
+		Message message = TestDataBuilder.messageFrom(alice, "Bob").content("hello").build();
+
+		delivery.deliver(message, false);
+
+		ArgumentCaptor<DialogueDeliveredEvent> event = ArgumentCaptor.forClass(DialogueDeliveredEvent.class);
+		verify(eventManager).call(event.capture());
+		assertSame(message, event.getValue().getMessage());
+		assertSame(bob, event.getValue().getRecipient());
+	}
+
 	@DisplayName("Leaves a recipient who is not on this server to the network")
 	@Test
 	void leavesAMissingRecipient() {
@@ -87,6 +106,7 @@ class LocalDeliveryTest {
 
 		assertFalse(delivery.deliver(TestDataBuilder.messageFrom(alice, "Bob").build(), true));
 		verify(alice, never()).sendMessage(any(Component.class));
+		verifyNoInteractions(eventManager);
 	}
 
 	private static String received(SocialismusPlayer player) {

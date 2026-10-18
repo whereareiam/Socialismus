@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
@@ -21,6 +22,7 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 	private final RequirementEvaluatorService requirementEvaluator;
 	private final SerializationService serializationService;
 	private final SyncService syncService;
+	private final EventManager eventManager;
 
 	@Override
 	protected void configure() {
@@ -33,5 +35,6 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 		bind(RequirementEvaluatorService.class).toInstance(requirementEvaluator);
 		bind(SerializationService.class).toInstance(serializationService);
 		bind(SyncService.class).toInstance(syncService);
+		bind(EventManager.class).toInstance(eventManager);
 	}
 }
