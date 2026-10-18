@@ -124,8 +124,8 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 
 - [x] `/msg` delivers a private message and confirms it to the sender
 - [x] `/reply` answers the last conversation partner
-- [ ] Messaging an offline player fails with a reason
-- [ ] `/socialismus features` lists the features and their state
+- [x] Messaging an offline player fails with a reason
+- [x] `/socialismus features` lists the features and their state
 - [ ] Private messages reach a player on another backend
 
 ## bubbler
