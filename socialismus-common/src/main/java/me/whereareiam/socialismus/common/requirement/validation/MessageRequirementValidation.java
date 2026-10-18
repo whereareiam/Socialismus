@@ -7,10 +7,12 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.model.requirement.type.MessageRequirement;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.PlatformType;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public class MessageRequirementValidation implements RequirementValidation {
@@ -22,9 +24,9 @@ public class MessageRequirementValidation implements RequirementValidation {
 	}
 
 	@Override
-	public boolean check(Requirement requirement, SocialismusPlayer player) {
-		if (!(requirement instanceof MessageRequirement mr)) return false;
-		if (!PlatformType.isGameServer()) return false;
+	public @NotNull RequirementResult evaluate(@NotNull Requirement requirement, @NotNull SocialismusPlayer player) {
+		if (!(requirement instanceof MessageRequirement mr)) return RequirementResult.denied();
+		if (!PlatformType.isGameServer()) return RequirementResult.denied();
 
 		String lastMessage = player.getData(Constants.DataKeys.LAST_MESSAGE);
 		
@@ -54,11 +56,11 @@ public class MessageRequirementValidation implements RequirementValidation {
 		for (String expectedValue : expectedValues) {
 			if (String.valueOf(checkResult).equals(expectedValue)) {
 				Logger.debug("Found matching expected value: " + checkResult + " for player " + player.getUsername());
-				return true;
+				return RequirementResult.passed();
 			}
 		}
 
 		Logger.debug("No matching expected values found for player " + player.getUsername());
-		return false;
+		return RequirementResult.denied();
 	}
 }

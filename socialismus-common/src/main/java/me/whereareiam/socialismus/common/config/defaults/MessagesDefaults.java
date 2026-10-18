@@ -5,9 +5,13 @@ import me.whereareiam.commandant.model.message.ExceptionMessages;
 import me.whereareiam.commandant.model.message.HelpMessages;
 import me.whereareiam.commandant.model.message.PaginationMessages;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.config.message.CommandMessages;
 import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.model.config.message.RequirementReasons;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +114,31 @@ public class MessagesDefaults implements DefaultsProvider<Messages> {
 		commandMessages.setClearCommand(clearCommand);
 
 		messages.setCommands(commandMessages);
+
+		// Kept in this order in the file.
+		Map<String, RequirementReasons> requirements = new LinkedHashMap<>();
+		requirements.put(Constants.Requirements.PERMISSION.getFullKey(), reasons(
+				"{prefix}<white>You need the permission <gray>{permissions}</gray> for this.</white>",
+				null
+		));
+		requirements.put(Constants.Requirements.WORLD.getFullKey(), reasons(
+				"{prefix}<white>This only works in <gray>{worlds}</gray>.</white>",
+				"{prefix}<white>This does not work in <gray>{world}</gray>.</white>"
+		));
+		requirements.put(Constants.Requirements.SERVER.getFullKey(), reasons(
+				"{prefix}<white>This only works on <gray>{servers}</gray>.</white>",
+				"{prefix}<white>This does not work on <gray>{server}</gray>.</white>"
+		));
+		messages.setRequirements(requirements);
+
 		return messages;
+	}
+
+	private static RequirementReasons reasons(String required, @Nullable String forbidden) {
+		RequirementReasons reasons = new RequirementReasons();
+		reasons.setRequired(required);
+		reasons.setForbidden(forbidden);
+
+		return reasons;
 	}
 }

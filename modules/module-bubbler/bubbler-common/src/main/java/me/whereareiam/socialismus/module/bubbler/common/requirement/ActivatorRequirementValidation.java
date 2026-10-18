@@ -6,11 +6,13 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.module.bubbler.api.model.requirement.ActivatorRequirement;
 import me.whereareiam.socialismus.module.bubbler.api.type.ActivatorType;
 import me.whereareiam.socialismus.module.bubbler.common.BubblerConstants;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Validates activator requirements for bubble messages.
@@ -27,10 +29,10 @@ public class ActivatorRequirementValidation implements RequirementValidation {
 	}
 
 	@Override
-	public boolean check(Requirement requirement, SocialismusPlayer player) {
+	public @NotNull RequirementResult evaluate(@NotNull Requirement requirement, @NotNull SocialismusPlayer player) {
 		if (!(requirement instanceof ActivatorRequirement activatorReq)) {
 			Logger.warn("Invalid requirement type for activator validation");
-			return false;
+			return RequirementResult.denied();
 		}
 
 		ActivatorType lastActivator = player.getData(BubblerConstants.DataKeys.LAST_ACTIVATOR);
@@ -50,11 +52,11 @@ public class ActivatorRequirementValidation implements RequirementValidation {
 		for (String expectedValue : expectedValues) {
 			if (String.valueOf(checkResult).equals(expectedValue)) {
 				Logger.debug("Found matching expected value: " + checkResult + " for player " + player.getUsername());
-				return true;
+				return RequirementResult.passed();
 			}
 		}
 
 		Logger.debug("No matching expected values found for player " + player.getUsername());
-		return false;
+		return RequirementResult.denied();
 	}
 }

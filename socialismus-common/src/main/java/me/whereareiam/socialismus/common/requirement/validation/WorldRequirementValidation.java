@@ -7,10 +7,14 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.model.requirement.type.WorldRequirement;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.PlatformType;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 @Singleton
 public class WorldRequirementValidation implements RequirementValidation {
@@ -23,9 +27,10 @@ public class WorldRequirementValidation implements RequirementValidation {
 	}
 
 	@Override
-	public boolean check(Requirement requirement, SocialismusPlayer player) {
-		if (!(requirement instanceof WorldRequirement wr)) return false;
-		if (!PlatformType.isGameServer()) return false;
+	public @NotNull RequirementResult evaluate(@NotNull Requirement requirement, @NotNull SocialismusPlayer player) {
+		if (!(requirement instanceof WorldRequirement wr)) return RequirementResult.denied();
+		// A proxy knows no worlds, so it cannot tell the player anything true about them.
+		if (!PlatformType.isGameServer()) return RequirementResult.denied();
 
 		Logger.debug("Checking world requirement for player " + player.getUsername());
 		boolean checkResult = false;
@@ -35,15 +40,15 @@ public class WorldRequirementValidation implements RequirementValidation {
 			case CONTAINS -> checkResult = wr.getWorlds().contains(player.getLocation());
 		}
 
+		Logger.debug("World check result " + checkResult + " for player " + player.getUsername());
 		String[] expectedValues = wr.getExpected().split("\\|");
 		for (String expectedValue : expectedValues)
-			if (String.valueOf(checkResult).equals(expectedValue)) {
-				Logger.debug("World check result " + checkResult + " for player " + player.getUsername());
-				return true;
-			}
+			if (String.valueOf(checkResult).equals(expectedValue))
+				return RequirementResult.passed();
 
-		Logger.debug("World check result " + checkResult + " for player " + player.getUsername());
-
-		return false;
+		return RequirementDenials.deny(Constants.Requirements.WORLD, checkResult, Map.of(
+				"worlds", RequirementDenials.listed(wr.getWorlds()),
+				"world", String.valueOf(player.getLocation())
+		));
 	}
 }

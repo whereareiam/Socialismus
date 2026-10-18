@@ -1,12 +1,16 @@
 package me.whereareiam.socialismus.common.requirement.validation;
 
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.requirement.RequirementRegistry;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
+import me.whereareiam.socialismus.model.requirement.RequirementDenial;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.model.requirement.type.PermissionRequirement;
 import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
+import me.whereareiam.socialismus.type.requirement.RequirementFailure;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -50,7 +55,7 @@ class PermissionRequirementValidationTest {
                 .build();
 
         // When
-        boolean result = validation.check(genericRequirement, mockPlayer);
+        boolean result = validation.evaluate(genericRequirement, mockPlayer).isPassed();
 
         // Then
         assertFalse(result);
@@ -70,7 +75,7 @@ class PermissionRequirementValidationTest {
         when(mockPlayer.hasPermission("permission.two")).thenReturn(true);
 
         // When
-        boolean result = validation.check(requirement, mockPlayer);
+        boolean result = validation.evaluate(requirement, mockPlayer).isPassed();
 
         // Then
         assertTrue(result);
@@ -92,7 +97,7 @@ class PermissionRequirementValidationTest {
         when(mockPlayer.hasPermission("permission.two")).thenReturn(false);
 
         // When
-        boolean result = validation.check(requirement, mockPlayer);
+        boolean result = validation.evaluate(requirement, mockPlayer).isPassed();
 
         // Then
         assertTrue(result);
@@ -112,7 +117,7 @@ class PermissionRequirementValidationTest {
         when(mockPlayer.hasPermission("permission.two")).thenReturn(false);
 
         // When
-        boolean result = validation.check(requirement, mockPlayer);
+        boolean result = validation.evaluate(requirement, mockPlayer).isPassed();
 
         // Then
         assertFalse(result);
@@ -133,7 +138,7 @@ class PermissionRequirementValidationTest {
         when(mockPlayer.hasPermission("permission.three")).thenReturn(false);
 
         // When
-        boolean result = validation.check(requirement, mockPlayer);
+        boolean result = validation.evaluate(requirement, mockPlayer).isPassed();
 
         // Then
         assertTrue(result);
@@ -153,7 +158,7 @@ class PermissionRequirementValidationTest {
         when(mockPlayer.hasPermission("permission.two")).thenReturn(false);
 
         // When
-        boolean result = validation.check(requirement, mockPlayer);
+        boolean result = validation.evaluate(requirement, mockPlayer).isPassed();
 
         // Then
         assertFalse(result);
@@ -173,11 +178,44 @@ class PermissionRequirementValidationTest {
         when(mockPlayer.hasPermission("permission.two")).thenReturn(false);
 
         // When
-        boolean result = validation.check(requirement, mockPlayer);
+        boolean result = validation.evaluate(requirement, mockPlayer).isPassed();
 
         // Then
         assertTrue(result);
     }
 
-}
 
+    @Test
+    @DisplayName("Denial - a player who lacks the permissions is denied as REQUIRED with the permissions")
+    void testDenialOfMissingPermissions() {
+        PermissionRequirement requirement = PermissionRequirement.builder()
+                .condition(RequirementConditionType.HAS)
+                .expected("true")
+                .permissions(List.of("permission.one", "permission.two"))
+                .build();
+
+        RequirementResult result = validation.evaluate(requirement, mockPlayer);
+
+        assertEquals(RequirementDenial.of(
+                Constants.Requirements.PERMISSION,
+                RequirementFailure.REQUIRED,
+                Map.of("permissions", "permission.one, permission.two")
+        ), result.getDenial());
+    }
+
+    @Test
+    @DisplayName("Denial - a player who holds a ruled out permission is denied as FORBIDDEN")
+    void testDenialOfForbiddenPermissions() {
+        PermissionRequirement requirement = PermissionRequirement.builder()
+                .condition(RequirementConditionType.CONTAINS)
+                .expected("false")
+                .permissions(List.of("permission.one"))
+                .build();
+        when(mockPlayer.hasPermission("permission.one")).thenReturn(true);
+
+        RequirementResult result = validation.evaluate(requirement, mockPlayer);
+
+        assertEquals(RequirementFailure.FORBIDDEN, result.getDenial().getFailure());
+        assertNull(result.getDenial().getMessage());
+    }
+}
