@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.testing.journey;
 
+import me.whereareiam.anvil.api.process.ConsoleWatch;
 import me.whereareiam.anvil.api.process.ProcessConsole;
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
 import me.whereareiam.socialismus.testing.environment.Network;
@@ -53,10 +54,10 @@ public final class Console {
 	 */
 	@NotNull
 	public Output run(@NotNull String command) {
-		long after = console.checkpoint();
+		ConsoleWatch output = console.watch();
 		console.sendCommand(command);
 
-		return text -> console.await(text, after, TIMEOUT);
+		return text -> output.printed(text, TIMEOUT);
 	}
 
 	/**
