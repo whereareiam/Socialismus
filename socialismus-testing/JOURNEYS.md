@@ -138,6 +138,7 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [x] `/reply` without a conversation fails with a reason
 - [x] A private message takes the last format whose requirements its participants meet
 - [x] `messaging.requirements` refuse a message to a player they exclude
+- [x] A private message is shown as its sender wrote it, never read as formatting such as a click
 - [ ] `/reply` to a conversation older than `messaging.reply.timeout` lists the recent conversations
 - [ ] Private messages reach a player on another backend, and the sender sees them once the backend confirms
 - [ ] A private message to a player on no backend fails once `sync.confirmation` has passed

@@ -12,6 +12,8 @@ import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,14 +62,19 @@ public class MessageRenderer {
 			return;
 		}
 
-		viewer.sendMessage(Serializer.serialize(SerializerContent.builder()
+		Component shown = Serializer.serialize(SerializerContent.builder()
 				.receiver(viewer)
 				.message(format.getFormat())
 				.placeholders(Map.of(
 						"senderName", message.getSender().getUsername(),
-						"recipientName", message.getRecipientName(),
-						"message", message.getContent()
+						"recipientName", message.getRecipientName()
 				))
+				.build());
+		// The message goes in after the format is parsed, so what a player wrote is shown as written and never read
+		// as formatting, such as a click that runs a command.
+		viewer.sendMessage(shown.replaceText(TextReplacementConfig.builder()
+				.matchLiteral(Serializer.placeholder("message"))
+				.replacement(Component.text(message.getContent()))
 				.build()));
 	}
 

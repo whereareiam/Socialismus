@@ -31,6 +31,17 @@ class PrivateMessageTest {
 
 	@Test
 	@Socialismus(modules = Module.DIALOGUE)
+	void messageIsShownAsWrittenNotAsFormatting(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+		Player bob = Player.joins(anvil, "Bob");
+
+		alice.command("message Bob <red>free <click:run_command:'/op Alice'>diamonds");
+
+		bob.sees("Alice -> Bob: <red>free <click:run_command:'/op Alice'>diamonds");
+	}
+
+	@Test
+	@Socialismus(modules = Module.DIALOGUE)
 	void replyAnswersTheLastConversationPartner(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");

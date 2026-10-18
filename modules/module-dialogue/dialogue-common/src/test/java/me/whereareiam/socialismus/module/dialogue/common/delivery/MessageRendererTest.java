@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.module.dialogue.common.delivery;
 
 import me.whereareiam.keystone.model.SerializerContent;
+import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.logging.Logger;
@@ -18,6 +19,8 @@ import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -48,6 +52,7 @@ class MessageRendererTest {
 		SerializerEngine engine = mock(SerializerEngine.class);
 		when(engine.serialize(any(SerializerContent.class)))
 				.thenAnswer(call -> Component.text(call.getArgument(0, SerializerContent.class).getMessage()));
+		when(engine.getPlaceholderFormat()).thenReturn(SerializerOptions.PlaceholderFormat.CURLY_BRACES);
 		Serializer.initialize(() -> engine);
 		Logger.init(mock(LoggingHelper.class));
 
@@ -99,6 +104,37 @@ class MessageRendererTest {
 		renderer.showSent(message(), null);
 
 		verify(alice, never()).sendMessage(any(Component.class));
+	}
+
+	@Test
+	void showsWhatThePlayerWroteAsWrittenNotAsFormatting() {
+		SerializerEngine miniMessage = mock(SerializerEngine.class);
+		when(miniMessage.serialize(any(SerializerContent.class))).thenAnswer(call -> {
+			// Keystone fills the placeholders into the text, then parses it.
+			SerializerContent content = call.getArgument(0, SerializerContent.class);
+			String text = content.getMessage();
+			for (Map.Entry<String, String> placeholder : content.getPlaceholders().entrySet())
+				text = text.replace("{" + placeholder.getKey() + "}", placeholder.getValue());
+
+			return MiniMessage.miniMessage().deserialize(text);
+		});
+		when(miniMessage.getPlaceholderFormat()).thenReturn(SerializerOptions.PlaceholderFormat.CURLY_BRACES);
+		Serializer.initialize(() -> miniMessage);
+		formats.setReceived(List.of(new DialogueFormat("<gray>{senderName}: <white>{message}", null)));
+		String written = "<click:run_command:'/op Alice'>free diamonds</click>";
+
+		renderer.showReceived(TestDataBuilder.messageFrom(alice, "Bob").content(written).build(), bob);
+
+		ArgumentCaptor<Component> shown = ArgumentCaptor.forClass(Component.class);
+		verify(bob).sendMessage(shown.capture());
+		assertEquals("Alice: " + written, PlainTextComponentSerializer.plainText().serialize(shown.getValue()));
+		assertFalse(hasClick(shown.getValue()), "The message carries a click event: " + shown.getValue());
+	}
+
+	private static boolean hasClick(Component component) {
+		if (component.clickEvent() != null) return true;
+
+		return component.children().stream().anyMatch(MessageRendererTest::hasClick);
 	}
 
 	private Message message() {
