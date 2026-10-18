@@ -104,6 +104,7 @@ A Velocity proxy with Paper backends.
 
 Two Paper backends behind a Velocity proxy.
 
+- [x] SocialismusRedis brings its Redis client and refuses to load with a reason when Redis cannot be reached
 - [ ] With SocialismusChannelizer, a global message reaches the players on the other backend and a local one stays on its own
 - [ ] With SocialismusRedis, the same holds through Redis (needs Docker)
 - [ ] Sender and recipients keep their names and formats on the other backend
