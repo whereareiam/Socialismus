@@ -40,6 +40,12 @@ public @interface Socialismus {
 	String data() default "";
 
 	/**
+	 * Plugins installed beside Socialismus in the {@code plugins/} of the process that runs it, such as one a module
+	 * requires.
+	 */
+	Plugin[] plugins() default {};
+
+	/**
 	 * Modules installed in Socialismus's {@code modules/} directory.
 	 */
 	Module[] modules() default {};

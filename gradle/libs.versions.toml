@@ -24,6 +24,9 @@ anvil = "dev-114a2a4"
 junit = "6.1.3"
 mockito = "5.24.0"
 
+# journey plugins, as Modrinth publishes them
+journey-packetevents = "2.14.0+spigot"
+
 # resouces
 ormlite = "6.1"
 jedis = "7.5.2"
@@ -132,6 +135,9 @@ junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.r
 junit-platform = { group = "org.junit.platform", name = "junit-platform-launcher" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-junit = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito" }
+
+# journey plugins
+journey-packetevents = { group = "maven.modrinth", name = "packetevents", version.ref = "journey-packetevents" }
 
 [bundles]
 
