@@ -10,7 +10,16 @@ import me.whereareiam.anvil.capability.messages.Messages;
 import me.whereareiam.anvil.capability.messages.model.ChatLines;
 import me.whereareiam.anvil.capability.players.PlayerWatch;
 import me.whereareiam.anvil.capability.players.Players;
+import me.whereareiam.anvil.capability.screen.ActionBarWatch;
+import me.whereareiam.anvil.capability.screen.BossBarWatch;
+import me.whereareiam.anvil.capability.screen.Screen;
+import me.whereareiam.anvil.capability.screen.TitleWatch;
+import me.whereareiam.anvil.capability.screen.model.BossBar;
+import me.whereareiam.anvil.capability.screen.model.Title;
 import me.whereareiam.anvil.capability.session.Session;
+import me.whereareiam.anvil.capability.sounds.SoundWatch;
+import me.whereareiam.anvil.capability.sounds.Sounds;
+import me.whereareiam.anvil.capability.sounds.model.HeardSound;
 import me.whereareiam.socialismus.testing.environment.Network;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,12 +50,22 @@ public final class Player {
 	private final Messages messages;
 	/** The player's messages after the one its previous expectation found, where its next expectation looks. */
 	private final MessageWatch inbox;
+	/** The titles, action bars, boss bars and sounds after the ones the player's previous expectations found. */
+	private final TitleWatch titles;
+	private final ActionBarWatch actionBars;
+	private final BossBarWatch bossBars;
+	private final SoundWatch sounds;
 
 	private Player(ScenarioContext anvil, String name, SimulatedPlayer player) {
 		this.anvil = anvil;
 		this.name = name;
 		this.messages = player.capability(Messages.class);
 		this.inbox = messages.watch();
+		Screen screen = player.capability(Screen.class);
+		this.titles = screen.watchTitles();
+		this.actionBars = screen.watchActionBars();
+		this.bossBars = screen.watchBossBars();
+		this.sounds = player.capability(Sounds.class).watch();
 	}
 
 	/**
@@ -122,6 +141,82 @@ public final class Player {
 	public Player neverSees(@NotNull String text) {
 		inbox.neverReceived(text, ABSENCE);
 		return this;
+	}
+
+	/**
+	 * Expects a title whose title or subtitle contains the given text.
+	 *
+	 * @return the title, with its subtitle and display times
+	 */
+	@NotNull
+	public Title seesTitle(@NotNull String text) {
+		try {
+			return titles.shown(text, TIMEOUT);
+		} catch (IllegalStateException failure) {
+			throw new AssertionError(name + " was not shown the title \"" + text + "\"; since its previous title it was "
+					+ "shown " + titles.unread(), failure);
+		}
+	}
+
+	/**
+	 * Expects an action bar that contains the given text.
+	 *
+	 * @return the whole action bar
+	 */
+	@NotNull
+	public String seesActionBar(@NotNull String text) {
+		try {
+			return actionBars.shown(text, TIMEOUT);
+		} catch (IllegalStateException failure) {
+			throw new AssertionError(name + " was not shown the action bar \"" + text + "\"; since its previous action "
+					+ "bar it was shown " + actionBars.unread(), failure);
+		}
+	}
+
+	/**
+	 * Expects a boss bar whose text contains the given text to appear or change.
+	 *
+	 * @return the bar after that change
+	 */
+	@NotNull
+	public BossBar seesBossBar(@NotNull String text) {
+		try {
+			return bossBars.shown(text, TIMEOUT);
+		} catch (IllegalStateException failure) {
+			throw new AssertionError(name + " was not shown the boss bar \"" + text + "\"; since its previous boss bar "
+					+ "it saw " + bossBars.unread(), failure);
+		}
+	}
+
+	/**
+	 * Expects a boss bar whose text contains the given text to leave the screen.
+	 *
+	 * @return the bar as it was last shown
+	 */
+	@NotNull
+	public BossBar seesBossBarRemoved(@NotNull String text) {
+		try {
+			return bossBars.removed(text, TIMEOUT);
+		} catch (IllegalStateException failure) {
+			throw new AssertionError("The boss bar \"" + text + "\" did not leave " + name + "'s screen; since its "
+					+ "previous boss bar it saw " + bossBars.unread(), failure);
+		}
+	}
+
+	/**
+	 * Expects a sound with the given key, such as {@code entity.player.levelup}; a key without a namespace means the
+	 * {@code minecraft} namespace.
+	 *
+	 * @return the sound, with its volume and pitch
+	 */
+	@NotNull
+	public HeardSound hears(@NotNull String key) {
+		try {
+			return sounds.heard(key, TIMEOUT);
+		} catch (IllegalStateException failure) {
+			throw new AssertionError(name + " did not hear " + key + "; since its previous sound it heard "
+					+ sounds.unread(), failure);
+		}
 	}
 
 	/**

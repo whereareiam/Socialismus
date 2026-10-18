@@ -115,10 +115,10 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 
 ## chirper
 
-- [ ] Chirper broadcasts the chat announcements of an announcer on its schedule
-- [ ] `/socialismus announce` sends an announcement right away
-- [ ] An announcer's requirements limit who receives its announcements
-- [ ] Chirper's title, action-bar, boss-bar and sound announcements arrive
+- [x] Chirper broadcasts the chat announcements of an announcer on its schedule
+- [x] `/socialismus announce` sends an announcement right away
+- [x] An announcer's requirements limit who receives its announcements
+- [x] Chirper's title, action-bar, boss-bar and sound announcements arrive
 
 ## essentials
 
