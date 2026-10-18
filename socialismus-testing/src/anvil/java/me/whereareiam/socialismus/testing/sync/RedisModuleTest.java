@@ -20,8 +20,8 @@ class RedisModuleTest {
 	void refusesToLoadWithAReasonWhenRedisCannotBeReached(ScenarioContext anvil) {
 		String log = Console.of(anvil).log();
 
-		assertTrue(log.contains("Module SocialismusRedis aborted load"), "SocialismusRedis loaded without Redis:\n" + log);
-		assertTrue(log.contains("Failed to connect to Redis"), "SocialismusRedis did not report the unreachable Redis:\n" + log);
+		assertTrue(log.contains("Module SocialismusRedis aborted load: Failed to connect to Redis"),
+				"SocialismusRedis did not report the unreachable Redis:\n" + log);
 		assertFalse(log.contains("NoClassDefFoundError"), "SocialismusRedis is missing a class:\n" + log);
 	}
 }
