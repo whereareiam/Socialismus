@@ -21,7 +21,7 @@
   ],
   "requirements": [
     {
-      "type": "SYNC",
+      "resource": "socialismus:sync",
       "optional": true
     }
   ],

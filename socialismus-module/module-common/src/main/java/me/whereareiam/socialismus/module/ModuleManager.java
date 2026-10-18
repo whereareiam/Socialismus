@@ -190,6 +190,11 @@ public class ModuleManager implements ModuleService {
 			return false;
 		}
 
+		if (module.getRequirements() != null && module.getRequirements().stream().anyMatch(requirement -> requirement.getResource() == null)) {
+			Logger.warn("Module file names a resource requirement without its resource: " + moduleJson.getName());
+			return false;
+		}
+
 		if (modules.stream().anyMatch(internalModule -> internalModule.getName().equals(module.getName()))) {
 			Logger.warn("Module with name already exists: " + module.getName());
 			return false;

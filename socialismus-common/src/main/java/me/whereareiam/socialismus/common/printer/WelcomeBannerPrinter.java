@@ -11,7 +11,6 @@ import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.PluginType;
-import me.whereareiam.socialismus.type.ResourceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,9 +77,9 @@ public class WelcomeBannerPrinter {
 
 	private List<String> buildConnectionLines() {
 		List<String> l = new ArrayList<>();
-		boolean db = resourceRegistry.has(ResourceType.DATABASE);
-		boolean sync = resourceRegistry.has(ResourceType.SYNC);
-		boolean cache = resourceRegistry.has(ResourceType.CACHE);
+		boolean db = resourceRegistry.has(Constants.Resources.DATABASE);
+		boolean sync = resourceRegistry.has(Constants.Resources.SYNC);
+		boolean cache = resourceRegistry.has(Constants.Resources.CACHE);
 
 		if (db || sync || cache) {
 			l.add("  Connections:");
