@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.testing.essentials;
+package me.whereareiam.socialismus.testing.dialogue;
 
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
 import me.whereareiam.socialismus.testing.environment.Module;
@@ -12,14 +12,12 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Essentials' private messages between two players on one server.
+ * Dialogue's private messages between two players on one server.
  */
-@Tag("essentials")
+@Tag("dialogue")
 class PrivateMessageTest {
-	private static final String DIALOGUE_MESSAGES = "modules/Essentials/features/dialogue/messages.yml";
-
 	@Test
-	@Socialismus(modules = Module.ESSENTIALS)
+	@Socialismus(modules = Module.DIALOGUE)
 	void messageReachesTheRecipientAndIsConfirmedToTheSender(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");
@@ -32,7 +30,7 @@ class PrivateMessageTest {
 	}
 
 	@Test
-	@Socialismus(modules = Module.ESSENTIALS)
+	@Socialismus(modules = Module.DIALOGUE)
 	void replyAnswersTheLastConversationPartner(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");
@@ -50,7 +48,7 @@ class PrivateMessageTest {
 	}
 
 	@Test
-	@Socialismus(modules = Module.ESSENTIALS, configure = KnownNoRecipient.class)
+	@Socialismus(modules = Module.DIALOGUE, configure = KnownNotices.class)
 	void messageToAnOfflinePlayerFailsWithAReason(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 
@@ -59,11 +57,22 @@ class PrivateMessageTest {
 		alice.sees("Nobody named Zed is online");
 	}
 
-	static final class KnownNoRecipient implements Consumer<ServerFiles> {
+	@Test
+	@Socialismus(modules = Module.DIALOGUE, configure = KnownNotices.class)
+	void replyWithoutAConversationFailsWithAReason(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+
+		alice.command("reply anyone there");
+
+		alice.sees("Nobody to reply to");
+	}
+
+	static final class KnownNotices implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.put(DIALOGUE_MESSAGES, Map.of("commands", Map.of("message", Map.of(
-					"noRecipient", "Nobody named {recipientName} is online"))));
+			files.put(DialogueFiles.MESSAGES, Map.of("messaging", Map.of(
+					"noRecipient", "Nobody named {recipientName} is online",
+					"reply", Map.of("noConversations", "Nobody to reply to"))));
 		}
 	}
 }
