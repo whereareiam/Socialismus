@@ -6,15 +6,16 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.model.resource.ProvidedResource;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.channelizer.platform.bukkit.BukkitInjectorConfiguration;
 import me.whereareiam.socialismus.module.channelizer.platform.bukkit.CommonConfiguration;
 import me.whereareiam.socialismus.service.resource.ResourceProvider;
 import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.socialismus.type.PlatformType;
-import me.whereareiam.socialismus.type.ResourceType;
 
-import java.util.Map;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
@@ -44,9 +45,9 @@ public class SocialismusChannelizer extends SocialisticModule implements Resourc
 	}
 
 	@Override
-	public Map<ResourceType, ?> provideResources() {
-		return Map.of(
-				ResourceType.SYNC, injector.getInstance(SyncService.class)
+	public List<ProvidedResource<?>> provideResources() {
+		return List.of(
+				ProvidedResource.of(Constants.Resources.SYNC, injector.getInstance(SyncService.class))
 		);
 	}
 

@@ -5,6 +5,10 @@ import me.whereareiam.socialismus.model.chat.ChatTrigger;
 import me.whereareiam.socialismus.model.player.PlayerDataKey;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
 import me.whereareiam.socialismus.model.requirement.type.*;
+import me.whereareiam.socialismus.model.resource.ResourceKey;
+import me.whereareiam.socialismus.service.resource.CacheService;
+import me.whereareiam.socialismus.service.resource.DatabaseService;
+import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.socialismus.type.Version;
 
 public final class Constants {
@@ -67,6 +71,26 @@ public final class Constants {
 		 */
 		public static final PlayerDataKey<String> LAST_MESSAGE =
 				PlayerDataKey.create("socialismus", "last_message", String.class);
+	}
+
+	public static final class Resources {
+		/**
+		 * The synchronization between the servers of a network, provided by a module such as SocialismusRedis.
+		 */
+		public static final ResourceKey<SyncService> SYNC =
+				ResourceKey.create("socialismus", "sync", SyncService.class);
+
+		/**
+		 * A cache shared by the servers of a network, provided by a module such as SocialismusRedis.
+		 */
+		public static final ResourceKey<CacheService> CACHE =
+				ResourceKey.create("socialismus", "cache", CacheService.class);
+
+		/**
+		 * The database, provided by a database module.
+		 */
+		public static final ResourceKey<DatabaseService> DATABASE =
+				ResourceKey.create("socialismus", "database", DatabaseService.class);
 	}
 
 	public static final class Requirements {

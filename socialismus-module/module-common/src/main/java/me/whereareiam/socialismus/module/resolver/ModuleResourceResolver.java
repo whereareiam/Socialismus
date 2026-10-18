@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.module.resolver;
 import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.logging.Logger;
-import me.whereareiam.socialismus.model.ResourceRequirement;
+import me.whereareiam.socialismus.model.resource.ResourceRequirement;
 import me.whereareiam.socialismus.module.model.InternalModule;
 import me.whereareiam.socialismus.registry.ResourceRegistry;
 
@@ -15,8 +15,8 @@ public class ModuleResourceResolver implements ModuleResolver {
 	public boolean resolve(InternalModule mod) {
 		if (mod.getRequirements() == null) return true;
 		for (ResourceRequirement req : mod.getRequirements()) {
-			if (!registry.has(req.getType()) && !req.isOptional()) {
-				Logger.severe("Module " + mod.getName() + " requires missing resource " + req.getType());
+			if (!req.isOptional() && !registry.has(req.getResource())) {
+				Logger.severe("Module " + mod.getName() + " requires missing resource " + req.getResource());
 				return false;
 			}
 		}

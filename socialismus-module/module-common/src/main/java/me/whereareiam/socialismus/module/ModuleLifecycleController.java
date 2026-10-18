@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.AnsiColor;
 import me.whereareiam.socialismus.exception.ModuleLifecycleException;
 import me.whereareiam.socialismus.logging.Logger;
+import me.whereareiam.socialismus.model.resource.ProvidedResource;
 import me.whereareiam.socialismus.module.model.InternalModule;
 import me.whereareiam.socialismus.module.model.ModuleDependency;
 import me.whereareiam.socialismus.module.resolver.*;
@@ -14,13 +15,16 @@ import me.whereareiam.socialismus.module.type.DependencyType;
 import me.whereareiam.socialismus.module.type.ModuleState;
 import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.service.resource.ResourceProvider;
+import me.whereareiam.socialismus.type.ResourceRegistrationOutcome;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class ModuleLifecycleController {
@@ -28,6 +32,7 @@ public class ModuleLifecycleController {
 	private final PlatformClassLoader platformClassLoader;
 	private final ResourceRegistry registry;
 	private final Map<InternalModule, ModuleClassLoader> moduleClassLoaders = new IdentityHashMap<>();
+	private final Map<InternalModule, List<ProvidedResource<?>>> moduleResources = new IdentityHashMap<>();
 
 	private final List<ModuleResolver> resolvers;
 
@@ -70,13 +75,9 @@ public class ModuleLifecycleController {
 			try {
 				module.getModule().onLoad();
 
-				if (module.getModule() instanceof ResourceProvider provider) {
-					provider.provideResources().forEach((k, v) -> {
-						registry.register(k, v);
-						Logger.info("Registered resource " + k + " from module " + module.getName());
-					});
-				}
+				if (module.getModule() instanceof ResourceProvider provider) registerResources(module, provider);
 			} catch (ModuleLifecycleException | ProvisionException ex) {
+				unregisterResources(module);
 				closeModuleClassLoader(moduleClassLoaders.remove(module));
 				Logger.severe("Module " + module.getName() + " aborted load: " + ex.getMessage());
 				module.setState(ModuleState.ERROR);
@@ -117,13 +118,48 @@ public class ModuleLifecycleController {
 		if (!module.getState().equals(ModuleState.DISABLED)) return;
 
 		module.setState(ModuleState.UNLOADED);
+		unregisterResources(module);
 		module.getModule().onUnload();
 
-		if (module.getModule() instanceof ResourceProvider provider) {
-			provider.provideResources().keySet().forEach(registry::unregister);
-		}
-
 		closeModuleClassLoader(moduleClassLoaders.remove(module));
+	}
+
+	private void registerResources(InternalModule module, ResourceProvider provider) {
+		List<ProvidedResource<?>> registered = moduleResources.computeIfAbsent(module, key -> new ArrayList<>());
+		for (ProvidedResource<?> resource : provider.provideResources()) {
+			String key = resource.getKey().getFullKey();
+			Optional<String> holder = holderOf(key);
+			if (register(resource) == ResourceRegistrationOutcome.KEY_TAKEN) {
+				Logger.warn("Resource " + key + " of module " + module.getName() + " is not registered: "
+						+ holder.map(name -> "module " + name).orElse("another provider") + " provides it already");
+				continue;
+			}
+
+			registered.add(resource);
+			Logger.info("Registered resource " + key + " from module " + module.getName());
+		}
+	}
+
+	private <T> ResourceRegistrationOutcome register(ProvidedResource<T> resource) {
+		return registry.register(resource.getKey(), resource.getResource());
+	}
+
+	private Optional<String> holderOf(String key) {
+		return moduleResources.entrySet().stream()
+				.filter(entry -> entry.getValue().stream().anyMatch(resource -> resource.getKey().getFullKey().equals(key)))
+				.map(entry -> entry.getKey().getName())
+				.findFirst();
+	}
+
+	private void unregisterResources(InternalModule module) {
+		List<ProvidedResource<?>> registered = moduleResources.remove(module);
+		if (registered == null) return;
+
+		registered.forEach(this::unregister);
+	}
+
+	private <T> void unregister(ProvidedResource<T> resource) {
+		registry.unregister(resource.getKey(), resource.getResource());
 	}
 
 	private ModuleClassLoader createModuleClassLoader(InternalModule module) throws MalformedURLException {

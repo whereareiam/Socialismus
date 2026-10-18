@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.module.model;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.model.ResourceRequirement;
+import me.whereareiam.socialismus.model.resource.ResourceRequirement;
 import me.whereareiam.socialismus.model.update.UpdateConfiguration;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.Version;
@@ -56,7 +56,7 @@ public class Module {
 
 	/**
 	 * List of resource requirements for this module
-	 * (e.g., database)
+	 * (e.g., {@code socialismus:database})
 	 */
 	@Builder.Default
 	private List<ResourceRequirement> requirements = List.of();
