@@ -11,4 +11,6 @@ dependencies {
     attache(libs.cloud.cooldowns)
     attache(libs.cloud.minecraft.extras)
     attache(libs.commandant.common)
+
+    testImplementation(libs.cloud.core)
 }

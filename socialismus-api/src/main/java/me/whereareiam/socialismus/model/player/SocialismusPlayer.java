@@ -164,6 +164,18 @@ public abstract class SocialismusPlayer implements Actor {
 	public abstract boolean isWithinRange(@NotNull SocialismusPlayer other, double range);
 
 	/**
+	 * Returns whether this player may see another one, so that a feature that names players, such as a private
+	 * message or a completion, leaves out a player hidden from this one, for example by a vanish plugin.
+	 * Platforms that know which players are hidden from which answer it; elsewhere every player may see every other.
+	 *
+	 * @param other the other player
+	 * @return whether this player may see the other
+	 */
+	public boolean canSee(@NotNull SocialismusPlayer other) {
+		return true;
+	}
+
+	/**
 	 * Plays a sound to this player.
 	 * Platform-specific implementation required.
 	 *

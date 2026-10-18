@@ -41,6 +41,7 @@ public class PlayerSuggestionProvider {
 	) {
 		String lowerInput = input.toLowerCase();
 		return playerRegistry.getPlayers().stream()
+				.filter(player -> !(context.sender() instanceof SocialismusPlayer viewer) || viewer.canSee(player))
 				.map(SocialismusPlayer::getUsername)
 				.filter(username -> username.toLowerCase().startsWith(lowerInput))
 				.map(Suggestion::suggestion)
