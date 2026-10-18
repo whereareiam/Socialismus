@@ -122,7 +122,7 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 
 ## essentials
 
-- [ ] `/msg` delivers a private message and confirms it to the sender
+- [x] `/msg` delivers a private message and confirms it to the sender
 - [ ] `/reply` answers the last conversation partner
 - [ ] Messaging an offline player fails with a reason
 - [ ] `/socialismus features` lists the features and their state
