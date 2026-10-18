@@ -2,9 +2,14 @@ package me.whereareiam.socialismus.testing.journey;
 
 import me.whereareiam.anvil.api.model.player.PlayerLogin;
 import me.whereareiam.anvil.api.model.player.PlayerOptions;
+import me.whereareiam.anvil.api.model.player.PlayerProfile;
 import me.whereareiam.anvil.api.player.SimulatedPlayer;
 import me.whereareiam.anvil.api.process.ProcessConsole;
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
+import me.whereareiam.anvil.capability.entities.Entities;
+import me.whereareiam.anvil.capability.entities.EntityQuery;
+import me.whereareiam.anvil.capability.entities.EntityWatch;
+import me.whereareiam.anvil.capability.entities.model.SeenEntity;
 import me.whereareiam.anvil.capability.messages.MessageWatch;
 import me.whereareiam.anvil.capability.messages.Messages;
 import me.whereareiam.anvil.capability.messages.model.ChatLines;
@@ -24,6 +29,8 @@ import me.whereareiam.socialismus.testing.environment.Network;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 /**
@@ -45,8 +52,12 @@ public final class Player {
 	/** How often the readiness message is sent, a second apart, before a join counts as failed. */
 	private static final int READINESS_ATTEMPTS = 15;
 
+	/** How far beside the player it floats over an entity may spawn and still count as above it. */
+	private static final double ABOVE = 1.5;
+
 	private final ScenarioContext anvil;
 	private final String name;
+	private final SimulatedPlayer player;
 	private final Messages messages;
 	/** The player's messages after the one its previous expectation found, where its next expectation looks. */
 	private final MessageWatch inbox;
@@ -55,10 +66,14 @@ public final class Player {
 	private final ActionBarWatch actionBars;
 	private final BossBarWatch bossBars;
 	private final SoundWatch sounds;
+	private final Entities entities;
+	/** The entities that appeared after the one its previous expectation found, where its next expectation looks. */
+	private final EntityWatch sights;
 
 	private Player(ScenarioContext anvil, String name, SimulatedPlayer player) {
 		this.anvil = anvil;
 		this.name = name;
+		this.player = player;
 		this.messages = player.capability(Messages.class);
 		this.inbox = messages.watch();
 		Screen screen = player.capability(Screen.class);
@@ -66,6 +81,8 @@ public final class Player {
 		this.actionBars = screen.watchActionBars();
 		this.bossBars = screen.watchBossBars();
 		this.sounds = player.capability(Sounds.class).watch();
+		this.entities = player.capability(Entities.class);
+		this.sights = entities.watch();
 	}
 
 	/**
@@ -229,6 +246,54 @@ public final class Player {
 	}
 
 	/**
+	 * Expects an entity above another player whose name or text shows the given text, such as a chat bubble: one
+	 * that rides that player, or one that spawns right above it and rides the entity below it.
+	 *
+	 * @param speaker the player the entity floats over
+	 * @return the entity as it appeared
+	 */
+	@NotNull
+	public SeenEntity seesAbove(@NotNull Player speaker, @NotNull String text) {
+		SeenEntity body = sees(speaker);
+		EntityQuery above = EntityQuery.matching("above " + speaker.name(), entity ->
+				Objects.equals(entity.getVehicleId(), body.getId())
+						|| Math.hypot(entity.getX() - body.getX(), entity.getZ() - body.getZ()) <= ABOVE);
+		EntityQuery query = EntityQuery.labelled(text).and(above);
+
+		try {
+			return sights.appeared(query, TIMEOUT);
+		} catch (IllegalStateException failure) {
+			throw new AssertionError(name + " did not see an entity " + query + "; since its previous step it saw "
+					+ sights.unread(), failure);
+		}
+	}
+
+	/**
+	 * Expects that no entity whose name or text shows the given text appears for a few seconds.
+	 */
+	@NotNull
+	public Player neverSeesLabelled(@NotNull String text) {
+		sights.neverAppeared(EntityQuery.labelled(text), ABSENCE);
+		return this;
+	}
+
+	/**
+	 * Expects that an entity the player saw disappears.
+	 *
+	 * @param entity the entity, as an earlier step returned it
+	 */
+	@NotNull
+	public Player seesVanish(@NotNull SeenEntity entity) {
+		try {
+			sights.disappeared(entity, TIMEOUT);
+		} catch (IllegalStateException failure) {
+			throw new AssertionError(name + " still sees " + entity.getType() + " '" + entity.label() + "'", failure);
+		}
+
+		return this;
+	}
+
+	/**
 	 * Moves the player through the server's console, for a journey that needs players at a distance.
 	 */
 	@NotNull
@@ -263,6 +328,17 @@ public final class Player {
 	@NotNull
 	public String name() {
 		return name;
+	}
+
+	/**
+	 * Waits until the player sees another player's own entity, by the profile the server granted that player.
+	 */
+	private SeenEntity sees(Player other) {
+		PlayerProfile profile = Objects.requireNonNull(other.player.grantedProfile(), other.name() + " is not online");
+		UUID uniqueId = profile.getUniqueId();
+
+		return entities.present(EntityQuery.ofType("player").and(entity -> uniqueId.equals(entity.getUniqueId())),
+				TIMEOUT);
 	}
 
 	/**
