@@ -12,35 +12,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 /**
- * Essentials' {@code /socialismus features}, which lists the features that run.
+ * Essentials' {@code /socialismus features}, which lists the features that run; Essentials has none at the moment.
  */
 @Tag("essentials")
 class FeaturesCommandTest {
 	private static final String MESSAGES = "modules/Essentials/messages.yml";
-	private static final String FEATURES = "modules/Essentials/features/features.yml";
 
 	@Test
 	@Socialismus(modules = Module.ESSENTIALS, configure = KnownTexts.class)
-	void featuresListsTheEnabledFeatures(ScenarioContext anvil) {
+	void featuresSaysThatNoFeatureRuns(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice").op();
 
 		alice.command("socialismus features");
 
-		alice.seesAll("Features:", "running: dialogue");
-	}
-
-	@Test
-	@Socialismus(modules = Module.ESSENTIALS, configure = {KnownTexts.class, DialogueDisabled.class})
-	void featuresLeavesOutADisabledFeature(ScenarioContext anvil) {
-		Player alice = Player.joins(anvil, "Alice").op();
-
-		alice.command("socialismus features");
-
-		String features = alice.seesAll("Features:", "no features running");
-		assertFalse(features.contains("dialogue"), "The disabled dialogue is listed: " + features);
+		alice.seesAll("Features:", "no features running");
 	}
 
 	static final class KnownTexts implements Consumer<ServerFiles> {
@@ -50,15 +36,6 @@ class FeaturesCommandTest {
 					"format", List.of("Features:", "{features}"),
 					"featureFormat", "running: {feature}",
 					"noFeatures", "no features running"))));
-		}
-	}
-
-	static final class DialogueDisabled implements Consumer<ServerFiles> {
-		@Override
-		public void accept(ServerFiles files) {
-			files.put(FEATURES, Map.of("features", Map.of("dialogue", Map.of(
-					"enabled", false,
-					"registerCommands", true))));
 		}
 	}
 }

@@ -120,13 +120,23 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [x] An announcer's requirements limit who receives its announcements
 - [x] Chirper's title, action-bar, boss-bar and sound announcements arrive
 
-## essentials
+## dialogue
 
 - [x] `/msg` delivers a private message and confirms it to the sender
 - [x] `/reply` answers the last conversation partner
 - [x] Messaging an offline player fails with a reason
-- [x] `/socialismus features` lists the features and their state
-- [ ] Private messages reach a player on another backend
+- [x] `/reply` without a conversation fails with a reason
+- [x] A private message takes the last format whose requirements its participants meet
+- [x] `messaging.requirements` refuse a message to a player they exclude
+- [ ] `/reply` to a conversation older than `messaging.reply.timeout` lists the recent conversations
+- [ ] Private messages reach a player on another backend, and the sender sees them once the backend confirms
+- [ ] A private message to a player on no backend fails once `sync.confirmation` has passed
+
+## essentials
+
+Essentials keeps its feature framework, but has no feature since private messages became Dialogue.
+
+- [x] `/socialismus features` says that no feature runs
 
 ## bubbler
 
@@ -138,6 +148,6 @@ Start from the data directory an earlier version left.
 
 - [x] The 2.0.0-RC6 data directory, with edited values, starts; `settings` records the latest version, no other document carries `_version`, and the edits stay **first**
 - [ ] A directory of the development builds after RC6, which wrote `_version: 1` into every document, starts and loses those versions
-- [ ] The RC6 directories of Bubbler, Chirper, Essentials and SocialismusRedis migrate when their module loads
+- [ ] The RC6 directories of Bubbler, Chirper, Essentials and SocialismusRedis migrate when their module loads; Dialogue starts fresh
 - [ ] A directory already at the latest version starts without running a migration
 - [ ] A migration that fails stops the startup and names the document

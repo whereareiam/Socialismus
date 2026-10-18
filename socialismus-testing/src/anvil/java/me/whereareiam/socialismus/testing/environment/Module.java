@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum Module {
 	CHIRPER("chirper", "Chirper"),
+	DIALOGUE("dialogue", "Dialogue"),
 	ESSENTIALS("essentials", "Essentials"),
 	BUBBLER("bubbler", "Bubbler");
 
