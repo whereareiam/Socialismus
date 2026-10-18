@@ -11,6 +11,7 @@ import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import me.whereareiam.socialismus.module.ModuleService;
+import me.whereareiam.socialismus.module.type.ModuleState;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.PluginType;
 import net.kyori.adventure.text.Component;
@@ -32,7 +33,8 @@ public class DebugCommand {
 		
 		String moduleFormat = messages.get().getCommands().getDebugCommand().getModuleFormat();
 		String modules = Serializer.template(moduleFormat)
-				.stream(moduleService.getModules().stream())
+				.stream(moduleService.getModules().stream()
+						.filter(module -> module.getState() == ModuleState.ENABLED))
 				.placeholders(module -> Map.of(
 						"name", module.getName(),
 						"version", module.getVersion(),
