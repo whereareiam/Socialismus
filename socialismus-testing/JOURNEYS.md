@@ -130,7 +130,7 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 
 ## bubbler
 
-- [ ] Bubbler shows a bubble above a player who chats or runs `/socialismus bubble`, with each render strategy
+- [x] Bubbler shows a bubble above a player who chats or runs `/socialismus bubble`, with each render strategy
 
 ## upgrade
 
