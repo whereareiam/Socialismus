@@ -6,7 +6,8 @@
 
 - `./gradlew test`
 - `./gradlew pluginJars` (the shaded plugin jars of every platform)
-- `./gradlew test assembleDistribution` (what the CI checks run)
+- `./gradlew test assembleDistribution` (what the CI checks run, with `integrationTest`)
+- `./gradlew integrationTest` (tests tagged `integration`, which start database servers in containers; needs Docker)
 
 `assembleDistribution` collects the shipped files under their final names in `build/distribution/`; the root `toolkitDistribution` block declares them, and workflows upload that directory as it is. `VERSION` sets the version, `dev` by default.
 
@@ -14,7 +15,7 @@
 
 `socialismus-testing` starts the packaged jars on real servers through Anvil and drives simulated players through them. `socialismus-testing/JOURNEYS.md` plans the journeys by suite; tick a journey off in the pull request that adds it, and add one there when a feature needs it.
 
-- every journey class carries the tag of its suite (`chat`, `commands`, `platform`, `network`, `sync`, `upgrade`, `modules`, and one per module built for Socialismus: `chirper`, `dialogue`, `essentials`, `bubbler`), and each suite has an `anvil<Suite>Test` task; `anvilTest` runs only `JourneySuitesTest`, which fails when a journey is in no suite or in several
+- every journey class carries the tag of its suite (`chat`, `commands`, `platform`, `network`, `sync`, `upgrade`, `modules`, and one per module built for Socialismus: `chirper`, `dialogue`, `essentials`, `bubbler`, `database`), and each suite has an `anvil<Suite>Test` task; `anvilTest` runs only `JourneySuitesTest`, which fails when a journey is in no suite or in several
 - run one suite with `./gradlew :socialismus-testing:anvilChatTest`, or one journey with `--tests 'me.whereareiam.socialismus.testing.chat.*'`; `./gradlew :socialismus-testing:anvil` runs them all; a journey takes about half a minute, several run at once (`-Psocialismus.journeys.parallelism=1` runs them one after another)
 - declare the network with `@Socialismus(network = ..., bundle = ..., modules = ..., moduleFixtures = ..., data = ..., configure = ...)`: `modules` installs module jars in `modules/` and `moduleFixtures` the altered jars of the module-system journeys, `configure` classes write Socialismus's files through its models (`ServerFiles`), and `data` starts from a directory of the test resources, such as `data/2.0.0-RC6`
 - drive players with `Player.joins(anvil, "Alice")`, `chat`, `command`, `sees` and `neverSees`, and the console with `Console.of(anvil)`; `sees` only looks at what arrived since the player's previous step
@@ -101,7 +102,7 @@ socialismus-platform/
 - The `dev` ruleset requires `Title and labels` and `Checks / Result`, which passes only when the build and every journey suite pass, so a new suite needs no change to the ruleset.
 - Dependabot groups minor and patch updates into one pull request per ecosystem, and `dependabot-auto-merge.yml` turns on auto-merge for it, so it merges once the checks pass; a major update gets a pull request of its own and waits for review. The merge goes through a GitHub App, because a merge by `GITHUB_TOKEN` would not start the workflows of the push to `dev`; its `MERGE_APP_CLIENT_ID` and `MERGE_APP_PRIVATE_KEY` are Dependabot secrets, since a run Dependabot starts gets no Actions secrets.
 - Label a pull request with exactly one of `feature`, `change`, `bug`, `dependencies`, or with `skip-changelog`; `major` may accompany a category.
-- Add `module:chirper`, `module:bubbler`, `module:dialogue`, `module:essentials`, `module:redis` or `module:channelizer` when a pull request or issue concerns that module's jar; work on the plugin itself carries no such label.
+- Add `module:chirper`, `module:bubbler`, `module:dialogue`, `module:essentials`, `module:redis`, `module:channelizer` or `module:database` when a pull request or issue concerns that module's jar; work on the plugin itself carries no such label.
 - A run keeps as artifacts only what someone downloads: `socialismus-plugins-<version>` from a development build or release, and `test-results` when a test failed.
 - Development builds are started manually and publish a branch-qualified version. A published GitHub release publishes Maven artifacts, attaches the jars, and publishes to the stores; a manual run of the release workflow only republishes to the stores.
 - Entry workflows only select a trigger and call `reusable-verify.yml` and `reusable-publish.yml`; shared steps come from `whereareiam/devops` and `whereareiam/blockops`.
@@ -124,7 +125,7 @@ A merged pull request lands in the release draft as `* <title> ([#<number>](<url
 
 Areas for admins and players:
 
-`Chat`, `Commands`, `Configuration`, `Integrations`, `Messages`, `Modules`, `Placeholders`, `Platform`, `Synchronization`, `Updates`, `Chirper`, `Bubbler`, `Dialogue`, `Essentials`, `SocialismusRedis`, `SocialismusChannelizer`
+`Chat`, `Commands`, `Configuration`, `Integrations`, `Messages`, `Modules`, `Placeholders`, `Platform`, `Synchronization`, `Updates`, `Chirper`, `Bubbler`, `Dialogue`, `Essentials`, `SocialismusRedis`, `SocialismusChannelizer`, `SocialismusDatabase`
 
 - reuse an existing area whenever one fits; a new admin command is `Commands`, a new setting in a module's file belongs to that module's area
 - add a new area only for something admins recognise by that name, such as a new feature, module, or config file, and add it to this list in the same pull request

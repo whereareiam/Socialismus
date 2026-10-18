@@ -64,11 +64,12 @@ jobs:
           toolchain-versions: "21"
 
       # assembleDistribution collects the plugin, API and module jars under their final names in build/distribution;
-      # anvilTest checks that every journey belongs to exactly one suite.
+      # integrationTest runs the tests that start database servers in containers; anvilTest checks that every journey
+      # belongs to exactly one suite.
       - name: Build and test
         env:
           VERSION: ${{ steps.identity.outputs.version }}
-        run: ./gradlew --no-daemon test :socialismus-testing:anvilTest assembleDistribution
+        run: ./gradlew --no-daemon test integrationTest :socialismus-testing:anvilTest assembleDistribution
 
       - uses: whereareiam/devops/primitive/report/junit/publish@v3
         if: always()
@@ -95,7 +96,7 @@ jobs:
       matrix:
         # The suites of socialismus-testing/build.gradle.kts that have journeys; socialismus-testing/JOURNEYS.md
         # plans the others.
-        suite: [chat, commands, platform, upgrade, modules, chirper, dialogue, bubbler, sync]
+        suite: [chat, commands, platform, upgrade, modules, chirper, dialogue, bubbler, sync, database]
     steps:
       - uses: actions/checkout@v7
         with:

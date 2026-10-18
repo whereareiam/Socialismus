@@ -52,4 +52,5 @@ toolkitDistribution {
     // Essentials builds, but carries no feature since private messages became Dialogue, so it is not shipped.
     file("Redis", ":module-redis", "shadowJar")
     file("Channelizer", ":module-channelizer", "shadowJar")
+    file("Database", ":module-database", "shadowJar")
 }
