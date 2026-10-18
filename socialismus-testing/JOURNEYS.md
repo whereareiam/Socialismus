@@ -20,11 +20,11 @@ Spigot 26.1.2 and Velocity 3.5.1.
 
 ## What Anvil can observe
 
-Players send chat and commands and receive chat as plain text, including action bars sent as chat.
-Anvil also reports the command tree a player holds, the server a player is on, kicks, console
-output, and lets players move and use items. It does not record titles, action bars sent on their
-own, boss bars, sounds or entities. Journeys that need those are marked **needs Anvil** below and
-wait for an Anvil capability or an agent operation.
+Players send chat and commands and receive chat as plain text, including action bars sent as chat,
+and Anvil models the chat lines a player can still scroll back to. Anvil also records titles, action
+bars, boss bars and sounds, the entities around a player with their names and display text, the
+command tree a player holds, the server a player is on, kicks and console output, and lets players
+move and use items.
 
 ## First wave
 
@@ -106,19 +106,31 @@ Two Paper backends behind a Velocity proxy.
 
 ## modules
 
-- [ ] The jars in `modules/` load and the banner lists them
-- [ ] A module that needs another Socialismus version is refused with a reason
-- [ ] `/socialismus reload` reloads the modules' configuration
+Socialismus's module system. Each module built for Socialismus has a suite of its own below;
+SocialismusRedis and SocialismusChannelizer, which carry chat between servers, are in `sync`.
+
+- [x] The jars in `modules/` load, each logs that it loaded, and `/socialismus debug` lists them
+- [x] A module that needs another Socialismus version is refused with a reason
+- [x] `/socialismus reload` reloads the modules' configuration
+
+## chirper
+
 - [ ] Chirper broadcasts the chat announcements of an announcer on its schedule
 - [ ] `/socialismus announce` sends an announcement right away
 - [ ] An announcer's requirements limit who receives its announcements
-- [ ] Chirper's title, action-bar, boss-bar and sound announcements arrive **needs Anvil**
-- [ ] Essentials: `/msg` delivers a private message and confirms it to the sender
-- [ ] Essentials: `/reply` answers the last conversation partner
-- [ ] Essentials: messaging an offline player fails with a reason
-- [ ] Essentials: `/socialismus features` lists the features and their state
-- [ ] Essentials: private messages reach a player on another backend
-- [ ] Bubbler shows a bubble above a player who chats or runs `/socialismus bubble`, with each render strategy **needs Anvil**
+- [ ] Chirper's title, action-bar, boss-bar and sound announcements arrive
+
+## essentials
+
+- [ ] `/msg` delivers a private message and confirms it to the sender
+- [ ] `/reply` answers the last conversation partner
+- [ ] Messaging an offline player fails with a reason
+- [ ] `/socialismus features` lists the features and their state
+- [ ] Private messages reach a player on another backend
+
+## bubbler
+
+- [ ] Bubbler shows a bubble above a player who chats or runs `/socialismus bubble`, with each render strategy
 
 ## upgrade
 
