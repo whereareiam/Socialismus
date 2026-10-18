@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.module.dialogue.common.delivery;
 
 import me.whereareiam.keystone.model.SerializerContent;
+import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.event.EventManager;
@@ -14,7 +15,7 @@ import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,7 @@ class LocalDeliveryTest {
 
 			return Component.text(rendered);
 		});
+		when(engine.getPlaceholderFormat()).thenReturn(SerializerOptions.PlaceholderFormat.CURLY_BRACES);
 		Serializer.initialize(() -> engine);
 
 		MessagingFormats formats = new MessagingFormats();
@@ -113,6 +115,6 @@ class LocalDeliveryTest {
 		ArgumentCaptor<Component> message = ArgumentCaptor.forClass(Component.class);
 		verify(player).sendMessage(message.capture());
 
-		return ((TextComponent) message.getValue()).content();
+		return PlainTextComponentSerializer.plainText().serialize(message.getValue());
 	}
 }
