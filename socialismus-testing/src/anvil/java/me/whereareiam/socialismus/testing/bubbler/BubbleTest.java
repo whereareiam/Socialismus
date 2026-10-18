@@ -76,6 +76,21 @@ class BubbleTest {
 		bob.seesVanish(bubble);
 	}
 
+	@Test
+	@Socialismus(plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER)
+	void bubbleFollowsTheChatOfTheMessageItself(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+		Player bob = Player.joins(anvil, "Bob");
+
+		// The default bubble leaves out the global chat.
+		alice.chat("!across the world");
+		bob.sees("[G] Alice: across the world");
+		bob.neverSeesLabelled("across the world");
+
+		alice.chat("next to you");
+		bob.seesAbove(alice, "next to you");
+	}
+
 	/**
 	 * Draws bubbles with armor stands instead of text displays. Bubbler fills in the settings left out.
 	 */
