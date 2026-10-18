@@ -45,6 +45,12 @@ public class DialogueSettings {
 		private Conversations conversations;
 
 		/**
+		 * Whether {@code /message <player>} without a message makes the sender's chat go to that player until they
+		 * leave with the same command.
+		 */
+		private boolean conversationMode;
+
+		/**
 		 * Which conversation {@code /reply} answers.
 		 */
 		@Getter

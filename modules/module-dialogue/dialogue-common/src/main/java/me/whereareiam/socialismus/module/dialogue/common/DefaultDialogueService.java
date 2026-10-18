@@ -11,6 +11,7 @@ import me.whereareiam.socialismus.module.dialogue.api.event.DialogueSendEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
+import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationService;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.MessageDeliveryCoordinator;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.MessageFactory;
@@ -32,6 +33,7 @@ public final class DefaultDialogueService implements DialogueService {
 	private final PlayerRegistry playerRegistry;
 	private final Provider<DialogueSettings> settings;
 	private final EventManager eventManager;
+	private final ConversationModes conversationModes;
 
 	@Override
 	public void send(@NotNull SocialismusPlayer sender, @NotNull String recipientName, @NotNull String content) {
@@ -82,5 +84,34 @@ public final class DefaultDialogueService implements DialogueService {
 		}
 
 		send(sender, partner, content);
+	}
+
+	@Override
+	public void converse(@NotNull SocialismusPlayer player, @NotNull String partnerName) {
+		if (!settings.get().getMessaging().isConversationMode()) {
+			notices.noConversationMode(player);
+			return;
+		}
+
+		String partner = playerRegistry.getPlayerData(partnerName).map(SocialismusPlayer::getUsername).orElse(partnerName);
+		if (player.getUsername().equalsIgnoreCase(partner)) {
+			notices.samePlayer(player);
+			return;
+		}
+
+		Optional<String> current = conversationModes.partnerOf(player.getUniqueId());
+		if (current.isPresent() && current.get().equalsIgnoreCase(partner)) {
+			conversationModes.leave(player.getUniqueId());
+			notices.conversationLeft(player, current.get());
+			return;
+		}
+
+		conversationModes.enter(player.getUniqueId(), partner);
+		notices.conversationEntered(player, partner);
+	}
+
+	@Override
+	public @NotNull Optional<String> conversationPartner(@NotNull SocialismusPlayer player) {
+		return conversationModes.partnerOf(player.getUniqueId());
 	}
 }

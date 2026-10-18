@@ -46,8 +46,30 @@ public class DialogueMessages {
 		private Reply reply;
 
 		/**
+		 * What a player is told on entering and leaving conversation mode.
+		 */
+		private ConversationMode conversationMode;
+
+		/**
 		 * What a player is told when {@code /reply} has nobody to answer.
 		 */
+		/**
+		 * The notices of conversation mode, with {@code {recipientName}} filled in.
+		 */
+		@Getter
+		@Setter
+		@ToString
+		public static class ConversationMode {
+			private String entered;
+
+			private String left;
+
+			/**
+			 * Told when {@code messaging.conversationMode} is off and the command names no message.
+			 */
+			private String unavailable;
+		}
+
 		@Getter
 		@Setter
 		@ToString

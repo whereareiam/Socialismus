@@ -17,7 +17,7 @@ public class DialogueCommandsDefaults implements DefaultsProvider<DialogueComman
 				.aliases(List.of("message", "msg", "w", "tell", "whisper"))
 				.permission("")
 				.description("Send a private message.")
-				.usage("{alias} <recipient> <message>")
+				.usage("{alias} <recipient> [message]")
 				.cooldown(CommandDefinition.Cooldown.builder()
 						.enabled(true)
 						.duration(2)

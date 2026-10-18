@@ -15,11 +15,17 @@ public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessag
 		reply.setPartnerOffline("{prefix}<white>{partner} is no longer online.");
 		reply.setConversation("<gray>{index}. <white>{partner}");
 
+		DialogueMessages.Messaging.ConversationMode conversationMode = new DialogueMessages.Messaging.ConversationMode();
+		conversationMode.setEntered("{prefix}<white>You now write to <gray>{recipientName}</gray> in chat; <gray>/message {recipientName}</gray> again to stop.");
+		conversationMode.setUnavailable("{prefix}<white>Write a message: <gray>/message <player> <message>");
+		conversationMode.setLeft("{prefix}<white>You no longer write to <gray>{recipientName}</gray> in chat.");
+
 		DialogueMessages.Messaging messaging = new DialogueMessages.Messaging();
 		messaging.setNoRecipient("{prefix}<white>Recipient not found");
 		messaging.setSamePlayer("{prefix}<white>You cannot send a message to yourself");
 		messaging.setNotAllowed("{prefix}<white>You cannot send a message to {recipientName}");
 		messaging.setReply(reply);
+		messaging.setConversationMode(conversationMode);
 
 		config.setMessaging(messaging);
 
