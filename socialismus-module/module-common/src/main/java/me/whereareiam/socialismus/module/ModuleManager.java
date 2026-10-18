@@ -70,7 +70,7 @@ public class ModuleManager implements ModuleService {
 		modules.forEach(lifecycleController::disableModule);
 		modules.forEach(lifecycleController::unloadModule);
 
-		modules.removeIf(module -> !module.getState().equals(ModuleState.UNLOADED));
+		modules.removeIf(module -> !isLoaded(module));
 		modules.forEach(module -> Logger.warn("Module was not unloaded: " + module.getName()));
 	}
 
@@ -78,6 +78,13 @@ public class ModuleManager implements ModuleService {
 	public void reloadModules() {
 		unloadModules();
 		loadModules();
+	}
+
+	private boolean isLoaded(InternalModule module) {
+		return switch (module.getState()) {
+			case LOADED, ENABLED, DISABLED -> true;
+			default -> false;
+		};
 	}
 
 	private void discoverModules() {
