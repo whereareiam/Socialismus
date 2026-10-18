@@ -31,18 +31,21 @@ public class MessageDeliveryCoordinator {
 		return playerRegistry.getPlayerData(playerName).isPresent() || networkBridge.isEnabled();
 	}
 
+	/**
+	 * Delivers a message written on this server: to its recipient here, through the network when they are not here
+	 * and the network is on, or tells the sender why it did not reach them.
+	 *
+	 * @param message the message, whose status this sets
+	 */
 	public void processMessageDelivery(@NotNull Message message) {
-		if (localDelivery.deliver(message, true)) {
-			message.setDeliveryStatus(DeliveryStatus.DELIVERED_LOCALLY);
-			return;
-		}
-
-		if (networkBridge.isEnabled()) {
+		DeliveryStatus status = localDelivery.deliver(message, true);
+		if (status == DeliveryStatus.RECIPIENT_OFFLINE && networkBridge.isEnabled()) {
+			message.setDeliveryStatus(DeliveryStatus.PENDING_DELIVERY);
 			networkBridge.publish(message);
 			return;
 		}
 
-		message.setDeliveryStatus(DeliveryStatus.RECIPIENT_OFFLINE);
-		notices.noRecipient(message.getSender(), message.getRecipientName());
+		message.setDeliveryStatus(status);
+		notices.undelivered(message.getSender(), message.getRecipientName(), status);
 	}
 }

@@ -6,8 +6,10 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueCommands;
+import me.whereareiam.socialismus.module.dialogue.command.executor.IgnoreCommand;
 import me.whereareiam.socialismus.module.dialogue.command.executor.MessageCommand;
 import me.whereareiam.socialismus.module.dialogue.command.executor.ReplyCommand;
+import me.whereareiam.socialismus.module.dialogue.command.executor.ToggleCommand;
 import me.whereareiam.socialismus.service.CommandService;
 
 @Singleton
@@ -21,7 +23,9 @@ public class CommandRegistrar {
 		commandService.registerCommandInstances(
 				commands.get().getCommands(),
 				injector.getInstance(MessageCommand.class),
-				injector.getInstance(ReplyCommand.class)
+				injector.getInstance(ReplyCommand.class),
+				injector.getInstance(ToggleCommand.class),
+				injector.getInstance(IgnoreCommand.class)
 		);
 	}
 }

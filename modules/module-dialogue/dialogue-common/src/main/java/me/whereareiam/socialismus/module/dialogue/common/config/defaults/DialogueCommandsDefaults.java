@@ -38,7 +38,35 @@ public class DialogueCommandsDefaults implements DefaultsProvider<DialogueComman
 						.build()
 				).build();
 
+		CommandDefinition toggle = CommandDefinition.builder()
+				.enabled(true)
+				.aliases(List.of("msgtoggle", "pmtoggle"))
+				.permission("")
+				.description("Turn private messages off or back on.")
+				.usage("{alias}")
+				.cooldown(CommandDefinition.Cooldown.builder()
+						.enabled(true)
+						.duration(2)
+						.group("global")
+						.build()
+				).build();
+
+		CommandDefinition ignore = CommandDefinition.builder()
+				.enabled(true)
+				.aliases(List.of("ignore"))
+				.permission("")
+				.description("Ignore a player, stop ignoring them, or list whom you ignore.")
+				.usage("{alias} [player]")
+				.cooldown(CommandDefinition.Cooldown.builder()
+						.enabled(true)
+						.duration(2)
+						.group("global")
+						.build()
+				).build();
+
 		dialogueCommands.getCommands().put("message", msg);
+		dialogueCommands.getCommands().put("toggle", toggle);
+		dialogueCommands.getCommands().put("ignore", ignore);
 		dialogueCommands.getCommands().put("reply", reply);
 
 		return dialogueCommands;

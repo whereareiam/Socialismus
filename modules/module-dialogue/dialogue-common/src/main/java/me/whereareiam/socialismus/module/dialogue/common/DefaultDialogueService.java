@@ -11,6 +11,8 @@ import me.whereareiam.socialismus.module.dialogue.api.event.DialogueSendEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
+import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
+import me.whereareiam.socialismus.module.dialogue.common.control.RecipientControl;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationService;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.MessageDeliveryCoordinator;
@@ -34,6 +36,7 @@ public final class DefaultDialogueService implements DialogueService {
 	private final Provider<DialogueSettings> settings;
 	private final EventManager eventManager;
 	private final ConversationModes conversationModes;
+	private final RecipientControl recipientControl;
 
 	@Override
 	public void send(@NotNull SocialismusPlayer sender, @NotNull String recipientName, @NotNull String content) {
@@ -63,8 +66,11 @@ public final class DefaultDialogueService implements DialogueService {
 		Conversation conversation = conversationService.getOrCreateConversation(sender.getUsername(), recipientAsSpelled);
 		Message message = messageFactory.createMessage(sender, recipientAsSpelled, event.getContent(), conversation.getId());
 
+		recipientControl.grantPrivileges(message);
 		deliveryCoordinator.processMessageDelivery(message);
-		conversationService.addMessage(conversation, message);
+		// A message the recipient refused belongs to no conversation of theirs.
+		if (message.getDeliveryStatus() != DeliveryStatus.MESSAGES_OFF && message.getDeliveryStatus() != DeliveryStatus.IGNORED)
+			conversationService.addMessage(conversation, message);
 	}
 
 	@Override

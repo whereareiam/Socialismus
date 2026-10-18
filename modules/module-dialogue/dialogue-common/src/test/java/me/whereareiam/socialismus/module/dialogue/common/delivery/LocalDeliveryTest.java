@@ -8,7 +8,12 @@ import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.event.DialogueDeliveredEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
+import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
+import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
+import me.whereareiam.socialismus.module.dialogue.common.control.InMemoryIgnoreStore;
+import me.whereareiam.socialismus.module.dialogue.common.control.InMemoryMessageToggleStore;
+import me.whereareiam.socialismus.module.dialogue.common.control.RecipientControl;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
@@ -26,7 +31,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -35,6 +39,8 @@ import static org.mockito.Mockito.*;
 class LocalDeliveryTest {
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
 	private final EventManager eventManager = mock(EventManager.class);
+	private final InMemoryMessageToggleStore toggles = new InMemoryMessageToggleStore();
+	private final InMemoryIgnoreStore ignores = new InMemoryIgnoreStore();
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
 
@@ -62,7 +68,13 @@ class LocalDeliveryTest {
 				mock(RequirementEvaluatorService.class),
 				TestDataBuilder::defaultSettings
 		);
-		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, requirements), eventManager);
+		RecipientControl control = new RecipientControl(
+				TestDataBuilder::defaultSettings,
+				toggles,
+				ignores,
+				mock(RequirementEvaluatorService.class)
+		);
+		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, requirements), eventManager, control);
 	}
 
 	@DisplayName("Fills the names and the message into both formats")
@@ -101,12 +113,53 @@ class LocalDeliveryTest {
 		assertSame(bob, event.getValue().getRecipient());
 	}
 
+	@DisplayName("Keeps a message from a recipient who turned private messages off")
+	@Test
+	void refusesWhenTheRecipientTurnedMessagesOff() {
+		when(playerRegistry.getPlayerData("Bob")).thenReturn(Optional.of(bob));
+		toggles.setOff(bob.getUniqueId(), true);
+
+		assertEquals(DeliveryStatus.MESSAGES_OFF, delivery.deliver(TestDataBuilder.messageFrom(alice, "Bob").build(), true));
+		verify(bob, never()).sendMessage(any(Component.class));
+		verify(alice, never()).sendMessage(any(Component.class));
+	}
+
+	@DisplayName("Lets a sender who bypasses it reach a recipient who turned messages off")
+	@Test
+	void deliversWhenTheSenderBypassesTheToggle() {
+		when(playerRegistry.getPlayerData("Bob")).thenReturn(Optional.of(bob));
+		toggles.setOff(bob.getUniqueId(), true);
+
+		assertEquals(DeliveryStatus.DELIVERED_LOCALLY,
+				delivery.deliver(TestDataBuilder.messageFrom(alice, "Bob").bypassesToggle(true).build(), true));
+	}
+
+	@DisplayName("Keeps a message from a recipient who ignores the sender")
+	@Test
+	void refusesWhenTheRecipientIgnoresTheSender() {
+		when(playerRegistry.getPlayerData("Bob")).thenReturn(Optional.of(bob));
+		ignores.ignore(bob.getUniqueId(), new IgnoredPlayer(alice.getUniqueId(), "Alice"));
+
+		assertEquals(DeliveryStatus.IGNORED, delivery.deliver(TestDataBuilder.messageFrom(alice, "Bob").build(), true));
+		verify(bob, never()).sendMessage(any(Component.class));
+	}
+
+	@DisplayName("Delivers the message of a sender who cannot be ignored")
+	@Test
+	void deliversWhenTheSenderIsExemptFromIgnoring() {
+		when(playerRegistry.getPlayerData("Bob")).thenReturn(Optional.of(bob));
+		ignores.ignore(bob.getUniqueId(), new IgnoredPlayer(alice.getUniqueId(), "Alice"));
+
+		assertEquals(DeliveryStatus.DELIVERED_LOCALLY,
+				delivery.deliver(TestDataBuilder.messageFrom(alice, "Bob").exemptFromIgnore(true).build(), true));
+	}
+
 	@DisplayName("Leaves a recipient who is not on this server to the network")
 	@Test
 	void leavesAMissingRecipient() {
 		when(playerRegistry.getPlayerData("Bob")).thenReturn(Optional.empty());
 
-		assertFalse(delivery.deliver(TestDataBuilder.messageFrom(alice, "Bob").build(), true));
+		assertEquals(DeliveryStatus.RECIPIENT_OFFLINE, delivery.deliver(TestDataBuilder.messageFrom(alice, "Bob").build(), true));
 		verify(alice, never()).sendMessage(any(Component.class));
 		verifyNoInteractions(eventManager);
 	}

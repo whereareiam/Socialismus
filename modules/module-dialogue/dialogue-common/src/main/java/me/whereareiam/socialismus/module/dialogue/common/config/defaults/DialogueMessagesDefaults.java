@@ -29,6 +29,30 @@ public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessag
 
 		config.setMessaging(messaging);
 
+		DialogueMessages.Control.Toggle toggle = new DialogueMessages.Control.Toggle();
+		toggle.setOff("{prefix}<white>You no longer receive private messages.");
+		toggle.setOn("{prefix}<white>You receive private messages again.");
+		toggle.setBlocked("{prefix}<gray>{recipientName}</gray> <white>does not receive private messages.");
+		toggle.setUnavailable("{prefix}<white>Private messages cannot be turned off here.");
+
+		DialogueMessages.Control.Ignore.Listing listing = new DialogueMessages.Control.Ignore.Listing();
+		listing.setHeader("{prefix}<white>You ignore:");
+		listing.setEntry("<gray>- <white>{ignoredName}");
+		listing.setEmpty("{prefix}<white>You ignore nobody.");
+
+		DialogueMessages.Control.Ignore ignore = new DialogueMessages.Control.Ignore();
+		ignore.setAdded("{prefix}<white>You now ignore <gray>{ignoredName}</gray>.");
+		ignore.setRemoved("{prefix}<white>You no longer ignore <gray>{ignoredName}</gray>.");
+		ignore.setBlocked("{prefix}<gray>{recipientName}</gray> <white>does not receive your private messages.");
+		ignore.setExempt("{prefix}<gray>{ignoredName}</gray> <white>cannot be ignored.");
+		ignore.setUnavailable("{prefix}<white>Players cannot be ignored here.");
+		ignore.setList(listing);
+
+		DialogueMessages.Control control = new DialogueMessages.Control();
+		control.setToggle(toggle);
+		control.setIgnore(ignore);
+		config.setControl(control);
+
 		return config;
 	}
 }

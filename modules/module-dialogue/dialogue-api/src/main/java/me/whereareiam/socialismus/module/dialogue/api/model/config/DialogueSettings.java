@@ -22,6 +22,11 @@ public class DialogueSettings {
 	private Messaging messaging;
 
 	/**
+	 * What players decide about their own private messages.
+	 */
+	private Control control;
+
+	/**
 	 * Who may message whom, and how replies and conversations work.
 	 */
 	@Getter
@@ -89,6 +94,59 @@ public class DialogueSettings {
 			 * How many messages a conversation keeps; the oldest go first.
 			 */
 			private int maxMessages;
+		}
+	}
+
+	/**
+	 * What players decide about their own private messages.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Control {
+		private Toggle toggle;
+
+		private Ignore ignore;
+
+		/**
+		 * Turning private messages off.
+		 */
+		@Getter
+		@Setter
+		@ToString
+		public static class Toggle {
+			/**
+			 * Whether players may turn private messages off.
+			 */
+			private boolean enabled;
+
+			/**
+			 * The senders whose messages still reach players who turned them off; nobody when absent.
+			 */
+			private RequirementGroup bypass;
+		}
+
+		/**
+		 * Ignoring players.
+		 */
+		@Getter
+		@Setter
+		@ToString
+		public static class Ignore {
+			/**
+			 * Whether players may ignore others.
+			 */
+			private boolean enabled;
+
+			/**
+			 * Whether an ignored player's public chat is hidden as well as their private messages.
+			 */
+			private boolean includesChat;
+
+			/**
+			 * The players who cannot be ignored, such as staff; nobody when absent.
+			 */
+			private RequirementGroup exempt;
 		}
 	}
 }
