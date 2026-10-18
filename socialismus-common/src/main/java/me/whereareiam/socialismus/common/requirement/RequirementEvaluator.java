@@ -6,9 +6,13 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
+import me.whereareiam.socialismus.model.requirement.RequirementDenial;
 import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -17,74 +21,82 @@ import java.util.Map;
 public class RequirementEvaluator implements RequirementEvaluatorService {
 	private final RequirementRegistry requirementRegistry;
 
-	private boolean isRequirementMet(Map.Entry<String, ? extends Requirement> entry, SocialismusPlayer player) {
-		RequirementValidation checker = requirementRegistry.get(entry.getKey());
-		if (checker == null) {
+	@Override
+	public @NotNull RequirementResult evaluate(@Nullable RequirementGroup group, @NotNull SocialismusPlayer player) {
+		if (group == null || group.getGroups() == null || group.getGroups().isEmpty()) return RequirementResult.passed();
+
+		Logger.debug("Checking %s group for player %s", group.getOperator(), player.getUsername());
+		RequirementResult result = switch (group.getOperator()) {
+			case AND -> evaluateAnd(group, player);
+			case OR -> evaluateOr(group, player);
+			case XOR -> evaluateXor(group, player);
+			case NOT, NOR -> evaluateNone(group, player);
+			case NAND -> evaluateNotAll(group, player);
+		};
+		if (result.isPassed() || group.getReason() == null) return result;
+		// A blank reason says the group tells nothing, so neither do its requirements.
+		if (group.getReason().isBlank()) return RequirementResult.denied();
+
+		return RequirementResult.denied(result.getDenial(), group.getReason());
+	}
+
+	private RequirementResult evaluate(Map.Entry<String, ? extends Requirement> entry, SocialismusPlayer player) {
+		RequirementValidation validation = requirementRegistry.get(entry.getKey());
+		if (validation == null) {
 			Logger.warn("No requirement validation registered for: " + entry.getKey());
-			return false;
+			return RequirementResult.denied();
 		}
 
-		return checker.check(entry.getValue(), player);
+		return validation.evaluate(entry.getValue(), player);
 	}
 
-	@Override
-	public boolean check(RequirementGroup group, SocialismusPlayer player) {
-		if (group == null || group.getGroups().isEmpty()) return true;
+	private RequirementResult evaluateAnd(RequirementGroup group, SocialismusPlayer player) {
+		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet()) {
+			RequirementResult result = evaluate(entry, player);
+			if (result.isDenied()) return result;
+		}
 
-		return switch (group.getOperator()) {
-			case AND -> checkAnd(group, player);
-			case OR -> checkOr(group, player);
-			case XOR -> checkXor(group, player);
-			case NOT -> checkNot(group, player);
-			case NAND -> checkNand(group, player);
-			case NOR -> checkNor(group, player);
-		};
+		return RequirementResult.passed();
 	}
 
-	private boolean checkAnd(RequirementGroup group, SocialismusPlayer player) {
-		Logger.debug("Checking AND group for player " + player.getUsername());
-		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet())
-			if (!isRequirementMet(entry, player))
-				return false;
+	private RequirementResult evaluateOr(RequirementGroup group, SocialismusPlayer player) {
+		RequirementDenial denial = null;
+		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet()) {
+			RequirementResult result = evaluate(entry, player);
+			if (result.isPassed()) return result;
+			if (denial == null) denial = result.getDenial();
+		}
 
-		return true;
+		return RequirementResult.denied(denial);
 	}
 
-	private boolean checkOr(RequirementGroup group, SocialismusPlayer player) {
-		Logger.debug("Checking OR group for player " + player.getUsername());
-		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet())
-			if (isRequirementMet(entry, player))
-				return true;
-
-		return false;
-	}
-
-	private boolean checkXor(RequirementGroup group, SocialismusPlayer player) {
+	private RequirementResult evaluateXor(RequirementGroup group, SocialismusPlayer player) {
 		boolean oneMet = false;
-		Logger.debug("Checking XOR group for player " + player.getUsername());
-		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet())
-			if (isRequirementMet(entry, player)) {
-				if (oneMet) return false;
-				oneMet = true;
+		RequirementDenial denial = null;
+		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet()) {
+			RequirementResult result = evaluate(entry, player);
+			if (result.isDenied()) {
+				if (denial == null) denial = result.getDenial();
+				continue;
 			}
 
-		return oneMet;
+			// A second met requirement denies the group, and no requirement can say why.
+			if (oneMet) return RequirementResult.denied();
+			oneMet = true;
+		}
+
+		return oneMet ? RequirementResult.passed() : RequirementResult.denied(denial);
 	}
 
-	private boolean checkNot(RequirementGroup group, SocialismusPlayer player) {
-		Logger.debug("Checking NOT group for player " + player.getUsername());
+	private RequirementResult evaluateNone(RequirementGroup group, SocialismusPlayer player) {
 		for (Map.Entry<String, ? extends Requirement> entry : group.getGroups().entrySet())
-			if (isRequirementMet(entry, player))
-				return false;
+			if (evaluate(entry, player).isPassed())
+				return RequirementResult.denied();
 
-		return true;
+		return RequirementResult.passed();
 	}
 
-	private boolean checkNand(RequirementGroup group, SocialismusPlayer player) {
-		return !checkAnd(group, player);
-	}
-
-	private boolean checkNor(RequirementGroup group, SocialismusPlayer player) {
-		return !checkOr(group, player);
+	private RequirementResult evaluateNotAll(RequirementGroup group, SocialismusPlayer player) {
+		return evaluateAnd(group, player).isPassed() ? RequirementResult.denied() : RequirementResult.passed();
 	}
 }

@@ -7,9 +7,13 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.model.requirement.type.PermissionRequirement;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 @Singleton
 public class PermissionRequirementValidation implements RequirementValidation {
@@ -21,8 +25,8 @@ public class PermissionRequirementValidation implements RequirementValidation {
 	}
 
 	@Override
-	public boolean check(Requirement requirement, SocialismusPlayer player) {
-		if (!(requirement instanceof PermissionRequirement pr)) return false;
+	public @NotNull RequirementResult evaluate(@NotNull Requirement requirement, @NotNull SocialismusPlayer player) {
+		if (!(requirement instanceof PermissionRequirement pr)) return RequirementResult.denied();
 
 		Logger.debug("Checking permission requirement for player " + player.getUsername());
 		boolean checkResult = false;
@@ -34,7 +38,8 @@ public class PermissionRequirementValidation implements RequirementValidation {
 		}
 
 		Logger.debug("Permission check result " + checkResult + " for " + player.getUsername());
+		if (String.valueOf(checkResult).equals(pr.getExpected())) return RequirementResult.passed();
 
-		return String.valueOf(checkResult).equals(pr.getExpected());
+		return RequirementDenials.deny(Constants.Requirements.PERMISSION, checkResult, Map.of("permissions", RequirementDenials.listed(pr.getPermissions())));
 	}
 }

@@ -9,10 +9,12 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.model.requirement.type.PlaceholderRequirement;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.util.PlaceholderUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Set;
@@ -32,13 +34,13 @@ public class PlaceholderRequirementValidation implements RequirementValidation {
 	}
 
 	@Override
-	public boolean check(Requirement requirement, SocialismusPlayer player) {
+	public @NotNull RequirementResult evaluate(@NotNull Requirement requirement, @NotNull SocialismusPlayer player) {
 		PlaceholderIntegration resolver = findPlaceholderIntegration();
 		if (resolver == null || !(requirement instanceof PlaceholderRequirement pr))
-			return false;
+			return RequirementResult.denied();
 
 		Logger.debug("Checking placeholder requirement for player " + player.getUsername());
-		return checkCondition(pr, resolver, player);
+		return RequirementResult.of(checkCondition(pr, resolver, player));
 	}
 
 	private PlaceholderIntegration findPlaceholderIntegration() {

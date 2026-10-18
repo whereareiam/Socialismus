@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.common.requirement;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,7 @@ class RequirementRegistryTest {
     @BeforeEach
     void setUp() {
         registry = new RequirementRegistry();
-        mockValidation = (requirement, player) -> true;
+        mockValidation = (requirement, player) -> RequirementResult.passed();
     }
 
     @Test
@@ -37,7 +38,7 @@ class RequirementRegistryTest {
     void testOverrideRegistration() {
         // Given
         RequirementValidation firstValidation = mockValidation;
-        RequirementValidation secondValidation = (requirement, player) -> false;
+        RequirementValidation secondValidation = (requirement, player) -> RequirementResult.denied();
 
         // When
         registry.register(Constants.Requirements.PERMISSION, firstValidation);
@@ -53,7 +54,7 @@ class RequirementRegistryTest {
     void testMultipleTypes() {
         // Given
         RequirementValidation permValidation = mockValidation;
-        RequirementValidation serverValidation = (requirement, player) -> false;
+        RequirementValidation serverValidation = (requirement, player) -> RequirementResult.denied();
 
         // When
         registry.register(Constants.Requirements.PERMISSION, permValidation);
@@ -82,7 +83,7 @@ class RequirementRegistryTest {
     @DisplayName("Should support external module namespaces")
     void testExternalModuleNamespace() {
         // Given - simulate an external module like Bubbler
-        RequirementValidation bubblerValidation = (requirement, player) -> false;
+        RequirementValidation bubblerValidation = (requirement, player) -> RequirementResult.denied();
         registry.register(
             me.whereareiam.socialismus.model.requirement.RequirementKey.create("bubbler", "activator", Requirement.class),
             bubblerValidation

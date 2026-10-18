@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.Map;
  * <ul>
  *   <li>A logical operator (AND, OR) that determines how multiple requirements are combined</li>
  *   <li>A map of requirements, organized by their namespaced type key (e.g., "socialismus:chat")</li>
+ *   <li>Optionally, the reason a player is told when they do not meet the group</li>
  * </ul>
  */
 @Getter
@@ -36,6 +38,14 @@ public class RequirementGroup {
      * Use the builder's type-safe methods to add requirements with RequirementKey instances.
      */
     private Map<String, ? extends Requirement> groups;
+
+    /**
+     * What a player who does not meet the group is told before any wording of the feature or of its requirements,
+     * such as {@code "<red>Only staff write in staff chat."}; the placeholders of the requirement that denied the
+     * player, such as {@code {worlds}}, and of the feature, such as {@code {chat}}, still fill it. Absent to let the
+     * feature word the denial, blank to tell only the feature's generic notice.
+     */
+    private @Nullable String reason;
 
     /**
      * Type-safe helper to create a single-entry requirement map.

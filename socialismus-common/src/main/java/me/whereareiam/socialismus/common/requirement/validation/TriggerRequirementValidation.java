@@ -8,11 +8,13 @@ import me.whereareiam.socialismus.model.chat.ChatTrigger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.Requirement;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.model.requirement.type.TriggerRequirement;
 import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.chat.TriggerType;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public class TriggerRequirementValidation implements RequirementValidation {
@@ -24,9 +26,9 @@ public class TriggerRequirementValidation implements RequirementValidation {
 	}
 
 	@Override
-	public boolean check(Requirement requirement, SocialismusPlayer player) {
-		if (!(requirement instanceof TriggerRequirement tr)) return false;
-		if (!PlatformType.isGameServer()) return false;
+	public @NotNull RequirementResult evaluate(@NotNull Requirement requirement, @NotNull SocialismusPlayer player) {
+		if (!(requirement instanceof TriggerRequirement tr)) return RequirementResult.denied();
+		if (!PlatformType.isGameServer()) return RequirementResult.denied();
 
 		ChatTrigger lastTrigger = player.getData(Constants.DataKeys.LAST_TRIGGER);
 		TriggerType lastTriggerType = lastTrigger != null ? lastTrigger.getType() : null;
@@ -44,11 +46,11 @@ public class TriggerRequirementValidation implements RequirementValidation {
 		for (String expectedValue : expectedValues) {
 			if (String.valueOf(checkResult).equals(expectedValue)) {
 				Logger.debug("Found matching expected value: " + checkResult + " for player " + player.getUsername());
-				return true;
+				return RequirementResult.passed();
 			}
 		}
 
 		Logger.debug("No matching expected values found for player " + player.getUsername());
-		return false;
+		return RequirementResult.denied();
 	}
 }

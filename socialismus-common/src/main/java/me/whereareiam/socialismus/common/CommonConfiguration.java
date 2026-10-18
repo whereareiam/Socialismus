@@ -41,6 +41,7 @@ import me.whereareiam.socialismus.common.logging.LoggingLifecycle;
 import me.whereareiam.socialismus.common.player.DefaultPlayerRegistry;
 import me.whereareiam.socialismus.common.provider.*;
 import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
+import me.whereareiam.socialismus.common.requirement.RequirementReasonResolver;
 import me.whereareiam.socialismus.common.requirement.RequirementRegistry;
 import me.whereareiam.socialismus.common.requirement.validation.*;
 import me.whereareiam.socialismus.common.sync.ChatNetworkBridge;
@@ -80,6 +81,7 @@ import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import me.whereareiam.socialismus.type.ConfigurationType;
@@ -185,6 +187,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(TriggerRequirementValidation.class).asEagerSingleton();
 		bind(MessageRequirementValidation.class).asEagerSingleton();
 		bind(RequirementEvaluatorService.class).to(RequirementEvaluator.class);
+		bind(RequirementReasonService.class).to(RequirementReasonResolver.class);
 
 		// Other
 		bind(new TypeLiteral<WorkerProcessor<ChatMessage>>() {
