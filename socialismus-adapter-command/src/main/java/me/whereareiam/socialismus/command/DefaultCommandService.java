@@ -17,6 +17,7 @@ import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.command.definition.CommandDefinitionAdapter;
 import me.whereareiam.socialismus.command.executor.*;
+import me.whereareiam.socialismus.command.suggestion.ChatSuggestionProvider;
 import me.whereareiam.socialismus.command.suggestion.CrossPlayerProvider;
 import me.whereareiam.socialismus.command.suggestion.PlayerSuggestionProvider;
 import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
@@ -126,7 +127,8 @@ public class DefaultCommandService implements CommandService, RuntimeLifecycle {
 				injector.getInstance(HelpCommand.class),
 				injector.getInstance(DebugCommand.class),
 				injector.getInstance(ReloadCommand.class),
-				injector.getInstance(ClearCommand.class)
+				injector.getInstance(ClearCommand.class),
+				injector.getInstance(ToggleCommand.class)
 		);
 		registerExceptionHandlers(commandManager);
 	}
@@ -216,7 +218,8 @@ public class DefaultCommandService implements CommandService, RuntimeLifecycle {
 		AnnotationParser<Actor> parser = new AnnotationParser<>(commandManager, Actor.class);
 		parser.parse(
 				injector.getInstance(PlayerSuggestionProvider.class),
-				injector.getInstance(CrossPlayerProvider.class)
+				injector.getInstance(CrossPlayerProvider.class),
+				injector.getInstance(ChatSuggestionProvider.class)
 		);
 	}
 

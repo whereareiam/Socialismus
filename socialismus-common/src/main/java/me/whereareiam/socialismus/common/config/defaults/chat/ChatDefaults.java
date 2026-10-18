@@ -35,7 +35,8 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 								.build()
 				),
 				List.of(new ChatFormat("{clear}<gray>[F] {playerName}: <white>{message}", new HashMap<>())),
-				new HashMap<>()
+				new HashMap<>(),
+				true
 		);
 
 		Chat local = new Chat(
@@ -95,7 +96,8 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 												.build()
 								))
 								.build()
-				)
+				),
+				true
 		);
 
 		Chat global = new Chat(
@@ -130,7 +132,8 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 								)
 						)
 				),
-				new HashMap<>()
+				new HashMap<>(),
+				true
 		);
 
 		chatsConfig.getChats().addAll(List.of(fallback, local, global));
