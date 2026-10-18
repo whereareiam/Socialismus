@@ -7,6 +7,7 @@ import me.whereareiam.anvil.api.process.ProcessConsole;
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
 import me.whereareiam.anvil.capability.messages.MessageWatch;
 import me.whereareiam.anvil.capability.messages.Messages;
+import me.whereareiam.anvil.capability.messages.model.ChatLines;
 import me.whereareiam.anvil.capability.players.PlayerWatch;
 import me.whereareiam.anvil.capability.players.Players;
 import me.whereareiam.anvil.capability.session.Session;
@@ -121,6 +122,15 @@ public final class Player {
 	public Player neverSees(@NotNull String text) {
 		inbox.neverReceived(text, ABSENCE);
 		return this;
+	}
+
+	/**
+	 * Returns the lines of chat the player could still scroll back to now, modelled on the vanilla client's chat. A
+	 * line missing from them is gone from every client's chat; a line they hold may already be gone on a narrow one.
+	 */
+	@NotNull
+	public ChatLines chatLines() {
+		return messages.chatLines();
 	}
 
 	/**
