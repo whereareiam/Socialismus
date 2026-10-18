@@ -95,7 +95,7 @@ jobs:
       matrix:
         # The suites of socialismus-testing/build.gradle.kts that have journeys; socialismus-testing/JOURNEYS.md
         # plans the others.
-        suite: [chat, commands, platform, upgrade, modules, essentials]
+        suite: [chat, commands, platform, upgrade, modules, chirper, essentials]
     steps:
       - uses: actions/checkout@v7
         with:
