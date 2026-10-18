@@ -36,7 +36,7 @@ class AdminCommandsTest {
 
 		carol.command("socialismus clear Bob");
 
-		carol.sees("Successfully cleared");
+		carol.sees("Successfully cleared 2x chat history entries");
 		alice.sees("[G] Alice: first");
 		alice.sees("[G] Alice: third");
 		alice.neverSees("spam");
