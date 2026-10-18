@@ -10,7 +10,8 @@ public enum Module {
 	DIALOGUE("dialogue", "Dialogue"),
 	ESSENTIALS("essentials", "Essentials"),
 	BUBBLER("bubbler", "Bubbler"),
-	REDIS("redis", "SocialismusRedis");
+	REDIS("redis", "SocialismusRedis"),
+	DATABASE("database", "SocialismusDatabase");
 
 	private final String artifact;
 	private final String name;

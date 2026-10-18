@@ -152,6 +152,14 @@ Essentials keeps its feature framework, but has no feature since private message
 
 - [x] Bubbler shows a bubble above a player who chats or runs `/socialismus bubble`, with each render strategy
 
+## database
+
+SocialismusDatabase on a Paper server; its tests against PostgreSQL and MariaDB run in containers in
+`integrationTest`.
+
+- [x] SocialismusDatabase loads its SQLite driver, opens the database and registers it for the other modules
+- [ ] A module keeps its data in the database once SocialismusDatabase registers it, and in memory before
+
 ## upgrade
 
 Start from the data directory an earlier version left.

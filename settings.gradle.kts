@@ -135,6 +135,15 @@ project(":module-dialogue-command").projectDir = file("modules/module-dialogue/d
 include(":module-dialogue")
 project(":module-dialogue").projectDir = file("modules/module-dialogue/dialogue")
 
+include(":module-database-api")
+project(":module-database-api").projectDir = file("modules/module-database/database-api")
+
+include(":module-database-common")
+project(":module-database-common").projectDir = file("modules/module-database/database-common")
+
+include(":module-database")
+project(":module-database").projectDir = file("modules/module-database/database")
+
 include(":module-redis-api")
 project(":module-redis-api").projectDir = file("modules/module-redis/redis-api")
 

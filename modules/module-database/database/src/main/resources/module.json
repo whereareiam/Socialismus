@@ -1,0 +1,36 @@
+{
+  "name": "@projectName@",
+  "version": "@projectVersion@",
+  "authors": [
+    "whereareiam"
+  ],
+  "socialismus": "@socialismus@",
+  "platforms": [
+    {
+      "type": "PAPER"
+    },
+    {
+      "type": "FOLIA"
+    },
+    {
+      "type": "SPIGOT"
+    },
+    {
+      "type": "BUKKIT"
+    },
+    {
+      "type": "VELOCITY"
+    }
+  ],
+  "updater": {
+    "release": {
+      "provider": "GITHUB",
+      "id": "whereareiam/SocialismusDatabase"
+    },
+    "dev": {
+      "provider": "GITHUB",
+      "id": "whereareiam/SocialismusDatabase"
+    }
+  },
+  "main": "me.whereareiam.socialismus.module.database.SocialismusDatabase"
+}
