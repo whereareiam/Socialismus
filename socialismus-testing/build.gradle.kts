@@ -43,6 +43,13 @@ fun pluginJar(project: ProjectDependency): Configuration =
         .apply { isTransitive = false }
 
 /**
+ * The jar of a plugin Socialismus integrates with, as its authors publish it.
+ */
+fun thirdPartyPlugin(plugin: Provider<MinimalExternalModuleDependency>): Configuration =
+    configurations.detachedConfiguration(dependencies.create(plugin.get()))
+        .apply { isTransitive = false }
+
+/**
  * Journeys that run at once. Each one has its own network, so the default leaves four processors to every
  * network; a machine with fewer than eight runs one journey after another.
  */
@@ -93,6 +100,7 @@ anvil {
     artifact("essentials", pluginJar(projects.moduleEssentials))
     artifact("bubbler", pluginJar(projects.moduleBubbler))
     artifact("module-requires-another-version", files(moduleRequiringAnotherVersion))
+    artifact("packetevents", thirdPartyPlugin(libs.journey.packetevents))
 
     // Each suite runs the journeys of its tag in anvil<Suite>Test, such as anvilChatTest.
     suites {

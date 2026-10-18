@@ -26,6 +26,12 @@ dependencyResolutionManagement {
         maven("https://repo.codemc.io/repository/maven-releases/")
         maven("https://repo.opencollab.dev/main/")
         maven("https://repo.opencollab.dev/maven-snapshots/")
+
+        // Plugin jars as their authors publish them, such as PacketEvents for the Bubbler journeys.
+        exclusiveContent {
+            forRepository { maven("https://api.modrinth.com/maven") }
+            filter { includeGroup("maven.modrinth") }
+        }
     }
 }
 

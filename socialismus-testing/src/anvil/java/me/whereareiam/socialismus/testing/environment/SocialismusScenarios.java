@@ -68,6 +68,12 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 						.identity(CacheIdentity.PROCESS)
 						.build());
 
+		for (Plugin plugin : socialismus.plugins())
+			workspace.asset(WorkspaceAsset.builder()
+					.group("plugins")
+					.source(AssetSource.artifact(plugin.artifact()))
+					.target(Path.of("plugins", plugin.fileName() + ".jar"))
+					.build());
 		for (Module module : socialismus.modules())
 			workspace.asset(moduleJar(data, module.artifact(), module.moduleName()));
 		for (ModuleFixture fixture : socialismus.moduleFixtures())
@@ -135,6 +141,7 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 						socialismus.network().name(),
 						socialismus.bundle() ? "bundle" : "",
 						socialismus.data().replace('/', '-'),
+						Arrays.stream(socialismus.plugins()).map(Plugin::name).collect(Collectors.joining("+")),
 						Arrays.stream(socialismus.modules()).map(Module::name).collect(Collectors.joining("+")),
 						Arrays.stream(socialismus.moduleFixtures()).map(ModuleFixture::name).collect(Collectors.joining("+")),
 						Arrays.stream(socialismus.configure()).map(SocialismusScenarios::changeName).collect(Collectors.joining("+")))
