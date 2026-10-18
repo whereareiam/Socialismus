@@ -17,7 +17,11 @@ import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.trigger.RegexChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
+import me.whereareiam.socialismus.model.config.message.RequirementReasons;
+import me.whereareiam.socialismus.model.requirement.RequirementReason;
+import me.whereareiam.socialismus.model.requirement.RequirementResult;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
+import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -26,6 +30,7 @@ import org.intellij.lang.annotations.RegExp;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -33,6 +38,7 @@ import java.util.Optional;
 public class ChatSelector {
 	private final ChatContainerService containerService;
 	private final RequirementEvaluator requirementEvaluator;
+	private final RequirementReasonService reasonService;
 	private final Provider<ChatMessages> chatMessagesProvider;
 	private final Provider<ChatSettings> chatSettingsProvider;
 
@@ -43,12 +49,14 @@ public class ChatSelector {
 	public ChatSelector(
 			ChatContainerService containerService,
 			RequirementEvaluator requirementEvaluator,
+			RequirementReasonService reasonService,
 			Provider<ChatMessages> chatMessages,
 			Provider<ChatSettings> chatSettings,
 			WorkerProcessor<ChatMessage> workerProcessor
 	) {
 		this.containerService = containerService;
 		this.requirementEvaluator = requirementEvaluator;
+		this.reasonService = reasonService;
 		this.chatMessagesProvider = chatMessages;
 		this.chatSettingsProvider = chatSettings;
 
@@ -93,12 +101,19 @@ public class ChatSelector {
 		}
 
 		// If nothing or requirements fail → alternative / fallback / notify
-		if (match == null || !meetsSenderRequirements(match.chat, message)) {
-			ChatMatch alternative = findAlternativeOrFallback(leadingSymbol, match != null ? match.chat : null, message, settings);
-			if (alternative == null || alternative.chat == null) {
-				notifyNoMatchOrFallback(message, settings, alternative == ChatMatch.FALLBACK_MISSING);
-				message.setCancelled(true);
-				return message;
+		RequirementResult senderResult = match == null ? null : evaluateSender(match.chat, message);
+		if (match == null || senderResult.isDenied()) {
+			ChatMatch alternative = findSameSymbolAlternative(leadingSymbol, match != null ? match.chat : null, message, settings);
+			if (alternative == null) {
+				Fallback fallback = findFallback(message, settings);
+				if (fallback.match() == null) {
+					// The sender hears why the chat they wrote for refused them; without one, why the fallback did.
+					if (senderResult != null) notifyRefusal(message, settings, match.chat, senderResult, fallback.missing());
+					else notifyRefusal(message, settings, fallback.chat(), fallback.result(), fallback.missing());
+					message.setCancelled(true);
+					return message;
+				}
+				alternative = fallback.match();
 			}
 			match = alternative;
 		}
@@ -202,53 +217,80 @@ public class ChatSelector {
 		return trigger instanceof RegexChatTrigger;
 	}
 
-	private boolean meetsSenderRequirements(InternalChat chat, ChatMessage message) {
-		if (chat.getRequirements() == null) return true;
-		if (chat.getRequirements().get(Participants.SENDER) == null) return true;
+	private RequirementResult evaluateSender(InternalChat chat, ChatMessage message) {
+		if (chat.getRequirements() == null) return RequirementResult.passed();
 
-		return requirementEvaluator.check(chat.getRequirements().get(Participants.SENDER), message.getSender());
+		return requirementEvaluator.evaluate(chat.getRequirements().get(Participants.SENDER), message.getSender());
 	}
 
 	/**
-	 * Try:
-	 * 1) Another chat bound to the same symbol (if available) that meets requirements (highest priority first).
-	 * 2) Fallback chat (if enabled and available).
-	 * Returns null if we should notify "no chat match".
-	 * Returns ChatMatch.FALLBACK_MISSING sentinel if fallback is missing/misconfigured.
+	 * Finds another chat bound to the same symbol whose sender requirements the sender meets, highest priority first.
 	 */
-	private ChatMatch findAlternativeOrFallback(Optional<String> leadingSymbol, InternalChat current, ChatMessage msg, ChatSettings settings) {
-		// 1) Try alternate chats for the same symbol (without stripping again).
-		if (leadingSymbol.isPresent()) {
-			String symbol = leadingSymbol.get();
-			List<InternalChat> sameSymbol = containerService.getChatBySymbol(symbol);
-			InternalChat alt = sameSymbol.stream()
-					.filter(c -> !Objects.equals(c, current))
-					.filter(c -> !Objects.equals(c.getId(), settings.getFallback().getChat()))
-					.sorted(BY_PRIORITY_DESC)
-					.filter(c -> meetsSenderRequirements(c, msg))
-					.findFirst()
-					.orElse(null);
-			if (alt != null) {
-				SymbolChatTrigger trig = findSymbolTrigger(alt, symbol).orElse(null);
-				return new ChatMatch(alt, trig, true);
-			}
-		}
+	private ChatMatch findSameSymbolAlternative(Optional<String> leadingSymbol, InternalChat current, ChatMessage msg, ChatSettings settings) {
+		if (leadingSymbol.isEmpty()) return null;
 
-		// 2) Fallback chat
+		// Alternate chats for the same symbol, without stripping again.
+		String symbol = leadingSymbol.get();
+		InternalChat alt = containerService.getChatBySymbol(symbol).stream()
+				.filter(c -> !Objects.equals(c, current))
+				.filter(c -> !Objects.equals(c.getId(), settings.getFallback().getChat()))
+				.sorted(BY_PRIORITY_DESC)
+				.filter(c -> evaluateSender(c, msg).isPassed())
+				.findFirst()
+				.orElse(null);
+		if (alt == null) return null;
+
+		SymbolChatTrigger trig = findSymbolTrigger(alt, symbol).orElse(null);
+		return new ChatMatch(alt, trig, true);
+	}
+
+	/**
+	 * Finds the fallback chat, if it is enabled, exists and takes the sender.
+	 */
+	private Fallback findFallback(ChatMessage msg, ChatSettings settings) {
 		ChatSettings.FallbackChatSettings fb = settings.getFallback();
-		if (!fb.isEnabled()) return null;
+		if (!fb.isEnabled()) return Fallback.NONE;
 
 		Optional<InternalChat> fallback = containerService.getChat(fb.getChat());
-		if (fallback.isEmpty())
-			return ChatMatch.FALLBACK_MISSING;
+		if (fallback.isEmpty()) {
+			Logger.warn("Fallback chat is not available");
+			return Fallback.MISSING;
+		}
 
 		InternalChat fbChat = fallback.get();
-		if (!meetsSenderRequirements(fbChat, msg))
-			// Fallback exists but still not allowed → treat as no match
-			return null;
+		RequirementResult result = evaluateSender(fbChat, msg);
+		if (result.isDenied()) return new Fallback(null, fbChat, result, false);
 
 		// Fallback shouldn't strip anything.
-		return new ChatMatch(fbChat, findDefaultSymbolTrigger(fbChat).orElse(null), /*stripLeadingSymbol*/ false);
+		return new Fallback(new ChatMatch(fbChat, findDefaultSymbolTrigger(fbChat).orElse(null), false), fbChat, result, false);
+	}
+
+	/**
+	 * Tells the sender why their message went nowhere: the refusal of a chat's sender requirements as chat words
+	 * it, or else the no-chat notice.
+	 */
+	private void notifyRefusal(
+			ChatMessage message,
+			ChatSettings settings,
+			InternalChat chat,
+			RequirementResult refusal,
+			boolean fallbackMissing
+	) {
+		RequirementReason reason = chat == null || refusal == null ? null : reasonService.resolve(
+				refusal,
+				wordingOf(chatMessagesProvider.get()),
+				Map.of("chat", chat.getId())
+		);
+		if (reason != null) {
+			message.getSender().sendMessage(Serializer.serialize(reason.toContent(message.getSender())));
+			return;
+		}
+
+		notifyNoMatchOrFallback(message, settings, fallbackMissing);
+	}
+
+	private static Map<String, RequirementReasons> wordingOf(ChatMessages messages) {
+		return messages.getRequirements() == null ? null : messages.getRequirements().get(Participants.SENDER);
 	}
 
 	private void notifyNoMatchOrFallback(ChatMessage message, ChatSettings settings, boolean fallbackMissing) {
@@ -257,7 +299,6 @@ public class ChatSelector {
 		ChatMessages msgs = chatMessagesProvider.get();
 
 		if (fallbackMissing) {
-			Logger.warn("Fallback chat is not available");
 			message.getSender().sendMessage(Serializer.serialize(message.getSender(), msgs.getNoFallbackChat()));
 		} else {
 			message.getSender().sendMessage(Serializer.serialize(message.getSender(), msgs.getNoChatMatch()));
@@ -309,11 +350,18 @@ public class ChatSelector {
 
 	@AllArgsConstructor
 	private static final class ChatMatch {
-		static final ChatMatch FALLBACK_MISSING = new ChatMatch(null, null, false);
-
 		private final InternalChat chat;
 		private final ChatTrigger trigger;
 		private final boolean stripLeadingSymbol;
+	}
+
+	/**
+	 * What the fallback chat makes of a message: the match when it takes the sender, else whether it is missing, or
+	 * the chat and the result of its sender requirements.
+	 */
+	private record Fallback(ChatMatch match, InternalChat chat, RequirementResult result, boolean missing) {
+		static final Fallback NONE = new Fallback(null, null, null, false);
+		static final Fallback MISSING = new Fallback(null, null, null, true);
 	}
 
 	/**

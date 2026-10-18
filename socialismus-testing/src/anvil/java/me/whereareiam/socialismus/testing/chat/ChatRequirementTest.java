@@ -14,11 +14,15 @@ import java.util.function.Consumer;
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.*;
 
 /**
- * Who may send in a chat and who receives it: the requirements a chat sets its sender and its recipients.
+ * Who may send in a chat and who receives it: the requirements a chat sets its sender and its recipients, and what a
+ * sender they refuse is told.
  */
 @Tag("chat")
 class ChatRequirementTest {
 	private static final String NO_CHAT = "No chat takes this message";
+	private static final String NO_PERMISSION = "{chat} is not yours: {permissions}";
+	private static final String OTHER_WORLD = "This stays in {worlds}";
+	private static final String STAFF_ONLY = "Only staff write in staff chat";
 
 	@Test
 	@Socialismus(configure = StaffChat.class)
@@ -32,7 +36,7 @@ class ChatRequirementTest {
 		bob.neverSees("for the staff");
 
 		bob.chat("#let me in");
-		bob.sees(NO_CHAT);
+		bob.sees("staff is not yours: socialismus.chat.staff");
 		carol.neverSees("let me in");
 	}
 
@@ -48,8 +52,20 @@ class ChatRequirementTest {
 		carol.neverSees("up here");
 
 		carol.chat("down here");
-		carol.sees(NO_CHAT);
+		carol.sees("This stays in world");
 		bob.neverSees("down here");
+	}
+
+	@Test
+	@Socialismus(configure = StaffOnlyChat.class)
+	void theReasonOfARequirementGroupIsToldBeforeAnyOtherWording(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice").op();
+		Player bob = Player.joins(anvil, "Bob");
+
+		bob.chat("#let me in");
+		bob.sees(STAFF_ONLY);
+		bob.neverSees("is not yours");
+		alice.neverSees("let me in");
 	}
 
 	@Test
@@ -66,11 +82,19 @@ class ChatRequirementTest {
 	}
 
 	/**
-	 * Without a fallback chat, a message no chat takes gets the no-chat notice.
+	 * Without a fallback chat, a message no chat takes gets the no-chat notice, and one its chat refuses why: chat
+	 * words a missing permission itself, and leaves a world to {@code messages.yml}.
 	 */
 	private static void noFallback(ServerFiles files) {
 		files.put(CHAT_SETTINGS, Map.of("fallback", Map.of("enabled", false, "chat", "fallback")));
-		files.put(CHAT_MESSAGES, Map.of("noChatMatch", NO_CHAT));
+		files.put(CHAT_MESSAGES, Map.of(
+				"noChatMatch", NO_CHAT,
+				"requirements", Map.of("SENDER", Map.of(
+						"socialismus:permission", Map.of("required", NO_PERMISSION),
+						"socialismus:world", Map.of("required", "")
+				))
+		));
+		files.put(MESSAGES, Map.of("requirements", Map.of("socialismus:world", Map.of("required", OTHER_WORLD))));
 	}
 
 	/**
@@ -85,6 +109,23 @@ class ChatRequirementTest {
 					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
 					chat("staff", 1, "#", 0, "[S] {playerName}: {message}").toBuilder()
 							.requirements(requirements(staff, staff))
+							.build()
+			);
+			noFallback(files);
+		}
+	}
+
+	/**
+	 * Staff chat, whose sender requirements say in their own words who writes there.
+	 */
+	static final class StaffOnlyChat implements Consumer<ServerFiles> {
+		@Override
+		public void accept(ServerFiles files) {
+			RequirementGroup staff = permission("socialismus.chat.staff");
+			files.chats(
+					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
+					chat("staff", 1, "#", 0, "[S] {playerName}: {message}").toBuilder()
+							.requirements(requirements(staff.toBuilder().reason(STAFF_ONLY).build(), staff))
 							.build()
 			);
 			noFallback(files);
