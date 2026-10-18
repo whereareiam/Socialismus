@@ -42,7 +42,7 @@ body:
       options:
         - label: Chirper
         - label: Bubbler
-        - label: Essentials
+        - label: Dialogue
         - label: SocialismusRedis
         - label: SocialismusChannelizer
 

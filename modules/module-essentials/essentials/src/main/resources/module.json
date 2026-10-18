@@ -19,12 +19,6 @@
       "type": "BASE"
     }
   ],
-  "requirements": [
-    {
-      "resource": "socialismus:sync",
-      "optional": true
-    }
-  ],
   "updater": {
     "release": {
       "provider": "MODRINTH",

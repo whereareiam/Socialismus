@@ -116,11 +116,20 @@ project(":module-essentials-command").projectDir = file("modules/module-essentia
 include(":module-essentials-feature")
 project(":module-essentials-feature").projectDir = file("modules/module-essentials/essentials-feature")
 
-include(":module-essentials-dialogue")
-project(":module-essentials-dialogue").projectDir = file("modules/module-essentials/essentials-feature/dialogue")
-
 include(":module-essentials")
 project(":module-essentials").projectDir = file("modules/module-essentials/essentials")
+
+include(":module-dialogue-api")
+project(":module-dialogue-api").projectDir = file("modules/module-dialogue/dialogue-api")
+
+include(":module-dialogue-common")
+project(":module-dialogue-common").projectDir = file("modules/module-dialogue/dialogue-common")
+
+include(":module-dialogue-command")
+project(":module-dialogue-command").projectDir = file("modules/module-dialogue/dialogue-command")
+
+include(":module-dialogue")
+project(":module-dialogue").projectDir = file("modules/module-dialogue/dialogue")
 
 include(":module-redis-api")
 project(":module-redis-api").projectDir = file("modules/module-redis/redis-api")
