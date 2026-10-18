@@ -22,5 +22,6 @@ class PrivateMessageTest {
 
 		bob.sees("Alice -> Bob: hello");
 		alice.sees("Alice -> Bob: hello");
+		alice.neverSees("An error occurred");
 	}
 }
