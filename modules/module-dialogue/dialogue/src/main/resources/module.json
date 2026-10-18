@@ -1,0 +1,39 @@
+{
+  "name": "@projectName@",
+  "version": "@projectVersion@",
+  "authors": [
+    "whereareiam"
+  ],
+  "supportedPlatforms": [
+    "PAPER",
+    "BUKKIT",
+    "FOLIA",
+    "VELOCITY"
+  ],
+  "supportedVersions": [
+    "ALL"
+  ],
+  "dependencies": [
+    {
+      "version": "@dependency@",
+      "type": "BASE"
+    }
+  ],
+  "requirements": [
+    {
+      "resource": "socialismus:sync",
+      "optional": true
+    }
+  ],
+  "updater": {
+    "release": {
+      "provider": "MODRINTH",
+      "id": "whereareiam/Dialogue"
+    },
+    "dev": {
+      "provider": "GITHUB",
+      "id": "whereareiam/Dialogue"
+    }
+  },
+  "main": "me.whereareiam.socialismus.module.dialogue.Dialogue"
+}

@@ -27,9 +27,8 @@
   with
   animated
   bubbles that hover above players’ heads. Great for adding a splash of creativity to your chat.
-- [Essentials](./modules/module-essentials) - The essential toolkit! A collection of useful
-  features
-  that can extend your chat experience. Great for adding a touch of convenience to your server.
+- [Dialogue](./modules/module-dialogue) - The private line! Players message each other with
+  `/msg` and answer with `/reply`, on one server or across the network. Great for the words not meant for everyone.
 - [Mentionator](https://github.com/whereareiam/Mentionator) *[WIP]* - The @mention maestro! Summon anyone and everyone
   with
   ease. Great for announcements, jokes, or just making sure you’re heard.

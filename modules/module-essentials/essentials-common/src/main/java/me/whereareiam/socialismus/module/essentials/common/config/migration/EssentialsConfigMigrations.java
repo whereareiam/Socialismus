@@ -16,7 +16,7 @@ import java.util.OptionalInt;
 /**
  * The configuration migrations of Essentials, which bring the documents of an older installation in its working
  * directory into the layout this build reads: {@code settings}, {@code messages}, {@code commands} and everything
- * under {@code features/} and {@code features/dialogue/}. The module runs them when it loads, before any document is
+ * under {@code features/}. The module runs them when it loads, before any document is
  * read, and the number of the last one is kept as {@code _version} at the top of {@code settings}.
  * <p>
  * To add a migration, append it with the next number and never change or renumber one that was released.
@@ -54,7 +54,6 @@ public final class EssentialsConfigMigrations {
 						List.of("messages", "commands"),
 						List.of("features", "features/dialogue")
 				))
-				.migration(DialogueSyncMigration.VERSION, DialogueSyncMigration.NAME, new DialogueSyncMigration(extension))
 				.build();
 	}
 }

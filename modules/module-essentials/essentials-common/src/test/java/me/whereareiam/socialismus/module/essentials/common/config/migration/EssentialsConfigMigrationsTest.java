@@ -23,21 +23,14 @@ class EssentialsConfigMigrationsTest {
 	Path workingPath;
 
 	@Test
-	void renamesTheDialogueSync() throws IOException {
-		Files.writeString(workingPath.resolve("settings.yml"), "announce: true\n");
-		Path dialogue = Files.createDirectories(workingPath.resolve("features/dialogue"));
-		Files.writeString(dialogue.resolve("settings.yml"), """
-				synchronization:
-				  enabled: true
-				reply:
-				  enabled: true
-				""");
+	void recordsTheLatestVersionInTheSettings() throws IOException {
+		Path settings = workingPath.resolve("settings.yml");
+		Files.writeString(settings, "announce:\n  featureInitialization: false\n");
 
 		new Strata(List.of(EssentialsConfigMigrations.on(configura, workingPath))).migrate();
 
-		JsonNode settings = configura.readNode(dialogue.resolve("settings.yml"));
-		assertFalse(settings.has("synchronization"));
-		assertTrue(settings.path("sync").path("enabled").asBoolean());
-		assertTrue(settings.path("reply").path("enabled").asBoolean());
+		JsonNode node = configura.readNode(settings);
+		assertEquals(2, node.path("_version").asInt());
+		assertFalse(node.path("announce").path("featureInitialization").asBoolean(true));
 	}
 }
