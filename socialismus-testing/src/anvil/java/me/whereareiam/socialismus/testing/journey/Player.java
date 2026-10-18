@@ -155,6 +155,30 @@ public final class Player {
 		return this;
 	}
 
+	/**
+	 * Expects that the player can no longer scroll back to a line containing the given text. Anvil keeps the chat as
+	 * the vanilla client does but cannot wrap its lines, so a line it no longer holds is gone from every client.
+	 */
+	@NotNull
+	public Player chatNoLongerShows(@NotNull String text) {
+		if (messages.chatLines().contains(text))
+			throw new AssertionError(name + " can still scroll back to \"" + text + "\": " + messages.chatLines().getLines());
+
+		return this;
+	}
+
+	/**
+	 * Expects that the player can scroll back to a line containing the given text, on a chat wide enough not to wrap
+	 * the lines after it.
+	 */
+	@NotNull
+	public Player chatShows(@NotNull String text) {
+		if (!messages.chatLines().contains(text))
+			throw new AssertionError(name + " cannot scroll back to \"" + text + "\": " + messages.chatLines().getLines());
+
+		return this;
+	}
+
 	@NotNull
 	public String name() {
 		return name;

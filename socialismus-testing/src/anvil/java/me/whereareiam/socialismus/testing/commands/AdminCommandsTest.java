@@ -39,7 +39,8 @@ class AdminCommandsTest {
 		carol.sees("Successfully cleared 2x chat history entries");
 		alice.sees("[G] Alice: first");
 		alice.sees("[G] Alice: third");
-		alice.neverSees("spam");
+		alice.chatNoLongerShows("spam")
+				.chatShows("[G] Alice: second");
 	}
 
 	@Test
