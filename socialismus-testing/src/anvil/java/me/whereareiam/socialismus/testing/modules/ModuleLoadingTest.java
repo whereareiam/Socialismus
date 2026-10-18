@@ -39,11 +39,17 @@ class ModuleLoadingTest {
 	@Test
 	@Socialismus(modules = Module.ESSENTIALS, moduleFixtures = ModuleFixture.REQUIRES_ANOTHER_VERSION)
 	void moduleThatNeedsAnotherSocialismusVersionIsRefused(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice").op();
+
 		String log = Console.of(anvil).log();
 		assertTrue(log.contains("Module Chirper requires version of the plugin to be 1\\.0\\.0"),
 				"Chirper was not refused with a reason:\n" + log);
 		assertFalse(log.contains("Loaded module Chirper"), "Chirper loaded:\n" + log);
 		assertTrue(log.contains("Loaded module Essentials"), "The other module did not load:\n" + log);
+
+		alice.command("socialismus debug");
+		String debug = alice.sees("Essentials");
+		assertFalse(debug.contains("Chirper"), "The debug command listed the refused Chirper:\n" + debug);
 	}
 
 	@Test
