@@ -22,5 +22,15 @@ public enum DeliveryStatus {
 	/**
 	 * The recipient is not online anywhere Dialogue can reach.
 	 */
-	RECIPIENT_OFFLINE
+	RECIPIENT_OFFLINE,
+
+	/**
+	 * The recipient has turned private messages off, and the sender does not bypass that.
+	 */
+	MESSAGES_OFF,
+
+	/**
+	 * The recipient ignores the sender.
+	 */
+	IGNORED
 }

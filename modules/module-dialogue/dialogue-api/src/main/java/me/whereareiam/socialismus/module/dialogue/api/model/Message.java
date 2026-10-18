@@ -57,4 +57,15 @@ public class Message {
 	 * The identifier of the conversation the message belongs to.
 	 */
 	private String conversationId;
+
+	/**
+	 * Whether the sender reaches recipients who turned private messages off, as {@code control.toggle.bypass}
+	 * decided on the sender's server, where the sender's requirements can be checked.
+	 */
+	private boolean bypassesToggle;
+
+	/**
+	 * Whether the sender cannot be ignored, as {@code control.ignore.exempt} decided on the sender's server.
+	 */
+	private boolean exemptFromIgnore;
 }

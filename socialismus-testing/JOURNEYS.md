@@ -141,6 +141,10 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [x] A private message is shown as its sender wrote it, never read as formatting such as a click
 - [x] The recipient gets the alert of their format: a sound, an action bar and a title
 - [x] `/message <player>` without a message sends chat to that player until the same command ends it
+- [x] `/msgtoggle` turns private messages off, except from senders who meet `control.toggle.bypass`
+- [x] `/ignore <player>` keeps that player's private messages away, and `/ignore` lists the ignored players
+- [x] With `control.ignore.includesChat`, ignoring a player hides their chat as well
+- [ ] Toggles and ignores outlive a restart with SocialismusDatabase
 - [ ] A player hidden from the sender, such as by a vanish plugin, looks offline to them **needs a vanish plugin on the test server**
 - [ ] Clicking a received message suggests a reply to its sender **needs Anvil**: players see messages as plain text, without their click events
 - [ ] `/reply` to a conversation older than `messaging.reply.timeout` lists the recent conversations

@@ -17,6 +17,8 @@ public class DialogueMessages {
 	 */
 	private Messaging messaging;
 
+	private Control control;
+
 	/**
 	 * What a player is told when a private message cannot be sent.
 	 */
@@ -94,6 +96,69 @@ public class DialogueMessages {
 			 * {@code {partner}} names the other participant.
 			 */
 			private String conversation;
+		}
+	}
+
+	/**
+	 * The notices of what players decide about their own private messages.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Control {
+		private Toggle toggle;
+
+		private Ignore ignore;
+
+		/**
+		 * The notices of turning private messages off, with {@code {recipientName}} in {@code blocked}.
+		 */
+		@Getter
+		@Setter
+		@ToString
+		public static class Toggle {
+			private String off;
+
+			private String on;
+
+			private String blocked;
+
+			private String unavailable;
+		}
+
+		/**
+		 * The notices of ignoring, with {@code {ignoredName}} filled in; {@code {playerName}} is the player who reads them, as in every message.
+		 */
+		@Getter
+		@Setter
+		@ToString
+		public static class Ignore {
+			private String added;
+
+			private String removed;
+
+			private String blocked;
+
+			private String exempt;
+
+			private String unavailable;
+
+			private Listing list;
+
+			/**
+			 * The list of ignored players: a header, one entry per player with {@code {ignoredName}}, or the text for
+			 * an empty list.
+			 */
+			@Getter
+			@Setter
+			@ToString
+			public static class Listing {
+				private String header;
+
+				private String entry;
+
+				private String empty;
+			}
 		}
 	}
 }

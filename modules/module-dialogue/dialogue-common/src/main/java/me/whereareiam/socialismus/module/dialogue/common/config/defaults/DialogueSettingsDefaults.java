@@ -2,12 +2,16 @@ package me.whereareiam.socialismus.module.dialogue.common.config.defaults;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
+import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.socialismus.model.requirement.type.PermissionRequirement;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.type.chat.Participants;
+import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
 import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -35,7 +39,32 @@ public class DialogueSettingsDefaults implements DefaultsProvider<DialogueSettin
 
 		config.setMessaging(messaging);
 
+		DialogueSettings.Control.Toggle toggle = new DialogueSettings.Control.Toggle();
+		toggle.setEnabled(true);
+		toggle.setBypass(permission("socialismus.dialogue.toggle.bypass"));
+
+		DialogueSettings.Control.Ignore ignore = new DialogueSettings.Control.Ignore();
+		ignore.setEnabled(true);
+		ignore.setIncludesChat(false);
+		ignore.setExempt(permission("socialismus.dialogue.ignore.exempt"));
+
+		DialogueSettings.Control control = new DialogueSettings.Control();
+		control.setToggle(toggle);
+		control.setIgnore(ignore);
+		config.setControl(control);
+
 		return config;
+	}
+
+	private static RequirementGroup permission(String permission) {
+		return RequirementGroup.builder()
+				.operator(RequirementOperatorType.AND)
+				.groups(RequirementGroup.of(Constants.Requirements.PERMISSION, PermissionRequirement.builder()
+						.condition(RequirementConditionType.HAS)
+						.expected("true")
+						.permissions(List.of(permission))
+						.build()))
+				.build();
 	}
 
 	static RequirementGroup anyone() {

@@ -17,6 +17,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingForm
 import me.whereareiam.socialismus.module.dialogue.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.dialogue.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.dialogue.common.config.migration.DialogueConfigMigrations;
+import me.whereareiam.socialismus.module.dialogue.common.control.IgnoredChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.DialogueNetworkBridge;
@@ -81,7 +82,11 @@ public class Dialogue extends SocialisticModule {
 	}
 
 	private List<EventListener> listeners() {
-		return List.of(injector.getInstance(ConversationModes.class), injector.getInstance(ConversationChat.class));
+		return List.of(
+				injector.getInstance(ConversationModes.class),
+				injector.getInstance(ConversationChat.class),
+				injector.getInstance(IgnoredChat.class)
+		);
 	}
 
 	private EventManager eventManager() {

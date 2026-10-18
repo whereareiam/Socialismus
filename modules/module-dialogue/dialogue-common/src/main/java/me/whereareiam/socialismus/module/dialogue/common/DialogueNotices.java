@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
+import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,6 +48,61 @@ public class DialogueNotices {
 		send(player, messaging().getConversationMode().getLeft(), Map.of("recipientName", partner));
 	}
 
+	/**
+	 * Tells the sender why their message did not reach the recipient.
+	 *
+	 * @param sender        the player who wrote it
+	 * @param recipientName the recipient's name
+	 * @param status        why: the recipient is offline, turned messages off, or ignores the sender
+	 */
+	public void undelivered(@NotNull SocialismusPlayer sender, @NotNull String recipientName, @NotNull DeliveryStatus status) {
+		switch (status) {
+			case MESSAGES_OFF -> send(sender, control().getToggle().getBlocked(), Map.of("recipientName", recipientName));
+			case IGNORED -> send(sender, control().getIgnore().getBlocked(), Map.of("recipientName", recipientName));
+			case RECIPIENT_OFFLINE -> noRecipient(sender, recipientName);
+			default -> {
+			}
+		}
+	}
+
+	public void messagesToggled(@NotNull SocialismusPlayer player, boolean off) {
+		send(player, off ? control().getToggle().getOff() : control().getToggle().getOn(), Map.of());
+	}
+
+	public void toggleUnavailable(@NotNull SocialismusPlayer player) {
+		send(player, control().getToggle().getUnavailable(), Map.of());
+	}
+
+	public void ignoreChanged(@NotNull SocialismusPlayer player, @NotNull String target, boolean ignored) {
+		DialogueMessages.Control.Ignore ignore = control().getIgnore();
+		send(player, ignored ? ignore.getAdded() : ignore.getRemoved(), Map.of("ignoredName", target));
+	}
+
+	public void ignoreExempt(@NotNull SocialismusPlayer player, @NotNull String target) {
+		send(player, control().getIgnore().getExempt(), Map.of("ignoredName", target));
+	}
+
+	public void ignoreUnavailable(@NotNull SocialismusPlayer player) {
+		send(player, control().getIgnore().getUnavailable(), Map.of());
+	}
+
+	/**
+	 * Shows a player whom they ignore.
+	 */
+	public void ignored(@NotNull SocialismusPlayer player, @NotNull List<IgnoredPlayer> ignored) {
+		DialogueMessages.Control.Ignore.Listing listing = control().getIgnore().getList();
+		if (ignored.isEmpty()) {
+			send(player, listing.getEmpty(), Map.of());
+			return;
+		}
+
+		StringBuilder notice = new StringBuilder(listing.getHeader());
+		for (IgnoredPlayer other : ignored)
+			notice.append('\n').append(listing.getEntry().replace("{ignoredName}", other.getName()));
+
+		send(player, notice.toString(), Map.of());
+	}
+
 	public void noConversations(@NotNull SocialismusPlayer sender) {
 		send(sender, messaging().getReply().getNoConversations(), Map.of());
 	}
@@ -70,6 +127,10 @@ public class DialogueNotices {
 					.replace("{partner}", conversations.get(i).partnerOf(sender.getUsername())));
 
 		send(sender, notice.toString(), Map.of());
+	}
+
+	private DialogueMessages.Control control() {
+		return messages.get().getControl();
 	}
 
 	private DialogueMessages.Messaging messaging() {

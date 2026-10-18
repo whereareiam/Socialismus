@@ -93,15 +93,18 @@ public final class DialogueNetworkBridge {
 		try {
 			Message message = serializer.deserialize(data, Message.class);
 			if (Constants.Synchronization.IDENTIFIER.equals(message.getOrigin())) return;
-			if (!localDelivery.deliver(message, false)) return;
 
-			sendConfirmation(message);
+			// Only the server the recipient is on answers, whether it delivered the message or they refused it.
+			DeliveryStatus status = localDelivery.deliver(message, false);
+			if (status == DeliveryStatus.RECIPIENT_OFFLINE) return;
+
+			sendConfirmation(message, status == DeliveryStatus.DELIVERED_LOCALLY ? DeliveryStatus.DELIVERED_REMOTELY : status);
 		} catch (Exception ex) {
 			Logger.warn("Bad PM-sync packet: " + ex);
 		}
 	}
 
-	private void sendConfirmation(Message message) {
+	private void sendConfirmation(Message message, DeliveryStatus status) {
 		String recipientName = playerRegistry.getPlayerData(message.getRecipientName())
 				.map(recipient -> recipient.getUsername())
 				.orElse(message.getRecipientName());
@@ -110,7 +113,7 @@ public final class DialogueNetworkBridge {
 				.id(message.getId())
 				.senderName(message.getSender().getUsername())
 				.recipientName(recipientName)
-				.status(DeliveryStatus.DELIVERED_REMOTELY)
+				.status(status)
 				.originServer(message.getOrigin())
 				.deliveryServer(Constants.Synchronization.IDENTIFIER)
 				.deliveryTime(Instant.now())
@@ -128,9 +131,10 @@ public final class DialogueNetworkBridge {
 			Message message = awaitingConfirmation.remove(confirmation.getId());
 			if (message == null) return;
 
-			message.setDeliveryStatus(DeliveryStatus.DELIVERED_REMOTELY);
+			message.setDeliveryStatus(confirmation.getStatus());
 			message.setRecipientName(confirmation.getRecipientName());
-			renderer.showSent(message, null);
+			if (confirmation.getStatus() == DeliveryStatus.DELIVERED_REMOTELY) renderer.showSent(message, null);
+			else notices.undelivered(message.getSender(), confirmation.getRecipientName(), confirmation.getStatus());
 		} catch (Exception ex) {
 			Logger.warn("Bad delivery confirmation packet: " + ex);
 		}

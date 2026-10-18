@@ -7,6 +7,9 @@ import com.google.inject.name.Named;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.module.dialogue.api.ConversationStore;
 import me.whereareiam.socialismus.module.dialogue.api.DialogueService;
+import me.whereareiam.socialismus.module.dialogue.api.IgnoreStore;
+import me.whereareiam.socialismus.module.dialogue.api.MessageControlService;
+import me.whereareiam.socialismus.module.dialogue.api.MessageToggleStore;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueCommands;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
@@ -17,6 +20,9 @@ import me.whereareiam.socialismus.module.dialogue.common.config.provider.Dialogu
 import me.whereareiam.socialismus.module.dialogue.common.config.provider.DialogueSettingsProvider;
 import me.whereareiam.socialismus.module.dialogue.common.config.provider.DialogueSyncProvider;
 import me.whereareiam.socialismus.module.dialogue.common.config.provider.MessagingFormatsProvider;
+import me.whereareiam.socialismus.module.dialogue.common.control.DefaultMessageControlService;
+import me.whereareiam.socialismus.module.dialogue.common.control.InMemoryIgnoreStore;
+import me.whereareiam.socialismus.module.dialogue.common.control.InMemoryMessageToggleStore;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.InMemoryConversationStore;
 
 import java.io.IOException;
@@ -48,6 +54,9 @@ public class CommonConfiguration extends AbstractModule {
 		// General
 		bind(DialogueService.class).to(DefaultDialogueService.class);
 		bind(ConversationStore.class).to(InMemoryConversationStore.class);
+		bind(MessageToggleStore.class).to(InMemoryMessageToggleStore.class);
+		bind(IgnoreStore.class).to(InMemoryIgnoreStore.class);
+		bind(MessageControlService.class).to(DefaultMessageControlService.class);
 	}
 
 	@Provides

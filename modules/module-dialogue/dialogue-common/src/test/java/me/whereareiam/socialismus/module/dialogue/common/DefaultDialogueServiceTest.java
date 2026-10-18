@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.module.dialogue.api.event.DialogueSendEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
+import me.whereareiam.socialismus.module.dialogue.common.control.RecipientControl;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationService;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.InMemoryConversationStore;
@@ -57,7 +58,8 @@ class DefaultDialogueServiceTest {
 				playerRegistry,
 				() -> settings,
 				eventManager,
-				conversationModes
+				conversationModes,
+				mock(RecipientControl.class)
 		);
 	}
 
