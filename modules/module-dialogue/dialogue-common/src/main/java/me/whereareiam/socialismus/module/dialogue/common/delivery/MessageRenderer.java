@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.DialogueAlert;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
+import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -23,13 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Shows a private message to its sender and its recipient, each in the last format of their list in
- * {@code formats/messaging} whose requirements the two participants meet.
+ * Shows a private message to its sender, its recipient and the spies, each in the last format of their list in
+ * {@code formats/messaging} or {@code formats/moderation} whose requirements the two participants meet.
  */
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class MessageRenderer {
 	private final Provider<MessagingFormats> formats;
+	private final Provider<ModerationFormats> moderationFormats;
 	private final MessagingRequirements requirements;
 
 	/**
@@ -52,6 +54,17 @@ public class MessageRenderer {
 		show(recipient, message, recipient, formats.get().getReceived());
 	}
 
+	/**
+	 * Shows a spy a message between two other players in a {@code spy} format of {@code formats/moderation}.
+	 *
+	 * @param message   the message
+	 * @param recipient the recipient
+	 * @param spy       the spy, who sees it
+	 */
+	public void showSpied(@NotNull Message message, @NotNull SocialismusPlayer recipient, @NotNull SocialismusPlayer spy) {
+		show(spy, message, recipient, moderationFormats.get().getSpy());
+	}
+
 	private void show(
 			SocialismusPlayer viewer,
 			Message message,
@@ -60,7 +73,7 @@ public class MessageRenderer {
 	) {
 		DialogueFormat format = select(message, recipient, formats);
 		if (format == null) {
-			Logger.debug("No format of formats/messaging matches the private message to %s", viewer.getUsername());
+			Logger.debug("No format matches the private message shown to %s", viewer.getUsername());
 			return;
 		}
 

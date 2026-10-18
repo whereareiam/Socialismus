@@ -11,6 +11,7 @@ import me.whereareiam.socialismus.module.dialogue.api.MessageToggleStore;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.common.DialogueNotices;
+import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +24,7 @@ public class DefaultMessageControlService implements MessageControlService {
 	private final Provider<DialogueSettings> settings;
 	private final MessageToggleStore toggles;
 	private final IgnoreStore ignores;
-	private final RecipientControl recipientControl;
+	private final SenderPrivileges privileges;
 	private final PlayerRegistry playerRegistry;
 	private final DialogueNotices notices;
 
@@ -67,7 +68,7 @@ public class DefaultMessageControlService implements MessageControlService {
 			notices.samePlayer(player);
 			return;
 		}
-		if (recipientControl.meets(settings.get().getControl().getIgnore().getExempt(), target.get())) {
+		if (privileges.meets(settings.get().getControl().getIgnore().getExempt(), target.get())) {
 			notices.ignoreExempt(player, target.get().getUsername());
 			return;
 		}

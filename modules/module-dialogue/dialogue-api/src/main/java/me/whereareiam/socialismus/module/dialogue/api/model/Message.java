@@ -68,4 +68,10 @@ public class Message {
 	 * Whether the sender cannot be ignored, as {@code control.ignore.exempt} decided on the sender's server.
 	 */
 	private boolean exemptFromIgnore;
+
+	/**
+	 * Whether the sender's messages are never shown to spies, as {@code moderation.spy.exempt} decided on the
+	 * sender's server.
+	 */
+	private boolean hiddenFromSpies;
 }

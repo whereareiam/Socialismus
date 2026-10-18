@@ -10,13 +10,14 @@ import me.whereareiam.socialismus.module.dialogue.api.event.DialogueDeliveredEve
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
+import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
+import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
+import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
+import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.module.dialogue.common.control.InMemoryIgnoreStore;
 import me.whereareiam.socialismus.module.dialogue.common.control.InMemoryMessageToggleStore;
 import me.whereareiam.socialismus.module.dialogue.common.control.RecipientControl;
-import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
-import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
-import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import net.kyori.adventure.text.Component;
@@ -68,13 +69,8 @@ class LocalDeliveryTest {
 				mock(RequirementEvaluatorService.class),
 				TestDataBuilder::defaultSettings
 		);
-		RecipientControl control = new RecipientControl(
-				TestDataBuilder::defaultSettings,
-				toggles,
-				ignores,
-				mock(RequirementEvaluatorService.class)
-		);
-		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, requirements), eventManager, control);
+		RecipientControl control = new RecipientControl(TestDataBuilder::defaultSettings, toggles, ignores);
+		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, ModerationFormats::new, requirements), eventManager, control);
 	}
 
 	@DisplayName("Fills the names and the message into both formats")

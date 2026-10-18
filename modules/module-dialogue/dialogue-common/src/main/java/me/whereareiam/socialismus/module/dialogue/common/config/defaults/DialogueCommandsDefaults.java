@@ -64,7 +64,21 @@ public class DialogueCommandsDefaults implements DefaultsProvider<DialogueComman
 						.build()
 				).build();
 
+		CommandDefinition spy = CommandDefinition.builder()
+				.enabled(true)
+				.aliases(List.of("socialspy", "spy"))
+				.permission("socialismus.dialogue.spy")
+				.description("See the private messages of others, or stop.")
+				.usage("{alias}")
+				.cooldown(CommandDefinition.Cooldown.builder()
+						.enabled(false)
+						.duration(0)
+						.group("global")
+						.build()
+				).build();
+
 		dialogueCommands.getCommands().put("message", msg);
+		dialogueCommands.getCommands().put("spy", spy);
 		dialogueCommands.getCommands().put("toggle", toggle);
 		dialogueCommands.getCommands().put("ignore", ignore);
 		dialogueCommands.getCommands().put("reply", reply);

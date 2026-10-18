@@ -14,6 +14,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessa
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSync;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
+import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.dialogue.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.dialogue.common.config.migration.DialogueConfigMigrations;
@@ -21,6 +22,7 @@ import me.whereareiam.socialismus.module.dialogue.common.control.IgnoredChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.DialogueNetworkBridge;
+import me.whereareiam.socialismus.module.dialogue.common.moderation.Spying;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
@@ -64,7 +66,8 @@ public class Dialogue extends SocialisticModule {
 				DialogueMessages.class,
 				DialogueCommands.class,
 				DialogueSync.class,
-				MessagingFormats.class
+				MessagingFormats.class,
+				ModerationFormats.class
 		).forEach(injector::getInstance);
 	}
 
@@ -85,7 +88,8 @@ public class Dialogue extends SocialisticModule {
 		return List.of(
 				injector.getInstance(ConversationModes.class),
 				injector.getInstance(ConversationChat.class),
-				injector.getInstance(IgnoredChat.class)
+				injector.getInstance(IgnoredChat.class),
+				injector.getInstance(Spying.class)
 		);
 	}
 

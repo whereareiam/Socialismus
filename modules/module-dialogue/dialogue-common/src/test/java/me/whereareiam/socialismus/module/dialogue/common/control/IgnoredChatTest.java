@@ -5,6 +5,7 @@ import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
+import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,7 @@ class IgnoredChatTest {
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
 	private final InMemoryIgnoreStore ignores = new InMemoryIgnoreStore();
 	private final RequirementEvaluatorService evaluator = mock(RequirementEvaluatorService.class);
-	private final IgnoredChat ignoredChat = new IgnoredChat(() -> settings, ignores,
-			new RecipientControl(() -> settings, new InMemoryMessageToggleStore(), ignores, evaluator));
+	private final IgnoredChat ignoredChat = new IgnoredChat(() -> settings, ignores, new SenderPrivileges(() -> settings, evaluator));
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
 	private final SocialismusPlayer carol = TestDataBuilder.mockPlayer("Carol");

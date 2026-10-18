@@ -53,6 +53,15 @@ public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessag
 		control.setIgnore(ignore);
 		config.setControl(control);
 
+		DialogueMessages.Moderation.Spy spy = new DialogueMessages.Moderation.Spy();
+		spy.setOn("{prefix}<white>You now see the private messages of others.");
+		spy.setOff("{prefix}<white>You no longer see the private messages of others.");
+		spy.setUnavailable("{prefix}<white>Private messages cannot be seen by others here.");
+
+		DialogueMessages.Moderation moderation = new DialogueMessages.Moderation();
+		moderation.setSpy(spy);
+		config.setModeration(moderation);
+
 		return config;
 	}
 }

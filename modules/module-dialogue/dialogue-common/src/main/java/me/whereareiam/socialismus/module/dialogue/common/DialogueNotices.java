@@ -103,6 +103,15 @@ public class DialogueNotices {
 		send(player, notice.toString(), Map.of());
 	}
 
+	public void spyToggled(@NotNull SocialismusPlayer player, boolean spying) {
+		DialogueMessages.Moderation.Spy spy = messages.get().getModeration().getSpy();
+		send(player, spying ? spy.getOn() : spy.getOff(), Map.of());
+	}
+
+	public void spyUnavailable(@NotNull SocialismusPlayer player) {
+		send(player, messages.get().getModeration().getSpy().getUnavailable(), Map.of());
+	}
+
 	public void noConversations(@NotNull SocialismusPlayer sender) {
 		send(sender, messaging().getReply().getNoConversations(), Map.of());
 	}

@@ -13,6 +13,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.DialogueAlert;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
+import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
@@ -46,6 +47,7 @@ class MessageRendererTest {
 
 	private final RequirementEvaluatorService evaluator = mock(RequirementEvaluatorService.class);
 	private final MessagingFormats formats = new MessagingFormats();
+	private final ModerationFormats moderationFormats = new ModerationFormats();
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
 
@@ -69,6 +71,7 @@ class MessageRendererTest {
 
 		renderer = new MessageRenderer(
 				() -> formats,
+				() -> moderationFormats,
 				new MessagingRequirements(evaluator, TestDataBuilder::defaultSettings)
 		);
 	}

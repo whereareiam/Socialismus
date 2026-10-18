@@ -53,6 +53,15 @@ public class DialogueSettingsDefaults implements DefaultsProvider<DialogueSettin
 		control.setIgnore(ignore);
 		config.setControl(control);
 
+		DialogueSettings.Moderation.Spy spy = new DialogueSettings.Moderation.Spy();
+		spy.setEnabled(true);
+		spy.setExempt(permission("socialismus.dialogue.spy.exempt"));
+
+		DialogueSettings.Moderation moderation = new DialogueSettings.Moderation();
+		moderation.setSpy(spy);
+		moderation.setPrivacy(false);
+		config.setModeration(moderation);
+
 		return config;
 	}
 
