@@ -52,6 +52,9 @@ One Paper server unless stated otherwise.
 - [x] Local chat reaches only the players within its radius **first**
 - [x] A permission requirement decides who may send in a chat and who receives it
 - [x] A world requirement keeps a chat to the players of its worlds
+- [x] A sender a chat's requirements refuse is told why in chat's wording, or in `messages.yml`'s where chat
+  words nothing, such as the permission or the worlds the chat needs
+- [x] A requirement group's own reason is told before any other wording
 - [x] A message requirement selects the chat by the sender's previous message
 - [ ] A placeholder requirement selects the chat when PlaceholderAPI is installed
 - [x] The chat with the highest priority wins when several match

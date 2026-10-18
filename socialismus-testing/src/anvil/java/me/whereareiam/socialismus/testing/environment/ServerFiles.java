@@ -52,6 +52,8 @@ public final class ServerFiles {
 	public static final String CHAT_SETTINGS = "chat/settings.yml";
 	/** The messages of chat, such as the notice that no chat matched. */
 	public static final String CHAT_MESSAGES = "chat/messages.yml";
+	/** The messages of Socialismus itself, such as the reasons its requirements tell a player. */
+	public static final String MESSAGES = "messages.yml";
 
 	// The documents journeys write hold no Adventure types, so plain YAML writes them as Socialismus does.
 	private static final Configura CONFIGURA = Config.builder()

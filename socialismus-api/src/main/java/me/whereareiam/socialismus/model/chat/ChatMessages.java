@@ -3,6 +3,10 @@ package me.whereareiam.socialismus.model.chat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.whereareiam.socialismus.model.config.message.RequirementReasons;
+import me.whereareiam.socialismus.type.chat.Participants;
+
+import java.util.Map;
 
 /**
  * Configuration model for chat-related messages and formats.
@@ -45,6 +49,16 @@ public class ChatMessages {
      * Message shown when a trigger is used without any message content.
      */
     private String emptyMessage;
+
+    /**
+     * How chat words the requirements of chats it denies a player, by participant and then by the requirement's
+     * key, as the chats' own {@code requirements} hold them. Its placeholders are the requirement's and
+     * {@code {chat}}, the chat that denied the player; what it leaves unworded comes from {@code requirements} in
+     * {@code messages.yml}.
+     *
+     * @see me.whereareiam.socialismus.service.requirement.RequirementReasonService
+     */
+    private Map<Participants, Map<String, RequirementReasons>> requirements;
 
     /**
      * Configuration for clearing chat messages.
