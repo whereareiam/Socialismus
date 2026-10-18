@@ -45,5 +45,8 @@ class ReleaseCandidateUpgradeTest {
 		String settings = ServerFiles.read(anvil, "settings.yml");
 		assertFalse(settings.contains("synchronization:") || settings.contains("updater:") || settings.contains("misc:"), "settings.yml still holds what moved out: " + settings);
 		assertTrue(ServerFiles.read(anvil, "updater.yml").contains("interval: \"1h\""), "The updater interval did not become a duration");
+		String chatSettings = ServerFiles.read(anvil, "chat/settings.yml");
+		assertFalse(chatSettings.contains("permission: \"socialismus.admin\"") || chatSettings.contains("bypassPermission:"), "Chat history kept its permissions: " + chatSettings);
+		assertTrue(chatSettings.contains("bypassRequirements:"), "Chat history's permissions did not become requirement groups: " + chatSettings);
 	}
 }

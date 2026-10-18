@@ -1,15 +1,20 @@
 package me.whereareiam.socialismus.testing.commands;
 
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
+import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
 import me.whereareiam.socialismus.testing.environment.Socialismus;
 import me.whereareiam.socialismus.testing.journey.Player;
+import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.CHAT_SETTINGS;
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.chat;
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.world;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,6 +50,29 @@ class AdminCommandsTest {
 	}
 
 	@Test
+	@Socialismus(configure = NetherProtected.class)
+	void clearKeepsTheMessagesOfAPlayerWhoMeetsTheBypassRequirements(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+		Player bob = Player.joins(anvil, "Bob").travelsTo("minecraft:the_nether");
+		Player carol = Player.joins(anvil, "Carol").op();
+		for (String message : new String[]{"first", "second", "third"}) {
+			alice.chat(message);
+			carol.sees("[G] Alice: " + message);
+		}
+		for (String message : new String[]{"from below", "still below"}) {
+			bob.chat(message);
+			carol.sees("[G] Bob: " + message);
+		}
+
+		carol.command("socialismus clear Bob");
+		carol.sees("You can't clear chat history from this user");
+		assertTrue(alice.chatLines().contains("[G] Bob: from below"), "Bob's messages left Alice's chat");
+
+		carol.command("socialismus clear Alice");
+		carol.sees("Successfully cleared 3x chat history entries");
+	}
+
+	@Test
 	@Socialismus
 	void debugReportsThePlatformAndVersion(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice").op();
@@ -75,6 +103,20 @@ class AdminCommandsTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}"));
+		}
+	}
+
+	/**
+	 * Global chat, whose history keeps the messages of the players outside the overworld from clearing.
+	 */
+	static final class NetherProtected implements Consumer<ServerFiles> {
+		@Override
+		public void accept(ServerFiles files) {
+			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}"));
+			RequirementGroup outsideTheOverworld = world("world").toBuilder()
+					.operator(RequirementOperatorType.NOT)
+					.build();
+			files.put(CHAT_SETTINGS, Map.of("history", Map.of("bypassRequirements", outsideTheOverworld)));
 		}
 	}
 }

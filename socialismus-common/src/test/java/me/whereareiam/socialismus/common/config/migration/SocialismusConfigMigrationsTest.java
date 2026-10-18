@@ -24,7 +24,7 @@ class SocialismusConfigMigrationsTest {
 			.build();
 
 	/** The version of the core's last migration. */
-	private static final int LATEST = 3;
+	private static final int LATEST = 4;
 
 	@TempDir
 	Path dataPath;
@@ -100,6 +100,47 @@ class SocialismusConfigMigrationsTest {
 		// Earlier builds did not read it as chats, so it does not become chats now.
 		assertTrue(Files.exists(dataPath.resolve("chats/settings-backup.yml")));
 		assertFalse(Files.exists(dataPath.resolve("chat/list/settings-backup.yml")));
+	}
+
+	@Test
+	void turnsThePermissionsOfChatHistoryIntoRequirementGroups() throws IOException {
+		write("settings.yml", "_version: 1\n");
+		write("chats/settings.yml", """
+				history:
+				  fillerSize: 50
+				  historySize: 500
+				  permission: "chat.clear"
+				  bypassPermission: "chat.protected"
+				""");
+
+		migrate();
+
+		JsonNode history = read("chat/settings.yml").path("history");
+		assertFalse(history.has("permission") || history.has("bypassPermission"));
+		assertEquals(50, history.path("fillerSize").asInt());
+		assertPermissionGroup("chat.clear", history.path("requirements"));
+		assertPermissionGroup("chat.protected", history.path("bypassRequirements"));
+	}
+
+	@Test
+	void leavesChatHistoryWithoutPermissionsToTheDefaults() throws IOException {
+		write("settings.yml", "_version: 1\n");
+		write("chats/settings.yml", "history:\n  historySize: 500\n");
+
+		migrate();
+
+		JsonNode history = read("chat/settings.yml").path("history");
+		assertFalse(history.has("requirements") || history.has("bypassRequirements"));
+		assertEquals(500, history.path("historySize").asInt());
+	}
+
+	private static void assertPermissionGroup(String permission, JsonNode group) {
+		assertEquals("AND", group.path("operator").asText());
+		JsonNode requirement = group.path("groups").path("socialismus:permission");
+		assertEquals("HAS", requirement.path("condition").asText());
+		assertEquals("true", requirement.path("expected").asText());
+		assertEquals(permission, requirement.path("permissions").get(0).asText());
+		assertEquals(1, requirement.path("permissions").size());
 	}
 
 	@Test
