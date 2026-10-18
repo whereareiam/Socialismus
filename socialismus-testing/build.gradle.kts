@@ -123,6 +123,7 @@ anvil {
     artifact("dialogue", pluginJar(projects.moduleDialogue))
     artifact("essentials", pluginJar(projects.moduleEssentials))
     artifact("bubbler", pluginJar(projects.moduleBubbler))
+    artifact("redis", pluginJar(projects.moduleRedis))
     artifact("module-requires-another-version", files(moduleRequiringAnotherVersion))
     artifact("module-for-another-platform", files(moduleForAnotherPlatform))
     artifact("module-journey-library", pluginJar(projects.fixtureModuleLibrary))

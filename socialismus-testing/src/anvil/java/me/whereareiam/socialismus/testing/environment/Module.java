@@ -9,7 +9,8 @@ public enum Module {
 	CHIRPER("chirper", "Chirper"),
 	DIALOGUE("dialogue", "Dialogue"),
 	ESSENTIALS("essentials", "Essentials"),
-	BUBBLER("bubbler", "Bubbler");
+	BUBBLER("bubbler", "Bubbler"),
+	REDIS("redis", "SocialismusRedis");
 
 	private final String artifact;
 	private final String name;
