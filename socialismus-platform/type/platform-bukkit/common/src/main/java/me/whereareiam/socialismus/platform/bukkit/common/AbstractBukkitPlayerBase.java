@@ -86,6 +86,17 @@ public abstract class AbstractBukkitPlayerBase extends SocialismusPlayer {
 		return new Position(loc.getX(), loc.getY(), loc.getZ());
 	}
 
+	/**
+	 * Asks the server, whose hidden players vanish plugins set through {@link Player#hidePlayer}; those plugins also
+	 * leave hidden players visible to whoever may see them, such as their staff.
+	 */
+	@Override
+	public boolean canSee(@NotNull SocialismusPlayer other) {
+		if (other instanceof AbstractBukkitPlayerBase bukkitOther) return bukkitPlayer.canSee(bukkitOther.bukkitPlayer);
+
+		return true;
+	}
+
 	@Override
 	public boolean isWithinRange(@NotNull SocialismusPlayer other, double range) {
 		if (!(other instanceof AbstractBukkitPlayerBase otherBukkit)) return false;
