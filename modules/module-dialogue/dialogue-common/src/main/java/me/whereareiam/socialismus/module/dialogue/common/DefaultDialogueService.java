@@ -4,8 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.DialogueService;
+import me.whereareiam.socialismus.module.dialogue.api.event.DialogueSendEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
@@ -29,6 +31,7 @@ public final class DefaultDialogueService implements DialogueService {
 	private final DialogueNotices notices;
 	private final PlayerRegistry playerRegistry;
 	private final Provider<DialogueSettings> settings;
+	private final EventManager eventManager;
 
 	@Override
 	public void send(@NotNull SocialismusPlayer sender, @NotNull String recipientName, @NotNull String content) {
@@ -45,8 +48,12 @@ public final class DefaultDialogueService implements DialogueService {
 			return;
 		}
 
+		DialogueSendEvent event = new DialogueSendEvent(sender, recipientAsSpelled, recipient.orElse(null), content);
+		eventManager.call(event);
+		if (event.isCancelled()) return;
+
 		Conversation conversation = conversationService.getOrCreateConversation(sender.getUsername(), recipientAsSpelled);
-		Message message = messageFactory.createMessage(sender, recipientAsSpelled, content, conversation.getId());
+		Message message = messageFactory.createMessage(sender, recipientAsSpelled, event.getContent(), conversation.getId());
 
 		deliveryCoordinator.processMessageDelivery(message);
 		conversationService.addMessage(conversation, message);

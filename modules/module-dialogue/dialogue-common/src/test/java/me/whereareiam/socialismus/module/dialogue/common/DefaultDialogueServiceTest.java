@@ -1,6 +1,8 @@
 package me.whereareiam.socialismus.module.dialogue.common;
 
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.module.dialogue.api.event.DialogueSendEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -28,6 +31,7 @@ class DefaultDialogueServiceTest {
 	private final MessageDeliveryCoordinator deliveryCoordinator = mock(MessageDeliveryCoordinator.class);
 	private final DialogueNotices notices = mock(DialogueNotices.class);
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
+	private final EventManager eventManager = mock(EventManager.class);
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
 	private final ConversationService conversationService =
 			new ConversationService(new InMemoryConversationStore(), () -> settings);
@@ -49,7 +53,8 @@ class DefaultDialogueServiceTest {
 				deliveryCoordinator,
 				notices,
 				playerRegistry,
-				() -> settings
+				() -> settings,
+				eventManager
 		);
 	}
 
@@ -63,6 +68,45 @@ class DefaultDialogueServiceTest {
 		assertEquals("Bob", message.getRecipientName());
 		assertEquals("hello", message.getContent());
 		assertEquals(List.of(message), conversationService.getOrCreateConversation("Alice", "Bob").getMessages());
+	}
+
+	@Test
+	void anAddOnStopsAMessageByCancellingTheSendEvent() {
+		online(bob);
+		doAnswer(call -> {
+			call.getArgument(0, DialogueSendEvent.class).setCancelled(true);
+			return null;
+		}).when(eventManager).call(any(DialogueSendEvent.class));
+
+		dialogueService.send(alice, "bob", "hello");
+
+		verifyNoInteractions(deliveryCoordinator);
+		assertTrue(conversationService.getPlayerConversations("Alice").isEmpty());
+	}
+
+	@Test
+	void anAddOnChangesWhatIsSent() {
+		online(bob);
+		doAnswer(call -> {
+			call.getArgument(0, DialogueSendEvent.class).setContent("h*llo");
+			return null;
+		}).when(eventManager).call(any(DialogueSendEvent.class));
+
+		dialogueService.send(alice, "bob", "hello");
+
+		assertEquals("h*llo", delivered().getContent());
+	}
+
+	@Test
+	void theSendEventNamesTheRecipientAsTheySpellThemselves() {
+		online(bob);
+
+		dialogueService.send(alice, "bob", "hello");
+
+		ArgumentCaptor<DialogueSendEvent> event = ArgumentCaptor.forClass(DialogueSendEvent.class);
+		verify(eventManager).call(event.capture());
+		assertEquals("Bob", event.getValue().getRecipientName());
+		assertEquals(bob, event.getValue().getRecipient());
 	}
 
 	@Test

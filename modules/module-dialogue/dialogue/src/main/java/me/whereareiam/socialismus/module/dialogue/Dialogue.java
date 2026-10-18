@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueCommands;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
@@ -47,7 +48,8 @@ public class Dialogue extends SocialisticModule {
 						parentInjector.getInstance(PlayerRegistry.class),
 						parentInjector.getInstance(RequirementEvaluatorService.class),
 						parentInjector.getInstance(SerializationService.class),
-						parentInjector.getInstance(SyncService.class)
+						parentInjector.getInstance(SyncService.class),
+						parentInjector.getInstance(EventManager.class)
 				),
 				new CommonConfiguration(workingPath)
 		);
