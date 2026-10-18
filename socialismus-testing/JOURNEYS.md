@@ -71,9 +71,9 @@ One Paper server unless stated otherwise.
 
 - [x] `/socialismus help` lists the commands the player may use **first**
 - [x] `/socialismus reload` applies a changed format without a restart **first**
-- [ ] `/socialismus clear` clears the chat of the players
-- [ ] `/socialismus debug` reports the platform and version
-- [ ] A player without permission neither sees nor runs the administrator commands
+- [x] `/socialismus clear` clears the chat of the players
+- [x] `/socialismus debug` reports the platform and version
+- [x] A player without permission neither sees nor runs the administrator commands
 
 ## platform
 
