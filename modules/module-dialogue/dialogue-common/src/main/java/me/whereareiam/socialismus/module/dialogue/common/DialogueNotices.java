@@ -34,6 +34,18 @@ public class DialogueNotices {
 		send(sender, messaging().getNoRecipient(), Map.of("recipientName", recipientName));
 	}
 
+	public void noConversationMode(@NotNull SocialismusPlayer player) {
+		send(player, messaging().getConversationMode().getUnavailable(), Map.of());
+	}
+
+	public void conversationEntered(@NotNull SocialismusPlayer player, @NotNull String partner) {
+		send(player, messaging().getConversationMode().getEntered(), Map.of("recipientName", partner));
+	}
+
+	public void conversationLeft(@NotNull SocialismusPlayer player, @NotNull String partner) {
+		send(player, messaging().getConversationMode().getLeft(), Map.of("recipientName", partner));
+	}
+
 	public void noConversations(@NotNull SocialismusPlayer sender) {
 		send(sender, messaging().getReply().getNoConversations(), Map.of());
 	}

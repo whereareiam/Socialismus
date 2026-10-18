@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueCommands;
@@ -16,6 +17,8 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingForm
 import me.whereareiam.socialismus.module.dialogue.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.dialogue.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.dialogue.common.config.migration.DialogueConfigMigrations;
+import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationChat;
+import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.DialogueNetworkBridge;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -68,11 +71,21 @@ public class Dialogue extends SocialisticModule {
 	public void onEnable() {
 		injector.getInstance(CommandRegistrar.class).registerCommands();
 		injector.getInstance(DialogueNetworkBridge.class).initialize();
+		listeners().forEach(eventManager()::register);
 	}
 
 	@Override
 	public void onDisable() {
+		listeners().forEach(eventManager()::unregister);
 		injector.getInstance(Scheduler.class).cancelByModule("dialogue");
+	}
+
+	private List<EventListener> listeners() {
+		return List.of(injector.getInstance(ConversationModes.class), injector.getInstance(ConversationChat.class));
+	}
+
+	private EventManager eventManager() {
+		return injector.getInstance(EventManager.class);
 	}
 
 	@Override

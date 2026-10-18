@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.module.dialogue.api.event.DialogueSendEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
+import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationService;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.InMemoryConversationStore;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.MessageDeliveryCoordinator;
@@ -32,6 +33,7 @@ class DefaultDialogueServiceTest {
 	private final DialogueNotices notices = mock(DialogueNotices.class);
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
 	private final EventManager eventManager = mock(EventManager.class);
+	private final ConversationModes conversationModes = new ConversationModes();
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
 	private final ConversationService conversationService =
 			new ConversationService(new InMemoryConversationStore(), () -> settings);
@@ -54,7 +56,8 @@ class DefaultDialogueServiceTest {
 				notices,
 				playerRegistry,
 				() -> settings,
-				eventManager
+				eventManager,
+				conversationModes
 		);
 	}
 
@@ -107,6 +110,51 @@ class DefaultDialogueServiceTest {
 		verify(eventManager).call(event.capture());
 		assertEquals("Bob", event.getValue().getRecipientName());
 		assertEquals(bob, event.getValue().getRecipient());
+	}
+
+	@Test
+	void namingAPartnerWithoutAMessageStartsAConversationAndNamingThemAgainEndsIt() {
+		online(bob);
+
+		dialogueService.converse(alice, "bob");
+		assertEquals(Optional.of("Bob"), dialogueService.conversationPartner(alice));
+		verify(notices).conversationEntered(alice, "Bob");
+
+		dialogueService.converse(alice, "BOB");
+		assertEquals(Optional.empty(), dialogueService.conversationPartner(alice));
+		verify(notices).conversationLeft(alice, "Bob");
+	}
+
+	@Test
+	void namingAnotherPartnerMovesTheConversation() {
+		SocialismusPlayer carol = TestDataBuilder.mockPlayer("Carol");
+		online(bob);
+		online(carol);
+
+		dialogueService.converse(alice, "bob");
+		dialogueService.converse(alice, "carol");
+
+		assertEquals(Optional.of("Carol"), dialogueService.conversationPartner(alice));
+	}
+
+	@Test
+	void conversationModeCanBeTurnedOff() {
+		settings.getMessaging().setConversationMode(false);
+
+		dialogueService.converse(alice, "bob");
+
+		verify(notices).noConversationMode(alice);
+		assertEquals(Optional.empty(), dialogueService.conversationPartner(alice));
+	}
+
+	@Test
+	void noConversationWithOneself() {
+		online(alice);
+
+		dialogueService.converse(alice, "alice");
+
+		verify(notices).samePlayer(alice);
+		assertEquals(Optional.empty(), dialogueService.conversationPartner(alice));
 	}
 
 	@Test

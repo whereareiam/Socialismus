@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Convers
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
 import me.whereareiam.socialismus.module.dialogue.common.config.defaults.DialogueSettingsDefaults;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Set;
@@ -41,6 +42,7 @@ public class TestDataBuilder {
 	public static SocialismusPlayer mockPlayer(String username) {
 		SocialismusPlayer player = mock(SocialismusPlayer.class);
 		when(player.getUsername()).thenReturn(username);
+		when(player.getUniqueId()).thenReturn(UUID.nameUUIDFromBytes(username.getBytes(StandardCharsets.UTF_8)));
 		return player;
 	}
 
