@@ -40,6 +40,17 @@ public @interface Socialismus {
 	String data() default "";
 
 	/**
+	 * Modules installed in Socialismus's {@code modules/} directory.
+	 */
+	Module[] modules() default {};
+
+	/**
+	 * Altered module jars installed in {@code modules/} beside {@link #modules()}, for journeys about the module
+	 * system.
+	 */
+	ModuleFixture[] moduleFixtures() default {};
+
+	/**
 	 * Files Socialismus starts with, applied in order after {@link #data()}. Each class needs a constructor without
 	 * parameters.
 	 */

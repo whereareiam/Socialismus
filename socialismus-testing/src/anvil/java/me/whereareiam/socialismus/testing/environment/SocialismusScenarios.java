@@ -68,6 +68,11 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 						.identity(CacheIdentity.PROCESS)
 						.build());
 
+		for (Module module : socialismus.modules())
+			workspace.asset(moduleJar(data, module.artifact(), module.moduleName()));
+		for (ModuleFixture fixture : socialismus.moduleFixtures())
+			workspace.asset(moduleJar(data, fixture.artifact(), fixture.moduleName()));
+
 		if (!socialismus.data().isBlank())
 			seeds(socialismus.data()).forEach(file -> workspace.asset(WorkspaceAsset.builder()
 					.group("socialismus-data")
@@ -83,6 +88,14 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 				.build()));
 
 		return workspace.build();
+	}
+
+	private static WorkspaceAsset moduleJar(String data, String artifact, String moduleName) {
+		return WorkspaceAsset.builder()
+				.group("socialismus-modules")
+				.source(AssetSource.artifact(artifact))
+				.target(Path.of(data, "modules", moduleName + ".jar"))
+				.build();
 	}
 
 	private static List<Seed> seeds(String resource) {
@@ -122,6 +135,8 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 						socialismus.network().name(),
 						socialismus.bundle() ? "bundle" : "",
 						socialismus.data().replace('/', '-'),
+						Arrays.stream(socialismus.modules()).map(Module::name).collect(Collectors.joining("+")),
+						Arrays.stream(socialismus.moduleFixtures()).map(ModuleFixture::name).collect(Collectors.joining("+")),
 						Arrays.stream(socialismus.configure()).map(SocialismusScenarios::changeName).collect(Collectors.joining("+")))
 				.filter(part -> !part.isBlank())
 				.collect(Collectors.joining("-"))

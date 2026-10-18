@@ -52,7 +52,28 @@ val journeyParallelism = providers.gradleProperty("socialismus.journeys.parallel
 /**
  * Suites the journeys are split into, each a JUnit tag; socialismus-testing/JOURNEYS.md plans what each one holds.
  */
-val journeySuites = listOf("chat", "commands", "platform", "network", "sync", "modules", "upgrade")
+val journeySuites = listOf(
+    "chat", "commands", "platform", "network", "sync", "upgrade",
+    "modules", "chirper", "essentials", "bubbler"
+)
+
+/**
+ * Chirper's jar with a module.json that asks for Socialismus 1.0.0, for the journey that expects the refusal.
+ */
+val moduleRequiringAnotherVersion by tasks.registering(Zip::class) {
+    val chirper = pluginJar(projects.moduleChirper)
+    from(chirper.elements.map { jars -> jars.map { zipTree(it) } }) {
+        filesMatching("module.json") {
+            // The base dependency's version is the pattern of Socialismus versions the module accepts.
+            filter { line ->
+                if (line.trimStart().startsWith("\"version\": \"((")) "      \"version\": \"1\\\\.0\\\\.0\","
+                else line
+            }
+        }
+    }
+    archiveFileName.set("module-requires-another-version.jar")
+    destinationDirectory.set(layout.buildDirectory.dir("modules"))
+}
 
 anvil {
     acceptEula()
@@ -68,6 +89,10 @@ anvil {
     artifact("bukkit", pluginJar(projects.platformBukkitBukkit))
     artifact("velocity", pluginJar(projects.platformProxyVelocity))
     artifact("bundle", pluginJar(projects.socialismusPlatform.bundle))
+    artifact("chirper", pluginJar(projects.moduleChirper))
+    artifact("essentials", pluginJar(projects.moduleEssentials))
+    artifact("bubbler", pluginJar(projects.moduleBubbler))
+    artifact("module-requires-another-version", files(moduleRequiringAnotherVersion))
 
     // Each suite runs the journeys of its tag in anvil<Suite>Test, such as anvilChatTest.
     suites {
