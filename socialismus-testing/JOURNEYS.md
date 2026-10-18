@@ -144,6 +144,7 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [x] `/msgtoggle` turns private messages off, except from senders who meet `control.toggle.bypass`
 - [x] `/ignore <player>` keeps that player's private messages away, and `/ignore` lists the ignored players
 - [x] With `control.ignore.includesChat`, ignoring a player hides their chat as well
+- [x] `/socialspy` shows staff the private messages of others; privacy mode keeps spies out
 - [ ] Toggles and ignores outlive a restart with SocialismusDatabase
 - [ ] A player hidden from the sender, such as by a vanish plugin, looks offline to them **needs a vanish plugin on the test server**
 - [ ] Clicking a received message suggests a reply to its sender **needs Anvil**: players see messages as plain text, without their click events

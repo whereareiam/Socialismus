@@ -9,6 +9,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueComma
 import me.whereareiam.socialismus.module.dialogue.command.executor.IgnoreCommand;
 import me.whereareiam.socialismus.module.dialogue.command.executor.MessageCommand;
 import me.whereareiam.socialismus.module.dialogue.command.executor.ReplyCommand;
+import me.whereareiam.socialismus.module.dialogue.command.executor.SpyCommand;
 import me.whereareiam.socialismus.module.dialogue.command.executor.ToggleCommand;
 import me.whereareiam.socialismus.service.CommandService;
 
@@ -25,7 +26,8 @@ public class CommandRegistrar {
 				injector.getInstance(MessageCommand.class),
 				injector.getInstance(ReplyCommand.class),
 				injector.getInstance(ToggleCommand.class),
-				injector.getInstance(IgnoreCommand.class)
+				injector.getInstance(IgnoreCommand.class),
+				injector.getInstance(SpyCommand.class)
 		);
 	}
 }

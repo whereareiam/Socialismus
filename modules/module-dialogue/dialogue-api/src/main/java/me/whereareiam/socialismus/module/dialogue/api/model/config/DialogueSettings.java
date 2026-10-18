@@ -27,6 +27,11 @@ public class DialogueSettings {
 	private Control control;
 
 	/**
+	 * What staff see of private messages.
+	 */
+	private Moderation moderation;
+
+	/**
 	 * Who may message whom, and how replies and conversations work.
 	 */
 	@Getter
@@ -145,6 +150,40 @@ public class DialogueSettings {
 
 			/**
 			 * The players who cannot be ignored, such as staff; nobody when absent.
+			 */
+			private RequirementGroup exempt;
+		}
+	}
+
+	/**
+	 * What staff see of private messages.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Moderation {
+		private Spy spy;
+
+		/**
+		 * Privacy mode: spying is unavailable to everyone. Dialogue keeps nothing it could expose later, and once it
+		 * stores conversations in a database it encrypts them there.
+		 */
+		private boolean privacy;
+
+		/**
+		 * Spying on private messages between other players.
+		 */
+		@Getter
+		@Setter
+		@ToString
+		public static class Spy {
+			/**
+			 * Whether staff may spy.
+			 */
+			private boolean enabled;
+
+			/**
+			 * The players whose private messages are never shown to spies; nobody when absent.
 			 */
 			private RequirementGroup exempt;
 		}

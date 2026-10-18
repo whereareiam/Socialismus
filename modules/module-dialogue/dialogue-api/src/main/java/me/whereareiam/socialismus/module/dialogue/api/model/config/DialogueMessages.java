@@ -19,6 +19,8 @@ public class DialogueMessages {
 
 	private Control control;
 
+	private Moderation moderation;
+
 	/**
 	 * What a player is told when a private message cannot be sent.
 	 */
@@ -159,6 +161,30 @@ public class DialogueMessages {
 
 				private String empty;
 			}
+		}
+	}
+
+	/**
+	 * The notices of what staff see of private messages.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Moderation {
+		private Spy spy;
+
+		/**
+		 * The notices of spying.
+		 */
+		@Getter
+		@Setter
+		@ToString
+		public static class Spy {
+			private String on;
+
+			private String off;
+
+			private String unavailable;
 		}
 	}
 }

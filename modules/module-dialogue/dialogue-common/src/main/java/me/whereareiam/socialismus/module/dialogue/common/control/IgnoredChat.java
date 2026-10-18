@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.event.chat.recipient.RecipientsSelectedEvent;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.IgnoreStore;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
+import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class IgnoredChat implements EventListener {
 	private final Provider<DialogueSettings> settings;
 	private final IgnoreStore ignores;
-	private final RecipientControl recipientControl;
+	private final SenderPrivileges privileges;
 
 	@SocialisticEvent
 	public void onRecipientsSelected(@NotNull RecipientsSelectedEvent event) {
@@ -28,7 +29,7 @@ public class IgnoredChat implements EventListener {
 		if (!ignore.isEnabled() || !ignore.isIncludesChat()) return;
 
 		SocialismusPlayer sender = event.getChatMessage().getSender();
-		if (recipientControl.meets(ignore.getExempt(), sender)) return;
+		if (privileges.meets(ignore.getExempt(), sender)) return;
 
 		event.getNewRecipients().removeIf(recipient -> ignores.ignores(recipient.getUniqueId(), sender.getUniqueId()));
 	}
