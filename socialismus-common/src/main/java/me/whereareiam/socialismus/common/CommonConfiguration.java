@@ -19,6 +19,8 @@ import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.render.ClearPlaceholderResolver;
 import me.whereareiam.socialismus.common.chat.render.DefaultChatRenderService;
+import me.whereareiam.socialismus.common.chat.toggle.DefaultChatToggleService;
+import me.whereareiam.socialismus.common.chat.toggle.InMemoryChatToggleStore;
 import me.whereareiam.socialismus.common.config.ConfigurationLifecycle;
 import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
 import me.whereareiam.socialismus.common.config.SocialismusConfiguraModule;
@@ -75,6 +77,8 @@ import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.UpdateProvider;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
+import me.whereareiam.socialismus.service.chat.ChatToggleService;
+import me.whereareiam.socialismus.service.chat.ChatToggleStore;
 import me.whereareiam.socialismus.service.chat.render.ChatMessageTransformer;
 import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
@@ -153,6 +157,9 @@ public class CommonConfiguration extends AbstractModule {
 
 		bind(ChatMessagesProvider.class).asEagerSingleton();
 		bind(ChatMessages.class).toProvider(ChatMessagesProvider.class);
+
+		bind(ChatToggleStore.class).to(InMemoryChatToggleStore.class);
+		bind(ChatToggleService.class).to(DefaultChatToggleService.class);
 
 		// Services
 		bind(SerializerEngine.class).toProvider(SerializerEngineProvider.class);

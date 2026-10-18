@@ -35,6 +35,18 @@ public class ChatSettingsDefaults implements DefaultsProvider<ChatSettings> {
 		history.setBypassRequirements(permission("socialismus.admin"));
 		chatSettings.setHistory(history);
 
+		ChatSettings.Toggle toggle = new ChatSettings.Toggle();
+		toggle.setEnabled(true);
+		toggle.setBypass(RequirementGroup.builder()
+				.operator(RequirementOperatorType.AND)
+				.groups(RequirementGroup.of(Constants.Requirements.PERMISSION, PermissionRequirement.builder()
+						.condition(RequirementConditionType.HAS)
+						.expected("true")
+						.permissions(List.of("socialismus.chat.toggle.bypass"))
+						.build()))
+				.build());
+		chatSettings.setToggle(toggle);
+
 		return chatSettings;
 	}
 

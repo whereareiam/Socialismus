@@ -30,6 +30,11 @@ public class ChatSettings {
 	 */
 	private ChatHistorySettings history;
 
+	/**
+	 * Players turning chats off for themselves.
+	 */
+	private Toggle toggle;
+
 
 	/**
 	 * Configuration class for fallback chat settings.
@@ -114,5 +119,23 @@ public class ChatSettings {
 		 * Whether to tell the sender that a trigger was used without any message.
 		 */
 		private boolean emptyMessage;
+	}
+
+	/**
+	 * Players turning chats off for themselves, with {@code /socialismus toggle <chat>}.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Toggle {
+		/**
+		 * Whether players may turn chats off.
+		 */
+		private boolean enabled;
+
+		/**
+		 * The senders whose messages still reach players who turned the chat off; nobody when absent.
+		 */
+		private RequirementGroup bypass;
 	}
 }

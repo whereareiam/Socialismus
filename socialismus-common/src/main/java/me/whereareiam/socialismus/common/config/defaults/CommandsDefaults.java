@@ -88,7 +88,22 @@ public class CommandsDefaults implements DefaultsProvider<Commands> {
 		commands.getCommands().put("help", help);
 		commands.getCommands().put("debug", debug);
 		commands.getCommands().put("reload", reload);
+		CommandDefinition toggle = CommandDefinition.builder()
+				.enabled(true)
+				.aliases(List.of("toggle"))
+				.permission("")
+				.description("Turn a chat off for yourself, or back on")
+				.usage("{command} {alias} <chat>")
+				.cooldown(CommandDefinition.Cooldown.builder()
+						.enabled(true)
+						.duration(2)
+						.group("global")
+						.build())
+				.arguments(Map.of("chat", "Chat"))
+				.build();
+
 		commands.getCommands().put("clear", clear);
+		commands.getCommands().put("toggle", toggle);
 		return commands;
 	}
 }

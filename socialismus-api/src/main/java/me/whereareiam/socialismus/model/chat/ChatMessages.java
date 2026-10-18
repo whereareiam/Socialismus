@@ -66,6 +66,11 @@ public class ChatMessages {
     private ClearFormat clearFormat;
 
     /**
+     * The notices of turning a chat off, with {@code {chat}} filled in.
+     */
+    private Toggle toggle;
+
+    /**
      * Nested configuration class for chat clearing format.
      */
     @Getter
@@ -76,5 +81,23 @@ public class ChatMessages {
          * The format string used when clearing chat.
          */
         private String format;
+    }
+
+    /**
+     * The notices of turning a chat off.
+     */
+    @Getter
+    @Setter
+    @ToString
+    public static class Toggle {
+        private String off;
+
+        private String on;
+
+        private String notToggleable;
+
+        private String unknown;
+
+        private String unavailable;
     }
 }

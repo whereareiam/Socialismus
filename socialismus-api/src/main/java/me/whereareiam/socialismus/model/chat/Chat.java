@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.model.chat;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -50,4 +51,11 @@ public class Chat {
 	 * Map of requirements for different participant types
 	 */
 	private Map<Participants, RequirementGroup> requirements;
+
+	/**
+	 * Whether players may turn this chat off for themselves; a chat that must always reach everyone, such as staff
+	 * announcements, sets it to {@code false}.
+	 */
+	@Builder.Default
+	private boolean toggleable = true;
 }

@@ -15,6 +15,7 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.service.chat.ChatToggleStore;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -28,17 +29,20 @@ public class RecipientSelector {
 	private final RequirementEvaluator requirementEvaluator;
 	private final Provider<ChatSettings> settingsProvider;
 	private final Provider<ChatMessages> messagesProvider;
+	private final ChatToggleStore toggles;
 
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<ChatMessage> workerProcessor,
 			RequirementEvaluator requirementEvaluator,
 			Provider<ChatSettings> settings,
-			Provider<ChatMessages> messages
+			Provider<ChatMessages> messages,
+			ChatToggleStore toggles
 	) {
 		this.requirementEvaluator = requirementEvaluator;
 		this.settingsProvider = settings;
 		this.messagesProvider = messages;
+		this.toggles = toggles;
 
 		workerProcessor.addWorker(new Worker<>(this::selectRecipients, 100, true, false));
 	}
@@ -59,12 +63,14 @@ public class RecipientSelector {
 		Collection<SocialismusPlayer> recipients = chatMessage.getRecipients();
 
 		final int radius = determineRadius(chatMessage, chat);
+		final boolean reachesToggledOff = reachesPlayersWhoTurnedItOff(chat, sender, settings);
 
 		if (radius > 0) {
 			recipients = recipients.stream()
 					.filter(r -> isInSameRealm(sender, r))
 					.filter(r -> isWithinRadius(sender, r, radius))
 					.filter(r -> meetsRecipientRequirements(chat, r))
+					.filter(r -> reachesToggledOff || r == sender || !toggles.isOff(r.getUniqueId(), chat.getId()))
 					.collect(Collectors.toSet());
 
 			// If nobody nearby (<=1 usually means only the sender), optionally notify & cancel
@@ -76,6 +82,7 @@ public class RecipientSelector {
 		} else {
 			recipients = recipients.stream()
 					.filter(r -> meetsRecipientRequirements(chat, r))
+					.filter(r -> reachesToggledOff || r == sender || !toggles.isOff(r.getUniqueId(), chat.getId()))
 					.collect(Collectors.toSet());
 		}
 
@@ -111,6 +118,17 @@ public class RecipientSelector {
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Returns whether a message reaches the players who turned its chat off: when players may not turn chats off,
+	 * when this chat may not be turned off, or when the sender meets {@code toggle.bypass}.
+	 */
+	private boolean reachesPlayersWhoTurnedItOff(Chat chat, SocialismusPlayer sender, ChatSettings settings) {
+		ChatSettings.Toggle toggle = settings.getToggle();
+		if (toggle == null || !toggle.isEnabled() || !chat.isToggleable()) return true;
+
+		return toggle.getBypass() != null && requirementEvaluator.check(toggle.getBypass(), sender);
 	}
 
 	private boolean meetsRecipientRequirements(Chat chat, SocialismusPlayer recipient) {

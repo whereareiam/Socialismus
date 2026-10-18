@@ -44,6 +44,14 @@ public class ChatMessagesDefaults implements DefaultsProvider<ChatMessages> {
 		clearFormat.setFormat("<gray>[<red>X</red>]</gray> ");
 		chatMessages.setClearFormat(clearFormat);
 
+		ChatMessages.Toggle toggle = new ChatMessages.Toggle();
+		toggle.setOff("{prefix}<white>You no longer see <gray>{chat}</gray> chat.");
+		toggle.setOn("{prefix}<white>You see <gray>{chat}</gray> chat again.");
+		toggle.setNotToggleable("{prefix}<gray>{chat}</gray> <white>chat cannot be turned off.");
+		toggle.setUnknown("{prefix}<white>There is no chat <gray>{chat}</gray>.");
+		toggle.setUnavailable("{prefix}<white>Chats cannot be turned off here.");
+		chatMessages.setToggle(toggle);
+
 		return chatMessages;
 	}
 
