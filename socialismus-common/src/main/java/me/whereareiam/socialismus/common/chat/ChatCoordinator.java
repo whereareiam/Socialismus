@@ -8,7 +8,9 @@ import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcastPolicy;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.chat.ChatBroadcastEvent;
+import me.whereareiam.socialismus.event.chat.ChatReceivedEvent;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
@@ -24,8 +26,16 @@ public class ChatCoordinator implements ChatCoordinationService {
 	private final ChatMessageProcessor chatMessageProcessor;
 	private final ChatBroadcaster chatBroadcaster;
 	private final ChatBroadcastPolicy policy;
+	private final EventManager eventManager;
 
 	public FormattedChatMessage coordinate(ChatMessage raw) {
+		// A message written on this server has no origin; one from another server was offered to modules there.
+		if (raw.getOrigin() == null) {
+			ChatReceivedEvent received = new ChatReceivedEvent(raw);
+			eventManager.call(received);
+			if (received.isCancelled()) return FormattedChatMessage.builder().cancelled(true).build();
+		}
+
 		raw = chatMessageProcessor.process(raw);
 		if (raw.isCancelled()) return FormattedChatMessage.builder().cancelled(true).build();
 
