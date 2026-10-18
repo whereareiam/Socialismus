@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
+import com.google.inject.spi.Message;
 import me.whereareiam.socialismus.AnsiColor;
 import me.whereareiam.socialismus.exception.ModuleLifecycleException;
 import me.whereareiam.socialismus.logging.Logger;
@@ -85,7 +86,7 @@ public class ModuleLifecycleController {
 				unregisterResources(module);
 				closeModuleLibraries(moduleLibraries.remove(module));
 				closeModuleClassLoader(moduleClassLoaders.remove(module));
-				Logger.severe("Module " + module.getName() + " aborted load: " + ex.getMessage());
+				Logger.severe("Module " + module.getName() + " aborted load: " + refusalReason(ex));
 				module.setState(ModuleState.ERROR);
 				return;
 			}
@@ -96,7 +97,7 @@ public class ModuleLifecycleController {
 			ModuleClassLoader storedLoader = moduleClassLoaders.remove(module);
 			if (storedLoader != loader) closeModuleClassLoader(storedLoader);
 			closeModuleClassLoader(loader);
-			Logger.severe("Failed to load module " + module.getName() + ": " + e);
+			Logger.severe("Failed to load module " + module.getName() + ": " + refusalReason(e));
 			module.setState(ModuleState.ERROR);
 		}
 	}
@@ -190,6 +191,22 @@ public class ModuleLifecycleController {
 		}
 
 		return new ModuleClassLoader(module.getPath().toUri().toURL(), platformClassLoader.getClassLoader(), exports, platformDependencies);
+	}
+
+	/**
+	 * Returns why a module refused to load, as the module states it: the message of the
+	 * {@link ModuleLifecycleException} it threw, even when Guice wrapped it while building the module's services,
+	 * and otherwise the failure itself.
+	 */
+	static String refusalReason(Throwable failure) {
+		for (Throwable cause = failure; cause != null; cause = cause.getCause())
+			if (cause instanceof ModuleLifecycleException refusal && refusal.getMessage() != null) return refusal.getMessage();
+
+		if (failure instanceof ProvisionException provision)
+			for (Message message : provision.getErrorMessages())
+				if (message.getCause() != null) return refusalReason(message.getCause());
+
+		return failure.getMessage() != null ? failure.getMessage() : failure.toString();
 	}
 
 	private void closeModuleLibraries(ModuleLibraryLoader.LoadedModuleLibraries libraries) {
