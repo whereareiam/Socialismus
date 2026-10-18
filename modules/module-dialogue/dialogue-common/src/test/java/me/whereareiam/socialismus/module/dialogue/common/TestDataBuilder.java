@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +44,7 @@ public class TestDataBuilder {
 		SocialismusPlayer player = mock(SocialismusPlayer.class);
 		when(player.getUsername()).thenReturn(username);
 		when(player.getUniqueId()).thenReturn(UUID.nameUUIDFromBytes(username.getBytes(StandardCharsets.UTF_8)));
+		when(player.canSee(any())).thenReturn(true);
 		return player;
 	}
 

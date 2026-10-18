@@ -45,6 +45,12 @@ public final class DefaultDialogueService implements DialogueService {
 			return;
 		}
 
+		// A player hidden from the sender, such as by a vanish plugin, looks offline to them.
+		if (recipient.isPresent() && !sender.canSee(recipient.get())) {
+			notices.noRecipient(sender, recipientName);
+			return;
+		}
+
 		if (!requirements.allows(sender, recipient.orElse(null))) {
 			notices.notAllowed(sender, recipientAsSpelled);
 			return;

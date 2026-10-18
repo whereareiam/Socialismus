@@ -141,6 +141,7 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [x] A private message is shown as its sender wrote it, never read as formatting such as a click
 - [x] The recipient gets the alert of their format: a sound, an action bar and a title
 - [x] `/message <player>` without a message sends chat to that player until the same command ends it
+- [ ] A player hidden from the sender, such as by a vanish plugin, looks offline to them **needs a vanish plugin on the test server**
 - [ ] Clicking a received message suggests a reply to its sender **needs Anvil**: players see messages as plain text, without their click events
 - [ ] `/reply` to a conversation older than `messaging.reply.timeout` lists the recent conversations
 - [ ] Private messages reach a player on another backend, and the sender sees them once the backend confirms
