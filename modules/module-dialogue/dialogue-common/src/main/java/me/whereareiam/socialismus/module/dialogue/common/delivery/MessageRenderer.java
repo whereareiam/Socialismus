@@ -8,12 +8,14 @@ import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.module.dialogue.api.model.DialogueAlert;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,20 +64,42 @@ public class MessageRenderer {
 			return;
 		}
 
-		Component shown = Serializer.serialize(SerializerContent.builder()
+		viewer.sendMessage(render(viewer, message, format.getFormat()));
+		if (format.getAlert() != null) alert(viewer, message, format.getAlert());
+	}
+
+	private void alert(SocialismusPlayer viewer, Message message, DialogueAlert alert) {
+		if (alert.getSound() != null) viewer.playSound(alert.getSound(), 1f, 1f);
+		if (alert.getActionBar() != null) viewer.getAudience().sendActionBar(render(viewer, message, alert.getActionBar()));
+
+		DialogueAlert.Title title = alert.getTitle();
+		if (title == null) return;
+
+		viewer.getAudience().showTitle(Title.title(
+				title.getTitle() == null ? Component.empty() : render(viewer, message, title.getTitle()),
+				title.getSubtitle() == null ? Component.empty() : render(viewer, message, title.getSubtitle()),
+				Title.Times.times(title.getFadeIn(), title.getStay(), title.getFadeOut())
+		));
+	}
+
+	/**
+	 * Renders a text of a format for its viewer. The message goes in after the text is parsed, so what a player
+	 * wrote is shown as written and never read as formatting, such as a click that runs a command.
+	 */
+	private static Component render(SocialismusPlayer viewer, Message message, String text) {
+		Component rendered = Serializer.serialize(SerializerContent.builder()
 				.receiver(viewer)
-				.message(format.getFormat())
+				.message(text)
 				.placeholders(Map.of(
 						"senderName", message.getSender().getUsername(),
 						"recipientName", message.getRecipientName()
 				))
 				.build());
-		// The message goes in after the format is parsed, so what a player wrote is shown as written and never read
-		// as formatting, such as a click that runs a command.
-		viewer.sendMessage(shown.replaceText(TextReplacementConfig.builder()
+
+		return rendered.replaceText(TextReplacementConfig.builder()
 				.matchLiteral(Serializer.placeholder("message"))
 				.replacement(Component.text(message.getContent()))
-				.build()));
+				.build());
 	}
 
 	private @Nullable DialogueFormat select(
