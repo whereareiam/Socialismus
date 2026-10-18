@@ -158,6 +158,17 @@ class DefaultDialogueServiceTest {
 	}
 
 	@Test
+	void aRecipientHiddenFromTheSenderLooksOffline() {
+		online(bob);
+		when(alice.canSee(bob)).thenReturn(false);
+
+		dialogueService.send(alice, "bob", "hello");
+
+		verify(notices).noRecipient(alice, "bob");
+		verifyNoInteractions(deliveryCoordinator);
+	}
+
+	@Test
 	void refusesAMessageToOneself() {
 		online(alice);
 
