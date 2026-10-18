@@ -18,7 +18,7 @@ configura = "2.1.0"
 keystone = "1.0.0"
 commandant = "1.0.0"
 strata = "3.2.0"
-anvil = "1.0.0"
+anvil = "dev-f3dfcee"
 
 # testing
 junit = "6.1.3"

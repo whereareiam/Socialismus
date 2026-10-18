@@ -5,9 +5,10 @@ import me.whereareiam.anvil.api.model.player.PlayerOptions;
 import me.whereareiam.anvil.api.player.SimulatedPlayer;
 import me.whereareiam.anvil.api.process.ProcessConsole;
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
+import me.whereareiam.anvil.capability.messages.MessageWatch;
 import me.whereareiam.anvil.capability.messages.Messages;
-import me.whereareiam.anvil.capability.messages.model.ReceivedMessage;
-import me.whereareiam.anvil.capability.server.Server;
+import me.whereareiam.anvil.capability.players.PlayerWatch;
+import me.whereareiam.anvil.capability.players.Players;
 import me.whereareiam.anvil.capability.session.Session;
 import me.whereareiam.socialismus.testing.environment.Network;
 import org.jetbrains.annotations.NotNull;
@@ -37,14 +38,14 @@ public final class Player {
 	private final ScenarioContext anvil;
 	private final String name;
 	private final Messages messages;
-	/** Position in the player's messages after which its next expectation looks. */
-	private int checkpoint;
+	/** The player's messages after the one its previous expectation found, where its next expectation looks. */
+	private final MessageWatch inbox;
 
 	private Player(ScenarioContext anvil, String name, SimulatedPlayer player) {
 		this.anvil = anvil;
 		this.name = name;
 		this.messages = player.capability(Messages.class);
-		this.checkpoint = messages.checkpoint();
+		this.inbox = messages.watch();
 	}
 
 	/**
@@ -61,9 +62,10 @@ public final class Player {
 				.login(PlayerLogin.offline(name))
 				.build());
 		Player journey = new Player(anvil, name, player);
+		PlayerWatch arrivals = anvil.processes().server(Network.SERVER).capability(Players.class).watch();
 
 		player.capability(Session.class).connect();
-		player.capability(Server.class).joined(Network.SERVER, TIMEOUT);
+		arrivals.joined(player, TIMEOUT);
 		journey.takesMessages();
 
 		return journey;
@@ -117,7 +119,7 @@ public final class Player {
 	 */
 	@NotNull
 	public Player neverSees(@NotNull String text) {
-		messages.notReceived(message -> message.contains(text), checkpoint, ABSENCE);
+		inbox.neverReceived(text, ABSENCE);
 		return this;
 	}
 
@@ -169,7 +171,7 @@ public final class Player {
 		for (int attempt = 0; attempt < READINESS_ATTEMPTS; attempt++) {
 			server.sendCommand("tellraw " + name + " {\"text\":\"" + token + "\"}");
 			try {
-				checkpoint = messages.received(message -> message.contains(token), checkpoint, Duration.ofSeconds(1)).getCheckpoint();
+				inbox.received(token, Duration.ofSeconds(1));
 				return;
 			} catch (IllegalStateException notYet) {
 				// The client did not take it yet; send it again.
@@ -180,15 +182,11 @@ public final class Player {
 	}
 
 	private String received(String expected, Predicate<String> matcher) {
-		ReceivedMessage message;
 		try {
-			message = messages.received(matcher, checkpoint, TIMEOUT);
+			return inbox.received(matcher, TIMEOUT);
 		} catch (IllegalStateException failure) {
 			throw new AssertionError(name + " did not receive " + expected + "; since its previous step it received "
-					+ messages.history().subList(checkpoint, messages.history().size()), failure);
+					+ inbox.unread(), failure);
 		}
-		checkpoint = message.getCheckpoint();
-
-		return message.getText();
 	}
 }
