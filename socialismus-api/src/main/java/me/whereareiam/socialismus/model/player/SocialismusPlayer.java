@@ -43,42 +43,18 @@ public abstract class SocialismusPlayer implements Actor {
 	private final Map<String, Object> customData = new ConcurrentHashMap<>();
 
 	/**
-	 * Static reference to PlayerRegistry for syncing data.
-	 * Set by the service implementation during initialization.
-	 */
-	@Setter
-	private static PlayerRegistry playerRegistry;
-
-	/**
-	 * Constructor for platform-specific implementations.
+	 * Creates a player. A platform registers the player it hosts in the {@link PlayerRegistry} once the player is
+	 * fully built, never from this constructor, so listeners of its registration see a complete player.
 	 *
-	 * @param uniqueId The player's UUID
-	 * @param username The player's username
+	 * @param uniqueId the player's unique id
+	 * @param username the player's name
 	 */
 	protected SocialismusPlayer(
 			@NotNull UUID uniqueId,
 			@NotNull String username
 	) {
-		this(uniqueId, username, true);
-	}
-
-	/**
-	 * Creates a player, registered as one this server hosts only when {@code hosted}.
-	 *
-	 * @param uniqueId the player's unique id
-	 * @param username the player's name
-	 * @param hosted   whether this server hosts the player; {@code false} for a player it only knows of, such as one on
-	 *                 another server of a network, which then never takes the place of a hosted one
-	 */
-	protected SocialismusPlayer(
-			@NotNull UUID uniqueId,
-			@NotNull String username,
-			boolean hosted
-	) {
 		this.uniqueId = uniqueId;
 		this.username = username;
-
-		if (hosted && playerRegistry != null) playerRegistry.syncPlayerData(this);
 	}
 
 	/**

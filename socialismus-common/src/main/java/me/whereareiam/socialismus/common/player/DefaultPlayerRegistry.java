@@ -32,7 +32,6 @@ public class DefaultPlayerRegistry implements PlayerRegistry {
 	@Inject
 	public DefaultPlayerRegistry(@NotNull EventManager eventManager) {
 		this.eventManager = eventManager;
-		SocialismusPlayer.setPlayerRegistry(this);
 	}
 
 	@Override
