@@ -54,4 +54,5 @@ toolkitDistribution {
     file("Channelizer", ":module-channelizer", "shadowJar")
     file("Database", ":module-database", "shadowJar")
     file("Network", ":module-network", "shadowJar")
+    file("Link", ":module-link", "shadowJar")
 }

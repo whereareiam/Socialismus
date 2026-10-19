@@ -14,7 +14,8 @@ Install on every Socialismus that takes part:
 - `Socialismus-Network` in `modules/`
 - one transport in `modules/`:
   - `Socialismus-Redis`, when you run a Redis that every Socialismus reaches. It also stores what the network shares, so a starting server picks it up straight from Redis.
-  - `Socialismus-Channelizer`, on servers behind a proxy, when there is no Redis. It sends plugin messages through the proxy, so it only carries messages while players are online on both servers, and it cannot connect proxies to each other.
+  - `Socialismus-Link`, for one proxy and its servers, when there is no Redis. The proxy listens on a port and every server connects to it with a shared secret, written by the proxy's first start into `modules/SocialismusLink/settings.yml`; copy it to every server and set `proxy` there to where the proxy listens.
+  - `Socialismus-Channelizer`, on servers behind a proxy that does not run Socialismus. It sends plugin messages through the proxy, so it only carries messages while players are online on both servers, and it cannot connect proxies to each other.
 
 Without a transport, SocialismusNetwork runs alone: nothing leaves the server.
 
@@ -26,7 +27,7 @@ Without a transport, SocialismusNetwork runs alone: nothing leaves the server.
 | One proxy, servers without Socialismus | no; the proxy already sees every server's players | none |
 | Several proxies | yes | Redis |
 | Several servers, proxy without Socialismus | yes | Redis or Channelizer |
-| Proxy and servers, all with Socialismus | yes | Redis or Channelizer |
+| Proxy and servers, all with Socialismus | yes | Redis or Link |
 
 Where a proxy and its servers all run Socialismus, each player's chat is handled exactly once: by their server when it runs Socialismus, since a server can take a message back while a proxy cannot, and by the proxy otherwise. When a server stops, the proxy takes over its players within the lease time.
 

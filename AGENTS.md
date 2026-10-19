@@ -103,7 +103,7 @@ socialismus-platform/
 - The `dev` ruleset requires `Title and labels` and `Checks / Result`, which passes only when the build and every journey suite pass, so a new suite needs no change to the ruleset.
 - Dependabot groups minor and patch updates into one pull request per ecosystem, and `dependabot-auto-merge.yml` turns on auto-merge for it, so it merges once the checks pass; a major update gets a pull request of its own and waits for review. The merge goes through a GitHub App, because a merge by `GITHUB_TOKEN` would not start the workflows of the push to `dev`; its `MERGE_APP_CLIENT_ID` and `MERGE_APP_PRIVATE_KEY` are Dependabot secrets, since a run Dependabot starts gets no Actions secrets.
 - Label a pull request with exactly one of `feature`, `change`, `bug`, `dependencies`, or with `skip-changelog`; `major` may accompany a category.
-- Add `module:chirper`, `module:bubbler`, `module:dialogue`, `module:essentials`, `module:redis`, `module:channelizer`, `module:database` or `module:network` when a pull request or issue concerns that module's jar; work on the plugin itself carries no such label.
+- Add `module:chirper`, `module:bubbler`, `module:dialogue`, `module:essentials`, `module:redis`, `module:channelizer`, `module:database`, `module:network` or `module:link` when a pull request or issue concerns that module's jar; work on the plugin itself carries no such label.
 - A run keeps as artifacts only what someone downloads: `socialismus-plugins-<version>` from a development build or release, and `test-results` when a test failed.
 - Development builds are started manually and publish a branch-qualified version. A published GitHub release publishes Maven artifacts, attaches the jars, and publishes to the stores; a manual run of the release workflow only republishes to the stores.
 - Entry workflows only select a trigger and call `reusable-verify.yml` and `reusable-publish.yml`; shared steps come from `whereareiam/devops` and `whereareiam/blockops`.
@@ -126,7 +126,7 @@ A merged pull request lands in the release draft as `* <title> ([#<number>](<url
 
 Areas for admins and players:
 
-`Chat`, `Commands`, `Configuration`, `Integrations`, `Messages`, `Modules`, `Placeholders`, `Platform`, `Synchronization`, `Updates`, `Chirper`, `Bubbler`, `Dialogue`, `Essentials`, `SocialismusRedis`, `SocialismusChannelizer`, `SocialismusDatabase`, `SocialismusNetwork`
+`Chat`, `Commands`, `Configuration`, `Integrations`, `Messages`, `Modules`, `Placeholders`, `Platform`, `Synchronization`, `Updates`, `Chirper`, `Bubbler`, `Dialogue`, `Essentials`, `SocialismusRedis`, `SocialismusChannelizer`, `SocialismusDatabase`, `SocialismusNetwork`, `SocialismusLink`
 
 - reuse an existing area whenever one fits; a new admin command is `Commands`, a new setting in a module's file belongs to that module's area
 - add a new area only for something admins recognise by that name, such as a new feature, module, or config file, and add it to this list in the same pull request

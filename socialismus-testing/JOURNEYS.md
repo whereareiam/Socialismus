@@ -109,6 +109,9 @@ as a container process of the network (`containers = Container.REDIS`), so those
 
 - [x] SocialismusRedis brings its Redis client and refuses to load with a reason when Redis cannot be reached
 - [x] SocialismusNetwork joins the network under the node id its first start wrote, alone when no transport is there
+- [x] SocialismusLink on a server writes a secret and keeps trying to reach the proxy, saying so once
+- [ ] With SocialismusLink, a proxy and its servers share chat without Redis **needs Anvil**: a port for the
+  link the proxy listens on, which Anvil reserves and names to the servers
 - [x] With SocialismusChannelizer, a global message reaches the players on the other backend and a local one stays on its own
 - [x] With SocialismusRedis, the same holds through Redis, and the sender's name and format arrive as written
 - [x] A backend keeps chatting while Redis hangs, and shares chat again once Redis answers
