@@ -9,4 +9,6 @@ socialismusModule {
 dependencies {
     implementation(projects.moduleRedisApi)
     implementation(projects.moduleRedisCommon)
+
+    compileOnly(libs.jedis)
 }
