@@ -22,9 +22,10 @@ public class NodeRecord {
 	private NodeRole role;
 	private String server;
 	private String version;
+	private boolean handlesChat = true;
 
 	static NodeRecord of(NetworkNode node) {
-		return new NodeRecord(node.getId().value(), node.getRole(), node.getServer(), node.getVersion());
+		return new NodeRecord(node.getId().value(), node.getRole(), node.getServer(), node.getVersion(), node.isHandlesChat());
 	}
 
 	NetworkNode toNode() {
@@ -33,6 +34,7 @@ public class NodeRecord {
 				.role(role)
 				.server(server)
 				.version(version)
+				.handlesChat(handlesChat)
 				.build();
 	}
 }
