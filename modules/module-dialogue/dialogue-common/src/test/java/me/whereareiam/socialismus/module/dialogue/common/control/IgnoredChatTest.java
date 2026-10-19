@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
+import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryIgnoreStore;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import org.junit.jupiter.api.Test;
 

@@ -21,9 +21,8 @@ import me.whereareiam.socialismus.module.dialogue.common.config.migration.Dialog
 import me.whereareiam.socialismus.module.dialogue.common.control.IgnoredChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
-import me.whereareiam.socialismus.module.dialogue.common.delivery.RemoteDeliveries;
 import me.whereareiam.socialismus.module.dialogue.common.moderation.Spying;
-import me.whereareiam.socialismus.module.dialogue.network.DialogueNetworkSupport;
+import me.whereareiam.socialismus.module.dialogue.network.DialogueNetwork;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -48,6 +47,8 @@ public class Dialogue extends SocialisticModule {
 	private final Injector parentInjector;
 	private final Registry<Reloadable> reloadableRegistry;
 	private Injector injector;
+	// Set only while SocialismusNetwork is installed, so its classes load only then.
+	private DialogueNetwork network;
 
 	@Override
 	public void onLoad() {
@@ -80,16 +81,17 @@ public class Dialogue extends SocialisticModule {
 	@Override
 	public void onEnable() {
 		injector.getInstance(CommandRegistrar.class).registerCommands();
-		if (isNetworkInstalled()) {
-			ResourceRegistry resources = parentInjector.getInstance(ResourceRegistry.class);
-			injector.getInstance(RemoteDeliveries.class).use(DialogueNetworkSupport.delivery(resources, injector).orElse(null));
-		}
+		if (isNetworkInstalled())
+			network = DialogueNetwork.attach(parentInjector.getInstance(ResourceRegistry.class), injector).orElse(null);
 		listeners().forEach(eventManager()::register);
 	}
 
 	@Override
 	public void onDisable() {
-		injector.getInstance(RemoteDeliveries.class).use(null);
+		if (network != null) {
+			network.detach();
+			network = null;
+		}
 		listeners().forEach(eventManager()::unregister);
 		injector.getInstance(Scheduler.class).cancelByModule("dialogue");
 	}
