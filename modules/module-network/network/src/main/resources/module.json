@@ -1,0 +1,36 @@
+{
+  "name": "@projectName@",
+  "version": "@projectVersion@",
+  "authors": [
+    "whereareiam"
+  ],
+  "socialismus": "@socialismus@",
+  "platforms": [
+    {
+      "type": "PAPER"
+    },
+    {
+      "type": "FOLIA"
+    },
+    {
+      "type": "SPIGOT"
+    },
+    {
+      "type": "BUKKIT"
+    },
+    {
+      "type": "VELOCITY"
+    }
+  ],
+  "updater": {
+    "release": {
+      "provider": "GITHUB",
+      "id": "whereareiam/SocialismusNetwork"
+    },
+    "dev": {
+      "provider": "GITHUB",
+      "id": "whereareiam/SocialismusNetwork"
+    }
+  },
+  "main": "me.whereareiam.socialismus.module.network.SocialismusNetwork"
+}

@@ -11,7 +11,8 @@ public enum Module {
 	ESSENTIALS("essentials", "Essentials"),
 	BUBBLER("bubbler", "Bubbler"),
 	REDIS("redis", "SocialismusRedis"),
-	DATABASE("database", "SocialismusDatabase");
+	DATABASE("database", "SocialismusDatabase"),
+	NETWORK("network", "SocialismusNetwork");
 
 	private final String artifact;
 	private final String name;
