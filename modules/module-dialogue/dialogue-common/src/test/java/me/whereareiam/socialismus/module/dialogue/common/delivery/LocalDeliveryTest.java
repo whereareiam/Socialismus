@@ -16,9 +16,9 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFor
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
 import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
-import me.whereareiam.socialismus.module.dialogue.common.control.InMemoryIgnoreStore;
-import me.whereareiam.socialismus.module.dialogue.common.control.InMemoryMessageToggleStore;
 import me.whereareiam.socialismus.module.dialogue.common.control.RecipientControl;
+import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryIgnoreStore;
+import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryPreferencesStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.*;
 class LocalDeliveryTest {
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
 	private final EventManager eventManager = mock(EventManager.class);
-	private final InMemoryMessageToggleStore toggles = new InMemoryMessageToggleStore();
+	private final InMemoryPreferencesStore toggles = new InMemoryPreferencesStore();
 	private final InMemoryIgnoreStore ignores = new InMemoryIgnoreStore();
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
@@ -117,7 +117,7 @@ class LocalDeliveryTest {
 	@Test
 	void refusesWhenTheRecipientTurnedMessagesOff() {
 		when(playerRegistry.getPlayerData("Bob")).thenReturn(Optional.of(bob));
-		toggles.setOff(bob.getUniqueId(), true);
+		toggles.update(bob.getUniqueId(), current -> current.withMessagesOff(true));
 
 		assertEquals(DeliveryStatus.MESSAGES_OFF, delivery.deliver(TestDataBuilder.messageFrom(alice, "Bob").build(), true));
 		verify(bob, never()).sendMessage(any(Component.class));
@@ -128,7 +128,7 @@ class LocalDeliveryTest {
 	@Test
 	void deliversWhenTheSenderBypassesTheToggle() {
 		when(playerRegistry.getPlayerData("Bob")).thenReturn(Optional.of(bob));
-		toggles.setOff(bob.getUniqueId(), true);
+		toggles.update(bob.getUniqueId(), current -> current.withMessagesOff(true));
 
 		assertEquals(DeliveryStatus.DELIVERED_LOCALLY,
 				delivery.deliver(TestDataBuilder.messageFrom(alice, "Bob").bypassesToggle(true).build(), true));

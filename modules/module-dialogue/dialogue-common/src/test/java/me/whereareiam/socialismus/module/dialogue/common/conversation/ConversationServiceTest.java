@@ -5,6 +5,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
+import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryConversationStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

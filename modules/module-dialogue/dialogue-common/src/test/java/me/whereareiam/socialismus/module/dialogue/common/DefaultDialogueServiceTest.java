@@ -9,9 +9,9 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSetti
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationService;
-import me.whereareiam.socialismus.module.dialogue.common.conversation.InMemoryConversationStore;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.MessageDeliveryCoordinator;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.MessageFactory;
+import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryConversationStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

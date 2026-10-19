@@ -6,6 +6,8 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSetti
 import me.whereareiam.socialismus.module.dialogue.common.DialogueNotices;
 import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
+import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryIgnoreStore;
+import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryPreferencesStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 class DefaultMessageControlServiceTest {
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
-	private final InMemoryMessageToggleStore toggles = new InMemoryMessageToggleStore();
+	private final InMemoryPreferencesStore toggles = new InMemoryPreferencesStore();
 	private final InMemoryIgnoreStore ignores = new InMemoryIgnoreStore();
 	private final RequirementEvaluatorService evaluator = mock(RequirementEvaluatorService.class);
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
@@ -42,11 +44,11 @@ class DefaultMessageControlServiceTest {
 	@Test
 	void togglesPrivateMessagesOffAndBackOn() {
 		service.toggleMessages(alice);
-		assertTrue(toggles.isOff(alice.getUniqueId()));
+		assertTrue(toggles.get(alice.getUniqueId()).isMessagesOff());
 		verify(notices).messagesToggled(alice, true);
 
 		service.toggleMessages(alice);
-		assertFalse(toggles.isOff(alice.getUniqueId()));
+		assertFalse(toggles.get(alice.getUniqueId()).isMessagesOff());
 		verify(notices).messagesToggled(alice, false);
 	}
 
@@ -56,7 +58,7 @@ class DefaultMessageControlServiceTest {
 
 		service.toggleMessages(alice);
 
-		assertFalse(toggles.isOff(alice.getUniqueId()));
+		assertFalse(toggles.get(alice.getUniqueId()).isMessagesOff());
 		verify(notices).toggleUnavailable(alice);
 	}
 
