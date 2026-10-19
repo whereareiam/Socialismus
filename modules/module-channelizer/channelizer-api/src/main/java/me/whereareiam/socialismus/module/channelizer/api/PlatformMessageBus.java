@@ -23,4 +23,23 @@ public interface PlatformMessageBus {
 	 * @param subscriber the subscriber to notify
 	 */
 	void subscribe(@NotNull String channel, @NotNull SyncSubscriber subscriber);
+
+	/**
+	 * Returns the largest payload, in bytes, one message carries.
+	 */
+	int maxPayloadSize();
+
+	/**
+	 * Returns whether a message can be sent right now: plugin messages travel through a player's connection, so a
+	 * server without players can neither send nor receive.
+	 */
+	boolean canSend();
+
+	/**
+	 * Calls a listener each time messages can be sent again after they could not, such as when the first player
+	 * joins an empty server.
+	 *
+	 * @param listener the listener
+	 */
+	void onSendable(@NotNull Runnable listener);
 }
