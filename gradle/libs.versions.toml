@@ -35,7 +35,7 @@ mockito = "5.24.0"
 journey-packetevents = "2.14.0+spigot"
 
 # resouces
-jedis = "7.5.2"
+jedis = "8.0.2"
 packetevents = "2.14.0"
 
 # platform api versions
