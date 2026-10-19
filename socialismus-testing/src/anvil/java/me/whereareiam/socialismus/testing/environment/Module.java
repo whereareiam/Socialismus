@@ -13,7 +13,8 @@ public enum Module {
 	REDIS("redis", "SocialismusRedis"),
 	DATABASE("database", "SocialismusDatabase"),
 	NETWORK("network", "SocialismusNetwork"),
-	CHANNELIZER("channelizer", "SocialismusChannelizer");
+	CHANNELIZER("channelizer", "SocialismusChannelizer"),
+	LINK("link", "SocialismusLink");
 
 	private final String artifact;
 	private final String name;
