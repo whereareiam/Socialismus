@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.util.regex.Pattern;
 
 /**
- * The console of the process that runs Socialismus: runs commands as the console and reads what the process
+ * The console of a process of the network, by default the one that runs Socialismus: runs commands as the console and reads what the process
  * printed. Output printed after a command is watched from the moment it is sent; output from before the test,
  * such as the startup banner, is read from the process's log.
  */
@@ -34,17 +34,22 @@ public final class Console {
 	}
 
 	/**
-	 * Returns the console of the process that runs Socialismus.
+	 * Returns the console of the process that runs Socialismus; on a network where several do, the first of them.
 	 */
 	@NotNull
 	public static Console of(@NotNull ScenarioContext anvil) {
-		Network network = Network.of(anvil);
-		String process = network.process();
-		ProcessConsole console = network == Network.VELOCITY
-				? anvil.processes().proxy(process).console()
-				: anvil.processes().server(process).console();
+		return of(anvil, Network.of(anvil).process());
+	}
 
-		return new Console(anvil, process, console);
+	/**
+	 * Returns the console of a process of the network.
+	 *
+	 * @param anvil   the running network
+	 * @param process the process, such as {@link Network#LOBBY}
+	 */
+	@NotNull
+	public static Console of(@NotNull ScenarioContext anvil, @NotNull String process) {
+		return new Console(anvil, process, anvil.processes().get(process).console());
 	}
 
 	/**
@@ -66,9 +71,7 @@ public final class Console {
 	 */
 	@NotNull
 	public String log() {
-		Path workspace = Network.of(anvil) == Network.VELOCITY
-				? anvil.processes().proxy(process).workDirectory()
-				: anvil.processes().server(process).workDirectory();
+		Path workspace = anvil.processes().get(process).workDirectory();
 		Path log = workspace.resolve("logs/latest.log");
 		try {
 			return ANSI_CODE.matcher(Files.readString(log, StandardCharsets.UTF_8)).replaceAll("");

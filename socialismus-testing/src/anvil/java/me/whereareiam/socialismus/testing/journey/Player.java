@@ -58,6 +58,8 @@ public final class Player {
 	private final ScenarioContext anvil;
 	private final String name;
 	private final SimulatedPlayer player;
+	/** The server the player stands on, where its readiness message comes from. */
+	private String server;
 	private final Messages messages;
 	/** The player's messages after the one its previous expectation found, where its next expectation looks. */
 	private final MessageWatch inbox;
@@ -70,10 +72,11 @@ public final class Player {
 	/** The entities that appeared after the one its previous expectation found, where its next expectation looks. */
 	private final EntityWatch sights;
 
-	private Player(ScenarioContext anvil, String name, SimulatedPlayer player) {
+	private Player(ScenarioContext anvil, String name, SimulatedPlayer player, String server) {
 		this.anvil = anvil;
 		this.name = name;
 		this.player = player;
+		this.server = server;
 		this.messages = player.capability(Messages.class);
 		this.inbox = messages.watch();
 		Screen screen = player.capability(Screen.class);
@@ -86,11 +89,11 @@ public final class Player {
 	}
 
 	/**
-	 * Creates an offline player and joins the network with it, through the proxy on the Velocity network.
+	 * Creates an offline player and joins the network with it, through the proxy on a network with one.
 	 *
 	 * @param anvil the running network
 	 * @param name  the player's name
-	 * @return the player, standing on the network's server
+	 * @return the player, standing on the network's entry server
 	 */
 	@NotNull
 	public static Player joins(@NotNull ScenarioContext anvil, @NotNull String name) {
@@ -98,14 +101,32 @@ public final class Player {
 				.name(name)
 				.login(PlayerLogin.offline(name))
 				.build());
-		Player journey = new Player(anvil, name, player);
-		PlayerWatch arrivals = anvil.processes().server(Network.SERVER).capability(Players.class).watch();
+		String entry = Network.of(anvil).entryServer();
+		Player journey = new Player(anvil, name, player, entry);
+		PlayerWatch arrivals = anvil.processes().server(entry).capability(Players.class).watch();
 
 		player.capability(Session.class).connect();
 		arrivals.joined(player, TIMEOUT);
 		journey.takesMessages();
 
 		return journey;
+	}
+
+	/**
+	 * Moves to another backend of the proxy with Velocity's {@code /server}, and waits until the player can take
+	 * messages there.
+	 *
+	 * @param server the backend, such as {@link Network#SURVIVAL}
+	 */
+	@NotNull
+	public Player switchesTo(@NotNull String server) {
+		PlayerWatch arrivals = anvil.processes().server(server).capability(Players.class).watch();
+		messages.command("server " + server);
+		arrivals.joined(player, TIMEOUT);
+		this.server = server;
+		takesMessages();
+
+		return this;
 	}
 
 	/**
@@ -348,9 +369,9 @@ public final class Player {
 	 */
 	private void takesMessages() {
 		String token = "journey-ready-" + name;
-		ProcessConsole server = anvil.processes().server(Network.SERVER).console();
+		ProcessConsole console = anvil.processes().server(server).console();
 		for (int attempt = 0; attempt < READINESS_ATTEMPTS; attempt++) {
-			server.sendCommand("tellraw " + name + " {\"text\":\"" + token + "\"}");
+			console.sendCommand("tellraw " + name + " {\"text\":\"" + token + "\"}");
 			try {
 				inbox.received(token, Duration.ofSeconds(1));
 				return;
