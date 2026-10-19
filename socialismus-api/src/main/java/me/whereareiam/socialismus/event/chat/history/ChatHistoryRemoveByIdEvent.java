@@ -6,8 +6,7 @@ import lombok.Getter;
 public class ChatHistoryRemoveByIdEvent extends ChatHistoryRemoveEvent {
 	private final int id;
 
-	public ChatHistoryRemoveByIdEvent(String origin, int id) {
-		super(origin);
+	public ChatHistoryRemoveByIdEvent(int id) {
 		this.id = id;
 	}
 }

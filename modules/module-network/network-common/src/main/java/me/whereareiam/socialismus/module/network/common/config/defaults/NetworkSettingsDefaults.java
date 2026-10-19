@@ -18,6 +18,12 @@ public class NetworkSettingsDefaults implements DefaultsProvider<NetworkSettings
 		settings.setNode(role + "-" + HexFormat.of().toHexDigits(ThreadLocalRandom.current().nextInt()));
 		settings.setLease(Duration.ofSeconds(15));
 
+		NetworkSettings.Chat chat = new NetworkSettings.Chat();
+		chat.setEnabled(true);
+		chat.setPreserveFormat(true);
+		chat.setClearHistory(true);
+		settings.setChat(chat);
+
 		return settings;
 	}
 }

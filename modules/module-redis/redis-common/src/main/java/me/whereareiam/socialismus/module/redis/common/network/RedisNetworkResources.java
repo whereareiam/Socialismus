@@ -8,8 +8,7 @@ import redis.clients.jedis.JedisPool;
 import java.util.List;
 
 /**
- * SocialismusRedis as SocialismusNetwork's transport and store. Only touched while SocialismusNetwork is installed,
- * since its API is reachable only then.
+ * SocialismusRedis as SocialismusNetwork's transport and store.
  */
 public final class RedisNetworkResources implements AutoCloseable {
 	private final RedisReplicationTransport transport;

@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.module.network.api;
 
 import me.whereareiam.socialismus.module.network.api.lease.Leases;
 import me.whereareiam.socialismus.module.network.api.model.NetworkNode;
+import me.whereareiam.socialismus.module.network.api.player.NetworkPlayers;
 import me.whereareiam.socialismus.module.network.api.replication.ReplicationSystem;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +31,11 @@ public interface NetworkService {
 	 * Returns whether this node is connected to the others through a transport.
 	 */
 	boolean isConnected();
+
+	/**
+	 * Returns the players the other nodes host.
+	 */
+	@NotNull NetworkPlayers players();
 
 	/**
 	 * Returns the caches and channels nodes share.

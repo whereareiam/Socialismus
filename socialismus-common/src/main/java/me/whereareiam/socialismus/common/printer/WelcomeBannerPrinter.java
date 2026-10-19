@@ -7,7 +7,6 @@ import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.common.provider.IntegrationProvider;
 import me.whereareiam.socialismus.logging.LoggingHelper;
-import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.PluginType;
@@ -21,14 +20,12 @@ public class WelcomeBannerPrinter {
 	private final CommandService commandService;
 	private final ChatContainer chatContainer;
 	private final IntegrationProvider integrationProvider;
-	private final ResourceRegistry resourceRegistry;
 
 	public void print() {
 		List<String> lines = new ArrayList<>();
 		lines.addAll(buildTitleLines());
 		lines.addAll(buildStatsLines());
 		lines.addAll(buildIntegrationLines());
-		lines.addAll(buildConnectionLines());
 		lines.forEach(loggingHelper::info);
 	}
 
@@ -73,29 +70,5 @@ public class WelcomeBannerPrinter {
 						AnsiColor.RESET));
 		l.add("");
 		return l;
-	}
-
-	private List<String> buildConnectionLines() {
-		List<String> l = new ArrayList<>();
-		boolean sync = resourceRegistry.has(Constants.Resources.SYNC);
-		boolean cache = resourceRegistry.has(Constants.Resources.CACHE);
-
-		if (sync || cache) {
-			l.add("  Connections:");
-			if (sync) l.add(formatConn("Synchronization"));
-			if (cache) l.add(formatConn("Cache"));
-			l.add("");
-		}
-
-		return l;
-	}
-
-	private String formatConn(String label) {
-		return String.format(
-				"    - %s%s%s",
-				AnsiColor.GREEN,
-				label,
-				AnsiColor.RESET
-		);
 	}
 }

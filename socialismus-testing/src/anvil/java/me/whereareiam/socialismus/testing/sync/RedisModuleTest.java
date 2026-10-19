@@ -11,12 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * SocialismusRedis on a server: it brings its Redis client and tells the admin when it cannot reach Redis.
+ * SocialismusRedis on a server, as SocialismusNetwork's transport: it brings its Redis client and tells the admin when it
+ * cannot reach Redis.
  */
 @Tag("sync")
 class RedisModuleTest {
 	@Test
-	@Socialismus(modules = Module.REDIS)
+	@Socialismus(modules = {Module.NETWORK, Module.REDIS})
 	void refusesToLoadWithAReasonWhenRedisCannotBeReached(ScenarioContext anvil) {
 		String log = Console.of(anvil).log();
 

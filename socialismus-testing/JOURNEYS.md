@@ -111,6 +111,11 @@ Two Paper backends behind a Velocity proxy.
 - [ ] With SocialismusRedis, the same holds through Redis (needs Docker)
 - [ ] Sender and recipients keep their names and formats on the other backend
 - [ ] A backend that starts later receives the messages sent after it joined
+- [ ] A proxy and its servers, all with SocialismusNetwork, show each message exactly once
+- [ ] A server without Socialismus behind such a proxy still gets its players' chat handled by the proxy
+- [ ] A server that crashes hands its players' chat to the proxy within the lease time
+- [ ] A server behind a proxy learns its name, so a server requirement judges its players
+- [ ] `/msg` reaches a player on another server, and the sender sees it sent or why not
 
 ## modules
 
