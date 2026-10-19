@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.service.resource.sync.SyncSubscriber;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.messaging.Messenger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,7 @@ class BukkitMessageBusTest {
 		Messenger messenger = mock(Messenger.class);
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getMessenger()).thenReturn(messenger);
+		when(server.getPluginManager()).thenReturn(mock(PluginManager.class));
 
 		BukkitMessageBus bus = new BukkitMessageBus(plugin);
 
@@ -64,6 +66,7 @@ class BukkitMessageBusTest {
 		SyncSubscriber subscriber = mock(SyncSubscriber.class);
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getMessenger()).thenReturn(messenger);
+		when(server.getPluginManager()).thenReturn(mock(PluginManager.class));
 
 		BukkitMessageBus bus = new BukkitMessageBus(plugin);
 		bus.subscribe("sync", subscriber);
@@ -77,6 +80,26 @@ class BukkitMessageBusTest {
 	}
 
 	@Test
+	void readsAPayloadLongerThanASignedShort() throws IOException {
+		Plugin plugin = mock(Plugin.class);
+		Server server = mock(Server.class);
+		Messenger messenger = mock(Messenger.class);
+		SyncSubscriber subscriber = mock(SyncSubscriber.class);
+		when(plugin.getServer()).thenReturn(server);
+		when(server.getMessenger()).thenReturn(messenger);
+		when(server.getPluginManager()).thenReturn(mock(PluginManager.class));
+
+		BukkitMessageBus bus = new BukkitMessageBus(plugin);
+		bus.subscribe("sync", subscriber);
+		byte[] payload = new byte[40_000];
+		payload[39_999] = 7;
+
+		bus.onPluginMessageReceived("BungeeCord", mock(Player.class), forwardedMessage("sync", payload));
+
+		verify(subscriber).onMessage("sync", payload);
+	}
+
+	@Test
 	void onPluginMessageReceivedIgnoresDifferentTransportChannel() throws IOException {
 		Plugin plugin = mock(Plugin.class);
 		Server server = mock(Server.class);
@@ -85,6 +108,7 @@ class BukkitMessageBusTest {
 		SyncSubscriber subscriber = mock(SyncSubscriber.class);
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getMessenger()).thenReturn(messenger);
+		when(server.getPluginManager()).thenReturn(mock(PluginManager.class));
 
 		BukkitMessageBus bus = new BukkitMessageBus(plugin);
 		bus.subscribe("sync", subscriber);
@@ -100,6 +124,7 @@ class BukkitMessageBusTest {
 		data.writeUTF(logicalChannel);
 		data.writeShort(payload.length);
 		data.write(payload);
+
 		return output.toByteArray();
 	}
 }
