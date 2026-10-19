@@ -130,6 +130,7 @@ anvil {
     artifact("channelizer", pluginJar(projects.moduleChannelizer))
     artifact("database", pluginJar(projects.moduleDatabase))
     artifact("network", pluginJar(projects.moduleNetwork))
+    artifact("link", pluginJar(projects.moduleLink))
     artifact("module-requires-another-version", files(moduleRequiringAnotherVersion))
     artifact("module-for-another-platform", files(moduleForAnotherPlatform))
     artifact("module-journey-library", pluginJar(projects.fixtureModuleLibrary))
