@@ -53,6 +53,17 @@ public final class Console {
 	}
 
 	/**
+	 * Watches what the process prints from now on, such as a line another process's action causes.
+	 *
+	 * @return what the process prints from now on
+	 */
+	@NotNull
+	public Output watch() {
+		ConsoleWatch output = console.watch();
+		return text -> output.printed(text, TIMEOUT);
+	}
+
+	/**
 	 * Runs a command as the console.
 	 *
 	 * @return what the process prints from now on
