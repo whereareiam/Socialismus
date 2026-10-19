@@ -7,11 +7,13 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.model.requirement.RequirementReason;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,19 @@ public class DialogueNotices {
 		send(sender, messaging().getSamePlayer(), Map.of());
 	}
 
-	public void notAllowed(@NotNull SocialismusPlayer sender, @NotNull String recipientName) {
+	/**
+	 * Tells the sender that {@code messaging.requirements} refuse their message.
+	 *
+	 * @param sender        the player who wrote it
+	 * @param recipientName the recipient's name
+	 * @param reason        why, as the requirements were worded; {@code null} tells {@code notAllowed}
+	 */
+	public void notAllowed(@NotNull SocialismusPlayer sender, @NotNull String recipientName, @Nullable RequirementReason reason) {
+		if (reason != null) {
+			sender.sendMessage(Serializer.serialize(reason.toContent(sender)));
+			return;
+		}
+
 		send(sender, messaging().getNotAllowed(), Map.of("recipientName", recipientName));
 	}
 

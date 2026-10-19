@@ -2,7 +2,15 @@ package me.whereareiam.socialismus.module.dialogue.common.config.defaults;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
+import me.whereareiam.socialismus.Constants;
+import me.whereareiam.socialismus.model.config.message.RequirementReasons;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
+import me.whereareiam.socialismus.type.chat.Participants;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Singleton
 public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessages> {
@@ -24,6 +32,7 @@ public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessag
 		messaging.setNoRecipient("{prefix}<white>Recipient not found");
 		messaging.setSamePlayer("{prefix}<white>You cannot send a message to yourself");
 		messaging.setNotAllowed("{prefix}<white>You cannot send a message to {recipientName}");
+		messaging.setRequirements(requirements());
 		messaging.setReply(reply);
 		messaging.setConversationMode(conversationMode);
 
@@ -63,5 +72,50 @@ public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessag
 		config.setModeration(moderation);
 
 		return config;
+	}
+
+	private static Map<Participants, Map<String, RequirementReasons>> requirements() {
+		// Kept in this order in the file.
+		Map<String, RequirementReasons> sender = new LinkedHashMap<>();
+		sender.put(Constants.Requirements.PERMISSION.getFullKey(), reasons(
+				"{prefix}<white>You may not send private messages.",
+				null
+		));
+		sender.put(Constants.Requirements.WORLD.getFullKey(), reasons(
+				"{prefix}<white>Private messages only work in <gray>{worlds}</gray>.",
+				"{prefix}<white>Private messages do not work in <gray>{world}</gray>."
+		));
+		sender.put(Constants.Requirements.SERVER.getFullKey(), reasons(
+				"{prefix}<white>Private messages only work on <gray>{servers}</gray>.",
+				"{prefix}<white>Private messages do not work on <gray>{server}</gray>."
+		));
+
+		Map<String, RequirementReasons> recipient = new LinkedHashMap<>();
+		recipient.put(Constants.Requirements.PERMISSION.getFullKey(), reasons(
+				"{prefix}<gray>{recipientName}</gray> <white>may not receive private messages.",
+				null
+		));
+		recipient.put(Constants.Requirements.WORLD.getFullKey(), reasons(
+				"{prefix}<gray>{recipientName}</gray> <white>is in <gray>{world}</gray>, which private messages do not reach.",
+				"{prefix}<gray>{recipientName}</gray> <white>is in <gray>{world}</gray>, which private messages do not reach."
+		));
+		recipient.put(Constants.Requirements.SERVER.getFullKey(), reasons(
+				"{prefix}<gray>{recipientName}</gray> <white>is on <gray>{server}</gray>, which private messages do not reach.",
+				"{prefix}<gray>{recipientName}</gray> <white>is on <gray>{server}</gray>, which private messages do not reach."
+		));
+
+		Map<Participants, Map<String, RequirementReasons>> requirements = new EnumMap<>(Participants.class);
+		requirements.put(Participants.SENDER, sender);
+		requirements.put(Participants.RECIPIENT, recipient);
+
+		return requirements;
+	}
+
+	private static RequirementReasons reasons(String required, @Nullable String forbidden) {
+		RequirementReasons reasons = new RequirementReasons();
+		reasons.setRequired(required);
+		reasons.setForbidden(forbidden);
+
+		return reasons;
 	}
 }

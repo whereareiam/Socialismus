@@ -53,8 +53,9 @@ public final class DefaultDialogueService implements DialogueService {
 			return;
 		}
 
-		if (!requirements.allows(sender, recipient.orElse(null))) {
-			notices.notAllowed(sender, recipientAsSpelled);
+		MessagingRequirements.Verdict verdict = requirements.judge(sender, recipient.orElse(null), recipientAsSpelled);
+		if (!verdict.allowed()) {
+			notices.notAllowed(sender, recipientAsSpelled, verdict.reason());
 			return;
 		}
 
