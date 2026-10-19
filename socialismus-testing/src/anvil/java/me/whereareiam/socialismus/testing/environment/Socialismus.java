@@ -57,6 +57,11 @@ public @interface Socialismus {
 	ModuleFixture[] moduleFixtures() default {};
 
 	/**
+	 * Containers Anvil runs as processes of the network, such as Redis for SocialismusRedis.
+	 */
+	Container[] containers() default {};
+
+	/**
 	 * Files Socialismus starts with, applied in order after {@link #data()}. Each class needs a constructor without
 	 * parameters.
 	 */
