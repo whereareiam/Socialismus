@@ -20,6 +20,7 @@ public class NetworkSettingsDefaults implements DefaultsProvider<NetworkSettings
 
 		NetworkSettings.Chat chat = new NetworkSettings.Chat();
 		chat.setEnabled(true);
+		chat.setOwner(NetworkSettings.ChatOwner.SERVER);
 		chat.setPreserveFormat(true);
 		chat.setClearHistory(true);
 		settings.setChat(chat);

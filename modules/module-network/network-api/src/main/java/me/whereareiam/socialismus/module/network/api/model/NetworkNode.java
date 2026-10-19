@@ -33,4 +33,11 @@ public class NetworkNode {
 	 * The version of Socialismus the node runs.
 	 */
 	@NotNull String version;
+
+	/**
+	 * Whether the node handles the chat of the players it hosts. A server that leaves its players' chat to the proxy
+	 * in front of it does not, and the proxy handles them instead.
+	 */
+	@Builder.Default
+	boolean handlesChat = true;
 }

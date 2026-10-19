@@ -33,8 +33,11 @@ public class PlayerChatListener implements DynamicListener<AsyncPlayerChatEvent>
 
 	public void onEvent(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
-		// Another Socialismus of the network handles this player's chat, so the message is left as it is.
-		if (!handles(player.getUniqueId())) return;
+		// The proxy in front of this server handles the player's chat and shows the message, so this server's copy goes.
+		if (!handles(player.getUniqueId())) {
+			event.setCancelled(true);
+			return;
+		}
 
 		Set<Player> recipients = event.getRecipients();
 		Component content = Component.text(event.getMessage());
