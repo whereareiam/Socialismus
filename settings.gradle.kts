@@ -144,6 +144,15 @@ project(":module-database-common").projectDir = file("modules/module-database/da
 include(":module-database")
 project(":module-database").projectDir = file("modules/module-database/database")
 
+include(":module-network-api")
+project(":module-network-api").projectDir = file("modules/module-network/network-api")
+
+include(":module-network-common")
+project(":module-network-common").projectDir = file("modules/module-network/network-common")
+
+include(":module-network")
+project(":module-network").projectDir = file("modules/module-network/network")
+
 include(":module-redis-api")
 project(":module-redis-api").projectDir = file("modules/module-redis/redis-api")
 

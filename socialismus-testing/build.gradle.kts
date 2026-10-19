@@ -125,6 +125,7 @@ anvil {
     artifact("bubbler", pluginJar(projects.moduleBubbler))
     artifact("redis", pluginJar(projects.moduleRedis))
     artifact("database", pluginJar(projects.moduleDatabase))
+    artifact("network", pluginJar(projects.moduleNetwork))
     artifact("module-requires-another-version", files(moduleRequiringAnotherVersion))
     artifact("module-for-another-platform", files(moduleForAnotherPlatform))
     artifact("module-journey-library", pluginJar(projects.fixtureModuleLibrary))
