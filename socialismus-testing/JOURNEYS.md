@@ -103,19 +103,22 @@ A Velocity proxy with Paper backends.
 
 ## sync
 
-Two Paper backends behind a Velocity proxy.
+Two Paper backends, lobby and survival, behind a Velocity proxy: `Network.BACKENDS` runs Socialismus on both
+backends, `PROXY_AND_BACKENDS` on the proxy as well, and `PROXY_AND_LOBBY` on the proxy and the lobby. Redis runs
+as a container process of the network (`containers = Container.REDIS`), so those journeys need Docker.
 
 - [x] SocialismusRedis brings its Redis client and refuses to load with a reason when Redis cannot be reached
 - [x] SocialismusNetwork joins the network under the node id its first start wrote, alone when no transport is there
-- [ ] With SocialismusChannelizer, a global message reaches the players on the other backend and a local one stays on its own
-- [ ] With SocialismusRedis, the same holds through Redis (needs Docker)
-- [ ] Sender and recipients keep their names and formats on the other backend
+- [x] With SocialismusChannelizer, a global message reaches the players on the other backend and a local one stays on its own
+- [x] With SocialismusRedis, the same holds through Redis, and the sender's name and format arrive as written
+- [x] A backend keeps chatting while Redis hangs, and shares chat again once Redis answers
 - [ ] A backend that starts later receives the messages sent after it joined
-- [ ] A proxy and its servers, all with SocialismusNetwork, show each message exactly once
-- [ ] A server without Socialismus behind such a proxy still gets its players' chat handled by the proxy
-- [ ] A server that crashes hands its players' chat to the proxy within the lease time
-- [ ] A server behind a proxy learns its name, so a server requirement judges its players
-- [ ] `/msg` reaches a player on another server, and the sender sees it sent or why not
+- [x] A proxy and its servers, all with SocialismusNetwork, show each message exactly once
+- [x] A server without Socialismus behind such a proxy still gets its players' chat handled by the proxy
+- [x] A server that stops answering hands its players' chat to the proxy within the lease time, and takes it back once it answers
+- [x] A server behind a proxy learns its name, so a server requirement judges its players
+- [x] `/msg` reaches a player on another backend, and the sender sees it once that backend confirms
+- [ ] A private message to a player on no backend fails once `messaging.confirmation` has passed
 
 ## modules
 
@@ -158,8 +161,6 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [ ] A player hidden from the sender, such as by a vanish plugin, looks offline to them **needs a vanish plugin on the test server**
 - [ ] Clicking a received message suggests a reply to its sender **needs Anvil**: players see messages as plain text, without their click events
 - [ ] `/reply` to a conversation older than `messaging.reply.timeout` lists the recent conversations
-- [ ] Private messages reach a player on another backend, and the sender sees them once the backend confirms
-- [ ] A private message to a player on no backend fails once `sync.confirmation` has passed
 
 ## essentials
 
