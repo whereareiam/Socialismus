@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Pattern;
 
 /**
- * Type-safe key of a shared resource, such as the synchronization, the cache or the database. A resource is
- * an object one module provides and others use; the key names it and says which type it has, so that any
- * module can define a resource of its own without changing Socialismus.
+ * Type-safe key of a shared resource, such as the synchronization, the cache, or one a module defines for others.
+ * A resource is an object one module provides and others use; the key names it and says which type it has, so that
+ * any module can define a resource of its own without changing Socialismus.
  *
  * <p>Socialismus defines the keys of its own resources in {@code Constants.Resources}. A module defines its
  * keys once, as constants, under its own namespace:

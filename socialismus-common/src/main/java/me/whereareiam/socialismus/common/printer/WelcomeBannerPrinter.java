@@ -77,13 +77,11 @@ public class WelcomeBannerPrinter {
 
 	private List<String> buildConnectionLines() {
 		List<String> l = new ArrayList<>();
-		boolean db = resourceRegistry.has(Constants.Resources.DATABASE);
 		boolean sync = resourceRegistry.has(Constants.Resources.SYNC);
 		boolean cache = resourceRegistry.has(Constants.Resources.CACHE);
 
-		if (db || sync || cache) {
+		if (sync || cache) {
 			l.add("  Connections:");
-			if (db) l.add(formatConn("Database"));
 			if (sync) l.add(formatConn("Synchronization"));
 			if (cache) l.add(formatConn("Cache"));
 			l.add("");

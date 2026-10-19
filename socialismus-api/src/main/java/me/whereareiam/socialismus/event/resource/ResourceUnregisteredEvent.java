@@ -6,11 +6,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Called when a resource is unregistered, such as when the module that provides it unloads. The registry no
  * longer holds it, but the resource still works until the event returns, so a consumer that used it switches
- * back here, for example from the database to its own memory:
+ * back here, for example from the shared cache to its own memory:
  * <pre>{@code
  * @SocialisticEvent
  * public void onResourceUnregistered(ResourceUnregisteredEvent event) {
- *     event.resource(Constants.Resources.DATABASE).ifPresent(database -> storage.useMemory());
+ *     event.resource(Constants.Resources.CACHE).ifPresent(cache -> storage.useMemory());
  * }
  * }</pre>
  */

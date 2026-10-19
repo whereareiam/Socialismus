@@ -6,7 +6,6 @@ plugins {
 group = "me.whereareiam.socialismus"
 
 dependencies {
-    compileOnly(libs.ormlite)
     compileOnlyApi(libs.guice)
     compileOnlyApi(libs.annotations)
     compileOnlyApi(libs.configura)

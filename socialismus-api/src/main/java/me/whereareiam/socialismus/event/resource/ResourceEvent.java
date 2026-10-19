@@ -30,7 +30,7 @@ public abstract class ResourceEvent implements SynchronousEvent {
 	/**
 	 * Returns the resource when the event is about the given key, typed by it:
 	 * <pre>{@code
-	 * event.resource(Constants.Resources.DATABASE).ifPresent(this::useDatabase);
+	 * event.resource(Constants.Resources.CACHE).ifPresent(this::useCache);
 	 * }</pre>
 	 *
 	 * @param key the key of the resource the caller follows

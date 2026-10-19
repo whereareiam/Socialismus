@@ -7,7 +7,6 @@ import me.whereareiam.socialismus.model.requirement.RequirementKey;
 import me.whereareiam.socialismus.model.requirement.type.*;
 import me.whereareiam.socialismus.model.resource.ResourceKey;
 import me.whereareiam.socialismus.service.resource.CacheService;
-import me.whereareiam.socialismus.service.resource.DatabaseService;
 import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.socialismus.type.Version;
 
@@ -85,12 +84,6 @@ public final class Constants {
 		 */
 		public static final ResourceKey<CacheService> CACHE =
 				ResourceKey.create("socialismus", "cache", CacheService.class);
-
-		/**
-		 * The database, provided by a database module.
-		 */
-		public static final ResourceKey<DatabaseService> DATABASE =
-				ResourceKey.create("socialismus", "database", DatabaseService.class);
 	}
 
 	public static final class Requirements {
