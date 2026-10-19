@@ -25,7 +25,7 @@ public final class NetworkPlayer extends SocialismusPlayer {
 	private String server;
 
 	public NetworkPlayer(@NotNull UUID uniqueId, @NotNull String username, @NotNull NodeId node, @Nullable String server) {
-		super(uniqueId, username, false);
+		super(uniqueId, username);
 		this.node = node;
 		this.server = server;
 	}

@@ -1,11 +1,14 @@
 package me.whereareiam.socialismus.platform.paper.mapper;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.platform.paper.actor.console.PaperSocialismusCommandConsole;
 import me.whereareiam.socialismus.platform.paper.actor.console.PaperSocialismusConsole;
 import me.whereareiam.socialismus.platform.paper.actor.player.PaperSocialismusCommandPlayer;
 import me.whereareiam.socialismus.platform.paper.actor.player.PaperSocialismusPlayer;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -13,15 +16,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.cloud.SenderMapper;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class CommandSenderMapper implements SenderMapper<CommandSender, Actor> {
+	private final PlayerRegistry playerRegistry;
 
 	@Override
 	public @NonNull Actor map(@NonNull CommandSender source) {
 		if (source instanceof ConsoleCommandSender consoleSender)
 			return new PaperSocialismusCommandConsole(consoleSender, source);
 
-		if (source instanceof Player player)
-			return new PaperSocialismusCommandPlayer(player, source);
+		if (source instanceof Player player) {
+			PaperSocialismusCommandPlayer mapped = new PaperSocialismusCommandPlayer(player, source);
+			playerRegistry.syncPlayerData(mapped);
+			return mapped;
+		}
 
 		throw new UnsupportedOperationException("Unsupported command sender type: " + source.getClass().getName());
 	}
