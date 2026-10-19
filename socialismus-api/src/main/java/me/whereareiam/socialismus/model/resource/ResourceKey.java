@@ -7,19 +7,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Pattern;
 
 /**
- * Type-safe key of a shared resource, such as the synchronization, the cache, or one a module defines for others.
+ * Type-safe key of a shared resource, such as the network SocialismusNetwork offers or the database SocialismusDatabase
+ * offers.
  * A resource is an object one module provides and others use; the key names it and says which type it has, so that
  * any module can define a resource of its own without changing Socialismus.
  *
- * <p>Socialismus defines the keys of its own resources in {@code Constants.Resources}. A module defines its
- * keys once, as constants, under its own namespace:
+ * <p>A module defines the keys of its resources once, as constants, under its own namespace:
  * <pre>{@code
  * public static final ResourceKey<TranslationService> TRANSLATION =
  *         ResourceKey.create("translator", "translation", TranslationService.class);
  * }</pre>
  *
  * <p>Two keys name the same resource when their {@linkplain #getFullKey() full keys} are equal; a
- * {@code module.json} requires a resource by its full key, such as {@code socialismus:sync}.
+ * {@code module.json} requires a resource by its full key, such as {@code socialismusnetwork:network}.
  *
  * @param <T> the type of the resource
  */

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * A resource a {@link me.whereareiam.socialismus.service.resource.ResourceProvider} provides, with the key it is
  * registered under. Its type follows the key, so a resource can only be provided under a key of its type:
  * <pre>{@code
- * ProvidedResource.of(Constants.Resources.SYNC, syncService)
+ * ProvidedResource.of(NetworkResources.TRANSPORT, transport)
  * }</pre>
  *
  * @param <T> the type of the resource

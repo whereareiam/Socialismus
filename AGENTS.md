@@ -52,6 +52,7 @@ modules/module-dialogue/
   dialogue-api/     contracts, models, stores          :module-dialogue-api
   dialogue-common/  logic, config, in-memory stores    :module-dialogue-common
   dialogue-command/ /message, /reply                   :module-dialogue-command
+  dialogue-network/ delivery over SocialismusNetwork   :module-dialogue-network
 ```
 
 - logic belongs in `-common`, never in the assembly

@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.common.chat.broadcast;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 
 @Singleton
@@ -11,13 +10,9 @@ import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 public class ChatBroadcastPolicy {
 
 	public boolean allows(FormattedChatMessage msg) {
-		// 1) Cross‐server relay
-		if (msg.getOrigin() != null
-				&& !msg.getOrigin().equals(Constants.Synchronization.IDENTIFIER)) {
-			return true;
-		}
+		// A relayed message has no vanilla message on this server to fall back on, so Socialismus always sends it.
+		if (msg.isRelayed()) return true;
 
-		// 2) Otherwise, only broadcast if it's non-vanilla.
 		return !msg.isVanillaSending();
 	}
 }

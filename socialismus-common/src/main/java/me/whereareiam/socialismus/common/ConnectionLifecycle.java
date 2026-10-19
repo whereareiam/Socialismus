@@ -8,22 +8,19 @@ import me.whereareiam.socialismus.listener.ListenerRegistrar;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Lets Socialismus handle players as the last step of its startup: registers the platform's listeners, connects the
- * synchronization with the other servers, which the modules may provide, and prints the welcome banner.
+ * Lets Socialismus handle players as the last step of its startup: registers the platform's listeners and prints the
+ * welcome banner.
  */
 public final class ConnectionLifecycle implements RuntimeLifecycle {
 	private final ListenerRegistrar listenerRegistrar;
-	private final SynchronizationService synchronizationService;
 	private final WelcomeBannerPrinter bannerPrinter;
 
 	@Inject
 	public ConnectionLifecycle(
 			@NotNull ListenerRegistrar listenerRegistrar,
-			@NotNull SynchronizationService synchronizationService,
 			@NotNull WelcomeBannerPrinter bannerPrinter
 	) {
 		this.listenerRegistrar = listenerRegistrar;
-		this.synchronizationService = synchronizationService;
 		this.bannerPrinter = bannerPrinter;
 	}
 
@@ -35,7 +32,6 @@ public final class ConnectionLifecycle implements RuntimeLifecycle {
 	@Override
 	public void initialize() {
 		listenerRegistrar.registerListeners();
-		synchronizationService.initialize();
 		bannerPrinter.print();
 	}
 

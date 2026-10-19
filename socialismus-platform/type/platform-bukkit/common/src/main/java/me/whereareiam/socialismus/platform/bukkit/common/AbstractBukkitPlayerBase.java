@@ -36,6 +36,12 @@ public abstract class AbstractBukkitPlayerBase extends SocialismusPlayer {
 	private String location;
 
 	/**
+	 * The name of this server behind a proxy, which a server does not know by itself and learns from its network.
+	 */
+	@Nullable
+	private String server;
+
+	/**
 	 * Creates a new AbstractBukkitPlayerBase wrapping a Bukkit player.
 	 *
 	 * @param bukkitPlayer The Bukkit player to wrap
@@ -68,8 +74,12 @@ public abstract class AbstractBukkitPlayerBase extends SocialismusPlayer {
 	@Override
 	@Nullable
 	public String getServer() {
-		// Not applicable on backend servers
-		return null;
+		return server;
+	}
+
+	@Override
+	public void setServer(@Nullable String server) {
+		this.server = server;
 	}
 
 	@Override

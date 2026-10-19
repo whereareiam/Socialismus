@@ -132,6 +132,9 @@ project(":module-dialogue-common").projectDir = file("modules/module-dialogue/di
 include(":module-dialogue-command")
 project(":module-dialogue-command").projectDir = file("modules/module-dialogue/dialogue-command")
 
+include(":module-dialogue-network")
+project(":module-dialogue-network").projectDir = file("modules/module-dialogue/dialogue-network")
+
 include(":module-dialogue")
 project(":module-dialogue").projectDir = file("modules/module-dialogue/dialogue")
 
