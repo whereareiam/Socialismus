@@ -68,6 +68,12 @@ public @interface Socialismus {
 	Class<? extends Consumer<ServerFiles>>[] configure() default {};
 
 	/**
+	 * Listeners the proxy binds besides its game port, such as SocialismusLink's; files name them with Anvil's
+	 * {@code ${anvil.process.proxy.host}} and {@code ${anvil.process.proxy.listener.<listener>}}.
+	 */
+	String[] proxyListeners() default {};
+
+	/**
 	 * Files only the proxy starts with, applied after {@link #configure()}, for a journey that tells the proxy's
 	 * handling apart from its servers'.
 	 */
