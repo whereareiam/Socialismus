@@ -66,4 +66,10 @@ public @interface Socialismus {
 	 * parameters.
 	 */
 	Class<? extends Consumer<ServerFiles>>[] configure() default {};
+
+	/**
+	 * Files only the proxy starts with, applied after {@link #configure()}, for a journey that tells the proxy's
+	 * handling apart from its servers'.
+	 */
+	Class<? extends Consumer<ServerFiles>>[] proxyConfigure() default {};
 }
