@@ -12,11 +12,13 @@ import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueAlert;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
+import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import net.kyori.adventure.audience.Audience;
@@ -72,7 +74,7 @@ class MessageRendererTest {
 		renderer = new MessageRenderer(
 				() -> formats,
 				() -> moderationFormats,
-				new MessagingRequirements(evaluator, TestDataBuilder::defaultSettings)
+				new MessagingRequirements(evaluator, mock(RequirementReasonService.class), TestDataBuilder::defaultSettings, DialogueMessages::new)
 		);
 	}
 

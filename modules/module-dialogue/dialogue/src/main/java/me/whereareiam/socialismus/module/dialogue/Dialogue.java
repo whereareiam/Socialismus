@@ -29,6 +29,7 @@ import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.strata.Strata;
 
@@ -53,6 +54,7 @@ public class Dialogue extends SocialisticModule {
 						parentInjector.getInstance(CommandService.class),
 						parentInjector.getInstance(PlayerRegistry.class),
 						parentInjector.getInstance(RequirementEvaluatorService.class),
+						parentInjector.getInstance(RequirementReasonService.class),
 						parentInjector.getInstance(SerializationService.class),
 						parentInjector.getInstance(SyncService.class),
 						parentInjector.getInstance(EventManager.class)

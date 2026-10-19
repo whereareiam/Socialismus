@@ -3,6 +3,10 @@ package me.whereareiam.socialismus.module.dialogue.api.model.config;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.whereareiam.socialismus.model.config.message.RequirementReasons;
+import me.whereareiam.socialismus.type.chat.Participants;
+
+import java.util.Map;
 
 /**
  * What Dialogue tells players, {@code messages} in its working directory, grouped by the areas of
@@ -39,10 +43,26 @@ public class DialogueMessages {
 		private String samePlayer;
 
 		/**
-		 * The requirements of {@code messaging} do not let the sender write to the recipient;
-		 * {@code {recipientName}} names them.
+		 * The requirements of {@code messaging} do not let the sender write to the recipient, and nothing below words
+		 * why; {@code {recipientName}} names them.
 		 */
 		private String notAllowed;
+
+		/**
+		 * How Dialogue words the {@code messaging.requirements} that refuse a private message, by participant and then
+		 * by the requirement's key, as those requirements hold them: {@code SENDER} for the player who writes,
+		 * {@code RECIPIENT} for the player written to. Its placeholders are the requirement's, about the participant
+		 * it checked, such as {@code {server}} for the recipient's server, and {@code {recipientName}}. What it leaves
+		 * unworded comes from {@code requirements} in Socialismus's {@code messages}, and then {@link #notAllowed}.
+		 *
+		 * <pre>{@code
+		 * requirements:
+		 *   RECIPIENT:
+		 *     socialismus:server:
+		 *       forbidden: "{prefix}<gray>{recipientName}</gray> is on {server}, which private messages do not reach."
+		 * }</pre>
+		 */
+		private Map<Participants, Map<String, RequirementReasons>> requirements;
 
 		/**
 		 * What a player is told when {@code /reply} has nobody to answer.

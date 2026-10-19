@@ -139,6 +139,8 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [x] `/reply` without a conversation fails with a reason
 - [x] A private message takes the last format whose requirements its participants meet
 - [x] `messaging.requirements` refuse a message to a player they exclude
+- [x] A refused sender is told why in Dialogue's wording for the participant that failed, such as the
+  recipient's missing permission, and gets `notAllowed` only when nothing words it
 - [x] A private message is shown as its sender wrote it, never read as formatting such as a click
 - [x] The recipient gets the alert of their format: a sound, an action bar and a title
 - [x] `/message <player>` without a message sends chat to that player until the same command ends it

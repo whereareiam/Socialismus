@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.module.dialogue.api.event.DialogueDeliveredEve
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
+import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
@@ -20,6 +21,7 @@ import me.whereareiam.socialismus.module.dialogue.common.control.InMemoryMessage
 import me.whereareiam.socialismus.module.dialogue.common.control.RecipientControl;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +69,9 @@ class LocalDeliveryTest {
 
 		MessagingRequirements requirements = new MessagingRequirements(
 				mock(RequirementEvaluatorService.class),
-				TestDataBuilder::defaultSettings
+				mock(RequirementReasonService.class),
+				TestDataBuilder::defaultSettings,
+				DialogueMessages::new
 		);
 		RecipientControl control = new RecipientControl(TestDataBuilder::defaultSettings, toggles, ignores);
 		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, ModerationFormats::new, requirements), eventManager, control);

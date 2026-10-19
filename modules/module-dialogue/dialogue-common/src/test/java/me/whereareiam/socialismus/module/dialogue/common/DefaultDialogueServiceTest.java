@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.module.dialogue.common;
 
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.model.requirement.RequirementReason;
 import me.whereareiam.socialismus.module.dialogue.api.event.DialogueSendEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
@@ -19,6 +20,7 @@ import org.mockito.ArgumentCaptor;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,7 +48,7 @@ class DefaultDialogueServiceTest {
 	@BeforeEach
 	void setUp() {
 		when(playerRegistry.getPlayerData(anyString())).thenReturn(Optional.empty());
-		when(requirements.allows(any(), any())).thenReturn(true);
+		when(requirements.judge(any(), any(), any())).thenReturn(MessagingRequirements.Verdict.ALLOWED);
 
 		dialogueService = new DefaultDialogueService(
 				conversationService,
@@ -182,11 +184,12 @@ class DefaultDialogueServiceTest {
 	@Test
 	void refusesAMessageTheRequirementsDoNotAllow() {
 		online(bob);
-		when(requirements.allows(alice, bob)).thenReturn(false);
+		RequirementReason reason = RequirementReason.of("Bob is elsewhere", Map.of());
+		when(requirements.judge(alice, bob, "Bob")).thenReturn(new MessagingRequirements.Verdict(false, reason));
 
 		dialogueService.send(alice, "bob", "hello");
 
-		verify(notices).notAllowed(alice, "Bob");
+		verify(notices).notAllowed(alice, "Bob", reason);
 		verifyNoInteractions(deliveryCoordinator);
 	}
 
