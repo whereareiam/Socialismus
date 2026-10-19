@@ -52,6 +52,7 @@ public class VelocitySocialismus {
 		PluginType.setPluginType(PluginType.VELOCITY);
 		VelocityLoggingHelper.setLogger(logger);
 		Constants.SERVER_VERSION = Version.getLatest();
+		Constants.PLATFORM_VERSION = proxyServer.getVersion().getVersion().split("-", 2)[0];
 
 		VelocityLibraryManager libraryManager = new VelocityLibraryManager(proxyServer, pluginContainer, logger, dataPath, ".libraries");
 		libraryManager.setVerbosityMode(VerbosityMode.SUMMARY);
@@ -59,7 +60,7 @@ public class VelocitySocialismus {
 		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
 		libraryManager.loadDescriptors();
 
-		socialismus = PlatformInjector.create(dataPath, new VelocityInjectorConfiguration(this, pluginContainer, proxyServer))
+		socialismus = PlatformInjector.create(dataPath, libraryManager, new VelocityInjectorConfiguration(this, pluginContainer, proxyServer))
 				.getInstance(Socialismus.class);
 		socialismus.start();
 	}

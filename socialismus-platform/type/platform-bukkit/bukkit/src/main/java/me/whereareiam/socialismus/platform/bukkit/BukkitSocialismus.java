@@ -29,6 +29,8 @@ public class BukkitSocialismus extends JavaPlugin {
 		PluginType.setPluginType(PluginType.BUKKIT);
 		BukkitLoggingHelper.setLogger(logger);
 		Constants.SERVER_VERSION = Version.of(Bukkit.getBukkitVersion());
+		// The game version leads Bukkit's version, such as 1.21.4-R0.1-SNAPSHOT or 26.1.2.build.74.
+		Constants.PLATFORM_VERSION = Bukkit.getBukkitVersion().replaceFirst("^([0-9]+(?:\\.[0-9]+)*).*$", "$1");
 
 		if (BukkitIntegrityChecker.checkIntegrity(logger)) {
 			getPluginLoader().disablePlugin(this);
@@ -41,7 +43,7 @@ public class BukkitSocialismus extends JavaPlugin {
 		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
 		libraryManager.loadDescriptors();
 
-		injector = PlatformInjector.create(dataPath, new BukkitInjectorConfiguration(this), new BukkitCommonConfiguration(this));
+		injector = PlatformInjector.create(dataPath, libraryManager, new BukkitInjectorConfiguration(this), new BukkitCommonConfiguration(this));
 	}
 
 	@Override

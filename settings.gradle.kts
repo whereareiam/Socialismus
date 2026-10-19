@@ -40,6 +40,10 @@ project(":socialismus-api").projectDir = file("socialismus-api")
 
 include(":socialismus-testing")
 project(":socialismus-testing").projectDir = file("socialismus-testing")
+include(":fixture-module-library")
+project(":fixture-module-library").projectDir = file("socialismus-testing/fixture/module-library")
+include(":fixture-module-consumer")
+project(":fixture-module-consumer").projectDir = file("socialismus-testing/fixture/module-consumer")
 
 include(":socialismus-common")
 project(":socialismus-common").projectDir = file("socialismus-common")

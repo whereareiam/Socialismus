@@ -4,8 +4,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.model.resource.ResourceRequirement;
 import me.whereareiam.socialismus.model.update.UpdateConfiguration;
-import me.whereareiam.socialismus.type.PlatformType;
-import me.whereareiam.socialismus.type.Version;
 
 import java.util.List;
 
@@ -40,19 +38,22 @@ public class Module {
 	private List<String> authors;
 
 	/**
-	 * List of platforms this module supports
+	 * The versions of Socialismus the module is built for, as a regular expression the whole version must match. The
+	 * build fills it with every release, release candidate and development build.
 	 */
-	private List<PlatformType> supportedPlatforms;
+	private String socialismus;
 
 	/**
-	 * List of game versions this module supports
+	 * The server platforms the module runs on; it loads on any one of them.
 	 */
-	private List<Version> supportedVersions;
+	@Builder.Default
+	private List<ModulePlatform> platforms = List.of();
 
 	/**
-	 * List of other modules this module depends on
+	 * What the module needs: other modules, integrations, and what the platform loaded
 	 */
-	private List<ModuleDependency> dependencies;
+	@Builder.Default
+	private List<ModuleDependency> dependencies = List.of();
 
 	/**
 	 * List of resource requirements for this module
@@ -65,6 +66,15 @@ public class Module {
 	 * Updater configuration for this module.
 	 */
 	private UpdateConfiguration updater;
+
+	/**
+	 * The packages the modules depending on this one load from it, each with its subpackages: its API, and the
+	 * libraries it shares with them, such as {@code me.whereareiam.socialismus.module.database.api} and
+	 * {@code org.jdbi}. Every other class of the module stays its own. The build writes them from
+	 * {@code socialismusModule { exports }}.
+	 */
+	@Builder.Default
+	private List<String> exports = List.of();
 
 	/**
 	 * The main class path of the module

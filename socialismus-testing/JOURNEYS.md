@@ -116,6 +116,10 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 
 - [x] The jars in `modules/` load, each logs that it loaded, and `/socialismus debug` lists them
 - [x] A module that needs another Socialismus version is refused with a reason
+- [x] A module that does not list the running platform is refused with a reason
+- [x] A module reaches the exports of a module it depends on, never the rest of that module, and the
+  classes of a plugin it depends on
+- [x] A module stops before the module it depends on
 - [x] `/socialismus reload` reloads the modules' configuration
 
 ## chirper

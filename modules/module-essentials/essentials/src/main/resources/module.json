@@ -4,19 +4,22 @@
   "authors": [
     "whereareiam"
   ],
-  "supportedPlatforms": [
-    "PAPER",
-    "BUKKIT",
-    "FOLIA",
-    "VELOCITY"
-  ],
-  "supportedVersions": [
-    "ALL"
-  ],
-  "dependencies": [
+  "socialismus": "@socialismus@",
+  "platforms": [
     {
-      "version": "@dependency@",
-      "type": "BASE"
+      "type": "PAPER"
+    },
+    {
+      "type": "FOLIA"
+    },
+    {
+      "type": "SPIGOT"
+    },
+    {
+      "type": "BUKKIT"
+    },
+    {
+      "type": "VELOCITY"
     }
   ],
   "updater": {

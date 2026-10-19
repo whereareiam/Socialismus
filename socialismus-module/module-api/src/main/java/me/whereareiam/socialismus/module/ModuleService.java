@@ -19,7 +19,7 @@ public interface ModuleService {
     void loadModules();
 
     /**
-     * Attempts to load modules that were waiting for a platform component
+     * Attempts to load modules that were waiting for a plugin of the platform
      * dependency to become enabled.
      */
     void loadPendingModules();

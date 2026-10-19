@@ -25,6 +25,9 @@ public abstract class SocialisticModule {
     /** Working directory path for the module */
     protected Path workingPath;
 
+    /** The libraries the module declares, to load its optional groups */
+    protected ModuleLibraries libraries;
+
     /**
      * Called when the module is being loaded.
      * Use this method to initialize resources and load configurations.

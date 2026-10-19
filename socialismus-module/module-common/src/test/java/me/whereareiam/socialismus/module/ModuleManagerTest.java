@@ -6,10 +6,12 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.module.model.InternalModule;
 import me.whereareiam.socialismus.module.type.ModuleState;
+import me.whereareiam.socialismus.type.PlatformType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.InOrder;
 import org.mockito.stubbing.Stubber;
 
 import java.io.IOException;
@@ -23,9 +25,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("Module manager")
@@ -96,6 +100,113 @@ class ModuleManagerTest {
 		assertEquals(List.of(), warnings);
 	}
 
+	@DisplayName("Loads a module whose optional dependency is not installed")
+	@Test
+	void loadsAModuleWithoutItsOptionalDependency() throws IOException {
+		Config.setConfigured(Config.builder().format(Format.JSON).build());
+		writeModuleJar("Dialogue", """
+				[{"type": "MODULE", "name": "SocialismusDatabase", "optional": true}]""");
+		ModuleManager manager = new ModuleManager(modulesPath, lifecycleController);
+
+		manager.loadModules();
+
+		assertEquals(List.of("Dialogue"), manager.getModules().stream().map(InternalModule::getName).toList());
+		assertTrue(manager.getModules().getFirst().getDependencies().getFirst().isOptional());
+	}
+
+	@DisplayName("Loads a module after the module it depends on")
+	@Test
+	void loadsADependencyFirst() throws IOException {
+		Config.setConfigured(Config.builder().format(Format.JSON).build());
+		writeModuleJar("Dialogue", """
+				[{"type": "MODULE", "name": "SocialismusDatabase", "optional": true}]""");
+		writeModuleJar("SocialismusDatabase", "[]");
+		ModuleManager manager = new ModuleManager(modulesPath, lifecycleController);
+
+		manager.loadModules();
+
+		assertEquals(List.of("SocialismusDatabase", "Dialogue"),
+				manager.getModules().stream().map(InternalModule::getName).toList());
+	}
+
+	@DisplayName("Keeps everything a module.json says")
+	@Test
+	void keepsEverythingTheModuleJsonSays() throws IOException {
+		Config.setConfigured(Config.builder().format(Format.JSON).build());
+		writeJar("SocialismusDatabase", """
+				{
+				  "name": "SocialismusDatabase",
+				  "version": "1.0.0",
+				  "authors": ["whereareiam"],
+				  "socialismus": "dev",
+				  "platforms": [{"type": "PAPER", "version": "26\\\\.1"}],
+				  "requirements": [{"resource": "socialismus:sync", "optional": true}],
+				  "exports": ["me.whereareiam.socialismus.module.database.api", "org.jdbi"],
+				  "main": "me.whereareiam.socialismus.module.SocialismusDatabase"
+				}
+				""");
+		ModuleManager manager = new ModuleManager(modulesPath, lifecycleController);
+
+		manager.loadModules();
+
+		InternalModule module = manager.getModules().getFirst();
+		assertEquals("dev", module.getSocialismus());
+		assertEquals(PlatformType.PAPER, module.getPlatforms().getFirst().getType());
+		assertEquals("26\\.1", module.getPlatforms().getFirst().getVersion());
+		assertEquals("socialismus:sync", module.getRequirements().getFirst().getResource());
+		assertEquals(List.of("me.whereareiam.socialismus.module.database.api", "org.jdbi"), module.getExports());
+	}
+
+	@DisplayName("Refuses a module.json that does not name the Socialismus versions it is built for")
+	@Test
+	void refusesAModuleWithoutItsSocialismusVersions() throws IOException {
+		Config.setConfigured(Config.builder().format(Format.JSON).build());
+		writeJar("Chirper", """
+				{"name": "Chirper", "version": "1.0.0", "authors": [], "platforms": [{"type": "PAPER"}], "main": "Chirper"}
+				""");
+		ModuleManager manager = new ModuleManager(modulesPath, lifecycleController);
+
+		manager.loadModules();
+
+		assertEquals(List.of(), manager.getModules());
+	}
+
+	@DisplayName("Refuses a module.json that exports a prefix instead of a package name")
+	@Test
+	void refusesAnExportThatIsNoPackageName() throws IOException {
+		Config.setConfigured(Config.builder().format(Format.JSON).build());
+		writeJar("SocialismusDatabase", """
+				{"name": "SocialismusDatabase", "version": "1.0.0", "authors": [], "socialismus": "dev",
+				 "platforms": [{"type": "PAPER"}], "exports": ["org.jdbi."], "main": "SocialismusDatabase"}
+				""");
+		ModuleManager manager = new ModuleManager(modulesPath, lifecycleController);
+
+		manager.loadModules();
+
+		assertEquals(List.of(), manager.getModules());
+	}
+
+	@DisplayName("Stops a module before the module it depends on")
+	@Test
+	void stopsDependentsFirst() throws IOException {
+		Config.setConfigured(Config.builder().format(Format.JSON).build());
+		writeModuleJar("Dialogue", """
+				[{"type": "MODULE", "name": "SocialismusDatabase"}]""");
+		writeModuleJar("SocialismusDatabase", "[]");
+		ModuleManager manager = new ModuleManager(modulesPath, lifecycleController);
+		manager.loadModules();
+		InternalModule database = manager.getModule("SocialismusDatabase").orElseThrow();
+		InternalModule dialogue = manager.getModule("Dialogue").orElseThrow();
+
+		manager.unloadModules();
+
+		InOrder order = inOrder(lifecycleController);
+		order.verify(lifecycleController).disableModule(dialogue);
+		order.verify(lifecycleController).disableModule(database);
+		order.verify(lifecycleController).unloadModule(dialogue);
+		order.verify(lifecycleController).unloadModule(database);
+	}
+
 	private Stubber moveOn(ModuleState from, ModuleState to) {
 		return doAnswer(call -> {
 			InternalModule module = call.getArgument(0, InternalModule.class);
@@ -121,17 +232,25 @@ class ModuleManagerTest {
 	}
 
 	private void writeModuleJar(String name) throws IOException {
+		writeModuleJar(name, "[]");
+	}
+
+	private void writeModuleJar(String name, String dependencies) throws IOException {
 		String moduleJson = """
 				{
 				  "name": "%s",
 				  "version": "1.0.0",
 				  "authors": ["whereareiam"],
-				  "supportedPlatforms": ["PAPER"],
-				  "supportedVersions": ["V_1_21"],
-				  "dependencies": [],
+				  "socialismus": "dev",
+				  "platforms": [{"type": "PAPER"}],
+				  "dependencies": %s,
 				  "main": "me.whereareiam.socialismus.module.%s"
 				}
-				""".formatted(name, name);
+				""".formatted(name, dependencies, name);
+		writeJar(name, moduleJson);
+	}
+
+	private void writeJar(String name, String moduleJson) throws IOException {
 
 		try (OutputStream file = Files.newOutputStream(modulesPath.resolve(name + ".jar"));
 		     JarOutputStream jar = new JarOutputStream(file)) {

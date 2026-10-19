@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.platform.common;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import me.whereareiam.attache.LibraryManager;
 import me.whereareiam.socialismus.command.CommandConfiguration;
 import me.whereareiam.socialismus.common.CommonConfiguration;
 import me.whereareiam.socialismus.common.CommonInjector;
@@ -25,14 +26,18 @@ public final class PlatformInjector {
 	 * Creates the injector and makes it the one {@link CommonInjector} hands out.
 	 *
 	 * @param dataPath        the directory Socialismus keeps its files in
+	 * @param libraries       the platform's library manager, which loaded Socialismus's libraries and loads the
+	 *                        library groups modules ask for
 	 * @param platformModules the bindings of the platform, such as its scheduler and listeners
 	 * @return the created injector
 	 */
 	@NotNull
-	public static Injector create(@NotNull Path dataPath, @NotNull Module... platformModules) {
+	public static Injector create(@NotNull Path dataPath, @NotNull LibraryManager libraries, @NotNull Module... platformModules) {
+		Module libraryBinding = binder -> binder.bind(LibraryManager.class).toInstance(libraries);
 		List<Module> modules = Stream.concat(
 				Stream.of(platformModules),
 				Stream.of(
+						libraryBinding,
 						new PlatformConfiguration(),
 						new CommonConfiguration(dataPath),
 						new CommandConfiguration(),
