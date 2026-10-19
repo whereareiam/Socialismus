@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import me.whereareiam.socialismus.model.attribute.AttributeKey;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -27,7 +28,7 @@ public class FormattedChatMessage extends ChatMessage {
 	private Component format;
 
 	public static FormattedChatMessage from(ChatMessage msg, Component format, boolean vanillaSending) {
-		return FormattedChatMessage.builder()
+		FormattedChatMessage formatted = FormattedChatMessage.builder()
 				.id(msg.getId())
 				.sender(msg.getSender())
 				.recipients(msg.getRecipients())
@@ -35,8 +36,15 @@ public class FormattedChatMessage extends ChatMessage {
 				.chat(msg.getChat())
 				.cancelled(msg.isCancelled())
 				.vanillaSending(vanillaSending)
-				.origin(msg.getOrigin())
+				.relayed(msg.isRelayed())
 				.format(format)
 				.build();
+		msg.getAttributes().forEach((key, value) -> copy(formatted, key, value));
+
+		return formatted;
+	}
+
+	private static <T> void copy(ChatMessage target, AttributeKey<T> key, Object value) {
+		target.setAttribute(key, key.getType().cast(value));
 	}
 }

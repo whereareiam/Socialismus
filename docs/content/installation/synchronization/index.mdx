@@ -1,26 +1,71 @@
 ---
 title: Synchronization
-description: Installation path for setups that synchronize Socialismus behavior across runtimes.
+description: Installation path for networks where several Socialismus share chat, players and private messages.
 ---
 
-Use this path when you want Socialismus runtimes to exchange synchronized chat behavior through SocialismusRedis or SocialismusChannelizer.
-This is the right path for environments where backend or proxy runtimes should no longer behave as isolated installs.
+Use this path when more than one Socialismus runs in your network, such as on several servers, on several proxies, or on a proxy and its servers, and they should share chat, players and private messages.
 
-The detailed backend and proxy synchronization variants will be documented inside this section later.
+Socialismus itself keeps to the server it runs on. Sharing between servers is the job of the **SocialismusNetwork** module, which needs a **transport** module to carry its messages.
 
-## Scope
+## What to install
 
-This guide covers synchronization-oriented installation for Socialismus.
-It focuses on when and why synchronization should be enabled, and on the infrastructure modules that make it possible.
+Install on every Socialismus that takes part:
 
-The exact synchronization provider choice and runtime-specific setup steps will be expanded later.
+- `Socialismus-Network` in `modules/`
+- one transport in `modules/`:
+  - `Socialismus-Redis`, when you run a Redis that every Socialismus reaches. It also stores what the network shares, so a starting server picks it up straight from Redis.
+  - `Socialismus-Channelizer`, on servers behind a proxy, when there is no Redis. It sends plugin messages through the proxy, so it only carries messages while players are online on both servers, and it cannot connect proxies to each other.
 
-## What this path assumes
+Without a transport, SocialismusNetwork runs alone: nothing leaves the server.
 
-- more than one Socialismus runtime is involved, or one runtime must coordinate with another layer
-- synchronized chat behavior is required
-- SocialismusRedis or SocialismusChannelizer will be part of the environment
-- you are ready to treat synchronization as part of the installation design instead of an afterthought
+## Which setup needs it
 
-If you only need a simple single-runtime setup, use [Normal installation](../normal/index.mdx).
-If you need separated proxy/backend chat roles without synchronized behavior first, use [Split installation](../split/index.mdx).
+| Setup | Needs SocialismusNetwork | Transport |
+| --- | --- | --- |
+| One server | no | none |
+| One proxy, servers without Socialismus | no; the proxy already sees every server's players | none |
+| Several proxies | yes | Redis |
+| Several servers, proxy without Socialismus | yes | Redis or Channelizer |
+| Proxy and servers, all with Socialismus | yes | Redis or Channelizer |
+
+Where a proxy and its servers all run Socialismus, each player's chat is handled exactly once: by their server when it runs Socialismus, since a server can take a message back while a proxy cannot, and by the proxy otherwise. When a server stops, the proxy takes over its players within the lease time.
+
+## Configuration
+
+SocialismusNetwork's settings are `modules/SocialismusNetwork/settings.yml`:
+
+<Tabs items={["YAML", "JSON"]}>
+  <Tab value="YAML">
+```yaml
+node: "lobby-1"
+lease: "15s"
+chat:
+  enabled: true
+  preserveFormat: true
+  clearHistory: true
+```
+  </Tab>
+  <Tab value="JSON">
+```json
+{
+  "node": "lobby-1",
+  "lease": "15s",
+  "chat": {
+    "enabled": true,
+    "preserveFormat": true,
+    "clearHistory": true
+  }
+}
+```
+  </Tab>
+</Tabs>
+
+- `node`: this Socialismus's name on the network, unique among them. The first start writes a random one; name it yourself to recognise it in the logs.
+- `lease`: how long a node's players and chat ownership live without being renewed, which is how long the others wait before taking over from a node that crashed.
+- `chat.enabled`: whether chat messages go to the other nodes. A chat with a radius always stays on its server.
+- `chat.preserveFormat`: whether a message keeps the format it was given where it was written, instead of being formatted again.
+- `chat.clearHistory`: whether clearing the chat history clears it on the other nodes too.
+
+A server behind a proxy learns its name from the proxy, so server requirements work on the server as well.
+
+Dialogue sends private messages to players on other nodes once SocialismusNetwork is installed; `messaging.confirmation` in Dialogue's settings is how long it waits for the recipient's node to answer.

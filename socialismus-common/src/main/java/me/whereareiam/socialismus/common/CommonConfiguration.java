@@ -13,6 +13,7 @@ import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
+import me.whereareiam.socialismus.common.chat.DefaultChatOwnershipService;
 import me.whereareiam.socialismus.common.chat.ChatHistoryController;
 import me.whereareiam.socialismus.common.chat.ChatLifecycle;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
@@ -28,11 +29,9 @@ import me.whereareiam.socialismus.common.config.migration.SocialismusConfigMigra
 import me.whereareiam.socialismus.common.config.provider.CommandsProvider;
 import me.whereareiam.socialismus.common.config.provider.MessagesProvider;
 import me.whereareiam.socialismus.common.config.provider.SettingsProvider;
-import me.whereareiam.socialismus.common.config.provider.SyncProvider;
 import me.whereareiam.socialismus.common.config.provider.UpdaterProvider;
 import me.whereareiam.socialismus.common.config.provider.chat.ChatMessagesProvider;
 import me.whereareiam.socialismus.common.config.provider.chat.ChatSettingsProvider;
-import me.whereareiam.socialismus.common.config.provider.chat.ChatSyncProvider;
 import me.whereareiam.socialismus.common.config.provider.chat.ChatsProvider;
 import me.whereareiam.socialismus.common.config.resolver.FileSystemConfigurationTypeResolver;
 import me.whereareiam.socialismus.common.container.ChatContainer;
@@ -46,7 +45,6 @@ import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.common.requirement.RequirementReasonResolver;
 import me.whereareiam.socialismus.common.requirement.RequirementRegistry;
 import me.whereareiam.socialismus.common.requirement.validation.*;
-import me.whereareiam.socialismus.common.sync.ChatNetworkBridge;
 import me.whereareiam.socialismus.common.updater.UpdateScheduler;
 import me.whereareiam.socialismus.common.updater.provider.GitHubProvider;
 import me.whereareiam.socialismus.common.updater.provider.ModrinthProvider;
@@ -58,12 +56,10 @@ import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
-import me.whereareiam.socialismus.model.chat.ChatSync;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.Settings;
-import me.whereareiam.socialismus.model.config.Sync;
 import me.whereareiam.socialismus.model.config.Updater;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import me.whereareiam.socialismus.model.requirement.Requirement;
@@ -76,6 +72,7 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.UpdateProvider;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
+import me.whereareiam.socialismus.service.chat.ChatOwnershipService;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
 import me.whereareiam.socialismus.service.chat.ChatToggleService;
 import me.whereareiam.socialismus.service.chat.ChatToggleStore;
@@ -87,7 +84,6 @@ import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import me.whereareiam.socialismus.service.requirement.RequirementValidation;
-import me.whereareiam.socialismus.service.sync.ChatSyncBus;
 import me.whereareiam.socialismus.type.ConfigurationType;
 import me.whereareiam.socialismus.type.module.ProviderType;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -130,10 +126,6 @@ public class CommonConfiguration extends AbstractModule {
 		bind(SettingsProvider.class);
 		bind(Settings.class).toProvider(SettingsProvider.class);
 
-		// Right after the settings: loading it sets the sync constants that the documents after it read.
-		bind(SyncProvider.class);
-		bind(Sync.class).toProvider(SyncProvider.class);
-
 		bind(UpdaterProvider.class);
 		bind(Updater.class).toProvider(UpdaterProvider.class);
 
@@ -152,9 +144,6 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ChatSettingsProvider.class).asEagerSingleton();
 		bind(ChatSettings.class).toProvider(ChatSettingsProvider.class);
 
-		bind(ChatSyncProvider.class).asEagerSingleton();
-		bind(ChatSync.class).toProvider(ChatSyncProvider.class);
-
 		bind(ChatMessagesProvider.class).asEagerSingleton();
 		bind(ChatMessages.class).toProvider(ChatMessagesProvider.class);
 
@@ -170,7 +159,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ChatContainerService.class).to(ChatContainer.class);
 		bind(ChatHistoryContainerService.class).to(ChatHistoryContainer.class);
 		bind(ChatHistoryService.class).to(ChatHistoryController.class);
-		bind(ChatSyncBus.class).to(ChatNetworkBridge.class);
+		bind(ChatOwnershipService.class).to(DefaultChatOwnershipService.class);
 		bind(ChatRenderService.class).to(DefaultChatRenderService.class);
 
 		// Updater

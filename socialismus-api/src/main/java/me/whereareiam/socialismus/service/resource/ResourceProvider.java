@@ -12,10 +12,7 @@ import java.util.List;
  * <pre>{@code
  * @Override
  * public List<ProvidedResource<?>> provideResources() {
- *     return List.of(
- *             ProvidedResource.of(Constants.Resources.SYNC, injector.getInstance(SyncService.class)),
- *             ProvidedResource.of(Constants.Resources.CACHE, injector.getInstance(CacheService.class))
- *     );
+ *     return List.of(ProvidedResource.of(NetworkResources.TRANSPORT, transport));
  * }
  * }</pre>
  *

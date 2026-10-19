@@ -26,7 +26,8 @@ import org.jetbrains.annotations.NotNull;
  * }
  * }</pre>
  *
- * <p>Messages that reach this server from another one through synchronization do not fire it.
+ * <p>Messages {@linkplain me.whereareiam.socialismus.service.chat.ChatCoordinationService#relay relayed} from
+ * elsewhere, such as another server of a network, do not fire it.
  */
 @Getter
 @Setter

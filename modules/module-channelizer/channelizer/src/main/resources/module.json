@@ -22,8 +22,7 @@
   "dependencies": [
     {
       "type": "MODULE",
-      "name": "SocialismusNetwork",
-      "optional": true
+      "name": "SocialismusNetwork"
     }
   ],
   "updater": {

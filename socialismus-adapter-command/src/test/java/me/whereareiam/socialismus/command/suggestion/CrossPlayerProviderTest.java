@@ -1,7 +1,6 @@
 package me.whereareiam.socialismus.command.suggestion;
 
 import me.whereareiam.keystone.Actor;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.PlatformInteractor;
@@ -20,12 +19,11 @@ import static org.mockito.Mockito.when;
 class CrossPlayerProviderTest {
 	private final PlatformInteractor interactor = mock(PlatformInteractor.class);
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
-	private final CrossPlayerProvider provider = new CrossPlayerProvider(() -> null, interactor, playerRegistry);
+	private final CrossPlayerProvider provider = new CrossPlayerProvider(interactor, playerRegistry);
 
 	@Test
 	@SuppressWarnings("unchecked")
 	void leavesOutThePlayersTheCompletingPlayerMayNotSee() {
-		Constants.Synchronization.SYNCHRONIZATION = false;
 		SocialismusPlayer alice = player("Alice");
 		SocialismusPlayer bob = player("Bob");
 		SocialismusPlayer carol = player("Carol");
@@ -41,19 +39,31 @@ class CrossPlayerProviderTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	void suggestsEveryoneToTheConsole() {
-		Constants.Synchronization.SYNCHRONIZATION = false;
 		when(interactor.getOnlinePlayers()).thenReturn(List.of("Bob", "Alice"));
-		when(playerRegistry.getPlayerData(anyString())).thenReturn(Optional.empty());
+		when(playerRegistry.findPlayer(anyString())).thenReturn(Optional.empty());
 		CommandContext<Actor> context = mock(CommandContext.class);
 		when(context.sender()).thenReturn(mock(Actor.class));
 
 		assertEquals(List.of("Alice", "Bob"), List.copyOf(provider.suggestCrossPlayers(context)));
 	}
 
+	@Test
+	@SuppressWarnings("unchecked")
+	void suggestsThePlayersAModuleAddsAsWell() {
+		SocialismusPlayer remote = player("Dave");
+		when(interactor.getOnlinePlayers()).thenReturn(List.of("Alice"));
+		when(playerRegistry.getKnownPlayers()).thenReturn(List.of(remote));
+		when(playerRegistry.findPlayer("Alice")).thenReturn(Optional.empty());
+		CommandContext<Actor> context = mock(CommandContext.class);
+		when(context.sender()).thenReturn(mock(Actor.class));
+
+		assertEquals(List.of("Alice", "Dave"), List.copyOf(provider.suggestCrossPlayers(context)));
+	}
+
 	private SocialismusPlayer player(String name) {
 		SocialismusPlayer player = mock(SocialismusPlayer.class);
 		when(player.getUsername()).thenReturn(name);
-		when(playerRegistry.getPlayerData(name)).thenReturn(Optional.of(player));
+		when(playerRegistry.findPlayer(name)).thenReturn(Optional.of(player));
 
 		return player;
 	}

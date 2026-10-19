@@ -10,4 +10,5 @@ dependencies {
     implementation(projects.moduleDialogueApi)
     implementation(projects.moduleDialogueCommand)
     implementation(projects.moduleDialogueCommon)
+    implementation(projects.moduleDialogueNetwork)
 }

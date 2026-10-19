@@ -43,17 +43,11 @@ public abstract class SocialismusPlayer implements Actor {
 	private final Map<String, Object> customData = new ConcurrentHashMap<>();
 
 	/**
-	 * Static reference to PlayerRegistry for syncing data.
-	 * Set by the service implementation during initialization.
-	 */
-	@Setter
-	private static PlayerRegistry playerRegistry;
-
-	/**
-	 * Constructor for platform-specific implementations.
+	 * Creates a player. A platform registers the player it hosts in the {@link PlayerRegistry} once the player is
+	 * fully built, never from this constructor, so listeners of its registration see a complete player.
 	 *
-	 * @param uniqueId The player's UUID
-	 * @param username The player's username
+	 * @param uniqueId the player's unique id
+	 * @param username the player's name
 	 */
 	protected SocialismusPlayer(
 			@NotNull UUID uniqueId,
@@ -61,8 +55,6 @@ public abstract class SocialismusPlayer implements Actor {
 	) {
 		this.uniqueId = uniqueId;
 		this.username = username;
-
-		if (playerRegistry != null) playerRegistry.syncPlayerData(this);
 	}
 
 	/**
@@ -126,8 +118,8 @@ public abstract class SocialismusPlayer implements Actor {
 	public abstract String getServer();
 
 	/**
-	 * Sets the player's current server name.
-	 * This is Velocity-specific and is a no-op on backend servers.
+	 * Sets the player's current server name: on a proxy the server the player is connected to, on a server behind
+	 * a proxy its own name once the server learned it. A no-op where the platform keeps no server.
 	 *
 	 * @param server The server name where the player is located
 	 */

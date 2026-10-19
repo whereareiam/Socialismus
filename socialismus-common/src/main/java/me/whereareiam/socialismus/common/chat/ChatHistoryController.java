@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveByAmountEvent;
@@ -37,7 +36,7 @@ public class ChatHistoryController implements ChatHistoryService {
 	@Override
 	public boolean removeMessage(int id, boolean callEvent) {
 		return processRemoval(() -> chatHistoryContainer.removeMessage(id) ? 1 : 0,
-				() -> new ChatHistoryRemoveByIdEvent(Constants.Synchronization.IDENTIFIER, id), callEvent) > 0;
+				() -> new ChatHistoryRemoveByIdEvent(id), callEvent) > 0;
 	}
 
 	@Override
@@ -48,7 +47,7 @@ public class ChatHistoryController implements ChatHistoryService {
 	@Override
 	public int removeMessages(int amount, boolean callEvent) {
 		return processRemoval(() -> chatHistoryContainer.removeMessages(amount),
-				() -> new ChatHistoryRemoveByAmountEvent(Constants.Synchronization.IDENTIFIER, amount), callEvent);
+				() -> new ChatHistoryRemoveByAmountEvent(amount), callEvent);
 	}
 
 	@Override
@@ -61,7 +60,7 @@ public class ChatHistoryController implements ChatHistoryService {
 		return processRemoval(() -> (int) chatHistoryContainer.getMessages(username).stream()
 						.filter(message -> chatHistoryContainer.removeMessage(message.getId()))
 						.count(),
-				() -> new ChatHistoryRemoveByPlayerEvent(Constants.Synchronization.IDENTIFIER, username), callEvent);
+				() -> new ChatHistoryRemoveByPlayerEvent(username), callEvent);
 	}
 
 	private int processRemoval(

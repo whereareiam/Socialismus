@@ -7,7 +7,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.module.channelizer.api.PlatformMessageBus;
-import me.whereareiam.socialismus.service.resource.sync.SyncSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 @Singleton
 public final class BukkitMessageBus implements PlatformMessageBus, PluginMessageListener, Listener {
@@ -36,7 +36,7 @@ public final class BukkitMessageBus implements PlatformMessageBus, PluginMessage
 	private static final long CARRIER_DELAY_TICKS = 20;
 
 	private final Plugin plugin;
-	private final Map<String, List<SyncSubscriber>> listeners = new ConcurrentHashMap<>();
+	private final Map<String, List<Consumer<byte[]>>> listeners = new ConcurrentHashMap<>();
 	private final List<Runnable> sendableListeners = new CopyOnWriteArrayList<>();
 
 	@Inject
@@ -97,9 +97,9 @@ public final class BukkitMessageBus implements PlatformMessageBus, PluginMessage
 	}
 
 	@Override
-	public void subscribe(@NotNull String channel, @NotNull SyncSubscriber subscriber) {
+	public void subscribe(@NotNull String channel, @NotNull Consumer<byte[]> receiver) {
 		Logger.debug("Subscribing to channel: " + channel);
-		listeners.computeIfAbsent(channel, k -> new CopyOnWriteArrayList<>()).add(subscriber);
+		listeners.computeIfAbsent(channel, k -> new CopyOnWriteArrayList<>()).add(receiver);
 	}
 
 	@Override
@@ -115,11 +115,7 @@ public final class BukkitMessageBus implements PlatformMessageBus, PluginMessage
 		byte[] payload = new byte[len];
 		in.readFully(payload);
 
-		listeners.getOrDefault(logicalChannel, List.of())
-				.forEach(sub -> {
-					Logger.debug("Dispatching message to subscriber: " + sub.getClass().getName());
-					sub.onMessage(logicalChannel, payload);
-				});
+		listeners.getOrDefault(logicalChannel, List.of()).forEach(receiver -> receiver.accept(payload));
 	}
 
 }

@@ -67,5 +67,34 @@ public interface PlayerRegistry {
 	 */
 	@NotNull
 	Collection<SocialismusPlayer> getPlayers();
+
+	/**
+	 * Adds players this server knows of but does not host, such as those on the other servers of a network.
+	 *
+	 * @param source where they come from
+	 */
+	void addSource(@NotNull PlayerSource source);
+
+	/**
+	 * Removes a source added before, such as when the module that added it unloads.
+	 *
+	 * @param source the source
+	 */
+	void removeSource(@NotNull PlayerSource source);
+
+	/**
+	 * Finds a player by name, ignoring case: one this server hosts, or else one of its {@linkplain #addSource sources}.
+	 *
+	 * @param username the player's name
+	 * @return the player, or empty when no player of that name is known
+	 */
+	@NotNull
+	Optional<SocialismusPlayer> findPlayer(@NotNull String username);
+
+	/**
+	 * Returns every player known: those this server hosts and those of its sources, each once.
+	 */
+	@NotNull
+	Collection<SocialismusPlayer> getKnownPlayers();
 }
 

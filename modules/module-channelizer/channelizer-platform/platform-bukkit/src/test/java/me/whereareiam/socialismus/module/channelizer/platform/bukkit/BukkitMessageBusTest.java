@@ -2,7 +2,6 @@ package me.whereareiam.socialismus.module.channelizer.platform.bukkit;
 
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
-import me.whereareiam.socialismus.service.resource.sync.SyncSubscriber;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -63,7 +63,7 @@ class BukkitMessageBusTest {
 		Server server = mock(Server.class);
 		Messenger messenger = mock(Messenger.class);
 		Player player = mock(Player.class);
-		SyncSubscriber subscriber = mock(SyncSubscriber.class);
+		@SuppressWarnings("unchecked") Consumer<byte[]> subscriber = mock(Consumer.class);
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getMessenger()).thenReturn(messenger);
 		when(server.getPluginManager()).thenReturn(mock(PluginManager.class));
@@ -76,7 +76,7 @@ class BukkitMessageBusTest {
 
 		bus.onPluginMessageReceived("BungeeCord", player, message);
 
-		verify(subscriber).onMessage("sync", payload);
+		verify(subscriber).accept(payload);
 	}
 
 	@Test
@@ -84,7 +84,7 @@ class BukkitMessageBusTest {
 		Plugin plugin = mock(Plugin.class);
 		Server server = mock(Server.class);
 		Messenger messenger = mock(Messenger.class);
-		SyncSubscriber subscriber = mock(SyncSubscriber.class);
+		@SuppressWarnings("unchecked") Consumer<byte[]> subscriber = mock(Consumer.class);
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getMessenger()).thenReturn(messenger);
 		when(server.getPluginManager()).thenReturn(mock(PluginManager.class));
@@ -96,7 +96,7 @@ class BukkitMessageBusTest {
 
 		bus.onPluginMessageReceived("BungeeCord", mock(Player.class), forwardedMessage("sync", payload));
 
-		verify(subscriber).onMessage("sync", payload);
+		verify(subscriber).accept(payload);
 	}
 
 	@Test
@@ -105,7 +105,7 @@ class BukkitMessageBusTest {
 		Server server = mock(Server.class);
 		Messenger messenger = mock(Messenger.class);
 		Player player = mock(Player.class);
-		SyncSubscriber subscriber = mock(SyncSubscriber.class);
+		@SuppressWarnings("unchecked") Consumer<byte[]> subscriber = mock(Consumer.class);
 		when(plugin.getServer()).thenReturn(server);
 		when(server.getMessenger()).thenReturn(messenger);
 		when(server.getPluginManager()).thenReturn(mock(PluginManager.class));

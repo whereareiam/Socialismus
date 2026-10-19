@@ -17,8 +17,6 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.SerializationService;
-import me.whereareiam.socialismus.service.resource.CacheService;
-import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.strata.Strata;
 
 import java.util.List;
@@ -32,8 +30,6 @@ public class Essentials extends SocialisticModule {
 	private final PlayerRegistry playerRegistry;
 	private final PlatformInteractor platformInteractor;
 	private final SerializationService serializationService;
-	private final CacheService cacheService;
-	private final SyncService syncService;
 
 	private Injector injector;
 
@@ -48,9 +44,7 @@ public class Essentials extends SocialisticModule {
 								commandService,
 								playerRegistry,
 								platformInteractor,
-								serializationService,
-								cacheService,
-								syncService),
+								serializationService),
 						new CommonConfiguration(workingPath),
 						new FeatureConfiguration());
 	}

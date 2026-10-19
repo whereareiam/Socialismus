@@ -8,11 +8,11 @@ import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.module.ModuleService;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueCommands;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
-import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSync;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.command.CommandRegistrar;
@@ -21,16 +21,17 @@ import me.whereareiam.socialismus.module.dialogue.common.config.migration.Dialog
 import me.whereareiam.socialismus.module.dialogue.common.control.IgnoredChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
-import me.whereareiam.socialismus.module.dialogue.common.delivery.DialogueNetworkBridge;
+import me.whereareiam.socialismus.module.dialogue.common.delivery.RemoteDeliveries;
 import me.whereareiam.socialismus.module.dialogue.common.moderation.Spying;
+import me.whereareiam.socialismus.module.dialogue.network.DialogueNetworkSupport;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
+import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
-import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.strata.Strata;
 
 import java.util.List;
@@ -39,6 +40,11 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class Dialogue extends SocialisticModule {
+	/**
+	 * The module whose API Dialogue reaches only while it is loaded, as an optional dependency.
+	 */
+	private static final String NETWORK = "SocialismusNetwork";
+
 	private final Injector parentInjector;
 	private final Registry<Reloadable> reloadableRegistry;
 	private Injector injector;
@@ -56,7 +62,6 @@ public class Dialogue extends SocialisticModule {
 						parentInjector.getInstance(RequirementEvaluatorService.class),
 						parentInjector.getInstance(RequirementReasonService.class),
 						parentInjector.getInstance(SerializationService.class),
-						parentInjector.getInstance(SyncService.class),
 						parentInjector.getInstance(EventManager.class)
 				),
 				new CommonConfiguration(workingPath)
@@ -67,7 +72,6 @@ public class Dialogue extends SocialisticModule {
 				DialogueSettings.class,
 				DialogueMessages.class,
 				DialogueCommands.class,
-				DialogueSync.class,
 				MessagingFormats.class,
 				ModerationFormats.class
 		).forEach(injector::getInstance);
@@ -76,12 +80,16 @@ public class Dialogue extends SocialisticModule {
 	@Override
 	public void onEnable() {
 		injector.getInstance(CommandRegistrar.class).registerCommands();
-		injector.getInstance(DialogueNetworkBridge.class).initialize();
+		if (isNetworkInstalled()) {
+			ResourceRegistry resources = parentInjector.getInstance(ResourceRegistry.class);
+			injector.getInstance(RemoteDeliveries.class).use(DialogueNetworkSupport.delivery(resources, injector).orElse(null));
+		}
 		listeners().forEach(eventManager()::register);
 	}
 
 	@Override
 	public void onDisable() {
+		injector.getInstance(RemoteDeliveries.class).use(null);
 		listeners().forEach(eventManager()::unregister);
 		injector.getInstance(Scheduler.class).cancelByModule("dialogue");
 	}
@@ -93,6 +101,13 @@ public class Dialogue extends SocialisticModule {
 				injector.getInstance(IgnoredChat.class),
 				injector.getInstance(Spying.class)
 		);
+	}
+
+	/**
+	 * Returns whether SocialismusNetwork is installed, whose API Dialogue reaches only then.
+	 */
+	private boolean isNetworkInstalled() {
+		return parentInjector.getInstance(ModuleService.class).getModule(NETWORK).isPresent();
 	}
 
 	private EventManager eventManager() {
