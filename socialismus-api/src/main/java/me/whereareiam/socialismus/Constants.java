@@ -15,6 +15,11 @@ public final class Constants {
 	public static final String VERSION = BuildConfig.VERSION;
 
 	public static Version SERVER_VERSION = Version.UNKNOWN;
+	/**
+	 * The version of the server platform: the game's on a game server, such as {@code 26.1.2}, and the proxy's own on a
+	 * proxy, such as Velocity's {@code 3.4.0}.
+	 */
+	public static String PLATFORM_VERSION = "";
 
 	public static final class Channels {
 		public static final String NAME = BuildConfig.NAME.toLowerCase();

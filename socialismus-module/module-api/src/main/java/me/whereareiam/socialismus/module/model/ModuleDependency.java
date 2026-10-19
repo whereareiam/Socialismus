@@ -4,14 +4,18 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.module.type.DependencyType;
 
-import java.util.List;
-
 /**
- * Represents a dependency relationship between modules in the Socialismus plugin system.
- * Each dependency specifies the required module name, version, and dependency type.
+ * Something a module needs, as {@code module.json} lists it under {@code dependencies}:
  *
- * <p>This class uses Lombok annotations for boilerplate code generation
- * and implements the Builder pattern for flexible object creation.</p>
+ * <pre>{@code
+ * "dependencies": [
+ *   {"type": "MODULE", "name": "SocialismusDatabase", "optional": true},
+ *   {"type": "INTEGRATION", "name": "PacketEvents"},
+ *   {"type": "PLATFORM", "name": "Clans", "version": "2\\..*"}
+ * ]
+ * }</pre>
+ *
+ * A module loads only when every dependency that is not optional is there.
  */
 @Getter
 @Setter
@@ -20,24 +24,26 @@ import java.util.List;
 @SuperBuilder(toBuilder = true)
 public class ModuleDependency {
 	/**
-	 * The name of the required module
-	 */
-	private String name;
-
-	/**
-	 * The required version of the module
-	 */
-	private String version;
-
-	/**
-	 * The type of dependency relationship
+	 * What the dependency points at.
 	 */
 	private DependencyType type;
 
 	/**
-	 * API package prefixes a {@link DependencyType#PLATFORM_COMPONENT} dependency
-	 * exposes to this module. Each prefix must end with a period.
+	 * Its name: the module's, the integration's, or the plugin's as the platform knows it.
+	 */
+	private String name;
+
+	/**
+	 * The versions accepted, as a regular expression the whole version must match; any version when absent. An
+	 * integration has no version of its own.
+	 */
+	private String version;
+
+	/**
+	 * Whether the dependency may be missing: the module loads without it, and when it is there, the module loads
+	 * after it and reaches what it offers. The module then uses it only once it is there, such as a resource it
+	 * registers.
 	 */
 	@Builder.Default
-	private List<String> apiPackages = List.of();
+	private boolean optional = false;
 }

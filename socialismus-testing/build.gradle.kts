@@ -1,4 +1,7 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import me.whereareiam.anvil.integration.junit.gradle.AnvilTest
+import java.util.zip.ZipFile
 
 plugins {
     java
@@ -65,21 +68,41 @@ val journeySuites = listOf(
 )
 
 /**
- * Chirper's jar with a module.json that asks for Socialismus 1.0.0, for the journey that expects the refusal.
+ * Chirper's jar with its module.json changed, for the journeys that expect Socialismus to refuse it.
  */
-val moduleRequiringAnotherVersion by tasks.registering(Zip::class) {
+fun alteredChirper(artifact: String, change: MutableMap<String, Any?>.() -> Unit): TaskProvider<Zip> {
     val chirper = pluginJar(projects.moduleChirper)
-    from(chirper.elements.map { jars -> jars.map { zipTree(it) } }) {
-        filesMatching("module.json") {
-            // The base dependency's version is the pattern of Socialismus versions the module accepts.
-            filter { line ->
-                if (line.trimStart().startsWith("\"version\": \"((")) "      \"version\": \"1\\\\.0\\\\.0\","
-                else line
+    val moduleJson = layout.buildDirectory.file("module-fixtures/$artifact/module.json")
+    val alterModuleJson = tasks.register("${artifact}ModuleJson") {
+        inputs.files(chirper)
+        outputs.file(moduleJson)
+        doLast {
+            val original = ZipFile(chirper.singleFile).use { jar ->
+                jar.getInputStream(jar.getEntry("module.json")).reader().readText()
             }
+            @Suppress("UNCHECKED_CAST")
+            val module = JsonSlurper().parseText(original) as MutableMap<String, Any?>
+            module.change()
+            moduleJson.get().asFile.writeText(JsonOutput.prettyPrint(JsonOutput.toJson(module)))
         }
     }
-    archiveFileName.set("module-requires-another-version.jar")
-    destinationDirectory.set(layout.buildDirectory.dir("modules"))
+
+    return tasks.register<Zip>(artifact) {
+        from(chirper.elements.map { jars -> jars.map { zipTree(it) } }) {
+            exclude("module.json")
+        }
+        from(alterModuleJson)
+        archiveFileName.set("$artifact.jar")
+        destinationDirectory.set(layout.buildDirectory.dir("modules"))
+    }
+}
+
+val moduleRequiringAnotherVersion = alteredChirper("module-requires-another-version") {
+    this["socialismus"] = "1\\.0\\.0"
+}
+
+val moduleForAnotherPlatform = alteredChirper("module-for-another-platform") {
+    this["platforms"] = listOf(mapOf("type" to "VELOCITY"))
 }
 
 anvil {
@@ -101,6 +124,9 @@ anvil {
     artifact("essentials", pluginJar(projects.moduleEssentials))
     artifact("bubbler", pluginJar(projects.moduleBubbler))
     artifact("module-requires-another-version", files(moduleRequiringAnotherVersion))
+    artifact("module-for-another-platform", files(moduleForAnotherPlatform))
+    artifact("module-journey-library", pluginJar(projects.fixtureModuleLibrary))
+    artifact("module-journey-consumer", pluginJar(projects.fixtureModuleConsumer))
     artifact("packetevents", thirdPartyPlugin(libs.journey.packetevents))
 
     // Each suite runs the journeys of its tag in anvil<Suite>Test, such as anvilChatTest.

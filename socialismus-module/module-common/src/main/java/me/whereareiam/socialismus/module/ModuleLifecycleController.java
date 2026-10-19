@@ -11,7 +11,6 @@ import me.whereareiam.socialismus.model.resource.ProvidedResource;
 import me.whereareiam.socialismus.module.model.InternalModule;
 import me.whereareiam.socialismus.module.model.ModuleDependency;
 import me.whereareiam.socialismus.module.resolver.*;
-import me.whereareiam.socialismus.module.type.DependencyType;
 import me.whereareiam.socialismus.module.type.ModuleState;
 import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.service.resource.ResourceProvider;
@@ -31,7 +30,9 @@ public class ModuleLifecycleController {
 	private final Injector injector;
 	private final PlatformClassLoader platformClassLoader;
 	private final ResourceRegistry registry;
+	private final ModuleLibraryLoader libraryLoader;
 	private final Map<InternalModule, ModuleClassLoader> moduleClassLoaders = new IdentityHashMap<>();
+	private final Map<InternalModule, ModuleLibraryLoader.LoadedModuleLibraries> moduleLibraries = new IdentityHashMap<>();
 	private final Map<InternalModule, List<ProvidedResource<?>>> moduleResources = new IdentityHashMap<>();
 
 	private final List<ModuleResolver> resolvers;
@@ -40,11 +41,13 @@ public class ModuleLifecycleController {
 	public ModuleLifecycleController(
 			Injector injector,
 			PlatformClassLoader platformClassLoader,
-			ResourceRegistry registry
+			ResourceRegistry registry,
+			ModuleLibraryLoader libraryLoader
 	) {
 		this.injector = injector;
 		this.platformClassLoader = platformClassLoader;
 		this.registry = registry;
+		this.libraryLoader = libraryLoader;
 
 		this.resolvers = List.of(
 				injector.getInstance(ModuleDependencyResolver.class),
@@ -61,6 +64,7 @@ public class ModuleLifecycleController {
 		ModuleClassLoader loader = null;
 		try {
 			loader = createModuleClassLoader(module);
+			moduleLibraries.put(module, libraryLoader.loadOwnLibraries(module, loader));
 			Class<?> moduleClass = Class.forName(module.getMain(), true, loader);
 
 			module.setModule((SocialisticModule) injector.getInstance(moduleClass));
@@ -69,6 +73,7 @@ public class ModuleLifecycleController {
 			module.setState(ModuleState.LOADED);
 			module.getModule().setModule(module);
 			module.getModule().setWorkingPath(module.getPath().getParent().resolve(module.getName()));
+			module.getModule().setLibraries(moduleLibraries.get(module));
 
 			injector.injectMembers(module.getModule());
 
@@ -78,6 +83,7 @@ public class ModuleLifecycleController {
 				if (module.getModule() instanceof ResourceProvider provider) registerResources(module, provider);
 			} catch (ModuleLifecycleException | ProvisionException ex) {
 				unregisterResources(module);
+				closeModuleLibraries(moduleLibraries.remove(module));
 				closeModuleClassLoader(moduleClassLoaders.remove(module));
 				Logger.severe("Module " + module.getName() + " aborted load: " + ex.getMessage());
 				module.setState(ModuleState.ERROR);
@@ -86,6 +92,7 @@ public class ModuleLifecycleController {
 
 			Logger.info("Loaded module " + AnsiColor.YELLOW + module.getName() + AnsiColor.RESET + " v" + module.getVersion() + " [" + String.join(", ", module.getAuthors()) + "]");
 		} catch (MalformedURLException | ClassNotFoundException | ModuleLifecycleException | ProvisionException | LinkageError e) {
+			closeModuleLibraries(moduleLibraries.remove(module));
 			ModuleClassLoader storedLoader = moduleClassLoaders.remove(module);
 			if (storedLoader != loader) closeModuleClassLoader(storedLoader);
 			closeModuleClassLoader(loader);
@@ -121,6 +128,7 @@ public class ModuleLifecycleController {
 		unregisterResources(module);
 		module.getModule().onUnload();
 
+		closeModuleLibraries(moduleLibraries.remove(module));
 		closeModuleClassLoader(moduleClassLoaders.remove(module));
 	}
 
@@ -163,17 +171,41 @@ public class ModuleLifecycleController {
 	}
 
 	private ModuleClassLoader createModuleClassLoader(InternalModule module) throws MalformedURLException {
-		Map<String, ClassLoader> externalApiClassLoaders = new HashMap<>();
+		Map<String, ClassLoader> exports = new HashMap<>();
+		List<ClassLoader> platformDependencies = new ArrayList<>();
 		for (ModuleDependency dependency : module.getDependencies()) {
-			if (dependency.getType() != DependencyType.PLATFORM_COMPONENT) continue;
-
-			ClassLoader dependencyClassLoader = platformClassLoader.findDependency(dependency.getName())
-					.orElseThrow(() -> new ModuleLifecycleException("Platform component " + dependency.getName() + " is no longer available"))
-					.getClassLoader();
-			dependency.getApiPackages().forEach(apiPackage -> externalApiClassLoaders.put(apiPackage, dependencyClassLoader));
+			switch (dependency.getType()) {
+				// A dependency loads first; an optional one that is not there exports nothing.
+				case MODULE -> loadedModule(dependency.getName()).ifPresent(provider -> provider.getKey().getExports()
+						.forEach(exported -> exports.put(exported, provider.getValue())));
+				case PLATFORM -> platformClassLoader.findDependency(dependency.getName())
+						.ifPresentOrElse(platform -> platformDependencies.add(platform.getClassLoader()), () -> {
+							if (!dependency.isOptional())
+								throw new ModuleLifecycleException("Plugin " + dependency.getName() + " is no longer available");
+						});
+				case INTEGRATION -> {
+					// Reached through Socialismus, whose classes the module sees anyway.
+				}
+			}
 		}
 
-		return new ModuleClassLoader(module.getPath().toUri().toURL(), platformClassLoader.getClassLoader(), externalApiClassLoaders);
+		return new ModuleClassLoader(module.getPath().toUri().toURL(), platformClassLoader.getClassLoader(), exports, platformDependencies);
+	}
+
+	private void closeModuleLibraries(ModuleLibraryLoader.LoadedModuleLibraries libraries) {
+		if (libraries == null) return;
+
+		try {
+			libraries.close();
+		} catch (Exception exception) {
+			Logger.warn("Failed to close module libraries: " + exception.getMessage());
+		}
+	}
+
+	private Optional<Map.Entry<InternalModule, ModuleClassLoader>> loadedModule(String name) {
+		return moduleClassLoaders.entrySet().stream()
+				.filter(entry -> entry.getKey().getName().equals(name))
+				.findFirst();
 	}
 
 	private void closeModuleClassLoader(ModuleClassLoader loader) {
@@ -190,7 +222,7 @@ public class ModuleLifecycleController {
 		for (ModuleResolver resolver : resolvers) {
 			if (!resolver.resolve(module)) {
 				if (resolver instanceof ModuleDependencyResolver dependencyResolver
-						&& dependencyResolver.isWaitingForPlatformComponent(module)) {
+						&& dependencyResolver.isWaitingForPlatform(module)) {
 					module.setState(ModuleState.WAITING_FOR_DEPENDENCY);
 					return true;
 				}

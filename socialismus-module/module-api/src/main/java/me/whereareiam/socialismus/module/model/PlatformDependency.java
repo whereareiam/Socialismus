@@ -4,11 +4,10 @@ import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A platform component that can expose an API to a Socialismus module.
+ * A plugin of the platform that a module depends on.
  *
- * <p>The class loader is deliberately supplied by the platform rather than by
- * a module. This preserves type identity with the installed plugin while
- * allowing the module loader to delegate only declared API packages.</p>
+ * <p>The platform supplies the class loader rather than the module, so the
+ * module uses the very classes the installed plugin uses.</p>
  */
 @Value
 public class PlatformDependency {

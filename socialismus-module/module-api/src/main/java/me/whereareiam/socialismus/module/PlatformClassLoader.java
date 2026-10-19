@@ -22,14 +22,14 @@ public interface PlatformClassLoader {
     ClassLoader getClassLoader();
 
     /**
-     * Finds an enabled platform component that a module may use as an external
-     * API dependency.
+     * Finds an enabled plugin of the platform that a module names in a
+     * {@code PLATFORM} dependency.
      *
-     * <p>Platforms that do not support dynamic plugin dependencies return an
-     * empty result.</p>
+     * <p>Platforms that do not support plugin dependencies return an empty
+     * result.</p>
      *
-     * @param name the platform component name declared by the module
-     * @return the component metadata and its class loader, if available
+     * @param name the plugin's name as the platform knows it
+     * @return the plugin's name, version and class loader, if it is enabled
      */
     default @NotNull Optional<PlatformDependency> findDependency(@NotNull String name) {
         return Optional.empty();

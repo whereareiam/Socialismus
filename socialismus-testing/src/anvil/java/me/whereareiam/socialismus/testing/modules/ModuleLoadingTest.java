@@ -43,7 +43,7 @@ class ModuleLoadingTest {
 		Player alice = Player.joins(anvil, "Alice").op();
 
 		String log = Console.of(anvil).log();
-		assertTrue(log.contains("Module Chirper requires version of the plugin to be 1\\.0\\.0"),
+		assertTrue(log.contains("Module Chirper is built for Socialismus 1\\.0\\.0"),
 				"Chirper was not refused with a reason:\n" + log);
 		assertFalse(log.contains("Loaded module Chirper"), "Chirper loaded:\n" + log);
 		assertTrue(log.contains("Loaded module Dialogue"), "The other module did not load:\n" + log);
@@ -51,6 +51,17 @@ class ModuleLoadingTest {
 		alice.command("socialismus debug");
 		String debug = alice.sees("Dialogue");
 		assertFalse(debug.contains("Chirper"), "The debug command listed the refused Chirper:\n" + debug);
+	}
+
+	@Test
+	@Socialismus(modules = Module.DIALOGUE, moduleFixtures = ModuleFixture.FOR_ANOTHER_PLATFORM)
+	void moduleForAnotherPlatformIsRefused(ScenarioContext anvil) {
+		Player.joins(anvil, "Alice");
+
+		String log = Console.of(anvil).log();
+		assertTrue(log.contains("Module Chirper does not run on PAPER"), "Chirper was not refused with a reason:\n" + log);
+		assertFalse(log.contains("Loaded module Chirper"), "Chirper loaded:\n" + log);
+		assertTrue(log.contains("Loaded module Dialogue"), "The other module did not load:\n" + log);
 	}
 
 	@Test

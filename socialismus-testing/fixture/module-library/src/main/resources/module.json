@@ -1,0 +1,14 @@
+{
+  "name": "@projectName@",
+  "version": "@projectVersion@",
+  "authors": [
+    "whereareiam"
+  ],
+  "socialismus": "@socialismus@",
+  "platforms": [
+    {
+      "type": "PAPER"
+    }
+  ],
+  "main": "me.whereareiam.socialismus.testing.fixture.library.JourneyLibrary"
+}

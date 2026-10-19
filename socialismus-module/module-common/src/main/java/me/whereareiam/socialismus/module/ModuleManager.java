@@ -67,8 +67,10 @@ public class ModuleManager implements ModuleService {
 	@Override
 	public void unloadModules() {
 		Logger.info("Unloading modules...");
-		modules.forEach(lifecycleController::disableModule);
-		modules.forEach(lifecycleController::unloadModule);
+		// A module stops before the modules it depends on, which may still serve it while it does.
+		List<InternalModule> dependentsFirst = modules.reversed();
+		dependentsFirst.forEach(lifecycleController::disableModule);
+		dependentsFirst.forEach(lifecycleController::unloadModule);
 
 		modules.removeIf(module -> !isLoaded(module));
 		modules.forEach(module -> Logger.warn("Module was not unloaded: " + module.getName()));
@@ -109,18 +111,7 @@ public class ModuleManager implements ModuleService {
 							return;
 						}
 
-						modules.add(InternalModule.builder()
-								.path(file.toPath())
-								.state(ModuleState.UNKNOWN)
-								.name(module.getName())
-								.version(module.getVersion())
-								.authors(module.getAuthors())
-								.supportedPlatforms(module.getSupportedPlatforms())
-								.supportedVersions(module.getSupportedVersions())
-								.dependencies(module.getDependencies())
-								.updater(module.getUpdater())
-								.main(module.getMain())
-								.build());
+						modules.add(InternalModule.of(module, file.toPath()));
 					}
 				} catch (Exception e) {
 					Logger.warn("Failed to load module from file '" + file.getName() + "': " + e.getMessage());
@@ -168,9 +159,12 @@ public class ModuleManager implements ModuleService {
 		if (visited.contains(moduleName)) return false;
 
 		visiting.add(moduleName);
-		for (String dependency : dependencyGraph.getOrDefault(moduleName, Collections.emptyList()))
+		for (String dependency : dependencyGraph.getOrDefault(moduleName, Collections.emptyList())) {
+			// A dependency that is not installed has nothing to sort; the dependency resolver judges it.
+			if (!moduleMap.containsKey(dependency)) continue;
 			if (topologicalSort(dependency, dependencyGraph, visited, visiting, sortedModules, moduleMap))
 				return true;
+		}
 
 		visiting.remove(moduleName);
 		visited.add(moduleName);
@@ -187,6 +181,27 @@ public class ModuleManager implements ModuleService {
 
 		if (module.getName() == null || module.getVersion() == null || module.getMain() == null) {
 			Logger.warn("Module file is missing required fields: " + moduleJson.getName());
+			return false;
+		}
+
+		if (module.getSocialismus() == null || module.getSocialismus().isBlank()) {
+			Logger.warn("Module file does not name the Socialismus versions it is built for: " + moduleJson.getName());
+			return false;
+		}
+
+		if (module.getPlatforms().stream().anyMatch(platform -> platform.getType() == null)) {
+			Logger.warn("Module file names a platform without its type: " + moduleJson.getName());
+			return false;
+		}
+
+		if (module.getDependencies().stream().anyMatch(dependency -> dependency.getType() == null
+				|| dependency.getName() == null || dependency.getName().isBlank())) {
+			Logger.warn("Module file names a dependency without its type or name: " + moduleJson.getName());
+			return false;
+		}
+
+		if (module.getExports().stream().anyMatch(exported -> exported == null || exported.isBlank() || exported.endsWith("."))) {
+			Logger.warn("Module file exports something that is no package name: " + moduleJson.getName());
 			return false;
 		}
 

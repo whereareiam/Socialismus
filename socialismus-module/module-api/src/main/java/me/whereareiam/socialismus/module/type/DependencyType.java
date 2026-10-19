@@ -1,34 +1,28 @@
 package me.whereareiam.socialismus.module.type;
 
 /**
- * Enumeration defining the types of module dependencies in the Socialismus plugin.
- * Used to categorize different modules based on their functionality and load order
- * in the plugin's modular architecture.
+ * What a module's dependency points at. Socialismus itself is no dependency: every module needs it, and
+ * {@link me.whereareiam.socialismus.module.model.Module#getSocialismus()} names the versions a module is built for.
  */
 public enum DependencyType {
 	/**
-	 * Modules that provide integration with external plugins or services.
-	 * These modules extend the plugin's functionality through third-party connections.
-	 */
-	INTEGRATION,
-
-
-	/**
-	 * A plugin supplied by the active server platform. These dependencies expose
-	 * their declared API packages to the module without becoming a Socialismus
-	 * core integration.
-	 */
-	PLATFORM_COMPONENT,
-
-	/**
-	 * Feature modules that add specific functionality to the plugin.
-	 * These are optional components that can be installed to enhance the plugin.
+	 * Another Socialismus module, by the name in its {@code module.json}. It loads first, and its
+	 * {@linkplain me.whereareiam.socialismus.module.model.Module#getExports() exports} reach the module that depends
+	 * on it.
 	 */
 	MODULE,
 
 	/**
-	 * Core modules required for the plugin's essential operations.
-	 * These modules are necessary for the plugin to function properly.
+	 * A plugin that Socialismus itself integrates with, by the name of its integration, such as {@code PacketEvents}.
+	 * The module uses it through Socialismus.
 	 */
-	BASE
+	INTEGRATION,
+
+	/**
+	 * Something the server platform loaded, used directly: a plugin on Paper, Bukkit or Velocity, by its name. Every
+	 * class it has reaches the module, looked up after Socialismus and the module's own classes and libraries. The
+	 * server software itself is no dependency; {@link me.whereareiam.socialismus.module.model.Module#getPlatforms()}
+	 * names where a module runs.
+	 */
+	PLATFORM
 }

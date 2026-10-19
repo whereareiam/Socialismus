@@ -55,6 +55,15 @@ modules/module-dialogue/
 
 - logic belongs in `-common`, never in the assembly
 - add a further side, such as `-command`, only when it exists; a small family starts with its assembly alone
+- a module's runtime libraries are Attache libraries of its own: declare them with `attache(...)` in the part that uses them (applying the `me.whereareiam.attache` plugin there), and Socialismus loads them into the module's class loader before its main class; put optional ones, such as one database driver, in a `group(...)` and load it with `libraries.loadGroups(...)` from the module
+- a module shares its API, and the libraries that API exposes, with the modules that depend on it through `socialismusModule { exports.add("org.jdbi") }`: package names, each with its subpackages; the build writes them to `module.json` and `checkModuleExports` fails when one has no class in the module or on its classpath
+- a module's `module.json` says what it is built for and what it needs, one fact in one place:
+  - `socialismus`: the Socialismus versions, filled by the build (`@socialismus@`)
+  - `platforms`: where it runs, any one of them, such as `{"type": "PAPER", "version": "26\\.1(\\..*)?"}`; the detected platform is exact, so Folia runs a module only when it lists `FOLIA`
+  - `dependencies`: `MODULE` (another module; its exports reach the dependent), `INTEGRATION` (a plugin through Socialismus's integration) and `PLATFORM` (a plugin the platform loaded; all its classes, looked up after the module's own); any of them may be `optional`
+  - versions are regular expressions the whole version must match, and any version when left out
+- modules stop in reverse dependency order, so a module still reaches what it depends on while it stops
+- `socialismus-testing/fixture/` holds modules built only for the module journeys, such as one that exports a package and one that depends on it
 
 ### Platforms
 

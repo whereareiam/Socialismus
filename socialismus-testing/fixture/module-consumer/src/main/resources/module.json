@@ -1,0 +1,24 @@
+{
+  "name": "@projectName@",
+  "version": "@projectVersion@",
+  "authors": [
+    "whereareiam"
+  ],
+  "socialismus": "@socialismus@",
+  "platforms": [
+    {
+      "type": "PAPER"
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "MODULE",
+      "name": "JourneyLibrary"
+    },
+    {
+      "type": "PLATFORM",
+      "name": "packetevents"
+    }
+  ],
+  "main": "me.whereareiam.socialismus.testing.fixture.consumer.JourneyConsumer"
+}

@@ -13,7 +13,7 @@ lombok = "1.18.48"
 # general
 guice = "7.0.0"
 annotations = "26.1.0"
-attache = "1.2.0"
+attache = "1.3.0"
 configura = "2.1.0"
 keystone = "1.0.0"
 commandant = "1.0.0"
