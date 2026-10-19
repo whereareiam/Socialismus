@@ -19,6 +19,13 @@
       "type": "BUKKIT"
     }
   ],
+  "dependencies": [
+    {
+      "type": "MODULE",
+      "name": "SocialismusNetwork",
+      "optional": true
+    }
+  ],
   "updater": {
     "release": {
       "provider": "MODRINTH",
