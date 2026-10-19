@@ -56,7 +56,7 @@ public class Module {
 
 	/**
 	 * List of resource requirements for this module
-	 * (e.g., {@code socialismus:database})
+	 * (e.g., {@code socialismus:sync})
 	 */
 	@Builder.Default
 	private List<ResourceRequirement> requirements = List.of();

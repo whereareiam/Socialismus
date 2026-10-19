@@ -22,7 +22,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ResourceRequirement {
 	/**
-	 * The {@linkplain ResourceKey#getFullKey() full key} of the resource, such as {@code socialismus:database}.
+	 * The {@linkplain ResourceKey#getFullKey() full key} of the resource, such as {@code socialismus:sync}.
 	 */
 	private String resource;
 

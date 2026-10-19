@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * Central registry of shared resources, such as the synchronization, the cache and the database. Providers
+ * Central registry of shared resources, such as the synchronization, the cache, or one a module defines. Providers
  * register a resource under its {@link ResourceKey}; consumers look it up by the same key:
  * <pre>{@code
  * Optional<SyncService> sync = registry.get(Constants.Resources.SYNC);

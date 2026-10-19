@@ -28,7 +28,6 @@ mockito = "5.24.0"
 journey-packetevents = "2.14.0+spigot"
 
 # resouces
-ormlite = "6.1"
 jedis = "7.5.2"
 packetevents = "2.14.0"
 
@@ -93,7 +92,6 @@ attache-velocity = { group = "me.whereareiam", name = "attache-velocity", versio
 attache-common = { group = "me.whereareiam", name = "attache-common", version.ref = "attache" }
 
 # resources
-ormlite = { group = "com.j256.ormlite", name = "ormlite-core", version.ref = "ormlite" }
 jedis = { group = "redis.clients", name = "jedis", version.ref = "jedis" }
 packetevents = { group = "com.github.retrooper", name = "packetevents-spigot", version.ref = "packetevents" }
 
