@@ -61,6 +61,7 @@ public final class ServerFiles {
 			.build();
 
 	private final Map<String, Object> documents = new LinkedHashMap<>();
+	private final Map<String, String> texts = new LinkedHashMap<>();
 
 	/**
 	 * Replaces the chats with the given ones.
@@ -88,7 +89,20 @@ public final class ServerFiles {
 	 * @param document the model or map to write
 	 */
 	public void put(@NotNull String path, @NotNull Object document) {
+		texts.remove(path);
 		documents.put(path, document);
+	}
+
+	/**
+	 * Adds or replaces a document as written text, for values a model cannot hold before Anvil fills them in, such
+	 * as the port of a container in {@code ${anvil.process.redis.port}}.
+	 *
+	 * @param path path in the data directory, extension included
+	 * @param text the document's text
+	 */
+	public void text(@NotNull String path, @NotNull String text) {
+		documents.remove(path);
+		texts.put(path, text);
 	}
 
 	/**
@@ -98,6 +112,7 @@ public final class ServerFiles {
 	Map<String, String> files() {
 		Map<String, String> files = new LinkedHashMap<>();
 		documents.forEach((path, document) -> files.put(path, write(document)));
+		files.putAll(texts);
 
 		return files;
 	}

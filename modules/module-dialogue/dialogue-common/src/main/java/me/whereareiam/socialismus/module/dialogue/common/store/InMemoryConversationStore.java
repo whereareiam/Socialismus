@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.module.dialogue.common.conversation;
+package me.whereareiam.socialismus.module.dialogue.common.store;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

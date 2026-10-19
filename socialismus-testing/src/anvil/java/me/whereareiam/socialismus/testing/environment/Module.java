@@ -12,7 +12,9 @@ public enum Module {
 	BUBBLER("bubbler", "Bubbler"),
 	REDIS("redis", "SocialismusRedis"),
 	DATABASE("database", "SocialismusDatabase"),
-	NETWORK("network", "SocialismusNetwork");
+	NETWORK("network", "SocialismusNetwork"),
+	CHANNELIZER("channelizer", "SocialismusChannelizer"),
+	LINK("link", "SocialismusLink");
 
 	private final String artifact;
 	private final String name;

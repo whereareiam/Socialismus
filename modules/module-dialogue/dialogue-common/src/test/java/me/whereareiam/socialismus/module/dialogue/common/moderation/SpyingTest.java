@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSetti
 import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.MessageRenderer;
+import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryPreferencesStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 class SpyingTest {
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
-	private final InMemorySpyStore spies = new InMemorySpyStore();
+	private final InMemoryPreferencesStore spies = new InMemoryPreferencesStore();
 	private final RequirementEvaluatorService evaluator = mock(RequirementEvaluatorService.class);
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
 	private final MessageRenderer renderer = mock(MessageRenderer.class);
@@ -33,7 +34,7 @@ class SpyingTest {
 	@BeforeEach
 	void setUp() {
 		when(playerRegistry.getPlayers()).thenReturn(Set.of(alice, bob, staff, carol));
-		spies.setSpying(staff.getUniqueId(), true);
+		spies.update(staff.getUniqueId(), current -> current.withSpying(true));
 	}
 
 	@Test

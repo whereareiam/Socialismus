@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.IgnoreStore;
 import me.whereareiam.socialismus.module.dialogue.api.MessageControlService;
-import me.whereareiam.socialismus.module.dialogue.api.MessageToggleStore;
+import me.whereareiam.socialismus.module.dialogue.api.PreferencesStore;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.common.DialogueNotices;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class DefaultMessageControlService implements MessageControlService {
 	private final Provider<DialogueSettings> settings;
-	private final MessageToggleStore toggles;
+	private final PreferencesStore preferences;
 	private final IgnoreStore ignores;
 	private final SenderPrivileges privileges;
 	private final PlayerRegistry playerRegistry;
@@ -35,8 +35,8 @@ public class DefaultMessageControlService implements MessageControlService {
 			return;
 		}
 
-		boolean off = !toggles.isOff(player.getUniqueId());
-		toggles.setOff(player.getUniqueId(), off);
+		boolean off = preferences.update(player.getUniqueId(), current -> current.withMessagesOff(!current.isMessagesOff()))
+				.isMessagesOff();
 		notices.messagesToggled(player, off);
 	}
 

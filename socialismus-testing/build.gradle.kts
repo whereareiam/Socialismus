@@ -26,6 +26,9 @@ dependencies {
     anvilImplementation(libs.configura)
 
     anvilRuntimeOnly(libs.anvil.protocol.mcprotocol)
+    // Anvil runs the journeys' services, such as Redis, on the machine's Docker engine.
+    anvilRuntimeOnly(libs.docker.java.core)
+    anvilRuntimeOnly(libs.docker.java.transport.zerodep)
 
     testImplementation(libs.junit.jupiter)
 
@@ -124,8 +127,10 @@ anvil {
     artifact("essentials", pluginJar(projects.moduleEssentials))
     artifact("bubbler", pluginJar(projects.moduleBubbler))
     artifact("redis", pluginJar(projects.moduleRedis))
+    artifact("channelizer", pluginJar(projects.moduleChannelizer))
     artifact("database", pluginJar(projects.moduleDatabase))
     artifact("network", pluginJar(projects.moduleNetwork))
+    artifact("link", pluginJar(projects.moduleLink))
     artifact("module-requires-another-version", files(moduleRequiringAnotherVersion))
     artifact("module-for-another-platform", files(moduleForAnotherPlatform))
     artifact("module-journey-library", pluginJar(projects.fixtureModuleLibrary))

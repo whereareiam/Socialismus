@@ -37,27 +37,38 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 		for (Class<? extends Consumer<ServerFiles>> change : socialismus.configure())
 			instantiate(change).accept(files);
 
-		WorkspacePlan workspace = workspace(network, socialismus, files);
 		AnvilScenario.AnvilScenarioBuilder scenario = AnvilScenario.builder().name(name(socialismus));
+		for (Container container : socialismus.containers())
+			scenario.container(container.process());
 
-		if (network == Network.VELOCITY) {
-			MinecraftProxy proxy = network.proxy().workspace(workspace).build();
-			return scenario.entrypoint(Network.PROXY)
-					.server(network.server().build())
-					.proxy(proxy)
-					.build();
+		for (String backend : network.backends()) {
+			MinecraftServer.MinecraftServerBuilder server = network.server(backend);
+			if (network.socialismus().contains(backend)) server.workspace(workspace(network, backend, socialismus, files));
+			scenario.server(server.build());
+		}
+		if (!network.proxied()) return scenario.entrypoint(network.entryServer()).build();
+
+		MinecraftProxy.MinecraftProxyBuilder proxy = network.proxy();
+		for (String listener : socialismus.proxyListeners())
+			proxy.listener(listener);
+		if (network.socialismus().contains(Network.PROXY)) {
+			ServerFiles proxyFiles = new ServerFiles();
+			for (Class<? extends Consumer<ServerFiles>> change : socialismus.configure())
+				instantiate(change).accept(proxyFiles);
+			for (Class<? extends Consumer<ServerFiles>> change : socialismus.proxyConfigure())
+				instantiate(change).accept(proxyFiles);
+			proxy.workspace(workspace(network, Network.PROXY, socialismus, proxyFiles));
 		}
 
-		MinecraftServer server = network.server().workspace(workspace).build();
-		return scenario.entrypoint(Network.SERVER).server(server).build();
+		return scenario.entrypoint(Network.PROXY).proxy(proxy.build()).build();
 	}
 
-	private static WorkspacePlan workspace(Network network, Socialismus socialismus, ServerFiles files) {
-		String data = network.data();
+	private static WorkspacePlan workspace(Network network, String process, Socialismus socialismus, ServerFiles files) {
+		String data = network.data(process);
 		WorkspacePlan.WorkspacePlanBuilder workspace = WorkspacePlan.builder()
 				.asset(WorkspaceAsset.builder()
 						.group("socialismus")
-						.source(AssetSource.artifact(network.artifact(socialismus.bundle())))
+						.source(AssetSource.artifact(network.artifact(process, socialismus.bundle())))
 						.target(Path.of("plugins", "Socialismus.jar"))
 						.build())
 				// Socialismus downloads its libraries on first start and checks them itself, so a rebuilt plugin
@@ -144,7 +155,10 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 						Arrays.stream(socialismus.plugins()).map(Plugin::name).collect(Collectors.joining("+")),
 						Arrays.stream(socialismus.modules()).map(Module::name).collect(Collectors.joining("+")),
 						Arrays.stream(socialismus.moduleFixtures()).map(ModuleFixture::name).collect(Collectors.joining("+")),
-						Arrays.stream(socialismus.configure()).map(SocialismusScenarios::changeName).collect(Collectors.joining("+")))
+						Arrays.stream(socialismus.containers()).map(Container::name).collect(Collectors.joining("+")),
+						String.join("+", socialismus.proxyListeners()),
+						Arrays.stream(socialismus.configure()).map(SocialismusScenarios::changeName).collect(Collectors.joining("+")),
+						Arrays.stream(socialismus.proxyConfigure()).map(SocialismusScenarios::changeName).collect(Collectors.joining("+")))
 				.filter(part -> !part.isBlank())
 				.collect(Collectors.joining("-"))
 				.toLowerCase(Locale.ROOT);

@@ -156,6 +156,12 @@ project(":module-network-common").projectDir = file("modules/module-network/netw
 include(":module-network")
 project(":module-network").projectDir = file("modules/module-network/network")
 
+include(":module-link-common")
+project(":module-link-common").projectDir = file("modules/module-link/link-common")
+
+include(":module-link")
+project(":module-link").projectDir = file("modules/module-link/link")
+
 include(":module-redis-api")
 project(":module-redis-api").projectDir = file("modules/module-redis/redis-api")
 
