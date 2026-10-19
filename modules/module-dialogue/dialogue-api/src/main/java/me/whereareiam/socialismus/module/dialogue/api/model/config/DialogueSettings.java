@@ -61,6 +61,12 @@ public class DialogueSettings {
 		private boolean conversationMode;
 
 		/**
+		 * With SocialismusNetwork, how long to wait for the node a recipient is on to confirm a private message before
+		 * the sender is told the recipient is not online.
+		 */
+		private Duration confirmation;
+
+		/**
 		 * Which conversation {@code /reply} answers.
 		 */
 		@Getter

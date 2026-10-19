@@ -7,13 +7,17 @@ import me.whereareiam.socialismus.event.player.SocialismusPlayerAddedEvent;
 import me.whereareiam.socialismus.event.player.SocialismusPlayerRemovedEvent;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
+import me.whereareiam.socialismus.registry.PlayerSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Default implementation of PlayerRegistry.
@@ -22,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class DefaultPlayerRegistry implements PlayerRegistry {
 	private final Map<UUID, SocialismusPlayer> playerDataMap = new ConcurrentHashMap<>();
+	private final List<PlayerSource> sources = new CopyOnWriteArrayList<>();
 	private final EventManager eventManager;
 
 	@Inject
@@ -75,7 +80,7 @@ public class DefaultPlayerRegistry implements PlayerRegistry {
 			// Preserve location (backend-specific, will be no-op on proxy)
 			if (stored.getLocation() != null) player.setLocation(stored.getLocation());
 			
-			// Preserve server (Velocity-specific, will be no-op on backend)
+			// Preserve server: the proxy's server on a proxy, the learned name of this server behind one
 			if (stored.getServer() != null) player.setServer(stored.getServer());
 			
 			return player;
@@ -86,6 +91,37 @@ public class DefaultPlayerRegistry implements PlayerRegistry {
 	@NotNull
 	public Collection<SocialismusPlayer> getPlayers() {
 		return playerDataMap.values();
+	}
+
+	@Override
+	public void addSource(@NotNull PlayerSource source) {
+		sources.add(source);
+	}
+
+	@Override
+	public void removeSource(@NotNull PlayerSource source) {
+		sources.remove(source);
+	}
+
+	@Override
+	@NotNull
+	public Optional<SocialismusPlayer> findPlayer(@NotNull String username) {
+		Optional<SocialismusPlayer> hosted = getPlayerData(username);
+		if (hosted.isPresent()) return hosted;
+
+		return sources.stream()
+				.map(source -> source.findPlayer(username))
+				.flatMap(Optional::stream)
+				.findFirst();
+	}
+
+	@Override
+	@NotNull
+	public Collection<SocialismusPlayer> getKnownPlayers() {
+		Map<UUID, SocialismusPlayer> known = new LinkedHashMap<>(playerDataMap);
+		sources.forEach(source -> source.knownPlayers().forEach(player -> known.putIfAbsent(player.getUniqueId(), player)));
+
+		return List.copyOf(known.values());
 	}
 }
 

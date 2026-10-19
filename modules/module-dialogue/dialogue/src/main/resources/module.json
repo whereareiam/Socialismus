@@ -22,9 +22,10 @@
       "type": "VELOCITY"
     }
   ],
-  "requirements": [
+  "dependencies": [
     {
-      "resource": "socialismus:sync",
+      "type": "MODULE",
+      "name": "SocialismusNetwork",
       "optional": true
     }
   ],

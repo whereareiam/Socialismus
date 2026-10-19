@@ -12,6 +12,8 @@ import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import me.whereareiam.socialismus.listener.DynamicListener;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
+import me.whereareiam.socialismus.service.chat.ChatOwnershipService;
 import net.kyori.adventure.text.Component;
 
 import java.util.Collection;
@@ -24,9 +26,14 @@ public class PlayerChatListener implements DynamicListener<PlayerChatEvent> {
 	private final ChatCoordinator chatCoordinator;
 	private final ChatBroadcaster chatBroadcaster;
 	private final ChatMessageFactory chatMessageFactory;
+	private final ChatOwnershipService chatOwnership;
+	private final PlayerRegistry playerRegistry;
 
 	public void onEvent(PlayerChatEvent event) {
 		Player player = event.getPlayer();
+		// The server the player is on runs Socialismus and handles their chat, so the message passes on to it untouched.
+		if (!playerRegistry.getPlayerData(player.getUniqueId()).map(chatOwnership::handles).orElse(true)) return;
+
 		Collection<Player> recipients = proxyServer.getAllPlayers();
 		Component content = Component.text(event.getMessage());
 

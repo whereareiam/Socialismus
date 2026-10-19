@@ -10,6 +10,8 @@ import me.whereareiam.socialismus.module.network.common.lease.DefaultLeases;
 import me.whereareiam.socialismus.module.network.common.lease.LeaseRecord;
 import me.whereareiam.socialismus.module.network.common.node.NodeDirectory;
 import me.whereareiam.socialismus.module.network.common.node.NodeRecord;
+import me.whereareiam.socialismus.module.network.common.player.DefaultNetworkPlayers;
+import me.whereareiam.socialismus.module.network.common.player.PlayerRecord;
 import me.whereareiam.socialismus.module.network.common.replication.DefaultReplicationSystem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class DefaultNetworkService implements NetworkService {
 	private final DefaultReplicationSystem replication;
 	private final NodeDirectory directory;
+	private final DefaultNetworkPlayers players;
 	private final Duration lifetime;
 	private final Map<String, DefaultLeases> leases = new ConcurrentHashMap<>();
 
@@ -44,6 +47,7 @@ public final class DefaultNetworkService implements NetworkService {
 		this.replication = replication;
 		this.lifetime = lifetime;
 		this.directory = new NodeDirectory(replication.cache(NodeDirectory.CACHE, NodeRecord.class), self, lifetime);
+		this.players = new DefaultNetworkPlayers(replication.cache(DefaultNetworkPlayers.CACHE, PlayerRecord.class), directory::self, lifetime);
 	}
 
 	@Override
@@ -54,6 +58,11 @@ public final class DefaultNetworkService implements NetworkService {
 	@Override
 	public @NotNull Collection<NetworkNode> nodes() {
 		return directory.nodes();
+	}
+
+	@Override
+	public @NotNull DefaultNetworkPlayers players() {
+		return players;
 	}
 
 	@Override
@@ -119,6 +128,7 @@ public final class DefaultNetworkService implements NetworkService {
 	 */
 	public void leave() {
 		leases.values().forEach(DefaultLeases::releaseAll);
+		players.unhostAll();
 		directory.leave();
 	}
 }

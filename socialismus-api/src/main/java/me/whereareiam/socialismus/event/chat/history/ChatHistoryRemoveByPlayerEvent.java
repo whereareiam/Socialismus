@@ -6,8 +6,7 @@ import lombok.Getter;
 public class ChatHistoryRemoveByPlayerEvent extends ChatHistoryRemoveEvent {
 	private final String username;
 
-	public ChatHistoryRemoveByPlayerEvent(String origin, String username) {
-		super(origin);
+	public ChatHistoryRemoveByPlayerEvent(String username) {
 		this.username = username;
 	}
 }

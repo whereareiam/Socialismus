@@ -16,6 +16,6 @@ public enum StartupPhase {
 	RUNTIME,
 	/** The modules are loaded and enabled. */
 	MODULES,
-	/** Socialismus starts handling players: listeners, synchronization, the welcome banner and update checks. */
+	/** Socialismus starts handling players: listeners, the welcome banner and update checks. */
 	CONNECTIONS
 }

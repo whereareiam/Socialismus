@@ -59,10 +59,26 @@ public abstract class SocialismusPlayer implements Actor {
 			@NotNull UUID uniqueId,
 			@NotNull String username
 	) {
+		this(uniqueId, username, true);
+	}
+
+	/**
+	 * Creates a player, registered as one this server hosts only when {@code hosted}.
+	 *
+	 * @param uniqueId the player's unique id
+	 * @param username the player's name
+	 * @param hosted   whether this server hosts the player; {@code false} for a player it only knows of, such as one on
+	 *                 another server of a network, which then never takes the place of a hosted one
+	 */
+	protected SocialismusPlayer(
+			@NotNull UUID uniqueId,
+			@NotNull String username,
+			boolean hosted
+	) {
 		this.uniqueId = uniqueId;
 		this.username = username;
 
-		if (playerRegistry != null) playerRegistry.syncPlayerData(this);
+		if (hosted && playerRegistry != null) playerRegistry.syncPlayerData(this);
 	}
 
 	/**
@@ -126,8 +142,8 @@ public abstract class SocialismusPlayer implements Actor {
 	public abstract String getServer();
 
 	/**
-	 * Sets the player's current server name.
-	 * This is Velocity-specific and is a no-op on backend servers.
+	 * Sets the player's current server name: on a proxy the server the player is connected to, on a server behind
+	 * a proxy its own name once the server learned it. A no-op where the platform keeps no server.
 	 *
 	 * @param server The server name where the player is located
 	 */

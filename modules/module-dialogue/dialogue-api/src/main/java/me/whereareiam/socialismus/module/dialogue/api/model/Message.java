@@ -49,11 +49,6 @@ public class Message {
 	private DeliveryStatus deliveryStatus;
 
 	/**
-	 * The network identifier of the server the message was sent on.
-	 */
-	private String origin;
-
-	/**
 	 * The identifier of the conversation the message belongs to.
 	 */
 	private String conversationId;

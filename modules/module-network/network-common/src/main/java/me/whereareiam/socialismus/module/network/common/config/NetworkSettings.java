@@ -25,4 +25,32 @@ public class NetworkSettings {
 	 * over from a node that crashed. A node renews them three times as often.
 	 */
 	private Duration lease;
+
+	/**
+	 * What chat does on the network.
+	 */
+	private Chat chat;
+
+	/**
+	 * What chat does on the network.
+	 */
+	@Getter
+	@Setter
+	@ToString
+	public static class Chat {
+		/**
+		 * Whether chat messages go to and come from the other nodes. A chat with a radius always stays on its node.
+		 */
+		private boolean enabled;
+
+		/**
+		 * Whether a message from another node keeps the format it was given there, instead of being formatted here.
+		 */
+		private boolean preserveFormat;
+
+		/**
+		 * Whether clearing the chat history clears it on the other nodes too.
+		 */
+		private boolean clearHistory;
+	}
 }

@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * Central registry of shared resources, such as the synchronization, the cache, or one a module defines. Providers
+ * Central registry of shared resources, such as the network or the database a module offers. Providers
  * register a resource under its {@link ResourceKey}; consumers look it up by the same key:
  * <pre>{@code
- * Optional<SyncService> sync = registry.get(Constants.Resources.SYNC);
+ * Optional<NetworkService> network = registry.get(NetworkResources.NETWORK);
  * }</pre>
  *
  * <p>A key holds one resource at a time. Resources come and go while Socialismus runs, as the modules that

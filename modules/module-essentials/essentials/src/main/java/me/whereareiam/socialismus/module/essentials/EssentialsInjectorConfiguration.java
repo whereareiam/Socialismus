@@ -9,8 +9,6 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.SerializationService;
-import me.whereareiam.socialismus.service.resource.CacheService;
-import me.whereareiam.socialismus.service.resource.sync.SyncService;
 
 @RequiredArgsConstructor
 public class EssentialsInjectorConfiguration extends AbstractModule {
@@ -19,8 +17,6 @@ public class EssentialsInjectorConfiguration extends AbstractModule {
 	private final PlayerRegistry playerRegistry;
 	private final PlatformInteractor platformInteractor;
 	private final SerializationService serializationService;
-	private final CacheService cacheService;
-	private final SyncService syncService;
 
 	@Override
 	protected void configure() {
@@ -31,7 +27,5 @@ public class EssentialsInjectorConfiguration extends AbstractModule {
 		bind(PlayerRegistry.class).toInstance(playerRegistry);
 		bind(PlatformInteractor.class).toInstance(platformInteractor);
 		bind(SerializationService.class).toInstance(serializationService);
-		bind(CacheService.class).toInstance(cacheService);
-		bind(SyncService.class).toInstance(syncService);
 	}
 }
