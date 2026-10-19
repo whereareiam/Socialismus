@@ -1,19 +1,24 @@
 package me.whereareiam.socialismus.platform.paper.mapper;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.platform.paper.actor.console.PaperSocialismusBrigadierConsole;
 import me.whereareiam.socialismus.platform.paper.actor.console.PaperSocialismusConsole;
 import me.whereareiam.socialismus.platform.paper.actor.player.PaperSocialismusBrigadierPlayer;
 import me.whereareiam.socialismus.platform.paper.actor.player.PaperSocialismusPlayer;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.cloud.SenderMapper;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class CommandSourceStackMapper implements SenderMapper<CommandSourceStack, Actor> {
+	private final PlayerRegistry playerRegistry;
 
 	@Override
 	public @NonNull Actor map(@NonNull CommandSourceStack source) {
@@ -31,7 +36,9 @@ public class CommandSourceStackMapper implements SenderMapper<CommandSourceStack
 		}
 
 		if (source.getSender() instanceof Player player) {
-			return new PaperSocialismusBrigadierPlayer(player, source);
+			PaperSocialismusBrigadierPlayer mapped = new PaperSocialismusBrigadierPlayer(player, source);
+			playerRegistry.syncPlayerData(mapped);
+			return mapped;
 		}
 
 		throw new UnsupportedOperationException("Unsupported command source type: " + source.getSender().getClass().getName());

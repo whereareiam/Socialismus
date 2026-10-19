@@ -7,6 +7,7 @@ import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.platform.bukkit.actor.console.BukkitSocialismusCommandConsole;
 import me.whereareiam.socialismus.platform.bukkit.actor.player.BukkitSocialismusCommandPlayer;
 import me.whereareiam.socialismus.platform.bukkit.actor.sender.BukkitSocialismusCommandSender;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -17,10 +18,12 @@ import org.incendo.cloud.SenderMapper;
 @Singleton
 public class CommandSenderMapper implements SenderMapper<CommandSender, Actor> {
 	private final Provider<BukkitAudiences> audiences;
+	private final PlayerRegistry playerRegistry;
 
 	@Inject
-	public CommandSenderMapper(Provider<BukkitAudiences> audiences) {
+	public CommandSenderMapper(Provider<BukkitAudiences> audiences, PlayerRegistry playerRegistry) {
 		this.audiences = audiences;
+		this.playerRegistry = playerRegistry;
 	}
 
 	@Override
@@ -30,8 +33,11 @@ public class CommandSenderMapper implements SenderMapper<CommandSender, Actor> {
 		if (source instanceof ConsoleCommandSender consoleSender)
 			return new BukkitSocialismusCommandConsole(consoleSender, source, bukkitAudiences);
 
-		if (source instanceof Player player)
-			return new BukkitSocialismusCommandPlayer(player, source, bukkitAudiences);
+		if (source instanceof Player player) {
+			BukkitSocialismusCommandPlayer mapped = new BukkitSocialismusCommandPlayer(player, source, bukkitAudiences);
+			playerRegistry.syncPlayerData(mapped);
+			return mapped;
+		}
 
 		return new BukkitSocialismusCommandSender(source, bukkitAudiences);
 	}
