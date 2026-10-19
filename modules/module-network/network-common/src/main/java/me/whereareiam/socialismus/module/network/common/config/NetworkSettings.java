@@ -44,6 +44,12 @@ public class NetworkSettings {
 		private boolean enabled;
 
 		/**
+		 * Who handles the chat of the players on this server: the server itself, or the proxy in front of it, as when
+		 * the proxy holds the chats and this server only takes the original messages back. Ignored on a proxy.
+		 */
+		private ChatOwner owner;
+
+		/**
 		 * Whether a message from another node keeps the format it was given there, instead of being formatted here.
 		 */
 		private boolean preserveFormat;
@@ -52,5 +58,15 @@ public class NetworkSettings {
 		 * Whether clearing the chat history clears it on the other nodes too.
 		 */
 		private boolean clearHistory;
+	}
+
+	/**
+	 * Who handles the chat of a server's players.
+	 */
+	public enum ChatOwner {
+		/** The server itself. */
+		SERVER,
+		/** The proxy in front of it. */
+		PROXY
 	}
 }

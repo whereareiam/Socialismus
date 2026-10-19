@@ -48,6 +48,23 @@ class NetworkChatOwnershipTest {
 	}
 
 	@Test
+	void aServerThatLeavesChatToTheProxyClaimsNothingAndTheProxyHandlesItsPlayers() {
+		DefaultNetworkService proxyService = network.node("proxy", NodeRole.PROXY, null).service();
+		DefaultNetworkService lobbyService = network.node("lobby").service();
+		lobbyService.directory().update(lobbyService.self().toBuilder().server("lobby").handlesChat(false).build());
+		NetworkChatOwnership proxy = ownership(proxyService);
+		NetworkChatOwnership lobby = ownership(lobbyService);
+		SocialismusPlayer atProxy = player("Alice", "lobby");
+		SocialismusPlayer atLobby = player("Alice", null);
+
+		lobby.review(atLobby);
+		proxy.review(atProxy);
+
+		assertTrue(proxy.handles(atProxy));
+		assertFalse(lobby.handles(atLobby));
+	}
+
+	@Test
 	void theProxyHandlesThePlayersOfAServerWithoutSocialismus() {
 		DefaultNetworkService proxyService = network.node("proxy", NodeRole.PROXY, null).service();
 		NetworkChatOwnership proxy = ownership(proxyService);

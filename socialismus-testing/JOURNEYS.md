@@ -115,6 +115,7 @@ as a container process of the network (`containers = Container.REDIS`), so those
 - [ ] A backend that starts later receives the messages sent after it joined
 - [x] A proxy and its servers, all with SocialismusNetwork, show each message exactly once
 - [x] A server without Socialismus behind such a proxy still gets its players' chat handled by the proxy
+- [ ] A server with `chat.owner: PROXY` leaves its players' chat to the proxy and shows each message once
 - [x] A server that stops answering hands its players' chat to the proxy within the lease time, and takes it back once it answers
 - [x] A server behind a proxy learns its name, so a server requirement judges its players
 - [x] `/msg` reaches a player on another backend, and the sender sees it once that backend confirms

@@ -101,6 +101,7 @@ public class SocialismusNetwork extends SocialisticModule implements ResourcePro
 				.id(self)
 				.role(PlatformType.isProxy() ? NodeRole.PROXY : NodeRole.SERVER)
 				.version(Constants.VERSION)
+				.handlesChat(PlatformType.isProxy() || settings.get().getChat().getOwner() != NetworkSettings.ChatOwner.PROXY)
 				.build();
 		DefaultReplicationSystem replication = new DefaultReplicationSystem(self, Clock.systemUTC(), serializationService, executor);
 		network = new DefaultNetworkService(replication, node, lifetime);

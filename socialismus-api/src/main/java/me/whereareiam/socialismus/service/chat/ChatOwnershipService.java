@@ -6,7 +6,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The {@link ChatOwnership}s modules register. Socialismus handles a player's chat only when every registered
  * ownership agrees; with none registered, it handles every player it hosts. The platforms ask it before they take a
- * message, and chat asks it before it delivers one.
+ * message, and chat asks it before it delivers one. A game server drops the original message of a player it does not
+ * handle, since the proxy in front of it handles and shows it; a proxy passes it on untouched to the server that does.
  */
 public interface ChatOwnershipService {
 	/**

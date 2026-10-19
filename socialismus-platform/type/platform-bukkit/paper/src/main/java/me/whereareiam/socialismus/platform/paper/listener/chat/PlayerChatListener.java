@@ -33,8 +33,11 @@ public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
 	@Override
 	public void onEvent(AsyncChatEvent event) {
 		Player sender = event.getPlayer();
-		// Another Socialismus of the network handles this player's chat, so the message is left as it is.
-		if (!playerRegistry.getPlayerData(sender.getUniqueId()).map(chatOwnership::handles).orElse(true)) return;
+		// The proxy in front of this server handles the player's chat and shows the message, so this server's copy goes.
+		if (!playerRegistry.getPlayerData(sender.getUniqueId()).map(chatOwnership::handles).orElse(true)) {
+			event.setCancelled(true);
+			return;
+		}
 
 		Set<Audience> nonPlayerAudiences = event.viewers().stream()
 				.filter(aud -> !(aud instanceof Player))
