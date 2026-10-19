@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.IgnoreStore;
-import me.whereareiam.socialismus.module.dialogue.api.MessageToggleStore;
+import me.whereareiam.socialismus.module.dialogue.api.PreferencesStore;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class RecipientControl {
 	private final Provider<DialogueSettings> settings;
-	private final MessageToggleStore toggles;
+	private final PreferencesStore preferences;
 	private final IgnoreStore ignores;
 
 	/**
@@ -38,7 +38,7 @@ public class RecipientControl {
 		if (control.getIgnore().isEnabled() && !message.isExemptFromIgnore()
 				&& ignores.ignores(recipient.getUniqueId(), message.getSender().getUniqueId()))
 			return Optional.of(DeliveryStatus.IGNORED);
-		if (control.getToggle().isEnabled() && !message.isBypassesToggle() && toggles.isOff(recipient.getUniqueId()))
+		if (control.getToggle().isEnabled() && !message.isBypassesToggle() && preferences.get(recipient.getUniqueId()).isMessagesOff())
 			return Optional.of(DeliveryStatus.MESSAGES_OFF);
 
 		return Optional.empty();

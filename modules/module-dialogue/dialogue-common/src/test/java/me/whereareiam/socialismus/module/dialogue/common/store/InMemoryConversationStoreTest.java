@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.module.dialogue.common.conversation;
+package me.whereareiam.socialismus.module.dialogue.common.store;
 
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.ConversationKey;
