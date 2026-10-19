@@ -16,8 +16,9 @@ import java.util.function.Supplier;
 /**
  * Decides which node handles each player's chat, so it is handled exactly once on the network: the node that holds the
  * player's lease. A server claims the players it hosts with a higher priority than a proxy, since it can take a
- * message back while a proxy cannot; a proxy claims the players on servers that do not run Socialismus, and leaves
- * those on servers that do. When a server stops, its leases expire and the proxy takes its players over.
+ * message back while a proxy cannot; a proxy claims the players on servers that do not handle chat themselves, because
+ * they do not run Socialismus or leave chat to the proxy, and leaves those on servers that do. When a server stops,
+ * its leases expire and the proxy takes its players over.
  */
 public final class NetworkChatOwnership implements ChatOwnership {
 	/**
@@ -64,7 +65,7 @@ public final class NetworkChatOwnership implements ChatOwnership {
 	public void review(@NotNull SocialismusPlayer player) {
 		String key = player.getUniqueId().toString();
 		NetworkNode node = self.get();
-		if (node.getRole() == NodeRole.PROXY && serverRunsSocialismus(player.getServer())) {
+		if (!node.isHandlesChat() || node.getRole() == NodeRole.PROXY && serverHandlesChat(player.getServer())) {
 			leases.release(key);
 			return;
 		}
@@ -79,11 +80,11 @@ public final class NetworkChatOwnership implements ChatOwnership {
 		leases.release(player.getUniqueId().toString());
 	}
 
-	private boolean serverRunsSocialismus(String server) {
+	private boolean serverHandlesChat(String server) {
 		if (server == null) return false;
 
 		return nodes.get().stream()
-				.filter(node -> node.getRole() == NodeRole.SERVER)
+				.filter(node -> node.getRole() == NodeRole.SERVER && node.isHandlesChat())
 				.map(NetworkNode::getServer)
 				.anyMatch(name -> Objects.equals(name, server));
 	}

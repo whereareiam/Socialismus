@@ -30,6 +30,10 @@ Without a transport, SocialismusNetwork runs alone: nothing leaves the server.
 
 Where a proxy and its servers all run Socialismus, each player's chat is handled exactly once: by their server when it runs Socialismus, since a server can take a message back while a proxy cannot, and by the proxy otherwise. When a server stops, the proxy takes over its players within the lease time.
 
+### When the proxy holds the chats
+
+A server behind a proxy that runs Socialismus still receives each message the proxy formatted and shows it again, because Velocity cannot take a message back. To keep the chats on the proxy and still show each message once, install Socialismus and SocialismusNetwork on that server as well and set `chat.owner` to `PROXY` there: the server leaves its players' chat to the proxy and only drops its own copy of each message.
+
 ## Configuration
 
 SocialismusNetwork's settings are `modules/SocialismusNetwork/settings.yml`:
@@ -41,6 +45,7 @@ node: "lobby-1"
 lease: "15s"
 chat:
   enabled: true
+  owner: "SERVER"
   preserveFormat: true
   clearHistory: true
 ```
@@ -52,6 +57,7 @@ chat:
   "lease": "15s",
   "chat": {
     "enabled": true,
+    "owner": "SERVER",
     "preserveFormat": true,
     "clearHistory": true
   }
@@ -63,6 +69,7 @@ chat:
 - `node`: this Socialismus's name on the network, unique among them. The first start writes a random one; name it yourself to recognise it in the logs.
 - `lease`: how long a node's players and chat ownership live without being renewed, which is how long the others wait before taking over from a node that crashed.
 - `chat.enabled`: whether chat messages go to the other nodes. A chat with a radius always stays on its server.
+- `chat.owner`: on a server, who handles its players' chat: `SERVER`, the server itself, or `PROXY`, the proxy in front of it. Ignored on a proxy.
 - `chat.preserveFormat`: whether a message keeps the format it was given where it was written, instead of being formatted again.
 - `chat.clearHistory`: whether clearing the chat history clears it on the other nodes too.
 
