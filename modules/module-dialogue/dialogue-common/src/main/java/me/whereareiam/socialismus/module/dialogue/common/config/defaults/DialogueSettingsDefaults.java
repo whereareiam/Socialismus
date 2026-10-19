@@ -36,6 +36,7 @@ public class DialogueSettingsDefaults implements DefaultsProvider<DialogueSettin
 		messaging.setReply(reply);
 		messaging.setConversations(conversations);
 		messaging.setConversationMode(true);
+		messaging.setConfirmation(Duration.ofSeconds(3));
 
 		config.setMessaging(messaging);
 

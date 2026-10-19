@@ -30,7 +30,7 @@ public final class ChannelizerReplicationTransport implements ReplicationTranspo
 
 	@Override
 	public void subscribe(@NotNull String channel, @NotNull Consumer<byte[]> receiver) {
-		bus.subscribe(channel, (ignored, payload) -> receiver.accept(payload));
+		bus.subscribe(channel, receiver);
 	}
 
 	@Override

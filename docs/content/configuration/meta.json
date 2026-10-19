@@ -4,7 +4,6 @@
     "index",
     "settings",
     "commands",
-    "sync",
     "updater"
   ]
 }

@@ -11,6 +11,7 @@ import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.platform.paper.renderer.SocialismusRenderer;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
+import me.whereareiam.socialismus.service.chat.ChatOwnershipService;
 import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
@@ -27,10 +28,14 @@ public class PlayerChatListener implements DynamicListener<AsyncChatEvent> {
 	private final ChatMessageFactory chatMessageFactory;
 	private final ChatRenderService chatRenderService;
 	private final PlayerRegistry playerRegistry;
+	private final ChatOwnershipService chatOwnership;
 
 	@Override
 	public void onEvent(AsyncChatEvent event) {
 		Player sender = event.getPlayer();
+		// Another Socialismus of the network handles this player's chat, so the message is left as it is.
+		if (!playerRegistry.getPlayerData(sender.getUniqueId()).map(chatOwnership::handles).orElse(true)) return;
+
 		Set<Audience> nonPlayerAudiences = event.viewers().stream()
 				.filter(aud -> !(aud instanceof Player))
 				.collect(Collectors.toSet());

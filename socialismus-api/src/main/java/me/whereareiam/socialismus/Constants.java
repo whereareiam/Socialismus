@@ -5,9 +5,6 @@ import me.whereareiam.socialismus.model.chat.ChatTrigger;
 import me.whereareiam.socialismus.model.player.PlayerDataKey;
 import me.whereareiam.socialismus.model.requirement.RequirementKey;
 import me.whereareiam.socialismus.model.requirement.type.*;
-import me.whereareiam.socialismus.model.resource.ResourceKey;
-import me.whereareiam.socialismus.service.resource.CacheService;
-import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import me.whereareiam.socialismus.type.Version;
 
 public final class Constants {
@@ -20,20 +17,6 @@ public final class Constants {
 	 * proxy, such as Velocity's {@code 3.4.0}.
 	 */
 	public static String PLATFORM_VERSION = "";
-
-	public static final class Channels {
-		public static final String NAME = BuildConfig.NAME.toLowerCase();
-
-		public static final String CHAT = NAME + ":chat";
-		public static final String CHAT_HISTORY = NAME + ":chat-history";
-		public static final String PLAYERS = NAME + ":players";
-	}
-
-	public static final class Synchronization {
-		public static String IDENTIFIER = "";
-		public static Boolean SYNCHRONIZATION;
-		public static Boolean CROSS_PLAYER_SYNC;
-	}
 
 	public static final class BStats {
 		public static final int BUKKIT_ID = 19855;
@@ -75,20 +58,6 @@ public final class Constants {
 		 */
 		public static final PlayerDataKey<String> LAST_MESSAGE =
 				PlayerDataKey.create("socialismus", "last_message", String.class);
-	}
-
-	public static final class Resources {
-		/**
-		 * The synchronization between the servers of a network, provided by a module such as SocialismusRedis.
-		 */
-		public static final ResourceKey<SyncService> SYNC =
-				ResourceKey.create("socialismus", "sync", SyncService.class);
-
-		/**
-		 * A cache shared by the servers of a network, provided by a module such as SocialismusRedis.
-		 */
-		public static final ResourceKey<CacheService> CACHE =
-				ResourceKey.create("socialismus", "cache", CacheService.class);
 	}
 
 	public static final class Requirements {

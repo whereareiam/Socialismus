@@ -9,8 +9,10 @@ import me.whereareiam.socialismus.event.chat.ChatReceivedEvent;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
+import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -41,12 +43,27 @@ class ChatCoordinatorTest {
 	}
 
 	@Test
-	void aMessageFromAnotherServerFiresNoReceivedEvent() {
-		ChatMessage fromElsewhere = ChatMessage.builder().origin("lobby").cancelled(true).build();
+	void aRelayedMessageFiresNoReceivedEventAndIsMarkedRelayed() {
+		ChatMessage fromElsewhere = ChatMessage.builder().cancelled(true).build();
 		when(chatMessageProcessor.process(fromElsewhere)).thenReturn(fromElsewhere);
 
-		coordinator.coordinate(fromElsewhere);
+		coordinator.relay(fromElsewhere);
 
 		verify(eventManager, never()).call(any(ChatReceivedEvent.class));
+		assertTrue(fromElsewhere.isRelayed());
+	}
+
+	@Test
+	void aRelayedFormattedMessageKeepsItsFormat() {
+		Component format = Component.text("[G] Alice: hi");
+		FormattedChatMessage relayed = FormattedChatMessage.builder().format(format).build();
+		// Cancelled by the processor, so the test stops before the broadcast, which needs the event manager.
+		FormattedChatMessage processed = FormattedChatMessage.builder().cancelled(true).build();
+		when(chatMessageProcessor.process(relayed)).thenReturn(processed);
+
+		coordinator.relay(relayed);
+
+		assertTrue(relayed.isRelayed());
+		assertEquals(format, processed.getFormat());
 	}
 }

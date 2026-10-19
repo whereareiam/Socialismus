@@ -19,7 +19,7 @@ public class ChatBroadcastListener implements EventListener {
 
 	@SocialisticEvent(EventOrder.NORMAL)
 	public void onChatBroadcast(ChatBroadcastEvent event) {
-		if (event.getChatMessage().getOrigin() != null) return;
+		if (event.getChatMessage().isRelayed()) return;
 
 		// Socialismus stores the sender's chat only after this event, so chat requirements would judge the previous one.
 		event.getChatMessage().getSender().setData(Constants.DataKeys.LAST_CHAT, event.getChatMessage().getChat());

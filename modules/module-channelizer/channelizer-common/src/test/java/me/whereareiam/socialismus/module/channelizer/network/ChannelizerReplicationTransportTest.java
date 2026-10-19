@@ -1,12 +1,12 @@
 package me.whereareiam.socialismus.module.channelizer.network;
 
 import me.whereareiam.socialismus.module.channelizer.api.PlatformMessageBus;
-import me.whereareiam.socialismus.service.resource.sync.SyncSubscriber;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,11 +24,12 @@ class ChannelizerReplicationTransportTest {
 	void sendsAndReceivesTheNetworksMessagesAsPluginMessages() {
 		List<byte[]> received = new ArrayList<>();
 		transport.subscribe("socialismus:network", received::add);
-		ArgumentCaptor<SyncSubscriber> subscriber = ArgumentCaptor.forClass(SyncSubscriber.class);
-		verify(bus).subscribe(eq("socialismus:network"), subscriber.capture());
+		@SuppressWarnings("unchecked")
+		ArgumentCaptor<Consumer<byte[]>> receiver = ArgumentCaptor.forClass(Consumer.class);
+		verify(bus).subscribe(eq("socialismus:network"), receiver.capture());
 
 		transport.publish("socialismus:network", new byte[]{1});
-		subscriber.getValue().onMessage("socialismus:network", new byte[]{2});
+		receiver.getValue().accept(new byte[]{2});
 
 		verify(bus).publish("socialismus:network", new byte[]{1});
 		assertArrayEquals(new byte[]{2}, received.getFirst());

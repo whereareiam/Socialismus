@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * <pre>{@code
  * @SocialisticEvent
  * public void onResourceRegistered(ResourceRegisteredEvent event) {
- *     event.resource(Constants.Resources.CACHE).ifPresent(storage::useCache);
+ *     event.resource(NetworkResources.NETWORK).ifPresent(storage::replicate);
  * }
  * }</pre>
  */

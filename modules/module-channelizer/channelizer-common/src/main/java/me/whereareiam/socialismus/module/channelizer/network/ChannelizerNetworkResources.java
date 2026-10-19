@@ -8,8 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * SocialismusChannelizer as SocialismusNetwork's transport. Only touched while SocialismusNetwork is installed, since
- * its API is reachable only then. Plugin messages cannot store, so it offers no store.
+ * SocialismusChannelizer as SocialismusNetwork's transport. Plugin messages cannot store, so it offers no store.
  */
 public final class ChannelizerNetworkResources {
 	private ChannelizerNetworkResources() {

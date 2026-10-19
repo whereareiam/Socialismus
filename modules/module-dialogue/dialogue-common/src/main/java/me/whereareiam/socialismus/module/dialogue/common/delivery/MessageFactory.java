@@ -1,7 +1,6 @@
 package me.whereareiam.socialismus.module.dialogue.common.delivery;
 
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
@@ -22,7 +21,6 @@ public class MessageFactory {
 				.content(content)
 				.timestamp(Instant.now())
 				.deliveryStatus(DeliveryStatus.PENDING_DELIVERY)
-				.origin(Constants.Synchronization.IDENTIFIER)
 				.conversationId(conversationId)
 				.build();
 	}

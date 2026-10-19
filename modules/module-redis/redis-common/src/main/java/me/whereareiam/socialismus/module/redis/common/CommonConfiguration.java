@@ -8,10 +8,6 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.module.redis.api.model.RedisSettings;
 import me.whereareiam.socialismus.module.redis.common.config.provider.RedisSettingsProvider;
 import me.whereareiam.socialismus.module.redis.common.provider.JedisPoolProvider;
-import me.whereareiam.socialismus.module.redis.common.service.RedisCacheService;
-import me.whereareiam.socialismus.module.redis.common.service.RedisSyncService;
-import me.whereareiam.socialismus.service.resource.CacheService;
-import me.whereareiam.socialismus.service.resource.sync.SyncService;
 import redis.clients.jedis.JedisPool;
 
 import java.io.IOException;
@@ -32,8 +28,6 @@ public class CommonConfiguration extends AbstractModule {
 
 		// General
 		bind(JedisPool.class).toProvider(JedisPoolProvider.class);
-		bind(SyncService.class).to(RedisSyncService.class);
-		bind(CacheService.class).to(RedisCacheService.class);
 	}
 
 	@Provides

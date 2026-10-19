@@ -1,11 +1,12 @@
 package me.whereareiam.socialismus.module.channelizer.api;
 
-import me.whereareiam.socialismus.service.resource.sync.SyncSubscriber;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Consumer;
+
 /**
- * Transport-specific message bus abstraction used by Channelizer to bridge
- * Socialismus synchronization payloads across the underlying network layer.
+ * The plugin messages SocialismusChannelizer carries SocialismusNetwork's messages in, as the platform sends and
+ * receives them.
  */
 public interface PlatformMessageBus {
 	/**
@@ -17,12 +18,12 @@ public interface PlatformMessageBus {
 	void publish(@NotNull String channel, byte @NotNull [] payload);
 
 	/**
-	 * Subscribes a listener to payloads arriving on the given logical channel.
+	 * Subscribes a receiver to payloads arriving on the given logical channel.
 	 *
-	 * @param channel the logical channel name
-	 * @param subscriber the subscriber to notify
+	 * @param channel  the logical channel name
+	 * @param receiver called with each payload
 	 */
-	void subscribe(@NotNull String channel, @NotNull SyncSubscriber subscriber);
+	void subscribe(@NotNull String channel, @NotNull Consumer<byte[]> receiver);
 
 	/**
 	 * Returns the largest payload, in bytes, one message carries.

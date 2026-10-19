@@ -17,6 +17,7 @@ import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.util.EventUtil;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
@@ -28,30 +29,42 @@ public class ChatCoordinator implements ChatCoordinationService {
 	private final ChatBroadcastPolicy policy;
 	private final EventManager eventManager;
 
+	@Override
 	public FormattedChatMessage coordinate(ChatMessage raw) {
-		// A message written on this server has no origin; one from another server was offered to modules there.
-		if (raw.getOrigin() == null) {
-			ChatReceivedEvent received = new ChatReceivedEvent(raw);
-			eventManager.call(received);
-			if (received.isCancelled()) return FormattedChatMessage.builder().cancelled(true).build();
-		}
+		ChatReceivedEvent received = new ChatReceivedEvent(raw);
+		eventManager.call(received);
+		if (received.isCancelled()) return FormattedChatMessage.builder().cancelled(true).build();
 
-		raw = chatMessageProcessor.process(raw);
-		if (raw.isCancelled()) return FormattedChatMessage.builder().cancelled(true).build();
-
-		FormattedChatMessage formatted = formattedChatMessageProcessor.process(raw);
-		broadcastAndStore(formatted);
-		return formatted;
+		return processAndBroadcast(raw);
 	}
 
-	public void coordinate(FormattedChatMessage formatted) {
+	@Override
+	public FormattedChatMessage relay(@NotNull ChatMessage message) {
+		message.setRelayed(true);
+
+		return processAndBroadcast(message);
+	}
+
+	@Override
+	public void relay(@NotNull FormattedChatMessage formatted) {
 		if (formatted.isCancelled()) return;
 
+		formatted.setRelayed(true);
 		FormattedChatMessage processed = (FormattedChatMessage) chatMessageProcessor.process(formatted);
 		processed.setFormat(formatted.getFormat());
 
 		if (processed.isCancelled()) return;
 		broadcastAndStore(processed);
+	}
+
+	private FormattedChatMessage processAndBroadcast(ChatMessage raw) {
+		raw = chatMessageProcessor.process(raw);
+		if (raw.isCancelled()) return FormattedChatMessage.builder().cancelled(true).build();
+
+		FormattedChatMessage formatted = formattedChatMessageProcessor.process(raw);
+		broadcastAndStore(formatted);
+
+		return formatted;
 	}
 
 	private void broadcastAndStore(FormattedChatMessage msg) {

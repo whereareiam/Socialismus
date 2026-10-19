@@ -14,4 +14,6 @@ dependencies {
     testFixturesImplementation(libs.configura)
 
     testImplementation(projects.moduleNetworkApi)
+    // Socialismus's own serialization, which carries chat components as it does in production.
+    testImplementation(projects.socialismusCommon)
 }
