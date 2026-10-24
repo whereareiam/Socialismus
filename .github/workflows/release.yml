@@ -97,7 +97,7 @@ jobs:
           path: distribution
 
       - name: Format Spigot release notes
-        uses: whereareiam/blockops/primitive/release/notes/format@v4
+        uses: whereareiam/blockops/primitive/release/notes/format@v5
         with:
           format: bbcode
           release-body: ${{ needs.resolve.outputs.body }}
@@ -127,7 +127,7 @@ jobs:
           persist-credentials: false
 
       - id: plan
-        uses: whereareiam/blockops/primitive/distribution/plan/resolve@v4
+        uses: whereareiam/blockops/primitive/distribution/plan/resolve@v5
         with:
           release-tag: ${{ needs.resolve.outputs.tag }}
           release-name: ${{ needs.resolve.outputs.name }}
@@ -151,7 +151,7 @@ jobs:
           name: socialismus-plugins-${{ needs.plan.outputs.version }}
           path: distribution
 
-      - uses: whereareiam/blockops/primitive/distribution/publication/publish@v4
+      - uses: whereareiam/blockops/primitive/distribution/publication/publish@v5
         with:
           provider-credentials: |
             modrinth: ${{ secrets.MODRINTH_TOKEN }}

@@ -32,7 +32,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Group changes and add the release notes
-        uses: whereareiam/blockops/primitive/release/draft/regroup@v4
+        uses: whereareiam/blockops/primitive/release/draft/regroup@v5
         with:
           release-id: ${{ steps.drafter.outputs.id }}
           release-body: ${{ steps.drafter.outputs.body }}
