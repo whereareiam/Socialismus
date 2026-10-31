@@ -171,7 +171,7 @@ public enum Network {
 		MinecraftProxy.MinecraftProxyBuilder proxy = MinecraftProxy.builder()
 				.name(PROXY)
 				.platform(Platforms.VELOCITY)
-				.distribution(Distribution.remote("3.5.1", "615"))
+				.distribution(Distribution.remote("4.3.1", "45"))
 				.setting("advanced.login-ratelimit", "0")
 				// Journeys chat and run commands at once, which Velocity's command rate limit would drop.
 				.setting("advanced.command-rate-limit", "0")
