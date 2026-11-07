@@ -5,7 +5,7 @@ shadow = "9.6.1"
 buildconfig = "6.1.2"
 spawner = "dev-56440cd"
 toolkit = "0.3.0"
-freefair = "9.8.2"
+freefair = "9.8.3"
 
 # compile time processing
 lombok = "1.18.48"
@@ -23,7 +23,7 @@ jdbi = "3.55.0"
 hikaricp = "7.1.0"
 postgresql = "42.7.14"
 mariadb = "3.5.10"
-sqlite = "3.53.4.0"
+sqlite = "3.54.1.0"
 testcontainers = "2.0.5"
 anvil = "dev-114a2a4"
 
