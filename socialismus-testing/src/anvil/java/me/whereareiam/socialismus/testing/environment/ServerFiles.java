@@ -25,8 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -235,11 +233,11 @@ public final class ServerFiles {
 	 * @param document the model or map to write
 	 */
 	public static void replace(@NotNull ScenarioContext anvil, @NotNull String path, @NotNull Object document) {
-		Path file = Network.of(anvil).dataDirectory(anvil).resolve(path);
+		Network network = Network.of(anvil);
 		try {
-			Files.writeString(file, write(document), StandardCharsets.UTF_8);
+			network.files(anvil).write(network.dataPath(path), write(document));
 		} catch (IOException failure) {
-			throw new UncheckedIOException("Could not write " + file, failure);
+			throw new UncheckedIOException("Could not write " + network.dataPath(path), failure);
 		}
 	}
 
@@ -251,11 +249,11 @@ public final class ServerFiles {
 	 */
 	@NotNull
 	public static String read(@NotNull ScenarioContext anvil, @NotNull String path) {
-		Path file = Network.of(anvil).dataDirectory(anvil).resolve(path);
+		Network network = Network.of(anvil);
 		try {
-			return Files.readString(file, StandardCharsets.UTF_8);
+			return network.files(anvil).read(network.dataPath(path));
 		} catch (IOException failure) {
-			throw new UncheckedIOException("Could not read " + file, failure);
+			throw new UncheckedIOException("Could not read " + network.dataPath(path), failure);
 		}
 	}
 

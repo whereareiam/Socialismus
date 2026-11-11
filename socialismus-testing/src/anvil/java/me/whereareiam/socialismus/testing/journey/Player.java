@@ -32,6 +32,7 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
+import me.whereareiam.anvil.protocol.api.model.text.Text;
 
 /**
  * A player of a journey: joins the network, chats, runs commands and expects what reaches it. What it expects
@@ -385,10 +386,10 @@ public final class Player {
 
 	private String received(String expected, Predicate<String> matcher) {
 		try {
-			return inbox.received(matcher, TIMEOUT);
+			return inbox.received(matcher, TIMEOUT).plain();
 		} catch (IllegalStateException failure) {
 			throw new AssertionError(name + " did not receive " + expected + "; since its previous step it received "
-					+ inbox.unread(), failure);
+					+ inbox.unread().stream().map(Text::plain).toList(), failure);
 		}
 	}
 }

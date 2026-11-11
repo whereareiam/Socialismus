@@ -8,9 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.regex.Pattern;
 
@@ -82,12 +79,10 @@ public final class Console {
 	 */
 	@NotNull
 	public String log() {
-		Path workspace = anvil.processes().get(process).workDirectory();
-		Path log = workspace.resolve("logs/latest.log");
 		try {
-			return ANSI_CODE.matcher(Files.readString(log, StandardCharsets.UTF_8)).replaceAll("");
+			return ANSI_CODE.matcher(anvil.processes().get(process).files().read("logs/latest.log")).replaceAll("");
 		} catch (IOException failure) {
-			throw new UncheckedIOException("Could not read " + log, failure);
+			throw new UncheckedIOException("Could not read the log of " + process, failure);
 		}
 	}
 

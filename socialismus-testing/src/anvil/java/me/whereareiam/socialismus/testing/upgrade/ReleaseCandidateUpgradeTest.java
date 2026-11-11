@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.testing.upgrade;
 
+import java.io.IOException;
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
 import me.whereareiam.socialismus.testing.environment.Network;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
@@ -8,7 +9,6 @@ import me.whereareiam.socialismus.testing.journey.Player;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Files;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +26,7 @@ class ReleaseCandidateUpgradeTest {
 
 	@Test
 	@Socialismus(data = "data/2.0.0-RC6")
-	void startsOnTheDirectoryOfRc6AndKeepsItsEdits(ScenarioContext anvil) {
+	void startsOnTheDirectoryOfRc6AndKeepsItsEdits(ScenarioContext anvil) throws IOException {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");
 
@@ -40,7 +40,7 @@ class ReleaseCandidateUpgradeTest {
 		assertTrue(ServerFiles.read(anvil, "messages.yml").contains("<gold>Kept <dark_gray>| "), "The edited message prefix was lost");
 
 		// RC6 kept its chats in chats/ and its sync, updater and command behaviour in settings.yml.
-		assertFalse(Files.exists(Network.of(anvil).dataDirectory(anvil).resolve("chats")), "chats/ was left behind");
+		assertFalse(Network.of(anvil).files(anvil).exists(Network.of(anvil).dataPath("chats")), "chats/ was left behind");
 		assertTrue(ServerFiles.read(anvil, "chat/list/chats-default.yml").contains("[Before upgrade]"), "The edited chat did not move to chat/list");
 		String settings = ServerFiles.read(anvil, "settings.yml");
 		assertFalse(settings.contains("synchronization:") || settings.contains("updater:") || settings.contains("misc:"), "settings.yml still holds what moved out: " + settings);
