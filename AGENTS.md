@@ -35,7 +35,7 @@ A module's build file holds its role, dependencies and metadata; shared behaviou
 | `packaging-bundle-jar` | the bundle jar: every platform whose `platform` block keeps `bundled`, with the descriptors it lists in `descriptors` |
 | `packaging-module-jar` | the jar of a Socialismus module; `socialismusModule { name.set("Chirper") }` names the jar and fills `module.json` |
 
-The modules compile with Java 21 whichever Java runs Gradle; `platform-bukkit-paper` uses a Java 25 toolchain, because the Paper API of 26.x is built for Java 25.
+The modules compile with Java 21 whichever Java runs Gradle; `platform-bukkit-paper` and `platform-proxy-velocity` use a Java 25 toolchain, because the Paper API of 26.x and the Velocity API of 4.x are built for Java 25.
 
 ### Module Families
 

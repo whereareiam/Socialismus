@@ -8,6 +8,13 @@ platform {
     descriptors.add("velocity-plugin.json")
 }
 
+// The Velocity API of 4.x is built for Java 25.
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
+}
+
 dependencies {
     compileOnly(projects.socialismusModule.moduleApi)
     implementation(projects.integrationPapiproxybridge)
