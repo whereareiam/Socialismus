@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,8 +29,9 @@ class LinkModuleTest {
 				"SocialismusLink did not register its transport:\n" + log);
 		assertEquals(1, count(log, "Not connected to the link at"), "SocialismusLink did not warn exactly once:\n" + log);
 
-		Path settings = Network.of(anvil).dataDirectory(anvil).resolve("modules/SocialismusLink/settings.yml");
-		assertTrue(Files.readString(settings).matches("(?s).*secret: \"[0-9a-f]{48}\".*"), "No secret was written:\n" + Files.readString(settings));
+		Network network = Network.of(anvil);
+		String settings = network.files(anvil).read(network.dataPath("modules/SocialismusLink/settings.yml"));
+		assertTrue(settings.matches("(?s).*secret: \"[0-9a-f]{48}\".*"), "No secret was written:\n" + settings);
 	}
 
 	private static int count(String text, String part) {

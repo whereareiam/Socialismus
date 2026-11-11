@@ -8,9 +8,9 @@ import me.whereareiam.anvil.api.type.Platforms;
 import me.whereareiam.anvil.api.type.ProcessLifetime;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
+import me.whereareiam.anvil.api.process.ProcessFiles;
 
 /**
  * Where a journey runs Socialismus: on a server players join directly, on a proxy in front of a backend, or on
@@ -80,24 +80,24 @@ public enum Network {
 	}
 
 	/**
-	 * Returns Socialismus's data directory of the process that runs it first in a running network.
+	 * Returns the files of the process that runs Socialismus first in a running network, wherever Anvil keeps them.
 	 *
 	 * @param anvil the running network
 	 */
 	@NotNull
-	public Path dataDirectory(@NotNull ScenarioContext anvil) {
-		return dataDirectory(anvil, process());
+	public ProcessFiles files(@NotNull ScenarioContext anvil) {
+		return anvil.processes().get(process()).files();
 	}
 
 	/**
-	 * Returns Socialismus's data directory of a process in a running network.
+	 * Returns a path in Socialismus's data directory of the process that runs it first, relative to that process's
+	 * workspace, for {@link #files(ScenarioContext)}.
 	 *
-	 * @param anvil   the running network
-	 * @param process a process that runs Socialismus
+	 * @param path path in the data directory, such as {@code settings.yml}
 	 */
 	@NotNull
-	public Path dataDirectory(@NotNull ScenarioContext anvil, @NotNull String process) {
-		return anvil.processes().get(process).workDirectory().resolve(data(process));
+	public String dataPath(@NotNull String path) {
+		return data(process()) + "/" + path;
 	}
 
 	/**

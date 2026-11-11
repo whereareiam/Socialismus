@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.testing.database;
 
+import java.io.IOException;
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
 import me.whereareiam.socialismus.testing.environment.Module;
 import me.whereareiam.socialismus.testing.environment.Network;
@@ -8,8 +9,6 @@ import me.whereareiam.socialismus.testing.journey.Console;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DatabaseModuleTest {
 	@Test
 	@Socialismus(modules = Module.DATABASE)
-	void opensTheSqliteDatabaseAndRegistersItForTheOtherModules(ScenarioContext anvil) {
+	void opensTheSqliteDatabaseAndRegistersItForTheOtherModules(ScenarioContext anvil) throws IOException {
 		String log = Console.of(anvil).log();
 
 		assertTrue(log.contains("Loaded module SocialismusDatabase"), "SocialismusDatabase did not load:\n" + log);
@@ -29,7 +28,8 @@ class DatabaseModuleTest {
 		assertTrue(log.contains("Registered resource socialismusdatabase:database from module SocialismusDatabase"),
 				"The database was not registered:\n" + log);
 
-		Path file = Network.of(anvil).dataDirectory(anvil).resolve("modules/SocialismusDatabase/socialismus.db");
-		assertTrue(Files.isRegularFile(file), "The SQLite file was not created at " + file);
+		Network network = Network.of(anvil);
+		String file = network.dataPath("modules/SocialismusDatabase/socialismus.db");
+		assertTrue(network.files(anvil).exists(file), "The SQLite file was not created at " + file);
 	}
 }

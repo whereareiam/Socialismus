@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,8 +35,8 @@ class NetworkModuleTest {
 		assertTrue(joined.find(), "SocialismusNetwork did not say which node it is:\n" + log);
 		assertFalse(log.contains("Replicating through"), "SocialismusNetwork found a transport that is not there:\n" + log);
 
-		Path settings = Network.of(anvil).dataDirectory(anvil).resolve("modules/SocialismusNetwork/settings.yml");
-		String written = Files.readString(settings);
+		Network network = Network.of(anvil);
+		String written = network.files(anvil).read(network.dataPath("modules/SocialismusNetwork/settings.yml"));
 		assertTrue(written.contains(joined.group(1)), "The node id is not kept in the settings:\n" + written);
 	}
 }
