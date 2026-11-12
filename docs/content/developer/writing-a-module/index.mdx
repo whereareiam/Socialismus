@@ -98,6 +98,33 @@ A library only some installations need, such as one database driver, goes in an 
 context.libraries().load("postgres");
 ```
 
+## Conditions for requires lists
+
+A module adds conditions that administrators can name in any `requires:` list through its context. They are named `<module id>:<name>` and go when the module stops:
+
+```java
+@RequiredArgsConstructor
+public final class PlaytimeCondition implements ConditionType.Single<SocialismusPlayer, PlaytimeCondition.Settings> {
+    private final Playtimes playtimes;                               // held in memory, loaded on join
+
+    public record Settings(Duration hours) {}                        // greeter:playtime: 10h
+
+    public String name() { return "playtime"; }
+    public Class<SocialismusPlayer> subject() { return SocialismusPlayer.class; }
+    public Class<Settings> settings() { return Settings.class; }
+
+    public Outcome holds(SocialismusPlayer player, Settings settings) {
+        return Outcome.when(playtimes.of(player).compareTo(settings.hours()) >= 0);
+    }
+}
+
+context.conditions().register(new PlaytimeCondition(playtimes));
+```
+
+A condition answers at once from what the module holds in memory, such as playtime loaded when the player joins: chats check their lists on the server's chat thread, which never waits. A condition that has to ask a database implements `ConditionType.Deferred.Single` and can only be named where a check may wait.
+
+A module checks lists of its own files through Socialismus's `Conditions`: `conditions.place("greeter.requires", settings.getRequires(), RequirementParts.SENDER)` binds a list once, so a mistake stops `enable` with its path, and `place.check(Situation.of(RequirementParts.SENDER, player))` checks it. Close the places of a file you reload. The [Requirements](../../configuration/requirements/index.mdx) page lists what administrators write.
+
 ## Resources for other modules
 
 A main class that implements `ResourceProvider` has its resources registered as soon as it is enabled, before the modules that depend on it start, and unregistered when it stops. A module that uses another module's resource depends on that module.

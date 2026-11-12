@@ -1,0 +1,97 @@
+---
+title: Requirements
+description: The requires lists that decide who writes in a chat, who receives it, and what a refused player is told.
+---
+
+A `requires:` list decides who may do something: write in a chat, receive it, get a format, clear chat history.
+Every condition in a list must hold, checked in order; the first that does not hold refuses the player, and the player is told why.
+An empty or absent list holds for everyone.
+
+```yaml
+# chat/list/chats-default.yml
+chats:
+  - id: "staff"
+    requires:                    # who may write here
+      - permission: "socialismus.chat.staff"
+    reaches:                     # who receives it
+      - permission: "socialismus.chat.staff"
+      - not: { world: "world_nether" }
+```
+
+## Where lists are
+
+| File | Field | About |
+|------|-------|-------|
+| `chat/list/*.yml` | a chat's `requires` | the sender of a message |
+| `chat/list/*.yml` | a chat's `reaches` | each player the message would reach; `sender:` asks about the sender |
+| `chat/list/*.yml` | a format's `requires` | the sender; the last format the sender meets is used |
+| `chat/settings.yml` | `history.requires` | the player who sees the clear button |
+| `chat/settings.yml` | `history.bypass` | the sender whose messages nobody clears |
+| `chat/settings.yml` | `toggle.bypass` | the sender whose messages reach players who turned the chat off |
+| `modules/bubbler/bubbles/*.yml` | a bubble's `requires` and `reaches` | the sender, and each nearby player |
+| `modules/chirper/` announcements | an announcement's and a content's `requires` | each player who would receive it |
+| `modules/dialogue/settings.yml` | `messaging.requires` and `messaging.reaches` | the sender, and the recipient |
+| `modules/dialogue/settings.yml` | `control.toggle.bypass`, `control.ignore.exempt`, `moderation.spy.exempt` | the player the privilege is for |
+| `modules/dialogue/formats/` | a format's `requires` and `reaches` | the sender, and the recipient |
+
+## Writing conditions
+
+Each condition is one `name: value` line. A list value means every entry, and a block named after a part asks about that part instead:
+
+```yaml
+requires:
+  - permission: [socialismus.chat.local, vip]      # both
+  - any:                                           # one of them
+      - world: world
+      - server: lobby
+  - not: { content: "discord.gg" }                 # the message does not contain it
+reaches:
+  - permission: socialismus.chat.local             # the recipient's
+  - sender:
+      - not: { world: world_nether }               # the sender's
+```
+
+| Condition | Holds when | Example |
+|-----------|-----------|---------|
+| `permission` | the player has every permission listed | `permission: socialismus.chat.local` |
+| `world` | the player is in one of the worlds; not on a proxy | `world: [world, world_nether]` |
+| `server` | the player is on one of the servers, as the proxy names them | `server: lobby` |
+| `chat` | the message is in one of the chats | `chat: [local, global]` |
+| `trigger` | the message reached its chat through one of the kinds of trigger | `trigger: SYMBOL` |
+| `content` | the message contains one of the texts, ignoring case, and matches `matches` | `content: { matches: "^[A-Z ]+$" }` |
+| `placeholder` | the player's value of `text` passes `is`, `matches`, `above` and `below`; needs PlaceholderAPI | `placeholder: { text: "%vault_eco_balance%", above: 100 }` |
+| `time` | from `from` until before `to` each day | `time: { from: "22:00", to: "06:00" }` |
+| `date` | on the days from `from` to `to` | `date: { from: 2026-12-20, to: 2027-01-06 }` |
+| `chance` | for a share of checks | `chance: 0.25` |
+| `bubbler:activator`, `bubbler:chat` | what raised a bubble: `CHAT` or `COMMAND`, and the chat of the message | `bubbler:chat: [fallback, local]` |
+
+Modules add conditions of their own, named `<module id>:<name>`. A list that names a condition nobody registered, a part its place does not have, or settings that cannot be read stops the start with its path, such as `chats.staff.requires[0].permission`; after `/socialismus reload` the console names the list and the previous one stays in use.
+
+## What a refused player is told
+
+A failed condition reports a reason, keyed by the condition and the reason, such as `permission.missing`, `world.outside` or `world.inside`.
+`not` reports why the condition inside it held: `not: { world: world_nether }` refuses with `world.inside`.
+
+The texts come from the feature first, then from `messages.yml`:
+
+```yaml
+# chat/messages.yml: a chat that refuses its sender, with {chat}
+requirements:
+  permission.missing: "{prefix}<white>You may not write in <gray>{chat}</gray> chat.</white>"
+  world.inside: "{prefix}<white><gray>{chat}</gray> chat does not work in <gray>{world}</gray>.</white>"
+
+# messages.yml: whatever no feature words
+requirements:
+  world.outside: "{prefix}<white>This only works in <gray>{worlds}</gray>.</white>"
+```
+
+| Reason | Placeholders |
+|--------|--------------|
+| `permission.missing`, `permission.held` | `{permissions}` |
+| `world.outside`, `server.outside` | `{worlds}` or `{servers}`, and the player's `{world}` or `{server}` |
+| `world.inside`, `server.inside` | `{world}` or `{server}` |
+| `chat.outside`, `chat.inside` | `{chats}`, `{chat}` |
+| `placeholder.mismatch`, `placeholder.match` | `{text}`, `{value}` |
+
+Dialogue words a refused private message by the participant the condition was about, under `messaging.requirements.SENDER` and `messaging.requirements.RECIPIENT` in its messages.
+A reason no text words, or a failed `any`, is told by the feature's own notice, such as that no chat took the message.
