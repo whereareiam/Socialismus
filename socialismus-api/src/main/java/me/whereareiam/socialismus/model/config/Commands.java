@@ -44,5 +44,51 @@ public class Commands {
 		 * Whether command suggestions are computed off the main thread where the platform supports it.
 		 */
 		private boolean useAsyncCompletions;
+
+		/**
+		 * How the help command lists commands.
+		 */
+		private Help help;
+
+		/**
+		 * When the help's page line and its arrows are shown.
+		 */
+		private Pagination pagination;
+
+		/**
+		 * How the help command lists commands.
+		 */
+		@Getter
+		@Setter
+		@ToString
+		public static class Help {
+			/**
+			 * The number of commands on one page of help, at least {@code 1}.
+			 */
+			private int commandsPerPage;
+		}
+
+		/**
+		 * When the help's page line and its arrows are shown.
+		 */
+		@Getter
+		@Setter
+		@ToString
+		public static class Pagination {
+			/**
+			 * Whether the page line is shown when all commands fit on one page.
+			 */
+			private boolean showIfOnePage;
+
+			/**
+			 * Whether the previous arrow is shown on the first page, where it opens the first page again.
+			 */
+			private boolean showPreviousOnFirst;
+
+			/**
+			 * Whether the next arrow is shown on the last page, where it opens the last page again.
+			 */
+			private boolean showNextOnLast;
+		}
 	}
 }

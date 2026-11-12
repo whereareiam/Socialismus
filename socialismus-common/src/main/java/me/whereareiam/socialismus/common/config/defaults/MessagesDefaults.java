@@ -2,12 +2,12 @@ package me.whereareiam.socialismus.common.config.defaults;
 
 import com.google.inject.Singleton;
 import me.whereareiam.commandant.model.message.ExceptionMessages;
-import me.whereareiam.commandant.model.message.HelpMessages;
-import me.whereareiam.commandant.model.message.PaginationMessages;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.config.message.CommandMessages;
+import me.whereareiam.socialismus.model.config.message.HelpMessages;
 import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.model.config.message.PaginationMessages;
 import me.whereareiam.socialismus.model.config.message.RequirementReasons;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,30 +51,17 @@ public class MessagesDefaults implements DefaultsProvider<Messages> {
 		commandMessages.setFormat(format);
 
 		PaginationMessages paginationMessages = new PaginationMessages();
-		paginationMessages.setShowPaginationIfOnePage(false);
-		paginationMessages.setFormat("\n {previous}<white>Pagination</white> <gray>[{current}/{max}]</gray>{next} \n");
-		paginationMessages.setShowPreviousEvenIfFirst(false);
-		paginationMessages.setPreviousTagFormat("<red><click:run_command:/social help {previousPage}>«</red> ");
-		paginationMessages.setShowNextEvenIfLast(false);
-		paginationMessages.setNextTagFormat(" <green><click:run_command:/social help {nextPage}>»</green>");
+		paginationMessages.setLine("\n {previous}<white>Pagination</white> <gray>[{current}/{max}]</gray>{next} \n");
+		paginationMessages.setPrevious("<red>«</red> ");
+		paginationMessages.setNext(" <green>»</green>");
 		commandMessages.setPagination(paginationMessages);
 
 		HelpMessages helpMessages = new HelpMessages();
-		helpMessages.setFormat(List.of(
-				" ",
-				"<gold><bold> Socialismus</bold> <white>Command help",
-				" ",
-				"{commands}",
-				"{pagination}"
-		));
-		helpMessages.setCommandFormat("  <yellow>/{command}{arguments}</yellow> <dark_gray>- <white>{description}");
-		helpMessages.setNoCommands("  <red>No commands found</red>");
-		helpMessages.setCommandsPerPage(7);
-
-		HelpMessages.Format argumentFormat = new HelpMessages.Format();
-		argumentFormat.setArgument("<gray>[{argument}]</gray>");
-		argumentFormat.setOptionalArgument("<gray>({argument})</gray>");
-		helpMessages.setArgumentFormat(argumentFormat);
+		helpMessages.setTitle(" \n<gold><bold> {host}</bold> <white>Command help\n ");
+		helpMessages.setCommand("  <yellow>/{command}{arguments}</yellow> <dark_gray>- <white>{description}");
+		helpMessages.setArgument("<gray>[{name}]</gray>");
+		helpMessages.setOptionalArgument("<gray>({name})</gray>");
+		helpMessages.setEmpty("  <red>No commands found</red>");
 		commandMessages.setHelp(helpMessages);
 
 		CommandMessages.DebugCommand debugCommand = new CommandMessages.DebugCommand();
