@@ -30,7 +30,7 @@ class LinkModuleTest {
 		assertEquals(1, count(log, "Not connected to the link at"), "SocialismusLink did not warn exactly once:\n" + log);
 
 		Network network = Network.of(anvil);
-		String settings = network.files(anvil).read(network.dataPath("modules/SocialismusLink/settings.yml"));
+		String settings = network.files(anvil).read(network.dataPath("modules/socialismus-link/settings.yml"));
 		assertTrue(settings.matches("(?s).*secret: \"[0-9a-f]{48}\".*"), "No secret was written:\n" + settings);
 	}
 

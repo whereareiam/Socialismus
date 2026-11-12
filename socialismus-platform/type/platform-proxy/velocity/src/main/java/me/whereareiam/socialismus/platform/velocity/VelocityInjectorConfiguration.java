@@ -7,13 +7,14 @@ import com.google.inject.name.Names;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.ProxyServer;
+import me.whereareiam.chassis.platform.Platform;
+import me.whereareiam.chassis.platform.velocity.VelocityPlatform;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.bstats.Metrics;
 import me.whereareiam.socialismus.integration.papiproxybridge.PAPIProxyBridgeIntegration;
 import me.whereareiam.socialismus.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.logging.LoggingHelper;
-import me.whereareiam.socialismus.module.PlatformClassLoader;
 import me.whereareiam.socialismus.platform.velocity.listener.VelocityListenerRegistrar;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
@@ -43,7 +44,7 @@ public class VelocityInjectorConfiguration extends AbstractModule {
 		bind(Scheduler.class).to(VelocityScheduler.class);
 		bind(ListenerRegistrar.class).to(VelocityListenerRegistrar.class);
 		bind(PlatformInteractor.class).to(VelocityPlatformInteractor.class);
-		bind(PlatformClassLoader.class).to(VelocityClassLoader.class);
+		bind(Platform.class).toInstance(new VelocityPlatform(proxyServer));
 		bind(new TypeLiteral<CommandManager<Actor>>() {}).toProvider(VelocityCommandManagerProvider.class);
 
 		bind(Metrics.class).to(VelocityMetrics.class);

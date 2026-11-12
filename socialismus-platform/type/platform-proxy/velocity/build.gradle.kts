@@ -22,6 +22,7 @@ dependencies {
     compileOnly(libs.bundles.velocity)
     annotationProcessor(libs.velocity)
     implementation(libs.attache.velocity)
+    implementation(libs.chassis.platform.velocity)
     implementation(libs.bundles.bStats.velocity)
 
     attache(libs.cloud.velocity)

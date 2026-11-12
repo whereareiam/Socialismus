@@ -4,6 +4,8 @@ plugins {
 
 dependencies {
     implementation(projects.socialismusModule.moduleApi)
-    // Each module's own libraries load through a library manager of its own, into its class loader.
+    implementation(libs.chassis.common)
+    // Each module's own libraries load through Chassis's Attache adapter, into its class loader.
+    implementation(libs.chassis.adapter.attache)
     implementation(libs.attache.standalone)
 }

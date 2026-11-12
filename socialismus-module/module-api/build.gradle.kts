@@ -6,6 +6,8 @@ group = "me.whereareiam.socialismus.module"
 
 dependencies {
     api(projects.socialismusApi)
+    api(libs.chassis.api)
+    api(libs.chassis.adapter.attache)
 }
 
 toolkitPublish {

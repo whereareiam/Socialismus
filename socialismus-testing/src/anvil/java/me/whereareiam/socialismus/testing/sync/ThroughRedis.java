@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 final class ThroughRedis implements Consumer<ServerFiles> {
 	@Override
 	public void accept(ServerFiles files) {
-		files.text("modules/SocialismusRedis/settings.yml", """
+		files.text("modules/socialismus-redis/settings.yml", """
 				redis:
 				  host: "${anvil.process.redis.host}"
 				  port: ${anvil.process.redis.port}

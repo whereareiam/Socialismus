@@ -1,0 +1,20 @@
+id: socialismus-network
+name: "@projectName@"
+version: "@projectVersion@"
+authors:
+  - whereareiam
+main: me.whereareiam.socialismus.module.network.SocialismusNetwork
+host: "@host@"
+platforms:
+  - name: paper
+  - name: folia
+  - name: spigot
+  - name: bukkit
+  - name: velocity
+updater:
+  release:
+    provider: GITHUB
+    id: whereareiam/SocialismusNetwork
+  dev:
+    provider: GITHUB
+    id: whereareiam/SocialismusNetwork

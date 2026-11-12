@@ -97,7 +97,7 @@ class BubbleTest {
 	static final class ArmorStands implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.put("modules/Bubbler/settings.yml", Map.of("bubbleType", "ARMOR_STAND"));
+			files.put("modules/bubbler/settings.yml", Map.of("bubbleType", "ARMOR_STAND"));
 		}
 	}
 }

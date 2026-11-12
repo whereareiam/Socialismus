@@ -30,7 +30,6 @@ class ResourceRegistryAdapterTest {
 
 		assertEquals(Optional.of("first"), registry.get(TEXT));
 		assertTrue(registry.has(TEXT));
-		assertTrue(registry.has("socialismus:text"));
 		assertEquals(1, events.called.size());
 		ResourceRegisteredEvent event = assertInstanceOf(ResourceRegisteredEvent.class, events.called.getFirst());
 		assertEquals(TEXT, event.getKey());

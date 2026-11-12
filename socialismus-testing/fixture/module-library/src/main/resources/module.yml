@@ -1,0 +1,9 @@
+id: journey-library
+name: "@projectName@"
+version: "@projectVersion@"
+authors:
+  - whereareiam
+main: me.whereareiam.socialismus.testing.fixture.library.JourneyLibrary
+host: "@host@"
+platforms:
+  - name: paper

@@ -1,27 +1,21 @@
 package me.whereareiam.socialismus.testing.fixture.library;
 
+import me.whereareiam.socialismus.module.ModuleContext;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.testing.fixture.library.api.Greeter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The module that exports a package to JourneyConsumer.
  */
-public final class JourneyLibrary extends SocialisticModule {
+public final class JourneyLibrary implements SocialisticModule {
 	@Override
-	public void onLoad() {
-	}
-
-	@Override
-	public void onEnable() {
+	public void enable(@NotNull ModuleContext context) {
 		Greeter.serve(true);
 	}
 
 	@Override
-	public void onDisable() {
+	public void disable() {
 		Greeter.serve(false);
-	}
-
-	@Override
-	public void onUnload() {
 	}
 }

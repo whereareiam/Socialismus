@@ -1,0 +1,15 @@
+id: journey-consumer
+name: "@projectName@"
+version: "@projectVersion@"
+authors:
+  - whereareiam
+main: me.whereareiam.socialismus.testing.fixture.consumer.JourneyConsumer
+host: "@host@"
+platforms:
+  - name: paper
+dependencies:
+  - id: journey-library
+peers:
+  - id: packetevents
+    packages:
+      - com.github.retrooper.packetevents

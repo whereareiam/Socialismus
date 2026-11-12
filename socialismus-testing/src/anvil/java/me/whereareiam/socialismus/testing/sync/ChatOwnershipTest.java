@@ -131,7 +131,7 @@ class ChatOwnershipTest {
 	static final class ShortLease implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.put("modules/SocialismusNetwork/settings.yml", Map.of("lease", LEASE.toSeconds() + "s"));
+			files.put("modules/socialismus-network/settings.yml", Map.of("lease", LEASE.toSeconds() + "s"));
 		}
 	}
 

@@ -26,7 +26,7 @@ class ModuleDependencyTest {
 		Player.joins(anvil, "Alice");
 
 		String log = Console.of(anvil).log();
-		assertTrue(log.contains("Loaded module JourneyConsumer"), "JourneyConsumer did not load:\n" + log);
+		assertTrue(log.contains("Enabled module JourneyConsumer"), "JourneyConsumer did not load:\n" + log);
 		assertTrue(log.contains("JourneyConsumer greets: hello from JourneyLibrary"),
 				"JourneyConsumer did not reach the library's export:\n" + log);
 		assertTrue(log.contains("JourneyConsumer reaches the library's internals: false"),

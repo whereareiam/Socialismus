@@ -16,6 +16,24 @@ allprojects {
         .get()
 }
 
+// The version Chassis compares a module's `host` range with. A dev build counts as the release it leads to, the
+// version of the release notes, and a pre-release such as -RC7 is written -rc.7, so pre-releases order by number.
+val releaseVersion = file(".github/release-notes.md").readLines()
+    .firstOrNull { it.startsWith("version:") }
+    ?.substringAfter(":")
+    ?.trim()
+    ?: error(".github/release-notes.md names no version")
+fun chassisVersion(version: String) = version.replace(Regex("-RC(\\d+)$"), "-rc.$1")
+val development = version.toString().startsWith("dev")
+val hostVersion = chassisVersion(if (development) releaseVersion else version.toString())
+// The version a module's module.yml states: a dev build's modules are a pre-release of the release it leads to.
+val moduleVersion = chassisVersion(if (development) "$releaseVersion-$version" else version.toString())
+
+allprojects {
+    extra["socialismusHostVersion"] = hostVersion
+    extra["socialismusModuleVersion"] = moduleVersion
+}
+
 extensions.configure<AttacheExtension>("attache") {
     transitive.set(true)
 

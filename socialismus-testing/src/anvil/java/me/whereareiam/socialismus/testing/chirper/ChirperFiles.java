@@ -21,8 +21,8 @@ import java.util.Map;
  */
 final class ChirperFiles {
 	/** Chirper reads every file of these directories; naming the file {@code default} keeps its examples out. */
-	private static final String ANNOUNCERS = "modules/Chirper/announcers/default.yml";
-	private static final String ANNOUNCEMENTS = "modules/Chirper/announcements/default.yml";
+	private static final String ANNOUNCERS = "modules/chirper/announcers/default.yml";
+	private static final String ANNOUNCEMENTS = "modules/chirper/announcements/default.yml";
 
 	private ChirperFiles() {
 	}

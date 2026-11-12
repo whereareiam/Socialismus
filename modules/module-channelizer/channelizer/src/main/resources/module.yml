@@ -1,0 +1,21 @@
+id: socialismus-channelizer
+name: "@projectName@"
+version: "@projectVersion@"
+authors:
+  - whereareiam
+main: me.whereareiam.socialismus.module.channelizer.SocialismusChannelizer
+host: "@host@"
+platforms:
+  - name: paper
+  - name: folia
+  - name: spigot
+  - name: bukkit
+dependencies:
+  - id: socialismus-network
+updater:
+  release:
+    provider: MODRINTH
+    id: q8KT1H5f
+  dev:
+    provider: GITHUB
+    id: whereareiam/SocialismusChannelizer

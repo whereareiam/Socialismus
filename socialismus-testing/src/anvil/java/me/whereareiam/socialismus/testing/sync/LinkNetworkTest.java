@@ -68,7 +68,7 @@ class LinkNetworkTest {
 	static final class ThroughLink implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.text("modules/SocialismusLink/settings.yml", """
+			files.text("modules/socialismus-link/settings.yml", """
 					secret: "6a6f75726e65792d6c696e6b2d7365637265742d303031"
 					listen:
 					  host: "${anvil.process.proxy.host}"

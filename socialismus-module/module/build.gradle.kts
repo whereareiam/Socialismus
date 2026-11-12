@@ -6,4 +6,5 @@ dependencies {
     api(projects.socialismusModule.moduleApi)
 
     implementation(projects.socialismusModule.moduleCommon)
+    implementation(libs.chassis.common)
 }

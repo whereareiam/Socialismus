@@ -14,6 +14,7 @@ lombok = "1.18.48"
 guice = "7.0.0"
 annotations = "26.1.0"
 attache = "1.3.0"
+chassis = "dev-c97206f"
 configura = "2.1.0"
 keystone = "1.0.0"
 commandant = "1.0.0"
@@ -114,6 +115,11 @@ attache-bukkit = { group = "me.whereareiam", name = "attache-bukkit", version.re
 attache-paper = { group = "me.whereareiam", name = "attache-paper", version.ref = "attache" }
 attache-velocity = { group = "me.whereareiam", name = "attache-velocity", version.ref = "attache" }
 attache-common = { group = "me.whereareiam", name = "attache-common", version.ref = "attache" }
+chassis-api = { group = "me.whereareiam.chassis", name = "chassis-api", version.ref = "chassis" }
+chassis-common = { group = "me.whereareiam.chassis", name = "chassis-common", version.ref = "chassis" }
+chassis-adapter-attache = { group = "me.whereareiam.chassis", name = "chassis-adapter-attache", version.ref = "chassis" }
+chassis-platform-bukkit = { group = "me.whereareiam.chassis", name = "platform-bukkit", version.ref = "chassis" }
+chassis-platform-velocity = { group = "me.whereareiam.chassis", name = "platform-velocity", version.ref = "chassis" }
 
 # resources
 jedis = { group = "redis.clients", name = "jedis", version.ref = "jedis" }

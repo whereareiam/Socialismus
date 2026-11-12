@@ -1,0 +1,20 @@
+id: essentials
+name: "@projectName@"
+version: "@projectVersion@"
+authors:
+  - whereareiam
+main: me.whereareiam.socialismus.module.essentials.Essentials
+host: "@host@"
+platforms:
+  - name: paper
+  - name: folia
+  - name: spigot
+  - name: bukkit
+  - name: velocity
+updater:
+  release:
+    provider: MODRINTH
+    id: whereareiam/Essentials
+  dev:
+    provider: GITHUB
+    id: whereareiam/Essentials

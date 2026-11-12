@@ -8,6 +8,7 @@ import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.exception.ModuleLifecycleException;
 import me.whereareiam.socialismus.model.resource.ProvidedResource;
+import me.whereareiam.socialismus.module.ModuleContext;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.link.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.link.common.config.LinkSettings;
@@ -20,9 +21,11 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.resource.ResourceProvider;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.strata.Strata;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -31,18 +34,19 @@ import java.util.List;
  * others. Unlike plugin messages, it needs no players online; unlike Redis, it needs nothing else running.
  */
 @RequiredArgsConstructor(onConstructor_ = @Inject)
-public class SocialismusLink extends SocialisticModule implements ResourceProvider {
+public class SocialismusLink implements SocialisticModule, ResourceProvider {
 	private final Registry<Reloadable> reloadableRegistry;
 
 	private ReplicationTransport transport;
 
 	@Override
-	public void onLoad() {
-		new Strata(List.of(LinkConfigMigrations.on(Config.configured(), workingPath))).migrate();
+	public void enable(@NotNull ModuleContext context) {
+		Path dataFolder = context.dataFolder();
+		new Strata(List.of(LinkConfigMigrations.on(Config.configured(), dataFolder))).migrate();
 
 		Injector injector = Guice.createInjector(
 				new SocialismusLinkInjectorConfiguration(reloadableRegistry),
-				new CommonConfiguration(workingPath)
+				new CommonConfiguration(dataFolder)
 		);
 		LinkSettings settings = injector.getInstance(LinkSettings.class);
 		if (!PlatformType.isProxy()) {
@@ -59,15 +63,7 @@ public class SocialismusLink extends SocialisticModule implements ResourceProvid
 	}
 
 	@Override
-	public void onEnable() {
-	}
-
-	@Override
-	public void onDisable() {
-	}
-
-	@Override
-	public void onUnload() {
+	public void disable() {
 		if (transport instanceof AutoCloseable closeable) {
 			try {
 				closeable.close();

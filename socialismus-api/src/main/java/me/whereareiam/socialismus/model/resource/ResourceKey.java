@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
  *         ResourceKey.create("translator", "translation", TranslationService.class);
  * }</pre>
  *
- * <p>Two keys name the same resource when their {@linkplain #getFullKey() full keys} are equal; a
- * {@code module.json} requires a resource by its full key, such as {@code socialismusnetwork:network}.
+ * <p>Two keys name the same resource when their {@linkplain #getFullKey() full keys} are equal, such as
+ * {@code socialismusnetwork:network}.
  *
  * @param <T> the type of the resource
  */
@@ -60,7 +60,7 @@ public final class ResourceKey<T> {
 	}
 
 	/**
-	 * Gets the full key a {@code module.json} names the resource by.
+	 * Gets the full key that names the resource.
 	 *
 	 * @return the full key in format "namespace:key"
 	 */

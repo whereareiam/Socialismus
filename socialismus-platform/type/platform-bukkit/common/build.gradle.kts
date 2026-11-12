@@ -10,4 +10,5 @@ dependencies {
 
     compileOnly(libs.spigot)
     implementation(libs.bundles.bStats.bukkit)
+    implementation(libs.chassis.platform.bukkit)
 }

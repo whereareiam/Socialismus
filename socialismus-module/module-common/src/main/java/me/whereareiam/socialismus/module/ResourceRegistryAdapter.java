@@ -45,13 +45,9 @@ public class ResourceRegistryAdapter implements ResourceRegistry {
 
 	@Override
 	public boolean has(@NotNull ResourceKey<?> key) {
-		return has(key.getFullKey());
+		return resources.containsKey(key.getFullKey());
 	}
 
-	@Override
-	public boolean has(@NotNull String fullKey) {
-		return resources.containsKey(fullKey);
-	}
 
 	@Override
 	public <T> boolean unregister(@NotNull ResourceKey<T> key, @NotNull T resource) {

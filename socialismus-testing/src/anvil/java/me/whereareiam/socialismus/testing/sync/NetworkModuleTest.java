@@ -28,7 +28,7 @@ class NetworkModuleTest {
 	void joinsTheNetworkAloneUnderTheNodeIdItWrote(ScenarioContext anvil) throws IOException {
 		String log = Console.of(anvil).log();
 
-		assertTrue(log.contains("Loaded module SocialismusNetwork"), "SocialismusNetwork did not load:\n" + log);
+		assertTrue(log.contains("Enabled module SocialismusNetwork"), "SocialismusNetwork did not start:\n" + log);
 		assertTrue(log.contains("Registered resource socialismusnetwork:network from module SocialismusNetwork"),
 				"The network was not registered:\n" + log);
 		Matcher joined = JOINED.matcher(log);
@@ -36,7 +36,7 @@ class NetworkModuleTest {
 		assertFalse(log.contains("Replicating through"), "SocialismusNetwork found a transport that is not there:\n" + log);
 
 		Network network = Network.of(anvil);
-		String written = network.files(anvil).read(network.dataPath("modules/SocialismusNetwork/settings.yml"));
+		String written = network.files(anvil).read(network.dataPath("modules/socialismus-network/settings.yml"));
 		assertTrue(written.contains(joined.group(1)), "The node id is not kept in the settings:\n" + written);
 	}
 }

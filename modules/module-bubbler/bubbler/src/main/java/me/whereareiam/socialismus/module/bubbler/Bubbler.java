@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.module.ModuleContext;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.bubbler.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.bubbler.common.CommonConfiguration;
@@ -22,20 +23,23 @@ import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.strata.Strata;
+import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 @RequiredArgsConstructor(onConstructor_ = @Inject)
-public class Bubbler extends SocialisticModule {
+public class Bubbler implements SocialisticModule {
 	private final Injector parentInjector;
 	private final Registry<Reloadable> reloadableRegistry;
 	private Injector injector;
 
 	@Override
-	public void onLoad() {
-		new Strata(List.of(BubblerConfigMigrations.on(Config.configured(), workingPath))).migrate();
+	public void enable(@NotNull ModuleContext context) {
+		Path dataFolder = context.dataFolder();
+		new Strata(List.of(BubblerConfigMigrations.on(Config.configured(), dataFolder))).migrate();
 
 		EventManager eventManager = parentInjector.getInstance(EventManager.class);
 
@@ -51,25 +55,18 @@ public class Bubbler extends SocialisticModule {
 								parentInjector.getInstance(PlayerRegistry.class),
 								eventManager
 						),
-						new CommonConfiguration(workingPath));
+						new CommonConfiguration(dataFolder));
 
 		Stream.of(
 				injector.getInstance(ChatBroadcastListener.class),
 				injector.getInstance(BubbleTransitionListener.class)
 		).forEach(eventManager::register);
-	}
 
-	@Override
-	public void onEnable() {
 		injector.getInstance(CommandRegistrar.class).registerCommands();
 	}
 
 	@Override
-	public void onDisable() {
+	public void disable() {
 		injector.getInstance(Scheduler.class).cancelByModule("bubbler");
-	}
-
-	@Override
-	public void onUnload() {
 	}
 }

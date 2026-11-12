@@ -19,8 +19,8 @@ import java.util.Optional;
  * {@link me.whereareiam.socialismus.event.resource.ResourceUnregisteredEvent}.
  *
  * <p>A module usually provides its resources through
- * {@link me.whereareiam.socialismus.service.resource.ResourceProvider}, which registers them when it loads and
- * unregisters them when it unloads.
+ * {@link me.whereareiam.socialismus.service.resource.ResourceProvider}, whose resources are registered when the module
+ * is enabled and unregistered when it stops.
  */
 public interface ResourceRegistry {
 	/**
@@ -58,13 +58,6 @@ public interface ResourceRegistry {
 	 */
 	boolean has(@NotNull ResourceKey<?> key);
 
-	/**
-	 * Tells whether a resource is registered under a full key, as a {@code module.json} names it.
-	 *
-	 * @param fullKey the full key of the resource, such as {@code socialismus:sync}
-	 * @return {@code true} when a resource is registered under the full key
-	 */
-	boolean has(@NotNull String fullKey);
 
 	/**
 	 * Unregisters a resource, when it is the one registered under its key. An unregistered resource is
