@@ -83,7 +83,7 @@ dependencies {
 ```
   </ContentTab>
   <ContentTab value="Socialismus Module">
-    Use the module API artifact when you are building an actual Socialismus module.
+    Use the module API artifact when you are building an actual Socialismus module; [Writing a module](../writing-a-module/index.mdx) builds one.
 
     `me.whereareiam.socialismus.module:api` already depends on `me.whereareiam.socialismus:api`, so you usually only need the module API dependency.
 
@@ -333,7 +333,7 @@ These are some of the most useful API entry points for addon plugins and modules
 - `SocialismusAPI.getChatHistoryService()` for removing tracked chat history entries
 - `SocialismusAPI.getChatRenderService()` for rendering a formatted message for a recipient
 - `SocialismusAPI.getCommandService()` for registering or inspecting Socialismus commands
-- `SocialismusAPI.getModuleService()` if you intentionally integrate with the Socialismus module system
+- Chassis's `Extensions`, injected into a module's main class, for the installed modules and their states
 - `SocialismusAPI.getEventManager()` for registering or calling Socialismus events
 
 ## Player lookup example

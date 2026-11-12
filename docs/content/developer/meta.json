@@ -1,6 +1,7 @@
 {
   "title": "Developer",
   "pages": [
-    "consuming-api"
+    "consuming-api",
+    "writing-a-module"
   ]
 }
