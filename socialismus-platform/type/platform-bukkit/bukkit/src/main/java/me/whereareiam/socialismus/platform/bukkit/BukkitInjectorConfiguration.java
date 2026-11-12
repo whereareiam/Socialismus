@@ -5,11 +5,13 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.chassis.ExtensionTransformer;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.integration.placeholderapi.PlaceholderAPIIntegration;
 import me.whereareiam.socialismus.listener.ListenerRegistrar;
 import me.whereareiam.socialismus.platform.bukkit.listener.BukkitListenerRegistrar;
+import me.whereareiam.socialismus.platform.bukkit.module.ModuleAdventureRelocation;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -34,5 +36,7 @@ public class BukkitInjectorConfiguration extends AbstractModule {
 
 		Multibinder<Integration> integrations = Multibinder.newSetBinder(binder(), Integration.class, Names.named("integrationCandidates"));
 		integrations.addBinding().to(PlaceholderAPIIntegration.class);
+
+		Multibinder.newSetBinder(binder(), ExtensionTransformer.class).addBinding().to(ModuleAdventureRelocation.class);
 	}
 }

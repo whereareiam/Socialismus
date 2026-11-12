@@ -7,6 +7,7 @@ import com.google.inject.name.Named;
 import me.whereareiam.attache.LibraryManager;
 import me.whereareiam.chassis.ExtensionContext;
 import me.whereareiam.chassis.ExtensionFactory;
+import me.whereareiam.chassis.ExtensionTransformer;
 import me.whereareiam.chassis.adapter.attache.AttacheLibraries;
 import me.whereareiam.chassis.common.ChassisHost;
 import me.whereareiam.chassis.common.HostOptions;
@@ -55,6 +56,7 @@ public final class ModuleHostFactory {
 	private final LibraryManager libraries;
 	// The integrations that started, which the integrations' phase fills before the modules' phase.
 	private final Provider<Set<Integration>> integrations;
+	private final Set<ExtensionTransformer> transformers;
 	private final Path modulesPath;
 	private final Path dataPath;
 
@@ -64,6 +66,7 @@ public final class ModuleHostFactory {
 			@NotNull Platform platform,
 			@NotNull LibraryManager libraries,
 			@NotNull Provider<Set<Integration>> integrations,
+			@NotNull Set<ExtensionTransformer> transformers,
 			@Named("modulesPath") @NotNull Path modulesPath,
 			@Named("dataPath") @NotNull Path dataPath
 	) {
@@ -71,6 +74,7 @@ public final class ModuleHostFactory {
 		this.platform = platform;
 		this.libraries = libraries;
 		this.integrations = integrations;
+		this.transformers = transformers;
 		this.modulesPath = modulesPath;
 		this.dataPath = dataPath;
 	}
@@ -86,6 +90,8 @@ public final class ModuleHostFactory {
 				.logging(libraries.getLoggingHelper())
 				.verbosity(libraries.getVerbosityMode())
 				.repositories(libraries.getRepositories())
+				// A module's libraries change as Socialismus's own do, such as downgraded for an older Java.
+				.transformers(libraries.getLibraryTransformers())
 				.build();
 
 		return new ChassisHost<>(options(attache), SocialisticModule.class, ModuleFields.class,
@@ -103,6 +109,7 @@ public final class ModuleHostFactory {
 				.platform(platform)
 				.exportLayer(new ExportLayer(SocialisticModule.class.getClassLoader(), EXPORTS))
 				.preparation(attache)
+				.transformers(List.copyOf(transformers))
 				.loggers(ModuleLogger::new);
 
 		// A module requires an integration that started by its name in lower case, in Socialismus's version.
