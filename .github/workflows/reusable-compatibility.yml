@@ -26,8 +26,13 @@ jobs:
         version: ["1.16.5", "1.19.4", "1.20.6", "1.21.1", "1.21.11", "26.1.2"]
         suite: [platform, modules]
         include:
-          # Bubbler's journeys run on Paper, which installs the PAPER jar from 1.20.6; below it they join once Bubbler's
-          # components reach PacketEvents on the BUKKIT jar.
+          # Bubbler runs at every version: the BUKKIT jar below 1.20.6, the PAPER jar from it.
+          - platform: Minecraft
+            version: "1.16.5"
+            suite: bubbler
+          - platform: Minecraft
+            version: "1.19.4"
+            suite: bubbler
           - platform: Minecraft
             version: "1.20.6"
             suite: bubbler

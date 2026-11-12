@@ -23,8 +23,7 @@ Journeys run on the newest versions by default: Paper 26.3, Spigot 26.3 and Velo
 `-Psocialismus.journeys.minecraft=<version>` and `-Psocialismus.journeys.velocity=<version>`; Anvil
 starts each server on the Java its version needs. The compatibility workflow runs the `platform`
 and `modules` suites at the versions where the game or the platforms changed what Socialismus
-depends on, and the `bubbler` suite from 1.20.6, where Paper installs the PAPER jar; below it
-`bubbler` joins once Bubbler's components reach PacketEvents on the BUKKIT jar:
+depends on, and the `bubbler` suite at all of them:
 
 | Minecraft | Java | Why |
 | --- | --- | --- |
@@ -200,6 +199,8 @@ Essentials keeps its feature framework, but has no feature since private message
 ## bubbler
 
 - [x] Bubbler shows a bubble above a player who chats or runs `/socialismus bubble`, with each render strategy
+- [x] Bubbler shows bubbles on Spigot and on Paper below 26.1, where the BUKKIT jar relocates its Adventure
+- [x] Bubbler warns below Minecraft 1.19.4 that text display bubbles show nothing
 
 ## database
 
