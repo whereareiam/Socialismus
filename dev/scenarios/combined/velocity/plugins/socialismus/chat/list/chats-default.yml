@@ -8,5 +8,6 @@ chats:
         command: "staff"
     formats:
       - format: "{clear}<gray>[Proxy-S] {playerName}: <white>{message}"
-        requirements: {}
-    requirements: {}
+        requires: []
+    requires: []
+    reaches: []

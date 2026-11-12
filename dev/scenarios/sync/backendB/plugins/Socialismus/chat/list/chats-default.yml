@@ -9,8 +9,9 @@ chats:
         symbol: ""
     formats:
       - format: "{clear}<gray>[Sync-L] {playerName}: <white>{message}"
-        requirements: {}
-    requirements: {}
+        requires: []
+    requires: []
+    reaches: []
   - id: "global"
     priority: 1
     enabled: true
@@ -21,5 +22,6 @@ chats:
         symbol: "!"
     formats:
       - format: "{clear}<gray>[Sync-G] {playerName}: <white>{message}"
-        requirements: {}
-    requirements: {}
+        requires: []
+    requires: []
+    reaches: []
