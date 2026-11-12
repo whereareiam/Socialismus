@@ -72,18 +72,23 @@ Modules add conditions of their own, named `<module id>:<name>`. A list that nam
 A failed condition reports a reason, keyed by the condition and the reason, such as `permission.missing`, `world.outside` or `world.inside`.
 `not` reports why the condition inside it held: `not: { world: world_nether }` refuses with `world.inside`.
 
-The texts come from the feature first, then from `messages.yml`:
+What the player reads comes from `phrases.yml`, the file of texts that other files refer to by key.
+A chat looks under `chat.` first, Dialogue under `dialogue.` in its own `modules/dialogue/phrases.yml`, and both then in the `denied` phrases of everything:
 
 ```yaml
-# chat/messages.yml: a chat that refuses its sender, with {chat}
-requirements:
-  permission.missing: "{prefix}<white>You may not write in <gray>{chat}</gray> chat.</white>"
-  world.inside: "{prefix}<white><gray>{chat}</gray> chat does not work in <gray>{world}</gray>.</white>"
-
-# messages.yml: whatever no feature words
-requirements:
+# phrases.yml
+denied:                       # whatever no feature words
   world.outside: "{prefix}<white>This only works in <gray>{worlds}</gray>.</white>"
+chat:
+  denied:                     # a chat that refuses its sender, with {chat}
+    permission.missing: "{prefix}<white>You may not write in <gray>{chat}</gray> chat.</white>"
+    world.inside: "{prefix}<white><gray>{chat}</gray> chat does not work in <gray>{world}</gray>.</white>"
+  staff-only: "<red>Only the staff write in {chat}."     # a phrase of your own
 ```
+
+A phrase under the name of the part the condition was about comes first, such as `denied.recipient.permission.missing` for a recipient; Dialogue words its sender under `dialogue.denied.sender` and the player written to under `dialogue.denied.recipient`.
+A key can be written as one name or split into sections: `world.outside:` under `denied:` is the same as `outside:` under `world:`.
+A blank phrase leaves the reason to the next place that words it. Phrases Socialismus adds in an update are written into the file; yours stay as you wrote them.
 
 | Reason | Placeholders |
 |--------|--------------|
@@ -93,5 +98,24 @@ requirements:
 | `chat.outside`, `chat.inside` | `{chats}`, `{chat}` |
 | `placeholder.mismatch`, `placeholder.match` | `{text}`, `{value}` |
 
-Dialogue words a refused private message by the participant the condition was about, under `messaging.requirements.SENDER` and `messaging.requirements.RECIPIENT` in its messages.
-A reason no text words, or a failed `any`, is told by the feature's own notice, such as that no chat took the message.
+### A line's own text
+
+A line can say what it tells beside its condition, under `denied`, and add how to meet it under `hint`.
+Both are texts; `<ref:key>` puts a phrase into them, and a phrase may refer to further phrases:
+
+```yaml
+requires:
+  - permission: socialismus.chat.staff
+    denied: "<ref:staff-only>"                      # a phrase
+    hint: "<gray>Ask an admin for {permissions}."    # written here
+  - any:
+      - world: [spawn, hub]
+      - permission: socialismus.chat.anywhere
+    denied: "<ref:hub-only> <ref:how-to-travel>"     # phrases and text mixed
+```
+
+A failure inside a block takes the `denied` and `hint` of the nearest line around it that has them, each on its own.
+The `denied` of a line inside a `not` is not told when the `not` refuses, since that line held.
+A `<ref:...>` that no phrases file has stops the start with the path of its text, such as `chats.staff.requires[0].denied`; the console also names the reasons of conditions no phrase words.
+
+A reason nothing words, or a failed `any` without a `denied`, is told by the feature's own notice, such as that no chat took the message or Dialogue's `notAllowed`.

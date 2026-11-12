@@ -123,7 +123,33 @@ context.conditions().register(new PlaytimeCondition(playtimes));
 
 A condition answers at once from what the module holds in memory, such as playtime loaded when the player joins: chats check their lists on the server's chat thread, which never waits. A condition that has to ask a database implements `ConditionType.Deferred.Single` and can only be named where a check may wait.
 
+A condition that fails with a reason declares it, so administrators can word it: a record nested in the type, listed in `reasons()`, keyed by the condition and the record's name, such as `greeter:playtime.short`. Ship its text in your own `phrases.yml` under `denied.`, and Socialismus logs at startup each reason of a registered condition that no phrase words.
+
 A module checks lists of its own files through Socialismus's `Conditions`: `conditions.place("greeter.requires", settings.getRequires(), RequirementParts.SENDER)` binds a list once, so a mistake stops `enable` with its path, and `place.check(Situation.of(RequirementParts.SENDER, player))` checks it. Close the places of a file you reload. The [Requirements](../../configuration/requirements/index.mdx) page lists what administrators write.
+
+## Phrases
+
+A module that tells players texts administrators refer to, such as why a list refused them, ships a `phrases.yml` in its folder and adds it to Socialismus's phrases while it runs. Keep your keys under your id, and the texts of your conditions' reasons under `denied.`:
+
+```java
+public final class GreeterPhrases extends PhrasesConfigProvider {
+    static final Phrases DEFAULTS = Phrases.builder()
+            .section("greeter", greeter -> greeter
+                    .text("welcome-back", "<gray>Welcome back, {playerName}."))
+            .section("denied", denied -> denied
+                    .text("greeter:playtime.short", "{prefix}<white>You need {hours} of playtime."))
+            .build();
+
+    public GreeterPhrases(Path dataFolder, Registry<Reloadable> reloadables) {
+        super(dataFolder, reloadables, DEFAULTS);           // modules/greeter/phrases.yml
+    }
+}
+
+phraseService.add("greeter", greeterPhrases::get);         // in enable
+phraseService.remove("greeter");                           // in disable
+```
+
+`phraseService.render("greeter", text)` puts the phrases into a text with `<ref:key>`, looking under `greeter.` first. To tell a refused player why, pass a failed verdict to `RequirementReasonService.resolve(failed, "greeter", placeholders)`: it takes the line's `denied` text or the `greeter.denied.*` and `denied.*` phrases of the reason, and adds the line's `hint`. `phraseService.checked("greeter", place)` refuses a place whose texts refer to a phrase no file has, naming the text's path.
 
 ## Resources for other modules
 
