@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.testing.environment;
 
-import me.whereareiam.anvil.api.model.process.Distribution;
 import me.whereareiam.anvil.api.model.process.MinecraftProxy;
 import me.whereareiam.anvil.api.model.process.MinecraftServer;
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
@@ -14,8 +13,7 @@ import me.whereareiam.anvil.api.process.ProcessFiles;
 
 /**
  * Where a journey runs Socialismus: on a server players join directly, on a proxy in front of a backend, or on
- * several processes of a network of a proxy and two backends. Every network runs the newest Minecraft version Anvil's
- * players speak.
+ * several processes of a network of a proxy and two backends. Every network runs the versions of {@link Versions}.
  */
 public enum Network {
 	/** A Paper server with the PAPER jar. */
@@ -39,8 +37,6 @@ public enum Network {
 	public static final String LOBBY = "lobby";
 	/** The other backend of the networks of two backends. */
 	public static final String SURVIVAL = "survival";
-
-	private static final String MINECRAFT_VERSION = "26.1.2";
 
 	private final List<String> socialismus;
 
@@ -132,10 +128,13 @@ public enum Network {
 	String artifact(@NotNull String process, boolean bundle) {
 		if (bundle && this == SPIGOT)
 			throw new IllegalArgumentException("The bundle jar does not carry the Spigot platform");
+		if (bundle && !process.equals(PROXY) && !Versions.paperJar())
+			throw new IllegalArgumentException("The bundle jar runs on Paper " + Versions.PAPER_JAR + " or newer, not " + Versions.MINECRAFT);
 		if (bundle) return "bundle";
 		if (process.equals(PROXY)) return "velocity";
 
-		return this == SPIGOT ? "bukkit" : "paper";
+		// Paper below 26.1 runs the BUKKIT jar, since the PAPER jar needs the Paper API of 26.x.
+		return this == SPIGOT || !Versions.paperJar() ? "bukkit" : "paper";
 	}
 
 	/**
@@ -155,10 +154,9 @@ public enum Network {
 				.setting("simulation-distance", "4");
 
 		if (this == SPIGOT)
-			return server.platform(Platforms.SPIGOT)
-					.distribution(Distribution.pinned(MINECRAFT_VERSION, "95f871fd6d055ba10b5a058768ddad43b0be0286480c8eba435c835c95d5f19c"));
+			return server.platform(Platforms.SPIGOT).distribution(Versions.spigot());
 
-		server.platform(Platforms.PAPER).distribution(Distribution.remote(MINECRAFT_VERSION, "74"));
+		server.platform(Platforms.PAPER).distribution(Versions.paper());
 		// Behind the proxy the backend runs no Socialismus, so it serves one network after another.
 		if (this == VELOCITY)
 			server.lifetime(ProcessLifetime.ENGINE);
@@ -171,7 +169,7 @@ public enum Network {
 		MinecraftProxy.MinecraftProxyBuilder proxy = MinecraftProxy.builder()
 				.name(PROXY)
 				.platform(Platforms.VELOCITY)
-				.distribution(Distribution.remote("4.3.1", "45"))
+				.distribution(Versions.velocity())
 				.setting("advanced.login-ratelimit", "0")
 				// Journeys chat and run commands at once, which Velocity's command rate limit would drop.
 				.setting("advanced.command-rate-limit", "0")

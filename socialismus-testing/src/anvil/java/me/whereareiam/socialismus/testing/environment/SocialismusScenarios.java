@@ -144,9 +144,11 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 	}
 
 	/**
-	 * Names the network after everything that sets it apart, so different networks never share a workspace.
+	 * Names the network after everything that sets it apart, versions included, so different networks never share a
+	 * workspace.
 	 */
 	private static String name(Socialismus socialismus) {
+		Network network = socialismus.network();
 		return Stream.of(
 						"socialismus",
 						socialismus.network().name(),
@@ -158,7 +160,9 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 						Arrays.stream(socialismus.containers()).map(Container::name).collect(Collectors.joining("+")),
 						String.join("+", socialismus.proxyListeners()),
 						Arrays.stream(socialismus.configure()).map(SocialismusScenarios::changeName).collect(Collectors.joining("+")),
-						Arrays.stream(socialismus.proxyConfigure()).map(SocialismusScenarios::changeName).collect(Collectors.joining("+")))
+						Arrays.stream(socialismus.proxyConfigure()).map(SocialismusScenarios::changeName).collect(Collectors.joining("+")),
+						Versions.MINECRAFT,
+						network.proxied() ? "velocity" + Versions.VELOCITY : "")
 				.filter(part -> !part.isBlank())
 				.collect(Collectors.joining("-"))
 				.toLowerCase(Locale.ROOT);
