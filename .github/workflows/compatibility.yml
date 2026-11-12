@@ -1,0 +1,47 @@
+name: Compatibility
+
+# The journeys at older Minecraft and Velocity versions, when a change can reach what runs there, and before a release.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - "socialismus-platform/**"
+      - "socialismus-module/**"
+      - "socialismus-api/**"
+      - "socialismus-common/**"
+      - "modules/**"
+      - "build-logic/**"
+      - "gradle/libs.versions.toml"
+      - "socialismus-testing/**"
+      - ".github/workflows/*compatibility.yml"
+  push:
+    branches: [dev]
+    paths:
+      - "socialismus-platform/**"
+      - "socialismus-module/**"
+      - "modules/**"
+      - "build-logic/**"
+      - "gradle/libs.versions.toml"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit, branch or tag to check, for example dev before publishing a release
+        required: false
+        type: string
+        default: dev
+
+concurrency:
+  group: compatibility-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  compatibility:
+    name: Compatibility
+    if: ${{ !github.event.pull_request.draft }}
+    uses: ./.github/workflows/reusable-compatibility.yml
+    with:
+      ref: ${{ inputs.ref || github.sha }}

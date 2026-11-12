@@ -7,13 +7,13 @@ main: me.whereareiam.socialismus.module.bubbler.Bubbler
 host: "@host@"
 platforms:
   - name: paper
-    version: ">=1.16 <1.22 || ~26.1"
+    version: ">=1.16 <1.22 || >=26.1 <26.4"
   - name: folia
-    version: ">=1.16 <1.22 || ~26.1"
+    version: ">=1.16 <1.22 || >=26.1 <26.4"
   - name: spigot
-    version: ">=1.16 <1.22 || ~26.1"
+    version: ">=1.16 <1.22 || >=26.1 <26.4"
   - name: bukkit
-    version: ">=1.16 <1.22 || ~26.1"
+    version: ">=1.16 <1.22 || >=26.1 <26.4"
 requires:
   packetevents: "*"
 updater:

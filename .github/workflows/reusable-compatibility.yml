@@ -1,0 +1,81 @@
+name: Compatibility
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit, branch or tag to check.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  journeys:
+    name: ${{ matrix.platform }} ${{ matrix.version }} (${{ matrix.suite }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # The versions where the game or the platforms changed what Socialismus depends on; socialismus-testing/JOURNEYS.md
+        # explains each. The newest, 26.3 and Velocity 4.3.1, run every suite in the checks of every pull request.
+        platform: [Minecraft]
+        version: ["1.16.5", "1.19.4", "1.20.6", "1.21.1", "1.21.11", "26.1.2"]
+        # modules and bubbler join once the BUKKIT jar delivers messages outside chat and Bubbler's components reach
+        # PacketEvents on it.
+        suite: [platform]
+        include:
+          # Velocity 4.0.0 speaks no newer Minecraft than 26.1.2, so its servers run that.
+          - platform: Velocity
+            version: "4.0.0"
+            minecraft: "26.1.2"
+            suite: platform
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - uses: whereareiam/devops/primitive/setup/gradle@v3
+        with:
+          java-version: "25"
+          toolchain-versions: "21"
+
+      - uses: whereareiam/anvil-actions/setup@v1
+
+      # Anvil starts each server on the Java its version needs.
+      - name: Run the ${{ matrix.suite }} journeys
+        env:
+          SUITE: ${{ matrix.suite }}
+          VERSION_PROPERTY: socialismus.journeys.${{ matrix.platform == 'Velocity' && 'velocity' || 'minecraft' }}
+          TARGET_VERSION: ${{ matrix.version }}
+          MINECRAFT: ${{ matrix.minecraft }}
+        run: |
+          arguments=("-P${VERSION_PROPERTY}=${TARGET_VERSION}")
+          [[ -z "$MINECRAFT" ]] || arguments+=("-Psocialismus.journeys.minecraft=${MINECRAFT}")
+          ./gradlew --no-daemon ":socialismus-testing:anvil${SUITE^}Test" "${arguments[@]}"
+
+      - uses: whereareiam/devops/primitive/report/junit/publish@v3
+        if: always()
+        with:
+          name: Compatibility (${{ matrix.platform }} ${{ matrix.version }}, ${{ matrix.suite }})
+          artifact-name: test-results-compatibility-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.suite }}
+          reports: |
+            **/build/reports/tests/**
+            socialismus-testing/build/anvil/**/logs/latest.log
+
+  result:
+    name: Result
+    needs: [journeys]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every version to pass
+        env:
+          RESULT: ${{ needs.journeys.result }}
+        run: |
+          [[ "$RESULT" == "success" ]] || { echo "::error::A version of the compatibility matrix ended with $RESULT."; exit 1; }

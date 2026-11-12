@@ -13,11 +13,12 @@ description: Short answers to common questions about Socialismus.
     2. Then choose the variant that matches that platform's version and Java requirement.
 
     Use Bukkit when you want the broadest compatibility.
-    It is the general server variant and supports Minecraft 1.16 or newer with Java 17 or newer.
+    It is the general server variant and supports Minecraft 1.16.5 or newer, on Spigot and on Paper, with Java 11 or newer.
+    On a server older than Java 21 it rewrites its libraries for that Java the first time it starts, which takes a little longer once.
 
     Use Paper when you are specifically on modern Paper or Folia and want the Paper-targeted variant.
     It is meant for newer Paper APIs, so it can be more stable and performant on supported modern setups.
-    The Paper build targets Minecraft 1.20.6 or newer and Java 25 or newer.
+    The Paper build targets Minecraft 26.1 or newer and Java 25 or newer; on older Paper servers use Bukkit.
 
     Use Velocity when Socialismus should run on a Velocity proxy.
     The Velocity build targets Velocity 4.x and Java 25 or newer.
@@ -25,7 +26,7 @@ description: Short answers to common questions about Socialismus.
     If you are unsure, the safe starting rule is simple:
 
     - Bukkit for normal server setups that need the broadest compatibility
-    - Paper for modern Paper or Folia setups on 1.20.6+ with Java 25+
+    - Paper for Paper or Folia setups on 26.1+ with Java 25+
     - Velocity for proxy setups on Velocity 4.x with Java 25+
   </Accordion>
 </Accordions>
