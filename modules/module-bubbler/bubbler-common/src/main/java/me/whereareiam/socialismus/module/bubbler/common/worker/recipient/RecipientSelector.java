@@ -11,27 +11,26 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
+import me.whereareiam.socialismus.module.bubbler.common.requirement.BubbleRequirements;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.type.chat.Participants;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Singleton
 public class RecipientSelector {
-	private final RequirementEvaluatorService requirementEvaluator;
+	private final BubbleRequirements requirements;
 	private final Provider<BubblerSettings> settings;
 	private final Provider<BubblerMessages> messages;
 
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<BubbleMessage> workerProcessor,
-			RequirementEvaluatorService requirementEvaluator,
+			BubbleRequirements requirements,
 			Provider<BubblerSettings> settings,
 			Provider<BubblerMessages> messages
 	) {
-		this.requirementEvaluator = requirementEvaluator;
+		this.requirements = requirements;
 		this.settings = settings;
 		this.messages = messages;
 
@@ -54,7 +53,7 @@ public class RecipientSelector {
 
 		recipients = recipients.parallelStream()
 				.filter(recipient -> isWithinRadius(sender, recipient, bubble.getDisplay().getRadius()))
-				.filter(recipient -> requirementEvaluator.check(bubble.getRequirements().get(Participants.RECIPIENT), recipient))
+				.filter(recipient -> requirements.reaches(bubble, recipient, bubbleMessage))
 				.collect(Collectors.toSet());
 
 		if (recipients.size() < minimumRecipients) bubbleMessage.setCancelled(true);

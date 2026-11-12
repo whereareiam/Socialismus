@@ -16,6 +16,8 @@ public enum StartupPhase {
 	RUNTIME,
 	/** The modules are loaded and enabled. */
 	MODULES,
+	/** The requirements of the core are bound to their places, now that the modules have registered their condition types. */
+	REQUIREMENTS,
 	/** Socialismus starts handling players: listeners, the welcome banner and update checks. */
 	CONNECTIONS
 }

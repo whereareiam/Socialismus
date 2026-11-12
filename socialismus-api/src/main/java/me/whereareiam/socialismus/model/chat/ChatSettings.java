@@ -3,9 +3,9 @@ package me.whereareiam.socialismus.model.chat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.configura.annotation.merge.Merge;
 import me.whereareiam.configura.type.merge.WhenPresent;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 
 /**
  * The settings of chatting, {@code chat/settings} in the data directory: notifications, the fallback chat and chat
@@ -74,18 +74,20 @@ public class ChatSettings {
 		private int historySize;
 
 		/**
-		 * Who may clear messages from chat history: the players who meet it see the clear button on the messages
-		 * they receive. Kept as written, so a group of one's own takes none of the default's requirements.
+		 * Who may clear messages from chat history, checked with the parts viewer and sender: the players who meet it
+		 * see the clear button on the messages they receive. Kept as written, so a list of one's own takes none of the
+		 * default's conditions.
 		 */
 		@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
-		private RequirementGroup requirements;
+		private Requirements requires = Requirements.none();
 
 		/**
-		 * Whose messages nobody clears: the messages of a sender who meets it carry no clear button, and
-		 * {@code /socialismus clear <player>} refuses to clear them. Kept as written, like {@link #requirements}.
+		 * Whose messages nobody clears, checked with the part sender: the messages of a sender who meets it carry no
+		 * clear button, and {@code /socialismus clear <player>} refuses to clear them. Kept as written, like
+		 * {@link #requires}.
 		 */
 		@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
-		private RequirementGroup bypassRequirements;
+		private Requirements bypass = Requirements.none();
 	}
 
 	/**
@@ -134,8 +136,10 @@ public class ChatSettings {
 		private boolean enabled;
 
 		/**
-		 * The senders whose messages still reach players who turned the chat off; nobody when absent.
+		 * The senders whose messages still reach players who turned the chat off, checked with the part sender. Kept
+		 * as written; an empty list lets everyone's messages through.
 		 */
-		private RequirementGroup bypass;
+		@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+		private Requirements bypass = Requirements.none();
 	}
 }

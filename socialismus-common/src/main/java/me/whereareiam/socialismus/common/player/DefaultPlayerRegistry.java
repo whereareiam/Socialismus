@@ -73,7 +73,7 @@ public class DefaultPlayerRegistry implements PlayerRegistry {
 			if (stored == player) return stored;
 
 			// Preserve the canonical state when new wrappers are created.
-			// Preserve all custom data (including LAST_CHAT, LAST_TRIGGER, etc.)
+			// Preserve all custom data.
 			player.setCustomData(stored.getCustomData());
 
 			// Preserve location (backend-specific, will be no-op on proxy)

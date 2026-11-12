@@ -29,7 +29,7 @@ public class IgnoredChat implements EventListener {
 		if (!ignore.isEnabled() || !ignore.isIncludesChat()) return;
 
 		SocialismusPlayer sender = event.getChatMessage().getSender();
-		if (privileges.meets(ignore.getExempt(), sender)) return;
+		if (privileges.exemptFromIgnore(sender)) return;
 
 		event.getNewRecipients().removeIf(recipient -> ignores.ignores(recipient.getUniqueId(), sender.getUniqueId()));
 	}

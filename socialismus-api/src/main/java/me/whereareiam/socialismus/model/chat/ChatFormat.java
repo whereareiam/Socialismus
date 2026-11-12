@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.type.chat.Participants;
-
-import java.util.Map;
+import me.whereareiam.conditia.model.Requirements;
+import me.whereareiam.configura.annotation.merge.Merge;
+import me.whereareiam.configura.type.merge.WhenPresent;
 
 /**
  * Represents the formatting configuration for a chat message.
@@ -26,9 +25,9 @@ public class ChatFormat {
 	private String format;
 
 	/**
-	 * Maps participant types to their respective requirement groups.
-	 * Defines what requirements different participants need to meet
-	 * to use this chat format.
+	 * What the sender must meet for this format, checked with the parts sender and message. The last format of a chat
+	 * whose requirements the sender meets is used.
 	 */
-	private Map<Participants, RequirementGroup> requirements;
+	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+	private Requirements requires = Requirements.none();
 }

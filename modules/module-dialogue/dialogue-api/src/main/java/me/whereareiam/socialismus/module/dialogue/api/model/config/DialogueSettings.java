@@ -3,11 +3,11 @@ package me.whereareiam.socialismus.module.dialogue.api.model.config;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.type.chat.Participants;
+import me.whereareiam.conditia.model.Requirements;
+import me.whereareiam.configura.annotation.merge.Merge;
+import me.whereareiam.configura.type.merge.WhenPresent;
 
 import java.time.Duration;
-import java.util.Map;
 
 /**
  * How Dialogue behaves, {@code settings} in its working directory, grouped by area.
@@ -39,10 +39,17 @@ public class DialogueSettings {
 	@ToString
 	public static class Messaging {
 		/**
-		 * What the sender ({@link Participants#SENDER}) and the recipient ({@link Participants#RECIPIENT}) must
-		 * meet for a private message between them; a participant without a group meets it.
+		 * What the sender must meet to send a private message, checked with the part sender on the sender's server.
 		 */
-		private Map<Participants, RequirementGroup> requirements;
+		@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+		private Requirements requires = Requirements.none();
+
+		/**
+		 * What the recipient must meet to receive a private message, checked with the parts recipient and sender. A
+		 * recipient on another server, whom this server cannot check, meets only an empty list.
+		 */
+		@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+		private Requirements reaches = Requirements.none();
 
 		/**
 		 * Which conversation {@code /reply} answers.
@@ -132,9 +139,11 @@ public class DialogueSettings {
 			private boolean enabled;
 
 			/**
-			 * The senders whose messages still reach players who turned them off; nobody when absent.
+			 * The senders whose messages still reach players who turned them off, checked with the part sender; an
+			 * empty list lets everyone's through.
 			 */
-			private RequirementGroup bypass;
+			@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+			private Requirements bypass = Requirements.none();
 		}
 
 		/**
@@ -155,9 +164,11 @@ public class DialogueSettings {
 			private boolean includesChat;
 
 			/**
-			 * The players who cannot be ignored, such as staff; nobody when absent.
+			 * The players who cannot be ignored, such as staff, checked with the part sender; an empty list exempts
+			 * everyone.
 			 */
-			private RequirementGroup exempt;
+			@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+			private Requirements exempt = Requirements.none();
 		}
 	}
 
@@ -189,9 +200,11 @@ public class DialogueSettings {
 			private boolean enabled;
 
 			/**
-			 * The players whose private messages are never shown to spies; nobody when absent.
+			 * The players whose private messages are never shown to spies, checked with the part sender; an empty list
+			 * hides everyone's.
 			 */
-			private RequirementGroup exempt;
+			@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+			private Requirements exempt = Requirements.none();
 		}
 	}
 }

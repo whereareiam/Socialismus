@@ -1,8 +1,7 @@
 package me.whereareiam.socialismus.testing.chirper;
 
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
-import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
@@ -75,14 +74,14 @@ final class ChirperFiles {
 	 * Describes an announcement sent at once to every player who meets its requirements.
 	 *
 	 * @param id           the announcement's identifier
-	 * @param requirements what a recipient meets
+	 * @param requires     what a recipient meets
 	 * @param contents     its contents, at most one of each kind
 	 */
 	@SafeVarargs
 	@NotNull
 	static Map<String, Object> announcement(
 			@NotNull String id,
-			@NotNull RequirementGroup requirements,
+			@NotNull Requirements requires,
 			@NotNull Map.Entry<String, Map<String, Object>>... contents
 	) {
 		Map<String, Object> byType = new LinkedHashMap<>();
@@ -94,19 +93,16 @@ final class ChirperFiles {
 				"id", id,
 				"settings", Map.of("delay", 0, "repeat", true),
 				"contents", byType,
-				"requirements", requirements
+				"requires", requires
 		);
 	}
 
 	/**
-	 * Returns requirements every player meets.
+	 * Returns a list every player meets.
 	 */
 	@NotNull
-	static RequirementGroup everyone() {
-		return RequirementGroup.builder()
-				.operator(RequirementOperatorType.AND)
-				.groups(Map.of())
-				.build();
+	static Requirements everyone() {
+		return Requirements.none();
 	}
 
 	/**
@@ -176,7 +172,7 @@ final class ChirperFiles {
 
 	private static Map.Entry<String, Map<String, Object>> content(String type, Map<String, Object> fields) {
 		Map<String, Object> content = new LinkedHashMap<>(fields);
-		content.put("requirements", everyone());
+		content.put("requires", everyone());
 
 		return Map.entry(type, content);
 	}

@@ -11,11 +11,10 @@ import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
@@ -30,7 +29,7 @@ public class ClearCommand {
 	private final ChatHistoryService chatHistory;
 	private final ChatHistoryContainerService containerService;
 	private final PlayerRegistry playerRegistry;
-	private final RequirementEvaluatorService requirementEvaluator;
+	private final ChatRequirementService requirements;
 
 	@Definition("clear")
 	@Command("socialismus clear [context]")
@@ -105,11 +104,8 @@ public class ClearCommand {
 	 * requirements.
 	 */
 	private boolean bypasses(String username) {
-		RequirementGroup bypass = chatSettings.get().getHistory().getBypassRequirements();
-		if (bypass == null) return false;
-
 		return playerRegistry.getPlayerData(username)
-				.map(player -> requirementEvaluator.check(bypass, player))
+				.map(requirements::keepsHistory)
 				.orElse(false);
 	}
 

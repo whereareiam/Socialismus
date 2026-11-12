@@ -8,7 +8,6 @@ import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.config.ConfigProvider;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
-import me.whereareiam.socialismus.module.bubbler.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.bubbler.common.config.defaults.BubblesDefaults;
 import me.whereareiam.socialismus.module.bubbler.common.config.dynamic.BubblesConfig;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -67,8 +66,7 @@ public class BubblesProvider extends ConfigProvider<List<Bubble>> {
 	@Override
 	protected Configura configura() {
 		return super.configura()
-						.withDefaults(BubblesDefaults.class)
-						.withFeature(CommonConfiguration.createRequirementPolymorphicFeature());
+						.withDefaults(BubblesDefaults.class);
 	}
 
 	private List<Bubble> addBubblesFromConfig(Path path) {

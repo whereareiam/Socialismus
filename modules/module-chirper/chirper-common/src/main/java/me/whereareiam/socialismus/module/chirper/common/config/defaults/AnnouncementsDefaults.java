@@ -1,12 +1,10 @@
 package me.whereareiam.socialismus.module.chirper.common.config.defaults;
 
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.module.chirper.api.model.announcement.Announcement;
 import me.whereareiam.socialismus.module.chirper.api.model.announcement.variant.*;
 import me.whereareiam.socialismus.module.chirper.api.type.AnnouncementType;
 import me.whereareiam.socialismus.module.chirper.common.config.dynamic.AnnouncementsConfig;
-import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import net.kyori.adventure.bossbar.BossBar;
 
 import java.util.List;
@@ -34,9 +32,8 @@ public class AnnouncementsDefaults implements DefaultsProvider<AnnouncementsConf
 								"<gray>  If you like the plugin, please leave a review on the plugin page, it will help me a lot!",
 								""
 						))
-						.requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
 						.build())
-				).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+				)
 				.build();
 
 		Announcement bossBarExample0 = Announcement.builder()
@@ -54,9 +51,9 @@ public class AnnouncementsDefaults implements DefaultsProvider<AnnouncementsConf
 								.duration(5)
 								.breakable(true)
 								.build()
-						).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+						)
 						.build())
-				).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+				)
 				.build();
 
 		Announcement bossBarExample1 = Announcement.builder()
@@ -75,13 +72,12 @@ public class AnnouncementsDefaults implements DefaultsProvider<AnnouncementsConf
 										.duration(3)
 										.breakable(true)
 										.build()
-								).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+								)
 								.build(),
 						AnnouncementType.ACTIONBAR, ActionbarAnnouncement.builder()
 								.message("<light_purple>Don't forget to take a break and stretch!")
-								.requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
 								.build())
-				).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+				)
 				.build();
 
 		Announcement bossBarExample2 = Announcement.builder()
@@ -99,9 +95,9 @@ public class AnnouncementsDefaults implements DefaultsProvider<AnnouncementsConf
 								.duration(10)
 								.breakable(true)
 								.build()
-						).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+						)
 						.build())
-				).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+				)
 				.build();
 
 		Announcement titleExample0 = Announcement.builder()
@@ -120,9 +116,8 @@ public class AnnouncementsDefaults implements DefaultsProvider<AnnouncementsConf
 								.stay(600)
 								.fadeOut(200)
 								.build()
-						).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+						)
 						.build()))
-				.requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
 				.build();
 
 		Announcement titleExample1 = Announcement.builder()
@@ -142,7 +137,7 @@ public class AnnouncementsDefaults implements DefaultsProvider<AnnouncementsConf
 										.stay(600)
 										.fadeOut(200)
 										.build()
-								).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+								)
 								.build(),
 						AnnouncementType.SOUND, SoundAnnouncement.builder()
 								.sound("entity.player.levelup")
@@ -150,10 +145,9 @@ public class AnnouncementsDefaults implements DefaultsProvider<AnnouncementsConf
 										.volume(1.0f)
 										.pitch(1.0f)
 										.build()
-								).requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
+								)
 								.build()
 				))
-				.requirements(RequirementGroup.builder().operator(RequirementOperatorType.AND).groups(Map.of()).build())
 				.build();
 
 		config.getAnnouncements().addAll(List.of(

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Why a player does not meet a requirement, told to that player: a message template with the placeholders it is
+ * Why a player does not meet a requirement, worded from a condition's reason, told to that player: a message template with the placeholders it is
  * filled with. It stays a template until it is shown, so it is serialized for whoever receives it, with that
  * receiver's own placeholders, like every other message of Socialismus.
  *
@@ -21,8 +21,7 @@ import java.util.Map;
  * );
  * player.sendMessage(Serializer.serialize(reason.toContent(player)));
  * }</pre>
- *
- * @see RequirementResult
+
  */
 @Getter
 @ToString

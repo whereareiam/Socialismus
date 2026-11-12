@@ -77,9 +77,9 @@ One Paper server unless stated otherwise.
 - [x] A world requirement keeps a chat to the players of its worlds
 - [x] A sender a chat's requirements refuse is told why in chat's wording, or in `messages.yml`'s where chat
   words nothing, such as the permission or the worlds the chat needs
-- [x] A requirement group's own reason is told before any other wording
-- [x] A message requirement selects the chat by the sender's previous message
-- [ ] A placeholder requirement selects the chat when PlaceholderAPI is installed
+- [x] A sender a negated condition refuses is told why the condition inside it held, such as the world they are in
+- [x] A `content` condition selects the chat by the message being sent
+- [ ] A `placeholder` condition, such as a balance `above` a number, selects the chat when PlaceholderAPI is installed
 - [x] The chat with the highest priority wins when several match
 - [x] A message takes the last format whose requirements its sender meets
 - [x] A message whose sender meets none of its chat's formats gets the no-format message
@@ -175,7 +175,7 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [x] Messaging an offline player fails with a reason
 - [x] `/reply` without a conversation fails with a reason
 - [x] A private message takes the last format whose requirements its participants meet
-- [x] `messaging.requirements` refuse a message to a player they exclude
+- [x] `messaging.requires` and `messaging.reaches` refuse a message to a player they exclude
 - [x] A refused sender is told why in Dialogue's wording for the participant that failed, such as the
   recipient's missing permission, and gets `notAllowed` only when nothing words it
 - [x] A private message is shown as its sender wrote it, never read as formatting such as a click

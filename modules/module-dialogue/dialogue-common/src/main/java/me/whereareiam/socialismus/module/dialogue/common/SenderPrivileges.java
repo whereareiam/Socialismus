@@ -1,16 +1,12 @@
 package me.whereareiam.socialismus.module.dialogue.common;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
-import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
+import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Decides what a sender's requirements allow their private message, on the server they write on, the only one where
@@ -20,8 +16,7 @@ import org.jetbrains.annotations.Nullable;
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SenderPrivileges {
-	private final Provider<DialogueSettings> settings;
-	private final RequirementEvaluatorService evaluator;
+	private final DialogueRequirements requirements;
 
 	/**
 	 * Records the sender's privileges on a message written on this server.
@@ -29,20 +24,29 @@ public class SenderPrivileges {
 	 * @param message the message, whose sender is on this server
 	 */
 	public void grant(@NotNull Message message) {
-		DialogueSettings current = settings.get();
 		SocialismusPlayer sender = message.getSender();
-		message.setBypassesToggle(meets(current.getControl().getToggle().getBypass(), sender));
-		message.setExemptFromIgnore(meets(current.getControl().getIgnore().getExempt(), sender));
-		message.setHiddenFromSpies(meets(current.getModeration().getSpy().getExempt(), sender));
+		message.setBypassesToggle(requirements.bypassesToggle(sender));
+		message.setExemptFromIgnore(requirements.exemptFromIgnore(sender));
+		message.setHiddenFromSpies(requirements.hiddenFromSpies(sender));
 	}
 
 	/**
-	 * Returns whether a player meets a group of Dialogue's settings. Nobody meets an absent group; a group without
-	 * requirements is met by everyone, as everywhere in Socialismus.
+	 * Returns whether a player cannot be ignored: {@code control.ignore.exempt}.
+	 *
+	 * @param player the player
+	 * @return whether nobody ignores them
 	 */
-	public boolean meets(@Nullable RequirementGroup group, @NotNull SocialismusPlayer player) {
-		if (group == null) return false;
+	public boolean exemptFromIgnore(@NotNull SocialismusPlayer player) {
+		return requirements.exemptFromIgnore(player);
+	}
 
-		return evaluator.check(group, player);
+	/**
+	 * Returns whether a player's private messages are hidden from spies: {@code moderation.spy.exempt}.
+	 *
+	 * @param player the player
+	 * @return whether spies never see their messages
+	 */
+	public boolean hiddenFromSpies(@NotNull SocialismusPlayer player) {
+		return requirements.hiddenFromSpies(player);
 	}
 }

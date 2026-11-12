@@ -9,9 +9,9 @@ import me.whereareiam.socialismus.module.chirper.api.AnnouncementBroadcaster;
 import me.whereareiam.socialismus.module.chirper.api.model.announcement.Announcement;
 import me.whereareiam.socialismus.module.chirper.api.model.announcement.AnnouncementContent;
 import me.whereareiam.socialismus.module.chirper.api.type.AnnouncementType;
+import me.whereareiam.socialismus.module.chirper.common.requirement.AnnouncementRequirements;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.Scheduler;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 
 import java.util.Collection;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class BroadcastCoordinator implements AnnouncementBroadcaster {
     private final Scheduler scheduler;
     private final PlayerRegistry playerRegistry;
     private final BroadcastSender broadcastSender;
-    private final RequirementEvaluatorService requirementEvaluator;
+    private final AnnouncementRequirements requirements;
 
 	private final Random random = new Random();
 
@@ -32,7 +32,7 @@ public class BroadcastCoordinator implements AnnouncementBroadcaster {
     public void broadcast(Announcement announcement) {
         Collection<SocialismusPlayer> recipients = playerRegistry.getPlayers();
         recipients = recipients.parallelStream()
-                .filter(r -> requirementEvaluator.check(announcement.getRequirements(), r))
+                .filter(r -> requirements.reaches(announcement, r))
                 .collect(Collectors.toSet());
 
 		if (announcement.getSettings().getDelay() > 0) {
@@ -64,7 +64,7 @@ public class BroadcastCoordinator implements AnnouncementBroadcaster {
 	private void sendAnnouncement(Announcement announcement, Collection<SocialismusPlayer> recipients) {
 		for (SocialismusPlayer recipient : recipients) {
 			for (Map.Entry<AnnouncementType, ? extends AnnouncementContent> entry : announcement.getContents().entrySet())
-				if (requirementEvaluator.check(entry.getValue().getRequirements(), recipient))
+				if (requirements.reaches(announcement, entry.getKey(), recipient))
 					broadcastSender.sendContent(entry.getKey(), entry.getValue(), recipient);
 		}
 	}

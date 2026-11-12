@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.common.chat.worker.base;
 import me.whereareiam.socialismus.common.chat.toggle.InMemoryChatToggleStore;
 import me.whereareiam.socialismus.common.config.defaults.chat.ChatMessagesDefaults;
 import me.whereareiam.socialismus.common.config.defaults.chat.ChatSettingsDefaults;
-import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
@@ -15,6 +14,7 @@ import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.util.EventUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,20 +22,20 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class RecipientSelectorTest {
 	private final ChatSettings settings = new ChatSettingsDefaults().supply(new ChatSettings());
 	private final ChatMessages messages = new ChatMessagesDefaults().supply(new ChatMessages());
 	private final InMemoryChatToggleStore toggles = new InMemoryChatToggleStore();
-	private final RequirementEvaluator evaluator = mock(RequirementEvaluator.class);
+	private final ChatRequirementService requirements = mock(ChatRequirementService.class);
 	private final SocialismusPlayer alice = player("Alice");
 	private final SocialismusPlayer bob = player("Bob");
 	private final SocialismusPlayer carol = player("Carol");
@@ -48,7 +48,8 @@ class RecipientSelectorTest {
 		Logger.init(mock(LoggingHelper.class));
 		EventUtil.initialize(mock(EventManager.class));
 		WorkerProcessor<ChatMessage> processor = mock(WorkerProcessor.class);
-		new RecipientSelector(processor, evaluator, () -> settings, () -> messages, toggles);
+		when(requirements.reaches(any(), any(), any())).thenReturn(true);
+		new RecipientSelector(processor, requirements, () -> settings, () -> messages, toggles);
 		ArgumentCaptor<Worker<ChatMessage>> worker = ArgumentCaptor.forClass(Worker.class);
 		verify(processor).addWorker(worker.capture());
 		selector = worker.getValue().getFunction();
@@ -71,9 +72,16 @@ class RecipientSelectorTest {
 	@Test
 	void aSenderWhoBypassesItReachesThePlayersWhoTurnedItOff() {
 		toggles.setOff(bob.getUniqueId(), "global", true);
-		when(evaluator.check(settings.getToggle().getBypass(), alice)).thenReturn(true);
+		when(requirements.bypassesToggle(alice)).thenReturn(true);
 
 		assertEquals(Set.of(alice, bob, carol), recipientsOf(chat(true)));
+	}
+
+	@Test
+	void keepsAChatFromThePlayersItDoesNotReach() {
+		when(requirements.reaches(any(), eq(carol), any())).thenReturn(false);
+
+		assertEquals(Set.of(alice, bob), recipientsOf(chat(true)));
 	}
 
 	@Test
@@ -100,7 +108,6 @@ class RecipientSelectorTest {
 				.enabled(true)
 				.triggers(List.of())
 				.formats(List.of())
-				.requirements(Map.of())
 				.toggleable(toggleable)
 				.build());
 	}

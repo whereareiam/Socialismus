@@ -8,6 +8,7 @@ dependencies {
     api(projects.socialismusApi)
     api(libs.chassis.api)
     api(libs.chassis.adapter.attache)
+    api(libs.conditia.api)
 }
 
 toolkitPublish {

@@ -8,6 +8,7 @@ group = "me.whereareiam.socialismus"
 dependencies {
     compileOnlyApi(libs.guice)
     compileOnlyApi(libs.annotations)
+    compileOnlyApi(libs.conditia.api)
     compileOnlyApi(libs.configura)
     compileOnlyApi(libs.configura.feature.extension.api)
     compileOnlyApi(libs.configura.feature.postprocess.api)

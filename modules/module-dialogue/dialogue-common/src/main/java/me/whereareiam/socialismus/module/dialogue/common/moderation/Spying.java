@@ -43,7 +43,7 @@ public class Spying implements EventListener {
 		DialogueSettings.Moderation moderation = settings.get().getModeration();
 		if (moderation.isPrivacy() || !moderation.getSpy().isEnabled()) return false;
 
-		return !message.isHiddenFromSpies() && !privileges.meets(moderation.getSpy().getExempt(), recipient);
+		return !message.isHiddenFromSpies() && !privileges.hiddenFromSpies(recipient);
 	}
 
 	/**

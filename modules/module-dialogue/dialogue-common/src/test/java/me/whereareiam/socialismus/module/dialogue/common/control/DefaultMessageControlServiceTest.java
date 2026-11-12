@@ -3,13 +3,13 @@ package me.whereareiam.socialismus.module.dialogue.common.control;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
+import me.whereareiam.socialismus.module.dialogue.common.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.DialogueNotices;
 import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryIgnoreStore;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryPreferencesStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -25,7 +24,6 @@ class DefaultMessageControlServiceTest {
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
 	private final InMemoryPreferencesStore toggles = new InMemoryPreferencesStore();
 	private final InMemoryIgnoreStore ignores = new InMemoryIgnoreStore();
-	private final RequirementEvaluatorService evaluator = mock(RequirementEvaluatorService.class);
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
 	private final DialogueNotices notices = mock(DialogueNotices.class);
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
@@ -38,7 +36,7 @@ class DefaultMessageControlServiceTest {
 		when(playerRegistry.getPlayerData(anyString())).thenReturn(Optional.empty());
 		when(playerRegistry.getPlayerData("bob")).thenReturn(Optional.of(bob));
 		when(playerRegistry.getPlayerData("alice")).thenReturn(Optional.of(alice));
-		service = new DefaultMessageControlService(() -> settings, toggles, ignores, new SenderPrivileges(() -> settings, evaluator), playerRegistry, notices);
+		service = new DefaultMessageControlService(() -> settings, toggles, ignores, new SenderPrivileges(DialogueConditions.bound(settings)), playerRegistry, notices);
 	}
 
 	@Test
@@ -76,8 +74,7 @@ class DefaultMessageControlServiceTest {
 
 	@Test
 	void aPlayerWhoMeetsTheExemptionCannotBeIgnored() {
-		when(evaluator.check(any(), any())).thenReturn(false);
-		when(evaluator.check(settings.getControl().getIgnore().getExempt(), bob)).thenReturn(true);
+		when(bob.hasPermission("socialismus.dialogue.ignore.exempt")).thenReturn(true);
 
 		service.ignore(alice, "bob");
 

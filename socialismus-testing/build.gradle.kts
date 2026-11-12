@@ -21,6 +21,8 @@ dependencies {
     // Socialismus's configuration models, to write a server's files through them.
     anvilImplementation(projects.socialismusApi)
     anvilImplementation(libs.annotations)
+    anvilImplementation(libs.conditia.adapter.configura)
+    anvilImplementation(libs.conditia.api)
     anvilImplementation(libs.configura)
 
     anvilCompileOnly(libs.lombok)

@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.chassis.Extensions;
 import me.whereareiam.chassis.type.ExtensionState;
+import me.whereareiam.conditia.Conditions;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.event.EventListener;
@@ -24,6 +25,7 @@ import me.whereareiam.socialismus.module.dialogue.common.control.IgnoredChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
 import me.whereareiam.socialismus.module.dialogue.common.moderation.Spying;
+import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
 import me.whereareiam.socialismus.module.dialogue.network.DialogueNetwork;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.ResourceRegistry;
@@ -31,7 +33,6 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +66,7 @@ public class Dialogue implements SocialisticModule {
 						parentInjector.getInstance(Scheduler.class),
 						parentInjector.getInstance(CommandService.class),
 						parentInjector.getInstance(PlayerRegistry.class),
-						parentInjector.getInstance(RequirementEvaluatorService.class),
+						parentInjector.getInstance(Conditions.class),
 						parentInjector.getInstance(RequirementReasonService.class),
 						parentInjector.getInstance(SerializationService.class),
 						parentInjector.getInstance(EventManager.class)
@@ -81,6 +82,8 @@ public class Dialogue implements SocialisticModule {
 				MessagingFormats.class,
 				ModerationFormats.class
 		).forEach(injector::getInstance);
+		// A list that cannot be bound stops the module, naming the list.
+		injector.getInstance(DialogueRequirements.class).bind();
 
 		injector.getInstance(CommandRegistrar.class).registerCommands();
 		if (isNetworkEnabled())
@@ -96,10 +99,12 @@ public class Dialogue implements SocialisticModule {
 		}
 		listeners().forEach(eventManager()::unregister);
 		injector.getInstance(Scheduler.class).cancelByModule("dialogue");
+		injector.getInstance(DialogueRequirements.class).close();
 	}
 
 	private List<EventListener> listeners() {
 		return List.of(
+				injector.getInstance(DialogueRequirements.class),
 				injector.getInstance(ConversationModes.class),
 				injector.getInstance(ConversationChat.class),
 				injector.getInstance(IgnoredChat.class),

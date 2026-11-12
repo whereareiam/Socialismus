@@ -1,7 +1,6 @@
 package me.whereareiam.socialismus.testing.chat;
 
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
 import me.whereareiam.socialismus.testing.environment.Socialismus;
 import me.whereareiam.socialismus.testing.journey.Player;
@@ -12,9 +11,13 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.*;
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.content;
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.not;
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.permission;
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.world;
 
 /**
- * Who may send in a chat and who receives it: the requirements a chat sets its sender and its recipients, and what a
+ * Who may send in a chat and who receives it: the {@code requires} and {@code reaches} lists of a chat, and what a
  * sender they refuse is told.
  */
 @Tag("chat")
@@ -22,7 +25,7 @@ class ChatRequirementTest {
 	private static final String NO_CHAT = "No chat takes this message";
 	private static final String NO_PERMISSION = "{chat} is not yours: {permissions}";
 	private static final String OTHER_WORLD = "This stays in {worlds}";
-	private static final String STAFF_ONLY = "Only staff write in staff chat";
+	private static final String NOT_IN_THE_NETHER = "{chat} is closed in {world}";
 
 	@Test
 	@Socialismus(configure = StaffChat.class)
@@ -57,20 +60,19 @@ class ChatRequirementTest {
 	}
 
 	@Test
-	@Socialismus(configure = StaffOnlyChat.class)
-	void theReasonOfARequirementGroupIsToldBeforeAnyOtherWording(ScenarioContext anvil) {
-		Player alice = Player.joins(anvil, "Alice").op();
-		Player bob = Player.joins(anvil, "Bob");
+	@Socialismus(configure = ClosedInTheNetherChat.class)
+	void aNegatedConditionTellsWhyItHeld(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+		Player bob = Player.joins(anvil, "Bob").travelsTo("minecraft:the_nether");
 
-		bob.chat("#let me in");
-		bob.sees(STAFF_ONLY);
-		bob.neverSees("is not yours");
-		alice.neverSees("let me in");
+		bob.chat("hello");
+		bob.sees("surface is closed in world_nether");
+		alice.neverSees("hello");
 	}
 
 	@Test
 	@Socialismus(configure = ReplyChat.class)
-	void previousMessageSelectsTheChat(ScenarioContext anvil) {
+	void theMessageBeingSentSelectsTheChat(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");
 
@@ -83,18 +85,20 @@ class ChatRequirementTest {
 
 	/**
 	 * Without a fallback chat, a message no chat takes gets the no-chat notice, and one its chat refuses why: chat
-	 * words a missing permission itself, and leaves a world to {@code messages.yml}.
+	 * words a missing permission and a world it is closed in itself, and leaves the worlds it is open in to
+	 * {@code messages.yml}.
 	 */
 	private static void noFallback(ServerFiles files) {
 		files.put(CHAT_SETTINGS, Map.of("fallback", Map.of("enabled", false, "chat", "fallback")));
 		files.put(CHAT_MESSAGES, Map.of(
 				"noChatMatch", NO_CHAT,
-				"requirements", Map.of("SENDER", Map.of(
-						"socialismus:permission", Map.of("required", NO_PERMISSION),
-						"socialismus:world", Map.of("required", "")
-				))
+				"requirements", Map.of(
+						"permission.missing", NO_PERMISSION,
+						"world.outside", "",
+						"world.inside", NOT_IN_THE_NETHER
+				)
 		));
-		files.put(MESSAGES, Map.of("requirements", Map.of("socialismus:world", Map.of("required", OTHER_WORLD))));
+		files.put(MESSAGES, Map.of("requirements", Map.of("world.outside", OTHER_WORLD)));
 	}
 
 	/**
@@ -104,28 +108,11 @@ class ChatRequirementTest {
 	static final class StaffChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			RequirementGroup staff = permission("socialismus.chat.staff");
 			files.chats(
 					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
 					chat("staff", 1, "#", 0, "[S] {playerName}: {message}").toBuilder()
-							.requirements(requirements(staff, staff))
-							.build()
-			);
-			noFallback(files);
-		}
-	}
-
-	/**
-	 * Staff chat, whose sender requirements say in their own words who writes there.
-	 */
-	static final class StaffOnlyChat implements Consumer<ServerFiles> {
-		@Override
-		public void accept(ServerFiles files) {
-			RequirementGroup staff = permission("socialismus.chat.staff");
-			files.chats(
-					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
-					chat("staff", 1, "#", 0, "[S] {playerName}: {message}").toBuilder()
-							.requirements(requirements(staff.toBuilder().reason(STAFF_ONLY).build(), staff))
+							.requires(permission("socialismus.chat.staff"))
+							.reaches(permission("socialismus.chat.staff"))
 							.build()
 			);
 			noFallback(files);
@@ -138,16 +125,29 @@ class ChatRequirementTest {
 	static final class OverworldChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			RequirementGroup overworld = world("world");
 			files.chats(chat("overworld", 0, "", 0, "[O] {playerName}: {message}").toBuilder()
-					.requirements(requirements(overworld, overworld))
+					.requires(world("world"))
+					.reaches(world("world"))
 					.build());
 			noFallback(files);
 		}
 	}
 
 	/**
-	 * A message after {@code ping} goes to reply chat; every other one falls back to global chat.
+	 * The only chat is closed in the nether: {@code not: { world: world_nether }}.
+	 */
+	static final class ClosedInTheNetherChat implements Consumer<ServerFiles> {
+		@Override
+		public void accept(ServerFiles files) {
+			files.chats(chat("surface", 0, "", 0, "[S] {playerName}: {message}").toBuilder()
+					.requires(not(world("world_nether")))
+					.build());
+			noFallback(files);
+		}
+	}
+
+	/**
+	 * A message containing {@code pong} goes to reply chat; every other one falls back to global chat.
 	 */
 	static final class ReplyChat implements Consumer<ServerFiles> {
 		@Override
@@ -155,7 +155,7 @@ class ChatRequirementTest {
 			files.chats(
 					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
 					chat("reply", 1, "", 0, "[R] {playerName}: {message}").toBuilder()
-							.requirements(requirements(previousMessage("ping"), null))
+							.requires(content("pong"))
 							.build()
 			);
 			files.put(CHAT_SETTINGS, Map.of("fallback", Map.of("enabled", true, "chat", "global")));

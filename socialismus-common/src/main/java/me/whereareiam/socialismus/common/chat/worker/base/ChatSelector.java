@@ -4,9 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.AllArgsConstructor;
+import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.socialismus.Serializer;
-import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.event.chat.ChatResolvedEvent;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.Worker;
@@ -17,12 +16,11 @@ import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.trigger.RegexChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
-import me.whereareiam.socialismus.model.config.message.RequirementReasons;
 import me.whereareiam.socialismus.model.requirement.RequirementReason;
-import me.whereareiam.socialismus.model.requirement.RequirementResult;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
-import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.util.EventUtil;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -37,7 +35,7 @@ import java.util.Optional;
 @Singleton
 public class ChatSelector {
 	private final ChatContainerService containerService;
-	private final RequirementEvaluator requirementEvaluator;
+	private final ChatRequirementService requirements;
 	private final RequirementReasonService reasonService;
 	private final Provider<ChatMessages> chatMessagesProvider;
 	private final Provider<ChatSettings> chatSettingsProvider;
@@ -48,14 +46,14 @@ public class ChatSelector {
 	@Inject
 	public ChatSelector(
 			ChatContainerService containerService,
-			RequirementEvaluator requirementEvaluator,
+			ChatRequirementService requirements,
 			RequirementReasonService reasonService,
 			Provider<ChatMessages> chatMessages,
 			Provider<ChatSettings> chatSettings,
 			WorkerProcessor<ChatMessage> workerProcessor
 	) {
 		this.containerService = containerService;
-		this.requirementEvaluator = requirementEvaluator;
+		this.requirements = requirements;
 		this.reasonService = reasonService;
 		this.chatMessagesProvider = chatMessages;
 		this.chatSettingsProvider = chatSettings;
@@ -101,8 +99,8 @@ public class ChatSelector {
 		}
 
 		// If nothing or requirements fail → alternative / fallback / notify
-		RequirementResult senderResult = match == null ? null : evaluateSender(match.chat, message);
-		if (match == null || senderResult.isDenied()) {
+		Verdict senderResult = match == null ? null : requirements.writes(match.chat, message);
+		if (match == null || !senderResult.passed()) {
 			ChatMatch alternative = findSameSymbolAlternative(leadingSymbol, match != null ? match.chat : null, message, settings);
 			if (alternative == null) {
 				Fallback fallback = findFallback(message, settings);
@@ -217,12 +215,6 @@ public class ChatSelector {
 		return trigger instanceof RegexChatTrigger;
 	}
 
-	private RequirementResult evaluateSender(InternalChat chat, ChatMessage message) {
-		if (chat.getRequirements() == null) return RequirementResult.passed();
-
-		return requirementEvaluator.evaluate(chat.getRequirements().get(Participants.SENDER), message.getSender());
-	}
-
 	/**
 	 * Finds another chat bound to the same symbol whose sender requirements the sender meets, highest priority first.
 	 */
@@ -235,7 +227,7 @@ public class ChatSelector {
 				.filter(c -> !Objects.equals(c, current))
 				.filter(c -> !Objects.equals(c.getId(), settings.getFallback().getChat()))
 				.sorted(BY_PRIORITY_DESC)
-				.filter(c -> evaluateSender(c, msg).isPassed())
+				.filter(c -> requirements.writes(c, msg).passed())
 				.findFirst()
 				.orElse(null);
 		if (alt == null) return null;
@@ -258,8 +250,8 @@ public class ChatSelector {
 		}
 
 		InternalChat fbChat = fallback.get();
-		RequirementResult result = evaluateSender(fbChat, msg);
-		if (result.isDenied()) return new Fallback(null, fbChat, result, false);
+		Verdict result = requirements.writes(fbChat, msg);
+		if (!result.passed()) return new Fallback(null, fbChat, result, false);
 
 		// Fallback shouldn't strip anything.
 		return new Fallback(new ChatMatch(fbChat, findDefaultSymbolTrigger(fbChat).orElse(null), false), fbChat, result, false);
@@ -273,24 +265,18 @@ public class ChatSelector {
 			ChatMessage message,
 			ChatSettings settings,
 			InternalChat chat,
-			RequirementResult refusal,
+			Verdict refusal,
 			boolean fallbackMissing
 	) {
-		RequirementReason reason = chat == null || refusal == null ? null : reasonService.resolve(
-				refusal,
-				wordingOf(chatMessagesProvider.get()),
-				Map.of("chat", chat.getId())
-		);
-		if (reason != null) {
-			message.getSender().sendMessage(Serializer.serialize(reason.toContent(message.getSender())));
+		Optional<RequirementReason> reason = chat != null && refusal instanceof Verdict.Failed failed
+				? reasonService.resolve(failed, chatMessagesProvider.get().getRequirements(), Map.of("chat", chat.getId()))
+				: Optional.empty();
+		if (reason.isPresent()) {
+			message.getSender().sendMessage(Serializer.serialize(reason.get().toContent(message.getSender())));
 			return;
 		}
 
 		notifyNoMatchOrFallback(message, settings, fallbackMissing);
-	}
-
-	private static Map<String, RequirementReasons> wordingOf(ChatMessages messages) {
-		return messages.getRequirements() == null ? null : messages.getRequirements().get(Participants.SENDER);
 	}
 
 	private void notifyNoMatchOrFallback(ChatMessage message, ChatSettings settings, boolean fallbackMissing) {
@@ -359,7 +345,7 @@ public class ChatSelector {
 	 * What the fallback chat makes of a message: the match when it takes the sender, else whether it is missing, or
 	 * the chat and the result of its sender requirements.
 	 */
-	private record Fallback(ChatMatch match, InternalChat chat, RequirementResult result, boolean missing) {
+	private record Fallback(ChatMatch match, InternalChat chat, Verdict result, boolean missing) {
 		static final Fallback NONE = new Fallback(null, null, null, false);
 		static final Fallback MISSING = new Fallback(null, null, null, true);
 	}

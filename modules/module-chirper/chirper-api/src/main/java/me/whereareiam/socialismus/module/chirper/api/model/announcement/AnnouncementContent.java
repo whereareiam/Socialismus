@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import me.whereareiam.conditia.model.Requirements;
+import me.whereareiam.configura.annotation.merge.Merge;
 import me.whereareiam.configura.feature.polymorphic.api.annotation.Polymorphic;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.configura.type.merge.WhenPresent;
 import me.whereareiam.socialismus.module.chirper.api.model.announcement.variant.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,5 +31,9 @@ import org.jetbrains.annotations.Nullable;
 		defaultTarget = ActionbarAnnouncement.class
 )
 public class AnnouncementContent {
-	private @Nullable RequirementGroup requirements;
+	/**
+	 * What a player must meet to receive this content, checked with the part recipient; everyone when absent.
+	 */
+	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+	private @Nullable Requirements requires;
 }

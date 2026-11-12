@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import me.whereareiam.conditia.exception.ConditionException;
+import me.whereareiam.socialismus.common.chat.requirement.DefaultChatRequirementService;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.base.SocialisticEvent;
@@ -30,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatContainer implements ChatContainerService, EventListener {
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<List<Chat>> chatsProvider;
+	private final DefaultChatRequirementService requirements;
 
 	private final ConcurrentHashMap<String, InternalChat> chats = new ConcurrentHashMap<>();
 
@@ -37,10 +40,12 @@ public class ChatContainer implements ChatContainerService, EventListener {
 	public ChatContainer(
 			@Named("chats") Provider<List<Chat>> chatsProvider,
 			Provider<ChatSettings> chatSettings,
+			DefaultChatRequirementService requirements,
 			EventManager eventManager
 	) {
 		this.chatsProvider = chatsProvider;
 		this.chatSettings = chatSettings;
+		this.requirements = requirements;
 
 		eventManager.register(this);
 	}
@@ -49,6 +54,7 @@ public class ChatContainer implements ChatContainerService, EventListener {
 	 * Replaces the held chats with those of the chats document.
 	 */
 	public void load() {
+		requirements.forgetChats();
 		chats.clear();
 		chatsProvider.get().forEach(this::addChat);
 	}
@@ -65,7 +71,9 @@ public class ChatContainer implements ChatContainerService, EventListener {
 			return;
 		}
 
-		EventUtil.callEvent(new ChatAddedEvent(chat, false), () -> chats.put(chat.getId(), chat));
+		EventUtil.callEvent(new ChatAddedEvent(chat, false), () -> {
+			if (bound(chat)) chats.put(chat.getId(), chat);
+		});
 	}
 
 	@Override
@@ -75,7 +83,9 @@ public class ChatContainer implements ChatContainerService, EventListener {
 
 	@Override
 	public void updateChat(String id, Chat chat) {
-		EventUtil.callEvent(new ChatUpdatedEvent(chats.get(id), chat, false), () -> chats.put(chat.getId(), InternalChat.from(chat)));
+		EventUtil.callEvent(new ChatUpdatedEvent(chats.get(id), chat, false), () -> {
+			if (bound(chat)) chats.put(chat.getId(), InternalChat.from(chat));
+		});
 	}
 
 	@Override
@@ -112,6 +122,19 @@ public class ChatContainer implements ChatContainerService, EventListener {
 	@Override
 	public Set<InternalChat> getChats() {
 		return new HashSet<>(chats.values());
+	}
+
+	// A chat whose requirements cannot be bound is left out, and the console says which list is wrong.
+	private boolean bound(Chat chat) {
+		try {
+			requirements.bind(chat);
+
+			return true;
+		} catch (ConditionException exception) {
+			Logger.severe("Leaving out the chat %s: %s", chat.getId(), exception.getMessage());
+
+			return false;
+		}
 	}
 
 	@SocialisticEvent

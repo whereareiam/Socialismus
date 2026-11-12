@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.module.dialogue.common.delivery;
 
+import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
@@ -7,20 +8,15 @@ import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.requirement.Requirement;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.socialismus.model.requirement.RequirementLists;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueAlert;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
-import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
-import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
+import me.whereareiam.socialismus.module.dialogue.common.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
-import me.whereareiam.socialismus.type.chat.Participants;
-import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
+import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -38,21 +34,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyFloat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class MessageRendererTest {
-	private static final RequirementGroup STAFF = RequirementGroup.builder()
-			.operator(RequirementOperatorType.AND)
-			.groups(Map.of("socialismus:permission", mock(Requirement.class)))
-			.build();
+	private static final Requirements STAFF = RequirementLists.permission("staff");
 
-	private final RequirementEvaluatorService evaluator = mock(RequirementEvaluatorService.class);
 	private final MessagingFormats formats = new MessagingFormats();
 	private final ModerationFormats moderationFormats = new ModerationFormats();
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
 
+	private DialogueRequirements requirements;
 	private MessageRenderer renderer;
 
 	@BeforeEach
@@ -64,24 +56,20 @@ class MessageRendererTest {
 		Serializer.initialize(() -> engine);
 		Logger.init(mock(LoggingHelper.class));
 
-		formats.setSent(List.of(new DialogueFormat("sent", null)));
+		formats.setSent(List.of(format("sent")));
 		formats.setReceived(List.of(
-				new DialogueFormat("plain", null),
-				new DialogueFormat("from staff", Map.of(Participants.SENDER, STAFF)),
-				new DialogueFormat("to staff", Map.of(Participants.RECIPIENT, STAFF))
+				format("plain"),
+				new DialogueFormat("from staff", STAFF, Requirements.none()),
+				new DialogueFormat("to staff", Requirements.none(), STAFF)
 		));
 
-		renderer = new MessageRenderer(
-				() -> formats,
-				() -> moderationFormats,
-				new MessagingRequirements(evaluator, mock(RequirementReasonService.class), TestDataBuilder::defaultSettings, DialogueMessages::new)
-		);
+		requirements = DialogueConditions.bound(TestDataBuilder::defaultSettings, () -> formats, () -> moderationFormats);
+		renderer = new MessageRenderer(() -> formats, () -> moderationFormats, requirements);
 	}
 
 	@Test
 	void takesTheLastFormatWhoseRequirementsAreMet() {
-		when(evaluator.check(eq(STAFF), any())).thenReturn(false);
-		when(evaluator.check(STAFF, alice)).thenReturn(true);
+		when(alice.hasPermission("staff")).thenReturn(true);
 
 		renderer.showReceived(message(), bob);
 
@@ -90,7 +78,8 @@ class MessageRendererTest {
 
 	@Test
 	void readsTheRecipientsRequirements() {
-		when(evaluator.check(eq(STAFF), any())).thenReturn(true);
+		when(alice.hasPermission("staff")).thenReturn(true);
+		when(bob.hasPermission("staff")).thenReturn(true);
 
 		renderer.showReceived(message(), bob);
 
@@ -99,7 +88,6 @@ class MessageRendererTest {
 
 	@Test
 	void fallsBackToAFormatWithoutRequirements() {
-		when(evaluator.check(eq(STAFF), any())).thenReturn(false);
 
 		renderer.showReceived(message(), bob);
 
@@ -108,7 +96,8 @@ class MessageRendererTest {
 
 	@Test
 	void showsNothingWhenNoFormatMatches() {
-		formats.setSent(List.of(new DialogueFormat("to staff", Map.of(Participants.RECIPIENT, STAFF))));
+		formats.setSent(List.of(new DialogueFormat("to staff", Requirements.none(), STAFF)));
+		requirements.bind();
 
 		renderer.showSent(message(), null);
 
@@ -118,7 +107,8 @@ class MessageRendererTest {
 	@Test
 	void showsWhatThePlayerWroteAsWrittenNotAsFormatting() {
 		useMiniMessage();
-		formats.setReceived(List.of(new DialogueFormat("<gray>{senderName}: <white>{message}", null)));
+		formats.setReceived(List.of(format("<gray>{senderName}: <white>{message}")));
+		requirements.bind();
 		String written = "<click:run_command:'/op Alice'>free diamonds</click>";
 
 		renderer.showReceived(TestDataBuilder.messageFrom(alice, "Bob").content(written).build(), bob);
@@ -140,7 +130,8 @@ class MessageRendererTest {
 		DialogueAlert.Title title = new DialogueAlert.Title();
 		title.setTitle("{senderName}");
 		alert.setTitle(title);
-		formats.setReceived(List.of(new DialogueFormat("plain", null, alert)));
+		formats.setReceived(List.of(new DialogueFormat("plain", Requirements.none(), Requirements.none(), alert)));
+		requirements.bind();
 
 		renderer.showReceived(message(), bob);
 
@@ -193,5 +184,9 @@ class MessageRendererTest {
 		verify(player).sendMessage(message.capture());
 
 		return ((TextComponent) message.getValue()).content();
+	}
+
+	private static DialogueFormat format(String text) {
+		return new DialogueFormat(text, Requirements.none(), Requirements.none());
 	}
 }
