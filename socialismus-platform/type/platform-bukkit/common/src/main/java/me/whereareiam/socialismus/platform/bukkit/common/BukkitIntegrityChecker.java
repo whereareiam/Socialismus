@@ -22,7 +22,7 @@ public class BukkitIntegrityChecker {
 	private static boolean checkPaperIntegrity(Logger logger, Version currentVersion) {
 		if (Version.isLowerThan(currentVersion, Version.V_1_20_6)) {
 			logger.severe("You can't use PAPER version of the plugin, because it is made for versions greater than or equal to 1.20.6" +
-					" and your version is " + currentVersion);
+					" and your version is " + currentVersion + "; use the BUKKIT version instead");
 
 			return true; // Problem - version too low
 		}
@@ -34,7 +34,7 @@ public class BukkitIntegrityChecker {
 		if (currentVersion.isAtLeast(Version.V_1_20_6)
 				&& (PlatformType.getType() == PlatformType.FOLIA || PlatformType.getType() == PlatformType.PAPER)) {
 			logger.warning("It seems that you are using a version of the plugin that is not recommended for this platform. " +
-					"Please consider using the PAPER version of the plugin with Java 21+, it will be more stable and performant.");
+					"Please consider using the PAPER version of the plugin, it will be more stable and performant.");
 
 			return false;
 		}

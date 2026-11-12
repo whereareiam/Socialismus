@@ -18,8 +18,8 @@ public final class Versions {
 	public static final String MINECRAFT = System.getProperty("socialismus.journeys.minecraft", "26.3");
 	/** The version of every Velocity proxy. */
 	public static final String VELOCITY = System.getProperty("socialismus.journeys.velocity", "4.3.1");
-	/** The first Minecraft version the PAPER jar and the bundle run on, since the Paper API they use needs Java 25. */
-	public static final String PAPER_JAR = "26.1";
+	/** The first Minecraft version the PAPER jar and the bundle run on, the first whose Paper API they call. */
+	public static final String PAPER_JAR = "1.20.6";
 
 	// The Paper build of each version the journeys run; Anvil fetches it from PaperMC.
 	private static final Map<String, String> PAPER_BUILDS = Map.of(
