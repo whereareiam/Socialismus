@@ -16,11 +16,11 @@ import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.trigger.RegexChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
-import me.whereareiam.socialismus.model.requirement.RequirementReason;
+import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
-import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
+import me.whereareiam.socialismus.service.requirement.RequirementTexts;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.util.EventUtil;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -36,7 +36,7 @@ import java.util.Optional;
 public class ChatSelector {
 	private final ChatContainerService containerService;
 	private final ChatRequirementService requirements;
-	private final RequirementReasonService reasonService;
+	private final RequirementTexts requirementTexts;
 	private final Provider<ChatMessages> chatMessagesProvider;
 	private final Provider<ChatSettings> chatSettingsProvider;
 
@@ -47,14 +47,14 @@ public class ChatSelector {
 	public ChatSelector(
 			ChatContainerService containerService,
 			ChatRequirementService requirements,
-			RequirementReasonService reasonService,
+			RequirementTexts requirementTexts,
 			Provider<ChatMessages> chatMessages,
 			Provider<ChatSettings> chatSettings,
 			WorkerProcessor<ChatMessage> workerProcessor
 	) {
 		this.containerService = containerService;
 		this.requirements = requirements;
-		this.reasonService = reasonService;
+		this.requirementTexts = requirementTexts;
 		this.chatMessagesProvider = chatMessages;
 		this.chatSettingsProvider = chatSettings;
 
@@ -268,8 +268,8 @@ public class ChatSelector {
 			Verdict refusal,
 			boolean fallbackMissing
 	) {
-		Optional<RequirementReason> reason = chat != null && refusal instanceof Verdict.Failed failed
-				? reasonService.resolve(failed, ChatRequirementService.PHRASE_SCOPE, Map.of("chat", chat.getId()))
+		Optional<Phrase> reason = chat != null && refusal instanceof Verdict.Failed failed
+				? requirementTexts.denied(failed, ChatRequirementService.PHRASE_SCOPE, Map.of("chat", chat.getId()))
 				: Optional.empty();
 		if (reason.isPresent()) {
 			message.getSender().sendMessage(Serializer.serialize(reason.get().toContent(message.getSender())));

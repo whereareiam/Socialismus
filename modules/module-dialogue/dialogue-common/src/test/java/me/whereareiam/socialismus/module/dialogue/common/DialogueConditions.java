@@ -13,7 +13,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSetti
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
-import me.whereareiam.socialismus.service.phrase.PhraseService;
+import me.whereareiam.socialismus.service.Phrasebook;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -47,8 +47,8 @@ public final class DialogueConditions {
 	/**
 	 * Phrases of which none exist, so a test whose lists refer to none binds them.
 	 */
-	static PhraseService phrases() {
-		return new PhraseService() {
+	static Phrasebook phrases() {
+		return new Phrasebook() {
 			public @NotNull Optional<String> find(@NotNull String scope, @NotNull String key) {
 				return Optional.empty();
 			}

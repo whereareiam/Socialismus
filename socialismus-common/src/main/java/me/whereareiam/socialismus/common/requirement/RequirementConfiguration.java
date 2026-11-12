@@ -8,9 +8,8 @@ import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.adapter.configura.ConfiguraSettings;
 import me.whereareiam.conditia.common.ConditionsOptions;
 import me.whereareiam.conditia.common.DefaultConditions;
-import me.whereareiam.conditia.model.Wording;
 import me.whereareiam.configura.Configura;
-import me.whereareiam.socialismus.common.phrase.DefaultPhraseService;
+import me.whereareiam.socialismus.common.phrase.DefaultPhrasebook;
 import me.whereareiam.socialismus.common.requirement.type.ChatCondition;
 import me.whereareiam.socialismus.common.requirement.type.ContentCondition;
 import me.whereareiam.socialismus.common.requirement.type.PermissionCondition;
@@ -19,11 +18,11 @@ import me.whereareiam.socialismus.common.requirement.type.ServerCondition;
 import me.whereareiam.socialismus.common.requirement.type.TriggerCondition;
 import me.whereareiam.socialismus.common.requirement.type.WorldCondition;
 import me.whereareiam.socialismus.integration.Integration;
-import me.whereareiam.socialismus.model.requirement.RequirementWording;
-import me.whereareiam.socialismus.service.phrase.PhraseService;
-import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
+import me.whereareiam.socialismus.service.Phrasebook;
+import me.whereareiam.socialismus.service.requirement.RequirementTexts;
 import me.whereareiam.socialismus.type.PlatformType;
 
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -33,8 +32,8 @@ import java.util.Set;
 public final class RequirementConfiguration extends AbstractModule {
 	@Override
 	protected void configure() {
-		bind(RequirementReasonService.class).to(RequirementReasonResolver.class);
-		bind(PhraseService.class).to(DefaultPhraseService.class);
+		bind(RequirementTexts.class).to(DefaultRequirementTexts.class);
+		bind(Phrasebook.class).to(DefaultPhrasebook.class);
 	}
 
 	@Provides
@@ -43,8 +42,7 @@ public final class RequirementConfiguration extends AbstractModule {
 		Conditions conditions = new DefaultConditions(ConditionsOptions.builder()
 				.reader(new ConfiguraSettings(configura.mapper()))
 				.logger(new ConditiaLog())
-				.wording(Wording.onFailure(RequirementWording.DENIED))
-				.wording(Wording.onFailure(RequirementWording.HINT))
+				.wordings(Arrays.stream(RequirementTexts.Word.values()).map(RequirementTexts.Word::wording).toList())
 				.build());
 
 		conditions.register(new PermissionCondition());

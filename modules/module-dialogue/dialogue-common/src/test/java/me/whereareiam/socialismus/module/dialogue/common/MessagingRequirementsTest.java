@@ -4,9 +4,9 @@ import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.RequirementLists;
 import me.whereareiam.socialismus.model.requirement.RequirementParts;
-import me.whereareiam.socialismus.model.requirement.RequirementReason;
+import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
-import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
+import me.whereareiam.socialismus.service.requirement.RequirementTexts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class MessagingRequirementsTest {
-	private final RequirementReasonService reasonService = mock(RequirementReasonService.class);
+	private final RequirementTexts requirementTexts = mock(RequirementTexts.class);
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
@@ -48,8 +48,8 @@ class MessagingRequirementsTest {
 
 	@Test
 	void wordsARefusedRecipientInDialoguesScope() {
-		RequirementReason reason = RequirementReason.of("Bob may not receive", Map.of());
-		when(reasonService.resolve(any(), eq("dialogue"), eq(Map.of("recipientName", "Bob")))).thenReturn(Optional.of(reason));
+		Phrase reason = Phrase.of("Bob may not receive", Map.of());
+		when(requirementTexts.denied(any(), eq("dialogue"), eq(Map.of("recipientName", "Bob")))).thenReturn(Optional.of(reason));
 
 		MessagingRequirements.Verdict verdict = requirements().judge(alice, bob, "Bob");
 
@@ -67,7 +67,7 @@ class MessagingRequirementsTest {
 		Verdict.Failed failed = refusal();
 		assertEquals("messaging.requires[0].permission", failed.path());
 		assertTrue(failed.about(RequirementParts.SENDER));
-		verify(reasonService).resolve(failed, "dialogue", Map.of("recipientName", "Bob"));
+		verify(requirementTexts).denied(failed, "dialogue", Map.of("recipientName", "Bob"));
 		verify(bob, never()).hasPermission("dialogue.receive");
 	}
 
@@ -88,12 +88,12 @@ class MessagingRequirementsTest {
 
 	private Verdict.Failed refusal() {
 		ArgumentCaptor<Verdict.Failed> failed = ArgumentCaptor.forClass(Verdict.Failed.class);
-		verify(reasonService).resolve(failed.capture(), any(), any());
+		verify(requirementTexts).denied(failed.capture(), any(), any());
 
 		return failed.getValue();
 	}
 
 	private MessagingRequirements requirements() {
-		return new MessagingRequirements(DialogueConditions.bound(settings), reasonService);
+		return new MessagingRequirements(DialogueConditions.bound(settings), requirementTexts);
 	}
 }

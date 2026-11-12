@@ -8,7 +8,7 @@ import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
-import me.whereareiam.socialismus.service.phrase.PhraseService;
+import me.whereareiam.socialismus.service.Phrasebook;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -44,7 +44,7 @@ final class DialoguePlaces implements AutoCloseable {
 	 * @throws me.whereareiam.conditia.exception.ConditionException when a list cannot be bound; the places bound
 	 *                                                              before are closed
 	 */
-	static DialoguePlaces bind(Conditions conditions, PhraseService phrases, DialogueSettings settings, Map<String, List<DialogueFormat>> formats) {
+	static DialoguePlaces bind(Conditions conditions, Phrasebook phrases, DialogueSettings settings, Map<String, List<DialogueFormat>> formats) {
 		Binding binding = new Binding(conditions, phrases);
 		try {
 			Requirements reaches = listOf(settings.getMessaging().getReaches());
@@ -97,8 +97,8 @@ final class DialoguePlaces implements AutoCloseable {
 		}
 	}
 
-	private record Binding(Conditions conditions, PhraseService phrases, List<Place> bound) {
-		Binding(Conditions conditions, PhraseService phrases) {
+	private record Binding(Conditions conditions, Phrasebook phrases, List<Place> bound) {
+		Binding(Conditions conditions, Phrasebook phrases) {
 			this(conditions, phrases, new ArrayList<>());
 		}
 

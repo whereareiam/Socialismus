@@ -1,7 +1,8 @@
-package me.whereareiam.socialismus.service.phrase;
+package me.whereareiam.socialismus.service;
 
 import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.exception.ConditionException;
+import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.model.phrase.Phrases;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,8 +13,8 @@ import java.util.function.Supplier;
 
 /**
  * The phrases of {@code phrases.yml} and of the modules' own {@code phrases.yml}: texts other config refers to by
- * key, as {@code <ref:key>}. A key is looked up in a scope first, such as {@code chat} or {@code dialogue}, then
- * without it, in Socialismus's file and then in each module's:
+ * key, as {@code <ref:key>}, and features tell players. A key is looked up in a scope first, such as {@code chat} or
+ * {@code dialogue}, then without it, in Socialismus's file and then in each module's:
  *
  * <pre>{@code
  * # chat/list/staff.yml
@@ -23,10 +24,11 @@ import java.util.function.Supplier;
  * }</pre>
  *
  * <pre>{@code
- * String text = phrases.render("chat", "<ref:staff-only> <gray>Ask a moderator.");
+ * phrasebook.phrase("chat", "slow-down", Map.of("seconds", "3"))
+ *         .ifPresent(phrase -> player.sendMessage(Serializer.serialize(phrase.toContent(player))));
  * }</pre>
  */
-public interface PhraseService {
+public interface Phrasebook {
 	/**
 	 * Finds the text of a key, in the scope first.
 	 *
@@ -35,6 +37,21 @@ public interface PhraseService {
 	 * @return the text as written, its references not yet replaced; empty when no file has it
 	 */
 	@NotNull Optional<String> find(@NotNull String scope, @NotNull String key);
+
+	/**
+	 * The phrase of a key, ready to tell a player: found in the scope first, its references replaced.
+	 *
+	 * @param scope        the scope, such as {@code chat}; empty for none
+	 * @param key          the key, such as {@code slow-down}
+	 * @param placeholders the values of its placeholders, by their key without braces
+	 * @return the phrase, empty when no file has the key or its text is blank
+	 */
+	default @NotNull Optional<Phrase> phrase(@NotNull String scope, @NotNull String key, @NotNull Map<String, String> placeholders) {
+		return find(scope, key)
+				.map(text -> render(scope, text))
+				.filter(text -> !text.isBlank())
+				.map(text -> Phrase.of(text, placeholders));
+	}
 
 	/**
 	 * Replaces every {@code <ref:key>} in a text with the phrase it names, found in the scope, and the references in
@@ -80,8 +97,8 @@ public interface PhraseService {
 
 	/**
 	 * Adds a module's phrases, looked up after Socialismus's own and those added before. A module keeps its keys
-	 * under its id, such as {@code dialogue.denied.permission.missing}, and the defaults of its condition types
-	 * under {@code denied.<type>}, such as {@code denied.essentials:playtime.below}.
+	 * under its id, such as {@code dialogue.denied.sender.permission.missing}, and the defaults of its condition
+	 * types under {@code denied.<type>}, such as {@code denied.essentials:playtime.below}.
 	 *
 	 * @param owner   the module's id
 	 * @param phrases the module's phrases as they are now, read again after each reload

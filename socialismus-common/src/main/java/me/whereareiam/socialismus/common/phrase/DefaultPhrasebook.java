@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.common.config.provider.PhrasesProvider;
 import me.whereareiam.socialismus.model.phrase.Phrases;
-import me.whereareiam.socialismus.service.phrase.PhraseService;
+import me.whereareiam.socialismus.service.Phrasebook;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,14 +22,14 @@ import java.util.regex.Pattern;
  * Looks phrases up in {@code phrases.yml} and then in the modules' files, in the scope first.
  */
 @Singleton
-public class DefaultPhraseService implements PhraseService {
+public class DefaultPhrasebook implements Phrasebook {
 	private static final Pattern REFERENCE = Pattern.compile("<ref:([^<>\\s]+)>");
 
 	private final Supplier<Phrases> core;
 	private final Map<String, Supplier<Phrases>> modules = new LinkedHashMap<>();
 
 	@Inject
-	public DefaultPhraseService(PhrasesProvider core) {
+	public DefaultPhrasebook(PhrasesProvider core) {
 		this(core::get);
 	}
 
@@ -38,7 +38,7 @@ public class DefaultPhraseService implements PhraseService {
 	 *
 	 * @param core the phrases of {@code phrases.yml} as they are now
 	 */
-	public DefaultPhraseService(Supplier<Phrases> core) {
+	public DefaultPhrasebook(Supplier<Phrases> core) {
 		this.core = core;
 	}
 

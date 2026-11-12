@@ -7,8 +7,8 @@ import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
-import me.whereareiam.socialismus.common.phrase.DefaultPhraseService;
-import me.whereareiam.socialismus.common.requirement.RequirementReasonResolver;
+import me.whereareiam.socialismus.common.phrase.DefaultPhrasebook;
+import me.whereareiam.socialismus.common.requirement.DefaultRequirementTexts;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
@@ -174,7 +174,7 @@ class ChatSelectorTest {
 		return new ChatSelector(
 				containerService,
 				requirements,
-				new RequirementReasonResolver(new DefaultPhraseService(() -> phrases)),
+				new DefaultRequirementTexts(new DefaultPhrasebook(() -> phrases)),
 				() -> messages,
 				() -> settings,
 				new ChatMessageProcessor()
@@ -240,7 +240,7 @@ class ChatSelectorTest {
 		return new ChatSelector(
 				containerService,
 				requirements,
-				new RequirementReasonResolver(new DefaultPhraseService(Phrases::none)),
+				new DefaultRequirementTexts(new DefaultPhrasebook(Phrases::none)),
 				() -> messages,
 				() -> settings,
 				new ChatMessageProcessor()

@@ -19,7 +19,7 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.service.chat.ChatRequirementService;
-import me.whereareiam.socialismus.service.phrase.PhraseService;
+import me.whereareiam.socialismus.service.Phrasebook;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -41,7 +41,7 @@ import static me.whereareiam.socialismus.model.requirement.RequirementParts.VIEW
 @Singleton
 public class DefaultChatRequirementService implements ChatRequirementService, EventListener {
 	private final Conditions conditions;
-	private final PhraseService phrases;
+	private final Phrasebook phrases;
 	private final Provider<ChatSettings> chatSettings;
 
 	private final Map<String, ChatPlaces> chats = new ConcurrentHashMap<>();
@@ -52,7 +52,7 @@ public class DefaultChatRequirementService implements ChatRequirementService, Ev
 	@Inject
 	public DefaultChatRequirementService(
 			@NotNull Conditions conditions,
-			@NotNull PhraseService phrases,
+			@NotNull Phrasebook phrases,
 			@NotNull Provider<ChatSettings> chatSettings,
 			@NotNull EventManager eventManager
 	) {

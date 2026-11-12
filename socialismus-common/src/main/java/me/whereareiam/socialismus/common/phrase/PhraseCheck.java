@@ -6,7 +6,7 @@ import me.whereareiam.conditia.ConditionType;
 import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.result.Reason;
 import me.whereareiam.socialismus.logging.Logger;
-import me.whereareiam.socialismus.model.requirement.RequirementWording;
+import me.whereareiam.socialismus.service.requirement.RequirementTexts;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public final class PhraseCheck {
 	private final Conditions conditions;
-	private final DefaultPhraseService phrases;
+	private final DefaultPhrasebook phrasebook;
 
 	/**
 	 * Logs what is missing.
@@ -27,13 +27,13 @@ public final class PhraseCheck {
 	public void run() {
 		for (Map.Entry<String, ConditionType<?>> type : conditions.types().entrySet()) {
 			for (Class<? extends Reason> reason : type.getValue().reasons()) {
-				String key = RequirementWording.DENIED + "." + Reason.key(type.getKey(), reason);
-				if (phrases.find("", key).isEmpty())
+				String key = RequirementTexts.Word.DENIED.word() + "." + Reason.key(type.getKey(), reason);
+				if (phrasebook.find("", key).isEmpty())
 					Logger.warn("No phrase is named %s, so players denied for it are told the generic notice", key);
 			}
 		}
 
-		for (Map.Entry<String, List<String>> problem : phrases.unresolved().entrySet())
+		for (Map.Entry<String, List<String>> problem : phrasebook.unresolved().entrySet())
 			Logger.warn("The phrase %s refers to %s, which no phrases file has", problem.getKey(), String.join(", ", problem.getValue()));
 	}
 }
