@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.module.bubbler.common.animation.type.queue;
 
-import com.github.retrooper.packetevents.PacketEvents;
+import me.whereareiam.socialismus.module.bubbler.common.BubbleUsers;
 import com.github.retrooper.packetevents.protocol.player.User;
 import lombok.NonNull;
 import me.whereareiam.socialismus.event.EventManager;
@@ -63,9 +63,7 @@ public abstract class AbstractQueuedAnimation extends BubbleAnimation {
 	}
 
 	protected User user(SocialismusPlayer player) {
-		return PacketEvents.getAPI()
-				.getPlayerManager()
-				.getUser(player.getAudience());
+		return BubbleUsers.of(player);
 	}
 
 	protected Collection<User> users(Collection<SocialismusPlayer> players) {

@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.module.bubbler.common.renderer.strategy;
 
-import com.github.retrooper.packetevents.PacketEvents;
+import me.whereareiam.socialismus.module.bubbler.common.BubbleUsers;
 import com.github.retrooper.packetevents.protocol.player.User;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
@@ -88,9 +88,7 @@ public class ArmorStandRenderStrategy implements RenderStrategy {
 		List<RenderedLine> lines = new ArrayList<>();
 		List<BubbleLine> bubbleLines = group.getLines();
 
-		int vehicleId = PacketEvents.getAPI()
-				.getPlayerManager()
-				.getUser(sender.getAudience())
+		int vehicleId = BubbleUsers.of(sender)
 				.getEntityId();
 
 		// Create chain: Player -> Line0 -> Line1 -> Line2...
@@ -167,9 +165,7 @@ public class ArmorStandRenderStrategy implements RenderStrategy {
 		if (lines.isEmpty())
 			return;
 
-		int vehicleId = PacketEvents.getAPI()
-				.getPlayerManager()
-				.getUser(sender.getAudience())
+		int vehicleId = BubbleUsers.of(sender)
 				.getEntityId();
 
 		// Attach ONLY the armor stand of the newest line to player (keeps it near head)
@@ -232,9 +228,7 @@ public class ArmorStandRenderStrategy implements RenderStrategy {
 			List<RenderedLine> existingLines,
 			Collection<User> recipients
 	) {
-		int vehicleId = com.github.retrooper.packetevents.PacketEvents.getAPI()
-				.getPlayerManager()
-				.getUser(sender.getAudience())
+		int vehicleId = BubbleUsers.of(sender)
 				.getEntityId();
 
 		// Always attach the armor stand of the newest line directly to player
