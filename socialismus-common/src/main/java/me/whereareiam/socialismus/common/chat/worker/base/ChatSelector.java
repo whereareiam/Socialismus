@@ -269,7 +269,7 @@ public class ChatSelector {
 			boolean fallbackMissing
 	) {
 		Optional<RequirementReason> reason = chat != null && refusal instanceof Verdict.Failed failed
-				? reasonService.resolve(failed, chatMessagesProvider.get().getRequirements(), Map.of("chat", chat.getId()))
+				? reasonService.resolve(failed, ChatRequirementService.PHRASE_SCOPE, Map.of("chat", chat.getId()))
 				: Optional.empty();
 		if (reason.isPresent()) {
 			message.getSender().sendMessage(Serializer.serialize(reason.get().toContent(message.getSender())));

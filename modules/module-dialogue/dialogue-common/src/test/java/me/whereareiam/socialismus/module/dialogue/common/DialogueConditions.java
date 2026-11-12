@@ -7,14 +7,17 @@ import me.whereareiam.conditia.common.DefaultConditions;
 import me.whereareiam.conditia.result.Outcome;
 import me.whereareiam.conditia.result.Reason;
 import me.whereareiam.conditia.testing.TestSettings;
+import me.whereareiam.socialismus.model.phrase.Phrases;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
+import me.whereareiam.socialismus.service.phrase.PhraseService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -35,10 +38,35 @@ public final class DialogueConditions {
 			Supplier<MessagingFormats> formats,
 			Supplier<ModerationFormats> moderation
 	) {
-		DialogueRequirements requirements = new DialogueRequirements(conditions(), settings::get, formats::get, moderation::get);
+		DialogueRequirements requirements = new DialogueRequirements(conditions(), phrases(), settings::get, formats::get, moderation::get);
 		requirements.bind();
 
 		return requirements;
+	}
+
+	/**
+	 * Phrases of which none exist, so a test whose lists refer to none binds them.
+	 */
+	static PhraseService phrases() {
+		return new PhraseService() {
+			public @NotNull Optional<String> find(@NotNull String scope, @NotNull String key) {
+				return Optional.empty();
+			}
+
+			public @NotNull String render(@NotNull String scope, @NotNull String text) {
+				return text;
+			}
+
+			public @NotNull List<String> unresolved(@NotNull String scope, @NotNull String text) {
+				return List.of();
+			}
+
+			public void add(@NotNull String owner, @NotNull Supplier<Phrases> phrases) {
+			}
+
+			public void remove(@NotNull String owner) {
+			}
+		};
 	}
 
 	static Conditions conditions() {

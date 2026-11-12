@@ -17,6 +17,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
+import me.whereareiam.socialismus.service.phrase.PhraseService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +35,13 @@ import static me.whereareiam.socialismus.model.requirement.RequirementParts.SEND
  */
 @Singleton
 public class DialogueRequirements implements EventListener {
+	/**
+	 * The scope of the phrases Dialogue tells, such as {@code dialogue.denied.sender.permission.missing}.
+	 */
+	public static final String PHRASE_SCOPE = "dialogue";
+
 	private final Conditions conditions;
+	private final PhraseService phrases;
 	private final Provider<DialogueSettings> settings;
 	private final Provider<MessagingFormats> messagingFormats;
 	private final Provider<ModerationFormats> moderationFormats;
@@ -43,11 +50,13 @@ public class DialogueRequirements implements EventListener {
 	@Inject
 	public DialogueRequirements(
 			@NotNull Conditions conditions,
+			@NotNull PhraseService phrases,
 			@NotNull Provider<DialogueSettings> settings,
 			@NotNull Provider<MessagingFormats> messagingFormats,
 			@NotNull Provider<ModerationFormats> moderationFormats
 	) {
 		this.conditions = conditions;
+		this.phrases = phrases;
 		this.settings = settings;
 		this.messagingFormats = messagingFormats;
 		this.moderationFormats = moderationFormats;
@@ -56,7 +65,8 @@ public class DialogueRequirements implements EventListener {
 	/**
 	 * Binds the places of the settings and the formats, replacing those bound before.
 	 *
-	 * @throws ConditionException when a list cannot be bound; it names the list's path, and the previous places stay
+	 * @throws ConditionException when a list cannot be bound or refers to a phrase no file has; it names the path,
+	 *                            and the previous places stay
 	 */
 	public synchronized void bind() {
 		Map<String, List<DialogueFormat>> formats = new LinkedHashMap<>();
@@ -65,7 +75,7 @@ public class DialogueRequirements implements EventListener {
 		formats.put("formats.moderation.spy", moderationFormats.get().getSpy());
 
 		DialoguePlaces previous = places;
-		places = DialoguePlaces.bind(conditions, settings.get(), formats);
+		places = DialoguePlaces.bind(conditions, phrases, settings.get(), formats);
 		if (previous != null) previous.close();
 	}
 

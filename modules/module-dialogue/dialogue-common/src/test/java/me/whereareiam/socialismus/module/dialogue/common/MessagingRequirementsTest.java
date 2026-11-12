@@ -5,11 +5,8 @@ import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.RequirementLists;
 import me.whereareiam.socialismus.model.requirement.RequirementParts;
 import me.whereareiam.socialismus.model.requirement.RequirementReason;
-import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
-import me.whereareiam.socialismus.module.dialogue.common.config.defaults.DialogueMessagesDefaults;
 import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
-import me.whereareiam.socialismus.type.chat.Participants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -33,7 +30,6 @@ class MessagingRequirementsTest {
 	private final RequirementReasonService reasonService = mock(RequirementReasonService.class);
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
-	private final DialogueMessages messages = new DialogueMessagesDefaults().supply(new DialogueMessages());
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
 
 	@BeforeEach
@@ -51,9 +47,9 @@ class MessagingRequirementsTest {
 	}
 
 	@Test
-	void wordsARefusedRecipientWithTheRecipientsWording() {
+	void wordsARefusedRecipientInDialoguesScope() {
 		RequirementReason reason = RequirementReason.of("Bob may not receive", Map.of());
-		when(reasonService.resolve(any(), eq(wording(Participants.RECIPIENT)), eq(Map.of("recipientName", "Bob")))).thenReturn(Optional.of(reason));
+		when(reasonService.resolve(any(), eq("dialogue"), eq(Map.of("recipientName", "Bob")))).thenReturn(Optional.of(reason));
 
 		MessagingRequirements.Verdict verdict = requirements().judge(alice, bob, "Bob");
 
@@ -63,7 +59,7 @@ class MessagingRequirementsTest {
 	}
 
 	@Test
-	void judgesTheSenderBeforeTheRecipientWithTheSendersWording() {
+	void judgesTheSenderBeforeTheRecipient() {
 		when(alice.hasPermission("dialogue.send")).thenReturn(false);
 
 		assertFalse(requirements().judge(alice, bob, "Bob").allowed());
@@ -71,7 +67,7 @@ class MessagingRequirementsTest {
 		Verdict.Failed failed = refusal();
 		assertEquals("messaging.requires[0].permission", failed.path());
 		assertTrue(failed.about(RequirementParts.SENDER));
-		verify(reasonService).resolve(failed, wording(Participants.SENDER), Map.of("recipientName", "Bob"));
+		verify(reasonService).resolve(failed, "dialogue", Map.of("recipientName", "Bob"));
 		verify(bob, never()).hasPermission("dialogue.receive");
 	}
 
@@ -90,10 +86,6 @@ class MessagingRequirementsTest {
 		assertTrue(requirements().judge(alice, null, "Bob").allowed());
 	}
 
-	private Map<String, String> wording(Participants participant) {
-		return messages.getMessaging().getRequirements().get(participant);
-	}
-
 	private Verdict.Failed refusal() {
 		ArgumentCaptor<Verdict.Failed> failed = ArgumentCaptor.forClass(Verdict.Failed.class);
 		verify(reasonService).resolve(failed.capture(), any(), any());
@@ -102,6 +94,6 @@ class MessagingRequirementsTest {
 	}
 
 	private MessagingRequirements requirements() {
-		return new MessagingRequirements(DialogueConditions.bound(settings), reasonService, () -> messages);
+		return new MessagingRequirements(DialogueConditions.bound(settings), reasonService);
 	}
 }

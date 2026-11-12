@@ -48,7 +48,7 @@ class MessagingRequirementsTest {
 
 	@Test
 	@Socialismus(modules = Module.DIALOGUE, configure = NetherSenders.class)
-	void senderIsToldWhyTheyMayNotWriteInTheWordingOfDialoguesMessages(ScenarioContext anvil) {
+	void senderIsToldWhyTheyMayNotWriteInTheWordingOfDialoguesPhrases(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");
 
@@ -98,15 +98,15 @@ class MessagingRequirementsTest {
 	}
 
 	/**
-	 * Only players in the nether write private messages, and Dialogue's messages word that in their own way.
+	 * Only players in the nether write private messages, and Dialogue's phrases word that in their own way.
 	 */
 	static final class NetherSenders implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
 			files.put(DialogueFiles.SETTINGS, Map.of("messaging", Map.of(
 					"requires", world("world_nether"))));
-			files.put(DialogueFiles.MESSAGES, Map.of("messaging", Map.of("requirements", Map.of(
-					"SENDER", Map.of("world.outside", "Private messages stay in {worlds}")))));
+			files.put(DialogueFiles.PHRASES, Map.of("dialogue", Map.of("denied", Map.of(
+					"sender", Map.of("world.outside", "Private messages stay in {worlds}")))));
 		}
 	}
 
@@ -117,11 +117,10 @@ class MessagingRequirementsTest {
 		@Override
 		public void accept(ServerFiles files) {
 			new StaffOnlyRecipients().accept(files);
-			files.put(DialogueFiles.MESSAGES, Map.of("messaging", Map.of(
-					"notAllowed", "You may not write to {recipientName}",
-					"requirements", Map.of("RECIPIENT", Map.of("permission.missing", ""))
-			)));
-			files.put(ServerFiles.MESSAGES, Map.of("requirements", Map.of("permission.missing", "")));
+			files.put(DialogueFiles.MESSAGES, Map.of("messaging", Map.of("notAllowed", "You may not write to {recipientName}")));
+			files.put(DialogueFiles.PHRASES, Map.of("dialogue", Map.of("denied", Map.of(
+					"recipient", Map.of("permission.missing", "")))));
+			files.put(ServerFiles.PHRASES, Map.of("denied", Map.of("permission.missing", "")));
 		}
 	}
 }

@@ -11,6 +11,7 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
+import me.whereareiam.socialismus.service.phrase.PhraseService;
 import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 	private final PlayerRegistry playerRegistry;
 	private final Conditions conditions;
 	private final RequirementReasonService requirementReasons;
+	private final PhraseService phrases;
 	private final SerializationService serializationService;
 	private final EventManager eventManager;
 
@@ -34,6 +36,7 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 		bind(PlayerRegistry.class).toInstance(playerRegistry);
 		bind(Conditions.class).toInstance(conditions);
 		bind(RequirementReasonService.class).toInstance(requirementReasons);
+		bind(PhraseService.class).toInstance(phrases);
 		bind(SerializationService.class).toInstance(serializationService);
 		bind(EventManager.class).toInstance(eventManager);
 	}

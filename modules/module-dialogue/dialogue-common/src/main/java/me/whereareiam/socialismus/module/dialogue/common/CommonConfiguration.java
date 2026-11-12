@@ -18,6 +18,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingForm
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.common.config.provider.DialogueCommandsProvider;
 import me.whereareiam.socialismus.module.dialogue.common.config.provider.DialogueMessagesProvider;
+import me.whereareiam.socialismus.module.dialogue.common.config.provider.DialoguePhrasesProvider;
 import me.whereareiam.socialismus.module.dialogue.common.config.provider.DialogueSettingsProvider;
 import me.whereareiam.socialismus.module.dialogue.common.config.provider.MessagingFormatsProvider;
 import me.whereareiam.socialismus.module.dialogue.common.config.provider.ModerationFormatsProvider;
@@ -40,6 +41,8 @@ public class CommonConfiguration extends AbstractModule {
 		// Configuration
 		bind(DialogueSettingsProvider.class).asEagerSingleton();
 		bind(DialogueSettings.class).toProvider(DialogueSettingsProvider.class);
+
+		bind(DialoguePhrasesProvider.class).asEagerSingleton();
 
 		bind(DialogueMessagesProvider.class).asEagerSingleton();
 		bind(DialogueMessages.class).toProvider(DialogueMessagesProvider.class);

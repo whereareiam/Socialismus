@@ -19,6 +19,7 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.service.chat.ChatRequirementService;
+import me.whereareiam.socialismus.service.phrase.PhraseService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -40,6 +41,7 @@ import static me.whereareiam.socialismus.model.requirement.RequirementParts.VIEW
 @Singleton
 public class DefaultChatRequirementService implements ChatRequirementService, EventListener {
 	private final Conditions conditions;
+	private final PhraseService phrases;
 	private final Provider<ChatSettings> chatSettings;
 
 	private final Map<String, ChatPlaces> chats = new ConcurrentHashMap<>();
@@ -50,10 +52,12 @@ public class DefaultChatRequirementService implements ChatRequirementService, Ev
 	@Inject
 	public DefaultChatRequirementService(
 			@NotNull Conditions conditions,
+			@NotNull PhraseService phrases,
 			@NotNull Provider<ChatSettings> chatSettings,
 			@NotNull EventManager eventManager
 	) {
 		this.conditions = conditions;
+		this.phrases = phrases;
 		this.chatSettings = chatSettings;
 
 		eventManager.register(this);
@@ -66,7 +70,7 @@ public class DefaultChatRequirementService implements ChatRequirementService, Ev
 	 */
 	public synchronized void start() {
 		settings = SettingsPlaces.bind(conditions, chatSettings.get());
-		for (Chat chat : waiting.values()) replace(chat.getId(), ChatPlaces.bind(conditions, chat));
+		for (Chat chat : waiting.values()) replace(chat.getId(), ChatPlaces.bind(conditions, phrases, chat));
 
 		waiting.clear();
 		started = true;
@@ -95,7 +99,7 @@ public class DefaultChatRequirementService implements ChatRequirementService, Ev
 			return;
 		}
 
-		replace(chat.getId(), ChatPlaces.bind(conditions, chat));
+		replace(chat.getId(), ChatPlaces.bind(conditions, phrases, chat));
 	}
 
 	/**

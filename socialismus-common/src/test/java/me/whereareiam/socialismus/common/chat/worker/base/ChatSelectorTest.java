@@ -7,6 +7,7 @@ import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
+import me.whereareiam.socialismus.common.phrase.DefaultPhraseService;
 import me.whereareiam.socialismus.common.requirement.RequirementReasonResolver;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.logging.Logger;
@@ -17,7 +18,7 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
-import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.model.phrase.Phrases;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.RequirementParts;
 import me.whereareiam.socialismus.service.chat.ChatRequirementService;
@@ -164,17 +165,16 @@ class ChatSelectorTest {
 
 		ChatMessages messages = new ChatMessages();
 		messages.setNoChatMatch(NO_CHAT);
-		messages.setRequirements(Map.of(
-				"staff.refusal", "Only staff write in {chat} chat.",
-				"overworld.refusal", "{chat} chat only works in the overworld."
-		));
-		Messages core = new Messages();
-		core.setRequirements(Map.of());
+		Phrases phrases = Phrases.builder()
+				.section("chat", scope -> scope.section("denied", denied -> denied
+						.text("staff.refusal", "Only staff write in {chat} chat.")
+						.text("overworld.refusal", "{chat} chat only works in the overworld.")))
+				.build();
 
 		return new ChatSelector(
 				containerService,
 				requirements,
-				new RequirementReasonResolver(() -> core),
+				new RequirementReasonResolver(new DefaultPhraseService(() -> phrases)),
 				() -> messages,
 				() -> settings,
 				new ChatMessageProcessor()
@@ -240,7 +240,7 @@ class ChatSelectorTest {
 		return new ChatSelector(
 				containerService,
 				requirements,
-				new RequirementReasonResolver(Messages::new),
+				new RequirementReasonResolver(new DefaultPhraseService(Phrases::none)),
 				() -> messages,
 				() -> settings,
 				new ChatMessageProcessor()

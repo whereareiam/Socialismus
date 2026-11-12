@@ -21,6 +21,11 @@ import java.util.Optional;
  */
 public interface ChatRequirementService {
 	/**
+	 * The scope of the phrases chats tell, such as {@code chat.denied.world.outside} or {@code chat.staff-only}.
+	 */
+	String PHRASE_SCOPE = "chat";
+
+	/**
 	 * Checks whether the sender of a message may write in a chat: the chat's {@code requires}.
 	 *
 	 * @param chat    the chat

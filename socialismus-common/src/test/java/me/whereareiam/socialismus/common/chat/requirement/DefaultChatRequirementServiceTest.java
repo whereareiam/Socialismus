@@ -12,6 +12,7 @@ import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.configura.Config;
 import me.whereareiam.configura.type.Format;
 import me.whereareiam.socialismus.common.config.defaults.chat.ChatSettingsDefaults;
+import me.whereareiam.socialismus.common.phrase.DefaultPhraseService;
 import me.whereareiam.socialismus.common.requirement.RequirementConfiguration;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
@@ -21,6 +22,7 @@ import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.model.phrase.Phrases;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.RequirementLists;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +46,7 @@ class DefaultChatRequirementServiceTest {
 	private final SocialismusPlayer bob = mock(SocialismusPlayer.class);
 	private final ChatSettings settings = new ChatSettingsDefaults().supply(new ChatSettings());
 
+	private Phrases phrases = Phrases.none();
 	private Conditions conditions;
 	private DefaultChatRequirementService requirements;
 
@@ -54,7 +57,7 @@ class DefaultChatRequirementServiceTest {
 				Config.builder().format(Format.YAML).feature(new ConditiaFeature()).build(),
 				Set::of
 		);
-		requirements = new DefaultChatRequirementService(conditions, () -> settings, mock(EventManager.class));
+		requirements = new DefaultChatRequirementService(conditions, new DefaultPhraseService(() -> phrases), () -> settings, mock(EventManager.class));
 		when(alice.hasPermission("socialismus.chat.local")).thenReturn(true);
 	}
 

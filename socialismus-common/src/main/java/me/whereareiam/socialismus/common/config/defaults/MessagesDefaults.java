@@ -8,7 +8,6 @@ import me.whereareiam.socialismus.model.config.message.HelpMessages;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import me.whereareiam.socialismus.model.config.message.PaginationMessages;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,18 +97,6 @@ public class MessagesDefaults implements DefaultsProvider<Messages> {
 		commandMessages.setClearCommand(clearCommand);
 
 		messages.setCommands(commandMessages);
-
-		// Kept in this order in the file.
-		Map<String, String> requirements = new LinkedHashMap<>();
-		requirements.put("permission.missing", "{prefix}<white>You need the permission <gray>{permissions}</gray> for this.</white>");
-		requirements.put("permission.held", "{prefix}<white>This is not for players with <gray>{permissions}</gray>.</white>");
-		requirements.put("world.outside", "{prefix}<white>This only works in <gray>{worlds}</gray>.</white>");
-		requirements.put("world.inside", "{prefix}<white>This does not work in <gray>{world}</gray>.</white>");
-		requirements.put("server.outside", "{prefix}<white>This only works on <gray>{servers}</gray>.</white>");
-		requirements.put("server.inside", "{prefix}<white>This does not work on <gray>{server}</gray>.</white>");
-		requirements.put("chat.outside", "{prefix}<white>This only works in <gray>{chats}</gray> chat.</white>");
-		requirements.put("chat.inside", "{prefix}<white>This does not work in <gray>{chat}</gray> chat.</white>");
-		messages.setRequirements(requirements);
 
 		return messages;
 	}

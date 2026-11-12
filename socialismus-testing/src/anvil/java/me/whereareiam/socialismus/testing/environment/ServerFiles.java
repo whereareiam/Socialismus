@@ -42,8 +42,10 @@ public final class ServerFiles {
 	public static final String CHAT_SETTINGS = "chat/settings.yml";
 	/** The messages of chat, such as the notice that no chat matched. */
 	public static final String CHAT_MESSAGES = "chat/messages.yml";
-	/** The messages of Socialismus itself, such as the reasons its requirements tell a player. */
+	/** The messages of Socialismus itself, such as the notices of its commands. */
 	public static final String MESSAGES = "messages.yml";
+	/** The phrases of Socialismus, such as what a player denied by a requirement is told. */
+	public static final String PHRASES = "phrases.yml";
 
 	// The documents journeys write hold no Adventure types, so plain YAML writes them as Socialismus does, with the
 	// requires: lists of Conditia.
@@ -192,6 +194,18 @@ public final class ServerFiles {
 	@NotNull
 	public static Requirements not(@NotNull Requirements requires) {
 		return Requirements.of(new Node.Sequence(List.of(Node.Mapping.of("not", requires.getConditions()))));
+	}
+
+	/**
+	 * Returns a list whose one line carries texts beside its condition, such as {@code denied} and {@code hint}.
+	 */
+	@NotNull
+	public static Requirements worded(@NotNull Requirements line, @NotNull Map<String, String> wording) {
+		Node.Mapping condition = (Node.Mapping) ((Node.Sequence) line.getConditions()).items().getFirst();
+		LinkedHashMap<String, Node> entries = new LinkedHashMap<>(condition.entries());
+		wording.forEach((word, text) -> entries.put(word, new Node.Scalar(text)));
+
+		return Requirements.of(new Node.Sequence(List.of(new Node.Mapping(entries))));
 	}
 
 	/**
