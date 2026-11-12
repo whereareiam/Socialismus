@@ -225,12 +225,13 @@ public class DefaultCommandService implements CommandService, RuntimeLifecycle {
 
 	private void registerSyntaxFormatter(@NotNull CommandManager<Actor> commandManager) {
 		Messages messages = messagesProvider.get();
-		if (messages == null || messages.getCommands() == null || messages.getCommands().getHelp() == null) return;
+		if (messages == null || messages.getCommands() == null || messages.getCommands().getFormat() == null) return;
 
 		commandManager.commandSyntaxFormatter(new CommandantSyntaxFormatter<>(
 				commandManager,
 				collectArgumentDescriptions(),
-				messages.getCommands().getHelp().getArgumentFormat(),
+				messages.getCommands().getFormat().getArgument(),
+				messages.getCommands().getFormat().getOptionalArgument(),
 				serializer.get().getPlaceholderFormat()
 		));
 	}

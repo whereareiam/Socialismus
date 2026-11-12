@@ -27,12 +27,32 @@ This is mainly relevant on Paper-side setups where the underlying Cloud command 
 - Current default: `true`
 - Affects: whether asynchronous command completions are registered when the current command manager supports them
 
+### help.commandsPerPage
+
+- Takes: a whole number, at least `1`
+- Current default: `7`
+- Affects: how many commands one page of `/socialismus help` lists
+
+### pagination
+
+`pagination` decides when the page line under `/socialismus help` and its arrows are shown. Its texts stay in `messages.yml`, under `commands.pagination`.
+
+- `showIfOnePage`: whether the page line is shown when all commands fit on one page; default `false`
+- `showPreviousOnFirst`: whether the previous arrow is shown on the first page, where it opens the first page again; default `false`
+- `showNextOnLast`: whether the next arrow is shown on the last page, where it opens the last page again; default `false`
+
 <Tabs items={["YAML", "JSON"]}>
   <Tab value="YAML">
 ```yaml
 behavior:
   useBrigadier: false
   useAsyncCompletions: true
+  help:
+    commandsPerPage: 7
+  pagination:
+    showIfOnePage: false
+    showPreviousOnFirst: false
+    showNextOnLast: false
 ```
   </Tab>
   <Tab value="JSON">
@@ -40,7 +60,15 @@ behavior:
 {
   "behavior": {
     "useBrigadier": false,
-    "useAsyncCompletions": true
+    "useAsyncCompletions": true,
+    "help": {
+      "commandsPerPage": 7
+    },
+    "pagination": {
+      "showIfOnePage": false,
+      "showPreviousOnFirst": false,
+      "showNextOnLast": false
+    }
   }
 }
 ```

@@ -15,6 +15,16 @@ public class CommandsDefaults implements DefaultsProvider<Commands> {
 		Commands.Behavior behavior = new Commands.Behavior();
 		behavior.setUseBrigadier(false);
 		behavior.setUseAsyncCompletions(true);
+
+		Commands.Behavior.Help helpBehavior = new Commands.Behavior.Help();
+		helpBehavior.setCommandsPerPage(7);
+		behavior.setHelp(helpBehavior);
+
+		Commands.Behavior.Pagination pagination = new Commands.Behavior.Pagination();
+		pagination.setShowIfOnePage(false);
+		pagination.setShowPreviousOnFirst(false);
+		pagination.setShowNextOnLast(false);
+		behavior.setPagination(pagination);
 		commands.setBehavior(behavior);
 
 		CommandDefinition main = CommandDefinition.builder()

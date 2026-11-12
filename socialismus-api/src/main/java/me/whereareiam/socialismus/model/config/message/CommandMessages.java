@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import me.whereareiam.commandant.model.message.ExceptionMessages;
-import me.whereareiam.commandant.model.message.HelpMessages;
-import me.whereareiam.commandant.model.message.PaginationMessages;
 
 import java.util.List;
 import java.util.Map;
@@ -45,12 +43,12 @@ public class CommandMessages {
 	private Format format;
 
 	/**
-	 * Pagination configuration from Commandant.
+	 * Texts of the help's page line.
 	 */
 	private PaginationMessages pagination;
 
 	/**
-	 * Help command formatting configuration from Commandant.
+	 * Texts of the help command.
 	 */
 	private HelpMessages help;
 
