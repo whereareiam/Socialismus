@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.testing.bubbler;
 
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
 import me.whereareiam.anvil.capability.entities.model.SeenEntity;
+import me.whereareiam.socialismus.testing.environment.MinecraftVersions;
 import me.whereareiam.socialismus.testing.environment.Module;
 import me.whereareiam.socialismus.testing.environment.Plugin;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Bubbler's bubble above a player who chats or runs {@code /socialismus bubble}, as a nearby player sees it, with
- * each render strategy.
+ * each render strategy. Text displays exist from Minecraft 1.19.4.
  */
 @Tag("bubbler")
 class BubbleTest {
@@ -25,6 +26,7 @@ class BubbleTest {
 	private static final String ARMOR_STAND = "minecraft:armor_stand";
 
 	@Test
+	@MinecraftVersions(since = "1.19.4")
 	@Socialismus(plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER)
 	void chatShowsATextDisplayBubbleThatDisappears(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
@@ -38,6 +40,7 @@ class BubbleTest {
 	}
 
 	@Test
+	@MinecraftVersions(since = "1.19.4")
 	@Socialismus(plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER)
 	void bubbleCommandShowsATextDisplayBubble(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice").op();
@@ -77,6 +80,7 @@ class BubbleTest {
 	}
 
 	@Test
+	@MinecraftVersions(since = "1.19.4")
 	@Socialismus(plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER)
 	void bubbleFollowsTheChatOfTheMessageItself(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");

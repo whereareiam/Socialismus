@@ -23,10 +23,14 @@ dependencies {
     anvilImplementation(libs.annotations)
     anvilImplementation(libs.configura)
 
+    anvilCompileOnly(libs.lombok)
+
     anvilRuntimeOnly(libs.anvil.protocol.mcprotocol)
     // Anvil runs the journeys' services, such as Redis, on the machine's Docker engine.
     anvilRuntimeOnly(libs.docker.java.core)
     anvilRuntimeOnly(libs.docker.java.transport.zerodep)
+
+    anvilAnnotationProcessor(libs.lombok)
 
     testImplementation(libs.junit.jupiter)
 
@@ -154,6 +158,10 @@ tasks.named<Test>("test") {
 }
 
 tasks.withType<AnvilTest>().configureEach {
+    // The versions the networks run at; the compatibility workflow sets them, the newest are the default.
+    listOf("minecraft", "velocity").forEach { name ->
+        providers.gradleProperty("socialismus.journeys.$name").orNull?.let { systemProperty("socialismus.journeys.$name", it) }
+    }
     systemProperty("junit.jupiter.execution.parallel.enabled", "true")
     systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
     systemProperty("junit.jupiter.execution.parallel.config.strategy", "fixed")
