@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
 import me.whereareiam.socialismus.module.bubbler.api.type.AlignmentType;
 import me.whereareiam.socialismus.type.Version;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,9 @@ import java.util.UUID;
  * Packet for spawning a text display entity (1.19.4+).
  * Text displays provide rich text rendering with customizable styling,
  * background, and alignment options.
+ *
+ * <p>The text reaches PacketEvents as JSON: PacketEvents may use another Adventure than Bubbler, such as the server's
+ * on Paper while the BUKKIT jar relocates Bubbler's.
  */
 @Getter
 @SuperBuilder(toBuilder = true)
@@ -73,8 +77,8 @@ public class TextDisplayPacket extends DisplayPacket {
 
 		metadata.add(new EntityData<>(
 				VersionResolver.resolveOrThrow(textIndex),
-				EntityDataTypes.ADV_COMPONENT,
-				text
+				EntityDataTypes.COMPONENT,
+				GsonComponentSerializer.gson().serialize(text)
 		));
 		metadata.add(new EntityData<>(
 				VersionResolver.resolveOrThrow(backgroundColorIndex),
