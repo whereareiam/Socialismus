@@ -21,6 +21,7 @@ lombok {
 dependencies {
     add("compileOnly", libs.findLibrary("guice").get())
     add("compileOnly", libs.findLibrary("annotations").get())
+    add("compileOnly", libs.findLibrary("conditia-api").get())
     add("compileOnly", libs.findLibrary("configura").get())
     add("compileOnly", libs.findLibrary("configura-feature-extension").get())
     add("compileOnly", libs.findLibrary("configura-feature-postprocess").get())
@@ -35,6 +36,8 @@ dependencies {
     add("testRuntimeOnly", libs.findLibrary("junit-platform").get())
     add("testImplementation", libs.findBundle("testing").get())
     add("testImplementation", libs.findLibrary("guice").get())
+    add("testImplementation", libs.findLibrary("conditia-common").get())
+    add("testImplementation", libs.findLibrary("conditia-testing").get())
     add("testImplementation", libs.findLibrary("configura").get())
     add("testImplementation", libs.findLibrary("configura-feature-extension").get())
     add("testImplementation", libs.findLibrary("configura-feature-postprocess").get())

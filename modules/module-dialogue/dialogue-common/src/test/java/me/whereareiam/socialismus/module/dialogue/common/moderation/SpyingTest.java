@@ -4,12 +4,12 @@ import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.event.DialogueDeliveredEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
+import me.whereareiam.socialismus.module.dialogue.common.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.MessageRenderer;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryPreferencesStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,10 +21,9 @@ import static org.mockito.Mockito.*;
 class SpyingTest {
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
 	private final InMemoryPreferencesStore spies = new InMemoryPreferencesStore();
-	private final RequirementEvaluatorService evaluator = mock(RequirementEvaluatorService.class);
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
 	private final MessageRenderer renderer = mock(MessageRenderer.class);
-	private final Spying spying = new Spying(() -> settings, spies, new SenderPrivileges(() -> settings, evaluator), playerRegistry, renderer);
+	private final Spying spying = new Spying(() -> settings, spies, new SenderPrivileges(DialogueConditions.bound(settings)), playerRegistry, renderer);
 
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
@@ -74,7 +73,7 @@ class SpyingTest {
 
 	@Test
 	void hidesTheMessagesToAnExemptRecipient() {
-		when(evaluator.check(settings.getModeration().getSpy().getExempt(), bob)).thenReturn(true);
+		when(bob.hasPermission("socialismus.dialogue.spy.exempt")).thenReturn(true);
 
 		spying.onDelivered(new DialogueDeliveredEvent(TestDataBuilder.messageFrom(alice, "Bob").build(), bob));
 

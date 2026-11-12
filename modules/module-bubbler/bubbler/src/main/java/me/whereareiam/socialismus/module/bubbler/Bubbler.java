@@ -3,9 +3,8 @@ package me.whereareiam.socialismus.module.bubbler;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.conditia.Conditions;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.event.EventManager;
@@ -16,12 +15,14 @@ import me.whereareiam.socialismus.module.bubbler.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.bubbler.common.config.migration.BubblerConfigMigrations;
 import me.whereareiam.socialismus.module.bubbler.common.listener.BubbleTransitionListener;
 import me.whereareiam.socialismus.module.bubbler.common.listener.ChatBroadcastListener;
+import me.whereareiam.socialismus.module.bubbler.common.requirement.ActivatorCondition;
+import me.whereareiam.socialismus.module.bubbler.common.requirement.BubbleRequirements;
+import me.whereareiam.socialismus.module.bubbler.common.requirement.ChatActivationCondition;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,6 +43,8 @@ public class Bubbler implements SocialisticModule {
 		new Strata(List.of(BubblerConfigMigrations.on(Config.configured(), dataFolder))).migrate();
 
 		EventManager eventManager = parentInjector.getInstance(EventManager.class);
+		context.conditions().register(new ActivatorCondition());
+		context.conditions().register(new ChatActivationCondition());
 
 		injector =
 				Guice.createInjector(
@@ -49,15 +52,19 @@ public class Bubbler implements SocialisticModule {
 								parentInjector.getInstance(Scheduler.class),
 								parentInjector.getInstance(PlatformInteractor.class),
 								reloadableRegistry,
-								parentInjector.getInstance(RequirementEvaluatorService.class),
-								parentInjector.getInstance(Key.get(new TypeLiteral<>() {})),
+								parentInjector.getInstance(Conditions.class),
 								parentInjector.getInstance(CommandService.class),
 								parentInjector.getInstance(PlayerRegistry.class),
 								eventManager
 						),
 						new CommonConfiguration(dataFolder));
 
+		// A bubble whose requirements cannot be bound stops the module, naming the list.
+		BubbleRequirements requirements = injector.getInstance(BubbleRequirements.class);
+		requirements.bind();
+
 		Stream.of(
+				requirements,
 				injector.getInstance(ChatBroadcastListener.class),
 				injector.getInstance(BubbleTransitionListener.class)
 		).forEach(eventManager::register);
@@ -68,5 +75,6 @@ public class Bubbler implements SocialisticModule {
 	@Override
 	public void disable() {
 		injector.getInstance(Scheduler.class).cancelByModule("bubbler");
+		injector.getInstance(BubbleRequirements.class).close();
 	}
 }

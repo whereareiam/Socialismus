@@ -1,33 +1,28 @@
 package me.whereareiam.socialismus.common.chat.worker.base;
 
+import me.whereareiam.conditia.result.Reason;
+import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Serializer;
-import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
-import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.common.requirement.RequirementReasonResolver;
+import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
+import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.model.config.message.RequirementReasons;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.requirement.Requirement;
-import me.whereareiam.socialismus.model.requirement.RequirementDenial;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.model.requirement.RequirementKey;
-import me.whereareiam.socialismus.model.requirement.RequirementResult;
+import me.whereareiam.socialismus.model.requirement.RequirementParts;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
-import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.type.chat.TriggerType;
-import me.whereareiam.socialismus.type.requirement.RequirementFailure;
-import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.util.EventUtil;
 import net.kyori.adventure.text.Component;
@@ -36,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +43,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -59,15 +54,20 @@ class ChatSelectorTest {
 	@Mock
 	private ChatContainerService containerService;
 	@Mock
-	private RequirementEvaluator requirementEvaluator;
+	private ChatRequirementService requirements;
 	@Mock
 	private SocialismusPlayer sender;
 	@Mock
 	private SerializerEngine serializerEngine;
 
+	private final Map<String, Verdict> verdicts = new HashMap<>();
+
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
+		// A chat whose verdict a test does not set takes everyone.
+		when(requirements.writes(any(), any())).thenAnswer(invocation ->
+				verdicts.getOrDefault(invocation.<Chat>getArgument(0).getId(), new Verdict.Passed()));
 		Logger.init(mock(LoggingHelper.class));
 		EventUtil.initialize(mock(EventManager.class));
 		Serializer.initialize(() -> serializerEngine);
@@ -100,10 +100,9 @@ class ChatSelectorTest {
 
 	@Test
 	void selectChatTellsTheSenderWhyTheChatTheyWroteForRefusedThem() {
-		RequirementGroup staff = requirementsOf("staff");
-		when(requirementEvaluator.evaluate(staff, sender)).thenReturn(deniedBy("staff"));
+		verdicts.put("staff", failedBy("staff"));
 
-		ChatMessage result = createSelector(symbolChat("staff", "#", staff), false).selectChat(createTriggeredMessage("#hello"));
+		ChatMessage result = createSelector(symbolChat("staff", "#"), false).selectChat(createTriggeredMessage("#hello"));
 
 		assertTrue(result.isCancelled());
 		verify(sender).sendMessage(Component.text("Only staff write in staff chat."));
@@ -112,10 +111,9 @@ class ChatSelectorTest {
 
 	@Test
 	void selectChatSendsTheNoChatNoticeWhenTheRefusalGivesNoReason() {
-		RequirementGroup staff = requirementsOf("staff");
-		when(requirementEvaluator.evaluate(staff, sender)).thenReturn(RequirementResult.denied());
+		verdicts.put("staff", new Verdict.Failed("chats.staff.requires[0].any", "any", List.of(RequirementParts.SENDER), Optional.empty()));
 
-		ChatMessage result = createSelector(symbolChat("staff", "#", staff), false).selectChat(createTriggeredMessage("#hello"));
+		ChatMessage result = createSelector(symbolChat("staff", "#"), false).selectChat(createTriggeredMessage("#hello"));
 
 		assertTrue(result.isCancelled());
 		verify(sender).sendMessage(Component.text(NO_CHAT));
@@ -123,12 +121,11 @@ class ChatSelectorTest {
 
 	@Test
 	void selectChatSendsARefusedMessageToTheFallbackWithoutTellingTheReason() {
-		RequirementGroup staff = requirementsOf("staff");
-		when(requirementEvaluator.evaluate(staff, sender)).thenReturn(deniedBy("staff"));
-		InternalChat fallback = symbolChat("fallback", "", null);
+		verdicts.put("staff", failedBy("staff"));
+		InternalChat fallback = symbolChat("fallback", "");
 		when(containerService.getChat("fallback")).thenReturn(Optional.of(fallback));
 
-		ChatMessage result = createSelector(symbolChat("staff", "#", staff), true).selectChat(createTriggeredMessage("#hello"));
+		ChatMessage result = createSelector(symbolChat("staff", "#"), true).selectChat(createTriggeredMessage("#hello"));
 
 		assertFalse(result.isCancelled());
 		assertEquals(fallback, result.getChat());
@@ -137,19 +134,16 @@ class ChatSelectorTest {
 
 	@Test
 	void selectChatTellsTheReasonOfTheFallbackWhenNoChatMatched() {
-		RequirementGroup overworld = requirementsOf("overworld");
-		when(requirementEvaluator.evaluate(overworld, sender)).thenReturn(deniedBy("overworld"));
-		when(containerService.getChat("fallback")).thenReturn(Optional.of(symbolChat("fallback", "", overworld)));
+		verdicts.put("fallback", failedBy("overworld"));
+		when(containerService.getChat("fallback")).thenReturn(Optional.of(symbolChat("fallback", "")));
 
-		ChatMessage result = createSelector(symbolChat("staff", "#", null), true).selectChat(createTriggeredMessage("hello"));
+		ChatMessage result = createSelector(symbolChat("staff", "#"), true).selectChat(createTriggeredMessage("hello"));
 
 		assertTrue(result.isCancelled());
 		verify(sender).sendMessage(Component.text("fallback chat only works in the overworld."));
 	}
 
 	private ChatSelector createSelector(InternalChat chat, boolean fallbackEnabled) {
-		// A chat without sender requirements takes everyone, as the evaluator makes of a missing group.
-		when(requirementEvaluator.evaluate(isNull(), any())).thenReturn(RequirementResult.passed());
 		String symbol = ((SymbolChatTrigger) chat.getTriggers().getFirst()).getSymbol();
 		when(containerService.hasChatBySymbol(symbol)).thenReturn(true);
 		when(containerService.getChatBySymbol(symbol)).thenReturn(List.of(chat));
@@ -170,16 +164,16 @@ class ChatSelectorTest {
 
 		ChatMessages messages = new ChatMessages();
 		messages.setNoChatMatch(NO_CHAT);
-		messages.setRequirements(Map.of(Participants.SENDER, Map.of(
-				"test:staff", required("Only staff write in {chat} chat."),
-				"test:overworld", required("{chat} chat only works in the overworld.")
-		)));
+		messages.setRequirements(Map.of(
+				"staff.refusal", "Only staff write in {chat} chat.",
+				"overworld.refusal", "{chat} chat only works in the overworld."
+		));
 		Messages core = new Messages();
 		core.setRequirements(Map.of());
 
 		return new ChatSelector(
 				containerService,
-				requirementEvaluator,
+				requirements,
 				new RequirementReasonResolver(() -> core),
 				() -> messages,
 				() -> settings,
@@ -187,19 +181,9 @@ class ChatSelectorTest {
 		);
 	}
 
-	private static RequirementResult deniedBy(String type) {
-		return RequirementResult.denied(RequirementDenial.of(
-				RequirementKey.create("test", type, Requirement.class),
-				RequirementFailure.REQUIRED,
-				Map.of()
-		));
-	}
-
-	private static RequirementReasons required(String message) {
-		RequirementReasons reasons = new RequirementReasons();
-		reasons.setRequired(message);
-
-		return reasons;
+	// A failure whose reason's key is "<type>.refusal".
+	private static Verdict failedBy(String type) {
+		return new Verdict.Failed("chats.test.requires[0]." + type, type, List.of(RequirementParts.SENDER), Optional.of(new Refusal()));
 	}
 
 	private static String render(SerializerContent content) {
@@ -210,7 +194,7 @@ class ChatSelectorTest {
 		return message;
 	}
 
-	private static InternalChat symbolChat(String id, String symbol, RequirementGroup sender) {
+	private static InternalChat symbolChat(String id, String symbol) {
 		return InternalChat.builder()
 				.id(id)
 				.priority(1)
@@ -221,15 +205,7 @@ class ChatSelectorTest {
 						.symbol(symbol)
 						.build()))
 				.formats(List.of())
-				.requirements(sender == null ? Map.of() : Map.of(Participants.SENDER, sender))
 				.vanillaSending(true)
-				.build();
-	}
-
-	private static RequirementGroup requirementsOf(String name) {
-		return RequirementGroup.builder()
-				.operator(RequirementOperatorType.AND)
-				.groups(Map.of("test:" + name, new Requirement()))
 				.build();
 	}
 
@@ -263,7 +239,7 @@ class ChatSelectorTest {
 
 		return new ChatSelector(
 				containerService,
-				requirementEvaluator,
+				requirements,
 				new RequirementReasonResolver(Messages::new),
 				() -> messages,
 				() -> settings,
@@ -280,5 +256,8 @@ class ChatSelectorTest {
 				.cancelled(false)
 				.vanillaSending(false)
 				.build();
+	}
+
+	private record Refusal() implements Reason {
 	}
 }

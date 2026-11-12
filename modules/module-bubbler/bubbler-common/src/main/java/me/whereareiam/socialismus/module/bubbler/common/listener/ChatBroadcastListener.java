@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.module.bubbler.common.listener;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.base.EventOrder;
 import me.whereareiam.socialismus.event.base.SocialisticEvent;
@@ -21,13 +20,12 @@ public class ChatBroadcastListener implements EventListener {
 	public void onChatBroadcast(ChatBroadcastEvent event) {
 		if (event.getChatMessage().isRelayed()) return;
 
-		// Socialismus stores the sender's chat only after this event, so chat requirements would judge the previous one.
-		event.getChatMessage().getSender().setData(Constants.DataKeys.LAST_CHAT, event.getChatMessage().getChat());
 		coordinationService.coordinate(BubbleMessage.builder()
 				.sender(event.getChatMessage().getSender())
 				.recipients(event.getChatMessage().getRecipients())
 				.content(event.getChatMessage().getContent())
 				.activatorType(ActivatorType.CHAT)
+				.chat(event.getChatMessage().getChat() == null ? null : event.getChatMessage().getChat().getId())
 				.build()
 		);
 	}

@@ -57,7 +57,6 @@ public final class SocialismusConfigMigrations {
 						List.of("chats")
 				))
 				.migration(ConfigLayoutMigration.VERSION, ConfigLayoutMigration.NAME, new ConfigLayoutMigration(dataPath, extension))
-				.migration(ChatHistoryRequirementsMigration.VERSION, ChatHistoryRequirementsMigration.NAME, new ChatHistoryRequirementsMigration(extension))
 				.build();
 	}
 }

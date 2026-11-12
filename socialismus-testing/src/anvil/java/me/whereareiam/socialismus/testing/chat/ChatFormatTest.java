@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.testing.chat;
 
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
+import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
 import me.whereareiam.socialismus.testing.environment.Socialismus;
@@ -67,9 +68,8 @@ class ChatFormatTest {
 		public void accept(ServerFiles files) {
 			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}").toBuilder()
 					.formats(List.of(
-							new ChatFormat("[G] {playerName}: {message}", Map.of()),
-							new ChatFormat("[Staff] {playerName}: {message}",
-									requirements(permission("socialismus.chat.staff"), null))
+							new ChatFormat("[G] {playerName}: {message}", Requirements.none()),
+							new ChatFormat("[Staff] {playerName}: {message}", permission("socialismus.chat.staff"))
 					))
 					.build());
 		}
@@ -82,8 +82,7 @@ class ChatFormatTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(chat("global", 0, "", 0, "[Staff] {playerName}: {message}").toBuilder()
-					.formats(List.of(new ChatFormat("[Staff] {playerName}: {message}",
-							requirements(permission("socialismus.chat.staff"), null))))
+					.formats(List.of(new ChatFormat("[Staff] {playerName}: {message}", permission("socialismus.chat.staff"))))
 					.build());
 			files.put(CHAT_MESSAGES, Map.of("noFormatMatch", NO_FORMAT));
 		}

@@ -11,8 +11,8 @@ import me.whereareiam.socialismus.model.chat.render.ChatRenderContext;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.base.Registry;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 
@@ -23,20 +23,20 @@ public class ClearPlaceholderResolver implements ChatPlaceholderResolver {
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<ChatMessages> chatMessages;
 	private final Provider<Commands> commands;
-	private final RequirementEvaluatorService requirementEvaluator;
+	private final ChatRequirementService requirements;
 
 	@Inject
 	public ClearPlaceholderResolver(
 			Provider<ChatSettings> chatSettings,
 			Provider<ChatMessages> chatMessages,
 			Provider<Commands> commands,
-			RequirementEvaluatorService requirementEvaluator,
+			ChatRequirementService requirements,
 			Registry<ChatPlaceholderResolver> registry
 	) {
 		this.chatSettings = chatSettings;
 		this.chatMessages = chatMessages;
 		this.commands = commands;
-		this.requirementEvaluator = requirementEvaluator;
+		this.requirements = requirements;
 		registry.register(this);
 	}
 
@@ -61,14 +61,8 @@ public class ClearPlaceholderResolver implements ChatPlaceholderResolver {
 		}
 
 		SocialismusPlayer sender = context.getSender();
-		ChatSettings.ChatHistorySettings history = settings.getHistory();
-		if (history.getRequirements() == null || !requirementEvaluator.check(history.getRequirements(), recipient)) {
-			return Component.empty();
-		}
-
-		if (sender != null && history.getBypassRequirements() != null && requirementEvaluator.check(history.getBypassRequirements(), sender)) {
-			return Component.empty();
-		}
+		if (!requirements.clears(recipient)) return Component.empty();
+		if (sender != null && requirements.keepsHistory(sender)) return Component.empty();
 
 		if (commandConfig == null
 				|| commandConfig.getCommands() == null

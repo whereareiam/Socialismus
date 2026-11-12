@@ -10,15 +10,14 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
+import me.whereareiam.socialismus.module.bubbler.common.requirement.BubbleRequirements;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.type.chat.Participants;
 
 import java.util.List;
 
 @Singleton
 public class BubbleSelector {
-	private final RequirementEvaluatorService requirementValidator;
+	private final BubbleRequirements requirements;
 
 	// Configs
 	private final Provider<BubblerMessages> bubblerMessages;
@@ -27,13 +26,13 @@ public class BubbleSelector {
 
 	@Inject
 	public BubbleSelector(
-			RequirementEvaluatorService requirementEvaluator,
+			BubbleRequirements requirements,
 			WorkerProcessor<BubbleMessage> workerProcessor,
 			Provider<BubblerMessages> bubblerMessages,
 			Provider<BubblerSettings> bubblerSettings,
 			Provider<List<Bubble>> bubbles
 	) {
-		this.requirementValidator = requirementEvaluator;
+		this.requirements = requirements;
 		this.bubblerMessages = bubblerMessages;
 		this.bubblerSettings = bubblerSettings;
 		this.bubbles = bubbles;
@@ -44,8 +43,8 @@ public class BubbleSelector {
 	public BubbleMessage selectBubble(BubbleMessage bubbleMessage) {
 		Logger.debug("Selecting bubble for user " + bubbleMessage.getSender().getUsername());
 
-		Bubble bubble = bubbles.get().parallelStream()
-				.filter(b -> requirementValidator.check(b.getRequirements().get(Participants.SENDER), bubbleMessage.getSender()))
+		Bubble bubble = bubbles.get().stream()
+				.filter(b -> requirements.selects(b, bubbleMessage))
 				.findFirst()
 				.orElse(null);
 

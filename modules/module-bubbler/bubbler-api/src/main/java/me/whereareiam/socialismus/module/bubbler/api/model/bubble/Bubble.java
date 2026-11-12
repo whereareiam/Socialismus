@@ -1,16 +1,18 @@
 package me.whereareiam.socialismus.module.bubbler.api.model.bubble;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
+import me.whereareiam.conditia.model.Requirements;
+import me.whereareiam.configura.annotation.merge.Merge;
+import me.whereareiam.configura.type.merge.WhenPresent;
 import me.whereareiam.socialismus.module.bubbler.api.model.Vector;
 import me.whereareiam.socialismus.module.bubbler.api.type.AlignmentType;
 import me.whereareiam.socialismus.module.bubbler.api.type.AnimationType;
 import me.whereareiam.socialismus.module.bubbler.api.type.DisplayType;
 import me.whereareiam.socialismus.module.bubbler.api.type.TransitionType;
-import me.whereareiam.socialismus.type.chat.Participants;
 
 import java.util.Map;
 
@@ -32,7 +34,20 @@ public class Bubble {
 	private Style style;
 
 	private Map<TransitionType, BubbleTransition> transitions;
-	private Map<Participants, RequirementGroup> requirements;
+	/**
+	 * What a sender must meet for this bubble, checked with the parts sender and activation; the first bubble whose
+	 * requirements the sender meets is shown.
+	 */
+	@Builder.Default
+	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+	private Requirements requires = Requirements.none();
+
+	/**
+	 * What a nearby player must meet to see the bubble, checked with the parts recipient, sender and activation.
+	 */
+	@Builder.Default
+	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+	private Requirements reaches = Requirements.none();
 
 	/**
 	 * Display configuration controlling visibility and timing of bubbles.

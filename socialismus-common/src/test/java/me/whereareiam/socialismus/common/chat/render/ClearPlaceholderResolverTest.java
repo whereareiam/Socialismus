@@ -7,12 +7,9 @@ import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.model.chat.render.ChatRenderContext;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.requirement.Requirement;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.registry.base.Registry;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
@@ -20,27 +17,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.withSettings;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 @ExtendWith(MockitoExtension.class)
 class ClearPlaceholderResolverTest {
-	private static final RequirementGroup CLEARERS = RequirementGroup.builder()
-			.operator(RequirementOperatorType.AND)
-			.groups(Map.of("test:clearers", new Requirement()))
-			.build();
-	private static final RequirementGroup PROTECTED = RequirementGroup.builder()
-			.operator(RequirementOperatorType.AND)
-			.groups(Map.of("test:protected", new Requirement()))
-			.build();
-
 	@Mock
 	private Provider<ChatSettings> chatSettings;
 	@Mock
@@ -48,7 +35,7 @@ class ClearPlaceholderResolverTest {
 	@Mock
 	private Provider<Commands> commands;
 	@Mock
-	private RequirementEvaluatorService requirementEvaluator;
+	private ChatRequirementService requirements;
 	@Mock
 	private Registry<ChatPlaceholderResolver> registry;
 
@@ -58,7 +45,7 @@ class ClearPlaceholderResolverTest {
 				chatSettings,
 				chatMessages,
 				commands,
-				requirementEvaluator,
+				requirements,
 				registry
 		);
 
@@ -72,7 +59,6 @@ class ClearPlaceholderResolverTest {
 	void resolveReturnsEmptyWhenRecipientDoesNotMeetTheRequirements() {
 		ChatSettings settings = new ChatSettings();
 		ChatSettings.ChatHistorySettings history = new ChatSettings.ChatHistorySettings();
-		history.setRequirements(CLEARERS);
 		settings.setHistory(history);
 
 		ChatMessages messages = new ChatMessages();
@@ -85,13 +71,13 @@ class ClearPlaceholderResolverTest {
 
 		SocialismusPlayer recipient = mock(SocialismusPlayer.class,
 				withSettings().useConstructor(UUID.randomUUID(), "recipient").defaultAnswer(CALLS_REAL_METHODS));
-		when(requirementEvaluator.check(CLEARERS, recipient)).thenReturn(false);
+		when(requirements.clears(recipient)).thenReturn(false);
 
 		ClearPlaceholderResolver resolver = new ClearPlaceholderResolver(
 				chatSettings,
 				chatMessages,
 				commands,
-				requirementEvaluator,
+				requirements,
 				registry
 		);
 
@@ -105,8 +91,6 @@ class ClearPlaceholderResolverTest {
 	void resolveReturnsEmptyForTheMessageOfASenderWhoMeetsTheBypassRequirements() {
 		ChatSettings settings = new ChatSettings();
 		ChatSettings.ChatHistorySettings history = new ChatSettings.ChatHistorySettings();
-		history.setRequirements(CLEARERS);
-		history.setBypassRequirements(PROTECTED);
 		settings.setHistory(history);
 
 		ChatMessages messages = new ChatMessages();
@@ -121,14 +105,14 @@ class ClearPlaceholderResolverTest {
 				withSettings().useConstructor(UUID.randomUUID(), "recipient").defaultAnswer(CALLS_REAL_METHODS));
 		SocialismusPlayer sender = mock(SocialismusPlayer.class,
 				withSettings().useConstructor(UUID.randomUUID(), "sender").defaultAnswer(CALLS_REAL_METHODS));
-		when(requirementEvaluator.check(CLEARERS, recipient)).thenReturn(true);
-		when(requirementEvaluator.check(PROTECTED, sender)).thenReturn(true);
+		when(requirements.clears(recipient)).thenReturn(true);
+		when(requirements.keepsHistory(sender)).thenReturn(true);
 
 		ClearPlaceholderResolver resolver = new ClearPlaceholderResolver(
 				chatSettings,
 				chatMessages,
 				commands,
-				requirementEvaluator,
+				requirements,
 				registry
 		);
 
@@ -136,6 +120,6 @@ class ClearPlaceholderResolverTest {
 		Component resolved = resolver.resolve(new ChatRenderContext(message, recipient));
 
 		assertEquals("", ComponentUtil.toPlain(resolved));
-		verify(requirementEvaluator).check(PROTECTED, sender);
+		verify(requirements).keepsHistory(sender);
 	}
 }

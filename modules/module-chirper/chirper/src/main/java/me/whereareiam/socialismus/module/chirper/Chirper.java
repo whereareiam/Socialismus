@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.conditia.Conditions;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.event.EventManager;
@@ -13,12 +14,12 @@ import me.whereareiam.socialismus.module.chirper.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.chirper.common.AnnouncerController;
 import me.whereareiam.socialismus.module.chirper.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.chirper.common.config.migration.ChirperConfigMigrations;
+import me.whereareiam.socialismus.module.chirper.common.requirement.AnnouncementRequirements;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,12 +44,17 @@ public class Chirper implements SocialisticModule {
 						parentInjector.getInstance(PlatformInteractor.class),
 						reloadableRegistry,
 						parentInjector.getInstance(EventManager.class),
-						parentInjector.getInstance(RequirementEvaluatorService.class),
+						parentInjector.getInstance(Conditions.class),
 						parentInjector.getInstance(CommandService.class),
 						parentInjector.getInstance(PlayerRegistry.class)
 				),
 				new CommonConfiguration(dataFolder)
 		);
+
+		// An announcement whose requirements cannot be bound stops the module, naming the list.
+		AnnouncementRequirements requirements = injector.getInstance(AnnouncementRequirements.class);
+		requirements.bind();
+		injector.getInstance(EventManager.class).register(requirements);
 
 		injector.getInstance(CommandRegistrar.class).registerCommands();
 		injector.getInstance(AnnouncerController.class).init();
@@ -58,5 +64,7 @@ public class Chirper implements SocialisticModule {
 	public void disable() {
 		injector.getInstance(EventManager.class).unregister(injector.getInstance(AnnouncerController.class));
 		injector.getInstance(Scheduler.class).cancelByModule("chirper");
+		injector.getInstance(EventManager.class).unregister(injector.getInstance(AnnouncementRequirements.class));
+		injector.getInstance(AnnouncementRequirements.class).close();
 	}
 }

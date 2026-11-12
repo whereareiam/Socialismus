@@ -4,19 +4,18 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.socialismus.Serializer;
-import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.type.chat.Participants;
+import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 
 @Singleton
 public class FormatSelector {
-	private final RequirementEvaluator requirementEvaluator;
+	private final ChatRequirementService requirements;
 
 	// Configs
 	private final Provider<ChatMessages> chatMessages;
@@ -25,11 +24,11 @@ public class FormatSelector {
 	@Inject
 	public FormatSelector(
 			WorkerProcessor<FormattedChatMessage> workerProcessor,
-			RequirementEvaluator requirementEvaluator,
+			ChatRequirementService requirements,
 			Provider<ChatMessages> chatMessages,
 			Provider<ChatSettings> chatSettings
 	) {
-		this.requirementEvaluator = requirementEvaluator;
+		this.requirements = requirements;
 		this.chatMessages = chatMessages;
 		this.chatSettings = chatSettings;
 
@@ -42,7 +41,7 @@ public class FormatSelector {
 	private FormattedChatMessage formatChat(FormattedChatMessage msg) {
 		Logger.debug("Formatting chat message for user " + msg.getSender().getUsername());
 
-		ChatFormat chosen = selectFormat(msg);
+		ChatFormat chosen = requirements.format(msg.getChat(), msg).orElse(null);
 
 		if (chosen == null) {
 			notifyAboutAbsentFormat(msg);
@@ -53,24 +52,6 @@ public class FormatSelector {
 		Logger.debug("Selected format for user %s", msg.getSender().getUsername());
 		msg.setFormat(Serializer.serialize(msg.getSender(), chosen.getFormat()));
 		return msg;
-	}
-
-	private ChatFormat selectFormat(FormattedChatMessage msg) {
-		for (ChatFormat format : msg.getChat().getFormats().reversed()) {
-			if (isAllowed(format, msg))
-				return format;
-		}
-		return null;
-	}
-
-	private boolean isAllowed(ChatFormat format, FormattedChatMessage msg) {
-		if (format.getRequirements() == null) return true;
-		if (format.getRequirements().get(Participants.SENDER) == null) return true;
-
-		return requirementEvaluator.check(
-				format.getRequirements().get(Participants.SENDER),
-				msg.getSender()
-		);
 	}
 
 	private void notifyAboutAbsentFormat(FormattedChatMessage msg) {

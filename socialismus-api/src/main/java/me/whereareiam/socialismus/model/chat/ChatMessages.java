@@ -3,8 +3,6 @@ package me.whereareiam.socialismus.model.chat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.whereareiam.socialismus.model.config.message.RequirementReasons;
-import me.whereareiam.socialismus.type.chat.Participants;
 
 import java.util.Map;
 
@@ -51,14 +49,13 @@ public class ChatMessages {
     private String emptyMessage;
 
     /**
-     * How chat words the requirements of chats it denies a player, by participant and then by the requirement's
-     * key, as the chats' own {@code requirements} hold them. Its placeholders are the requirement's and
-     * {@code {chat}}, the chat that denied the player; what it leaves unworded comes from {@code requirements} in
-     * {@code messages.yml}.
+     * How a chat's refusal of its sender is told, by the reason's key, such as {@code world.outside}. The texts take
+     * the reason's placeholders and {@code {chat}}, the chat that refused the player; what they leave unworded comes
+     * from {@code requirements} in {@code messages.yml}.
      *
      * @see me.whereareiam.socialismus.service.requirement.RequirementReasonService
      */
-    private Map<Participants, Map<String, RequirementReasons>> requirements;
+    private Map<String, String> requirements = Map.of();
 
     /**
      * Configuration for clearing chat messages.

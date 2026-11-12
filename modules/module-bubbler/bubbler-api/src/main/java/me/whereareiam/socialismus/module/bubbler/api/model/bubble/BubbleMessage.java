@@ -28,5 +28,9 @@ public class BubbleMessage {
 
   private Component content;
   private ActivatorType activatorType;
+  /**
+   * The id of the chat whose message raised the bubble; {@code null} when another activator raised it.
+   */
+  private String chat;
   private boolean cancelled;
 }

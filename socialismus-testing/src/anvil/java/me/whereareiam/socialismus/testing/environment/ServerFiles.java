@@ -1,31 +1,23 @@
 package me.whereareiam.socialismus.testing.environment;
 
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
+import me.whereareiam.conditia.adapter.configura.ConditiaFeature;
+import me.whereareiam.conditia.model.Node;
+import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.configura.Config;
 import me.whereareiam.configura.Configura;
 import me.whereareiam.configura.type.Format;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.trigger.RegexChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
-import me.whereareiam.socialismus.model.requirement.Requirement;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.model.requirement.RequirementKey;
-import me.whereareiam.socialismus.model.requirement.type.MessageRequirement;
-import me.whereareiam.socialismus.model.requirement.type.PermissionRequirement;
-import me.whereareiam.socialismus.model.requirement.type.WorldRequirement;
-import me.whereareiam.socialismus.type.chat.Participants;
+import me.whereareiam.socialismus.model.requirement.RequirementLists;
 import me.whereareiam.socialismus.type.chat.TriggerType;
-import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
-import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
-import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +45,11 @@ public final class ServerFiles {
 	/** The messages of Socialismus itself, such as the reasons its requirements tell a player. */
 	public static final String MESSAGES = "messages.yml";
 
-	// The documents journeys write hold no Adventure types, so plain YAML writes them as Socialismus does.
+	// The documents journeys write hold no Adventure types, so plain YAML writes them as Socialismus does, with the
+	// requires: lists of Conditia.
 	private static final Configura CONFIGURA = Config.builder()
 			.format(Format.YAML)
+			.feature(new ConditiaFeature())
 			.build();
 
 	private final Map<String, Object> documents = new LinkedHashMap<>();
@@ -136,8 +130,7 @@ public final class ServerFiles {
 						.radius(radius)
 						.symbol(symbol)
 						.build()))
-				.formats(List.of(new ChatFormat(format, Map.of())))
-				.requirements(Map.of())
+				.formats(List.of(new ChatFormat(format, Requirements.none())))
 				.build();
 	}
 
@@ -162,66 +155,43 @@ public final class ServerFiles {
 	}
 
 	/**
-	 * Returns the requirements of a chat or format: the sender meets {@code sender}, a recipient meets
-	 * {@code recipient}; either may be null for none.
+	 * Returns a list a player meets when they hold every given permission.
 	 */
 	@NotNull
-	public static Map<Participants, RequirementGroup> requirements(
-			@Nullable RequirementGroup sender,
-			@Nullable RequirementGroup recipient
-	) {
-		Map<Participants, RequirementGroup> requirements = new EnumMap<>(Participants.class);
-		if (sender != null) requirements.put(Participants.SENDER, sender);
-		if (recipient != null) requirements.put(Participants.RECIPIENT, recipient);
-
-		return requirements;
+	public static Requirements permission(@NotNull String... permissions) {
+		return RequirementLists.permission(permissions);
 	}
 
 	/**
-	 * Returns a group a player meets when they meet the given requirement.
+	 * Returns a list a player meets when they stand in one of the given worlds.
 	 */
 	@NotNull
-	public static <T extends Requirement> RequirementGroup meets(@NotNull RequirementKey<T> key, @NotNull T requirement) {
-		return RequirementGroup.builder()
-				.operator(RequirementOperatorType.AND)
-				.groups(RequirementGroup.of(key, requirement))
-				.build();
+	public static Requirements world(@NotNull String... worlds) {
+		return RequirementLists.of("world", worlds);
 	}
 
 	/**
-	 * Returns a group a player meets when they hold every given permission.
+	 * Returns a list a player meets when they are on one of the given servers.
 	 */
 	@NotNull
-	public static RequirementGroup permission(@NotNull String... permissions) {
-		return meets(Constants.Requirements.PERMISSION, PermissionRequirement.builder()
-				.condition(RequirementConditionType.HAS)
-				.expected("true")
-				.permissions(List.of(permissions))
-				.build());
+	public static Requirements server(@NotNull String... servers) {
+		return RequirementLists.of("server", servers);
 	}
 
 	/**
-	 * Returns a group a player meets when they stand in one of the given worlds.
+	 * Returns a list the message being sent meets when it contains the given text.
 	 */
 	@NotNull
-	public static RequirementGroup world(@NotNull String... worlds) {
-		return meets(Constants.Requirements.WORLD, WorldRequirement.builder()
-				.condition(RequirementConditionType.CONTAINS)
-				.expected("true")
-				.worlds(List.of(worlds))
-				.build());
+	public static Requirements content(@NotNull String text) {
+		return RequirementLists.of("content", text);
 	}
 
 	/**
-	 * Returns a group a player meets when their previous chat message was exactly the given one.
+	 * Returns a list met when the given list is not: {@code - not: [...]}.
 	 */
 	@NotNull
-	public static RequirementGroup previousMessage(@NotNull String message) {
-		return meets(Constants.Requirements.MESSAGE, MessageRequirement.builder()
-				.condition(RequirementConditionType.EQUALS)
-				.expected("true")
-				.messages(List.of(message))
-				.build());
+	public static Requirements not(@NotNull Requirements requires) {
+		return Requirements.of(new Node.Sequence(List.of(Node.Mapping.of("not", requires.getConditions()))));
 	}
 
 	/**

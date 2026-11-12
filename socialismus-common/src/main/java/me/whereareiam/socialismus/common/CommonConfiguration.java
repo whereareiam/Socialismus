@@ -4,6 +4,7 @@ import com.google.inject.*;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
+import me.whereareiam.conditia.adapter.configura.ConditiaFeature;
 import me.whereareiam.configura.Config;
 import me.whereareiam.configura.Configura;
 import me.whereareiam.configura.feature.polymorphic.PolymorphicFeature;
@@ -13,13 +14,15 @@ import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.common.chat.ChatCoordinator;
-import me.whereareiam.socialismus.common.chat.DefaultChatOwnershipService;
 import me.whereareiam.socialismus.common.chat.ChatHistoryController;
 import me.whereareiam.socialismus.common.chat.ChatLifecycle;
+import me.whereareiam.socialismus.common.chat.DefaultChatOwnershipService;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.render.ClearPlaceholderResolver;
 import me.whereareiam.socialismus.common.chat.render.DefaultChatRenderService;
+import me.whereareiam.socialismus.common.chat.requirement.DefaultChatRequirementService;
+import me.whereareiam.socialismus.common.chat.requirement.RequirementLifecycle;
 import me.whereareiam.socialismus.common.chat.toggle.DefaultChatToggleService;
 import me.whereareiam.socialismus.common.chat.toggle.InMemoryChatToggleStore;
 import me.whereareiam.socialismus.common.config.ConfigurationLifecycle;
@@ -41,10 +44,7 @@ import me.whereareiam.socialismus.common.integration.IntegrationLifecycle;
 import me.whereareiam.socialismus.common.logging.LoggingLifecycle;
 import me.whereareiam.socialismus.common.player.DefaultPlayerRegistry;
 import me.whereareiam.socialismus.common.provider.*;
-import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
-import me.whereareiam.socialismus.common.requirement.RequirementReasonResolver;
-import me.whereareiam.socialismus.common.requirement.RequirementRegistry;
-import me.whereareiam.socialismus.common.requirement.validation.*;
+import me.whereareiam.socialismus.common.requirement.RequirementConfiguration;
 import me.whereareiam.socialismus.common.updater.UpdateScheduler;
 import me.whereareiam.socialismus.common.updater.provider.GitHubProvider;
 import me.whereareiam.socialismus.common.updater.provider.ModrinthProvider;
@@ -62,18 +62,15 @@ import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.config.Updater;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.model.requirement.Requirement;
-import me.whereareiam.socialismus.model.requirement.RequirementKey;
-import me.whereareiam.socialismus.model.requirement.type.*;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.registry.base.ExtendedRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.UpdateProvider;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
-import me.whereareiam.socialismus.service.chat.ChatOwnershipService;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
+import me.whereareiam.socialismus.service.chat.ChatOwnershipService;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.chat.ChatToggleService;
 import me.whereareiam.socialismus.service.chat.ChatToggleStore;
 import me.whereareiam.socialismus.service.chat.render.ChatMessageTransformer;
@@ -81,9 +78,6 @@ import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
-import me.whereareiam.socialismus.service.requirement.RequirementValidation;
 import me.whereareiam.socialismus.type.ConfigurationType;
 import me.whereareiam.socialismus.type.module.ProviderType;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -114,6 +108,7 @@ public class CommonConfiguration extends AbstractModule {
 		lifecycles.addBinding().to(LoggingLifecycle.class);
 		lifecycles.addBinding().to(IntegrationLifecycle.class);
 		lifecycles.addBinding().to(ChatLifecycle.class);
+		lifecycles.addBinding().to(RequirementLifecycle.class);
 		lifecycles.addBinding().to(ConnectionLifecycle.class);
 		lifecycles.addBinding().to(UpdateScheduler.class);
 
@@ -171,19 +166,8 @@ public class CommonConfiguration extends AbstractModule {
 				.to(SpigotMCProvider.class);
 
 		// Requirements
-		bind(new TypeLiteral<ExtendedRegistry<RequirementKey<?>, RequirementValidation>>() {
-		})
-				.to(RequirementRegistry.class)
-				.asEagerSingleton();
-		bind(PermissionRequirementValidation.class).asEagerSingleton();
-		bind(WorldRequirementValidation.class).asEagerSingleton();
-		bind(ServerRequirementValidation.class).asEagerSingleton();
-		bind(PlaceholderRequirementValidation.class).asEagerSingleton();
-		bind(ChatRequirementValidation.class).asEagerSingleton();
-		bind(TriggerRequirementValidation.class).asEagerSingleton();
-		bind(MessageRequirementValidation.class).asEagerSingleton();
-		bind(RequirementEvaluatorService.class).to(RequirementEvaluator.class);
-		bind(RequirementReasonService.class).to(RequirementReasonResolver.class);
+		install(new RequirementConfiguration());
+		bind(ChatRequirementService.class).to(DefaultChatRequirementService.class);
 
 		// Other
 		bind(new TypeLiteral<WorkerProcessor<ChatMessage>>() {
@@ -265,22 +249,12 @@ public class CommonConfiguration extends AbstractModule {
 		ConfigurationType type = new FileSystemConfigurationTypeResolver(dataPath).getConfigurationType();
 		Format format = type == ConfigurationType.JSON ? Format.JSON : Format.YAML;
 
-		PolymorphicFeature polymorphic = PolymorphicFeature.defaults();
-		polymorphic.register(Requirement.class)
-				.inferByField("servers", ServerRequirement.class)
-				.inferByField("worlds", WorldRequirement.class)
-				.inferByField("chatIdentifiers", ChatRequirement.class)
-				.inferByField("placeholders", PlaceholderRequirement.class)
-				.inferByField("permissions", PermissionRequirement.class)
-				.inferByField("triggers", TriggerRequirement.class)
-				.inferByField("messages", MessageRequirement.class)
-				.build();
-
 		return Config.builder()
 				.format(format)
 				.module(new SocialismusConfiguraModule())
 				.feature(PostProcessFeature.defaults())
-				.feature(polymorphic)
+				.feature(PolymorphicFeature.defaults())
+				.feature(new ConditiaFeature())
 				.feature(new StrataFeature())
 				.build();
 	}

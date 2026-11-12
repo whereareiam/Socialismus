@@ -68,7 +68,7 @@ public class DefaultMessageControlService implements MessageControlService {
 			notices.samePlayer(player);
 			return;
 		}
-		if (privileges.meets(settings.get().getControl().getIgnore().getExempt(), target.get())) {
+		if (privileges.exemptFromIgnore(target.get())) {
 			notices.ignoreExempt(player, target.get().getUsername());
 			return;
 		}

@@ -15,6 +15,7 @@ guice = "7.0.0"
 annotations = "26.1.0"
 attache = "dev-940ee5b"
 chassis = "dev-379d949"
+conditia = "dev-f415c9a"
 jvmdowngrader = "2.0.1"
 configura = "2.1.0"
 keystone = "1.0.0"
@@ -123,6 +124,11 @@ chassis-common = { group = "me.whereareiam.chassis", name = "chassis-common", ve
 chassis-adapter-attache = { group = "me.whereareiam.chassis", name = "chassis-adapter-attache", version.ref = "chassis" }
 chassis-platform-bukkit = { group = "me.whereareiam.chassis", name = "platform-bukkit", version.ref = "chassis" }
 chassis-platform-velocity = { group = "me.whereareiam.chassis", name = "platform-velocity", version.ref = "chassis" }
+conditia-api = { group = "me.whereareiam.conditia", name = "conditia-api", version.ref = "conditia" }
+conditia-common = { group = "me.whereareiam.conditia", name = "conditia-common", version.ref = "conditia" }
+conditia-adapter-configura = { group = "me.whereareiam.conditia", name = "conditia-adapter-configura", version.ref = "conditia" }
+conditia-adapter-chassis = { group = "me.whereareiam.conditia", name = "conditia-adapter-chassis", version.ref = "conditia" }
+conditia-testing = { group = "me.whereareiam.conditia", name = "conditia-testing", version.ref = "conditia" }
 
 # resources
 jedis = { group = "redis.clients", name = "jedis", version.ref = "jedis" }

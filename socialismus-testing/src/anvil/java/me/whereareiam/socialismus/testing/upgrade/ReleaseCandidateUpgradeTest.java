@@ -1,6 +1,5 @@
 package me.whereareiam.socialismus.testing.upgrade;
 
-import java.io.IOException;
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
 import me.whereareiam.socialismus.testing.environment.Network;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
@@ -9,6 +8,7 @@ import me.whereareiam.socialismus.testing.journey.Player;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,8 +30,10 @@ class ReleaseCandidateUpgradeTest {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");
 
+		// RC6 kept local chat to the holders of socialismus.chat.local; its requirement groups are dropped, not migrated,
+		// so local chat takes everyone until an admin writes its requires list.
 		alice.chat("after the upgrade");
-		bob.sees("[Before upgrade] Alice: after the upgrade");
+		bob.sees("[L] Alice: after the upgrade");
 
 		Matcher version = VERSION.matcher(ServerFiles.read(anvil, "settings.yml"));
 		assertTrue(version.find() && Integer.parseInt(version.group(1)) > 0, "settings.yml does not record the version of its migrations");
@@ -46,7 +48,8 @@ class ReleaseCandidateUpgradeTest {
 		assertFalse(settings.contains("synchronization:") || settings.contains("updater:") || settings.contains("misc:"), "settings.yml still holds what moved out: " + settings);
 		assertTrue(ServerFiles.read(anvil, "updater.yml").contains("interval: \"1h\""), "The updater interval did not become a duration");
 		String chatSettings = ServerFiles.read(anvil, "chat/settings.yml");
-		assertFalse(chatSettings.contains("permission: \"socialismus.admin\"") || chatSettings.contains("bypassPermission:"), "Chat history kept its permissions: " + chatSettings);
-		assertTrue(chatSettings.contains("bypassRequirements:"), "Chat history's permissions did not become requirement groups: " + chatSettings);
+		// RC6's requirement groups and permissions are dropped, not migrated: the defaults' requires lists replace them.
+		assertFalse(chatSettings.contains("bypassPermission:") || chatSettings.contains("requirements:"), "Chat history kept RC6's requirements: " + chatSettings);
+		assertTrue(chatSettings.contains("requires:") && chatSettings.contains("bypass:"), "Chat history has no requires lists: " + chatSettings);
 	}
 }

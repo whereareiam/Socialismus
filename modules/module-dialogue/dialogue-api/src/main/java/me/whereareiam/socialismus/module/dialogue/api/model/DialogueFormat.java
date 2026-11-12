@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.type.chat.Participants;
+import me.whereareiam.conditia.model.Requirements;
+import me.whereareiam.configura.annotation.merge.Merge;
+import me.whereareiam.configura.type.merge.WhenPresent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 
 /**
  * One way a private message is shown, as a chat format is: of a list of formats, a viewer sees the last one whose
@@ -25,10 +25,17 @@ public class DialogueFormat {
 	private String format;
 
 	/**
-	 * What the sender ({@link Participants#SENDER}) and the recipient ({@link Participants#RECIPIENT}) must meet
-	 * for this format; a participant without a group meets it.
+	 * What the sender must meet for this format, checked with the part sender.
 	 */
-	private Map<Participants, RequirementGroup> requirements;
+	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+	private Requirements requires = Requirements.none();
+
+	/**
+	 * What the recipient must meet for this format, checked with the parts recipient and sender. Where the recipient
+	 * is on another server, only an empty list is met.
+	 */
+	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+	private Requirements reaches = Requirements.none();
 
 	/**
 	 * What else the viewer of this format gets, such as a sound; nothing when absent.
@@ -38,10 +45,11 @@ public class DialogueFormat {
 	/**
 	 * Creates a format without an alert.
 	 *
-	 * @param format       the text shown
-	 * @param requirements what the participants must meet for it
+	 * @param format   the text shown
+	 * @param requires what the sender must meet for it
+	 * @param reaches  what the recipient must meet for it
 	 */
-	public DialogueFormat(String format, Map<Participants, RequirementGroup> requirements) {
-		this(format, requirements, null);
+	public DialogueFormat(String format, Requirements requires, Requirements reaches) {
+		this(format, requires, reaches, null);
 	}
 }

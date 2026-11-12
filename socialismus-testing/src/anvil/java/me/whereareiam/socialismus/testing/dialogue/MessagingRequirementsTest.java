@@ -13,12 +13,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.permission;
-import static me.whereareiam.socialismus.testing.environment.ServerFiles.requirements;
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.world;
 
 /**
- * The requirements of Dialogue: who may message whom, what a refused sender is told, and which format each
- * participant sees.
+ * The requirements of Dialogue: who may message whom through {@code messaging.requires} and
+ * {@code messaging.reaches}, what a refused sender is told, and which format each participant sees.
  */
 @Tag("dialogue")
 class MessagingRequirementsTest {
@@ -81,7 +80,7 @@ class MessagingRequirementsTest {
 					Map.of("format", "[PM] {senderName}: {message}"),
 					Map.of(
 							"format", "[Staff PM] {senderName}: {message}",
-							"requirements", requirements(permission("socialismus.dialogue.staff"), null)
+							"requires", permission("socialismus.dialogue.staff")
 					)
 			)));
 		}
@@ -94,7 +93,7 @@ class MessagingRequirementsTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.put(DialogueFiles.SETTINGS, Map.of("messaging", Map.of(
-					"requirements", requirements(null, permission("socialismus.dialogue.staff")))));
+					"reaches", permission("socialismus.dialogue.staff"))));
 		}
 	}
 
@@ -105,9 +104,9 @@ class MessagingRequirementsTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.put(DialogueFiles.SETTINGS, Map.of("messaging", Map.of(
-					"requirements", requirements(world("world_nether"), null))));
+					"requires", world("world_nether"))));
 			files.put(DialogueFiles.MESSAGES, Map.of("messaging", Map.of("requirements", Map.of(
-					"SENDER", Map.of("socialismus:world", Map.of("required", "Private messages stay in {worlds}"))))));
+					"SENDER", Map.of("world.outside", "Private messages stay in {worlds}")))));
 		}
 	}
 
@@ -120,10 +119,9 @@ class MessagingRequirementsTest {
 			new StaffOnlyRecipients().accept(files);
 			files.put(DialogueFiles.MESSAGES, Map.of("messaging", Map.of(
 					"notAllowed", "You may not write to {recipientName}",
-					"requirements", Map.of("RECIPIENT", Map.of("socialismus:permission", Map.of("required", "")))
+					"requirements", Map.of("RECIPIENT", Map.of("permission.missing", ""))
 			)));
-			files.put(ServerFiles.MESSAGES, Map.of("requirements", Map.of(
-					"socialismus:permission", Map.of("required", ""))));
+			files.put(ServerFiles.MESSAGES, Map.of("requirements", Map.of("permission.missing", "")));
 		}
 	}
 }

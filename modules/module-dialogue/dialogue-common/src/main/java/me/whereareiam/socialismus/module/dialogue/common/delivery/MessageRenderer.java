@@ -13,7 +13,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
-import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
+import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.title.Title;
@@ -32,7 +32,7 @@ import java.util.Map;
 public class MessageRenderer {
 	private final Provider<MessagingFormats> formats;
 	private final Provider<ModerationFormats> moderationFormats;
-	private final MessagingRequirements requirements;
+	private final DialogueRequirements requirements;
 
 	/**
 	 * Shows the sender their message in a {@code sent} format.
@@ -123,7 +123,7 @@ public class MessageRenderer {
 		if (formats == null) return null;
 
 		for (DialogueFormat format : formats.reversed())
-			if (requirements.meets(format.getRequirements(), message.getSender(), recipient))
+			if (requirements.fits(format, message.getSender(), recipient))
 				return format;
 
 		return null;

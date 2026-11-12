@@ -6,11 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.type.chat.Participants;
+import me.whereareiam.conditia.model.Requirements;
+import me.whereareiam.configura.annotation.merge.Merge;
+import me.whereareiam.configura.type.merge.WhenPresent;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a chat configuration with its parameters, formats, and requirements.
@@ -48,9 +48,18 @@ public class Chat {
 	private List<ChatFormat> formats;
 
 	/**
-	 * Map of requirements for different participant types
+	 * What the sender must meet to write in this chat, checked with the parts sender and message.
 	 */
-	private Map<Participants, RequirementGroup> requirements;
+	@Builder.Default
+	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+	private Requirements requires = Requirements.none();
+
+	/**
+	 * What a player must meet to receive the chat's messages, checked with the parts recipient, sender and message.
+	 */
+	@Builder.Default
+	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+	private Requirements reaches = Requirements.none();
 
 	/**
 	 * Whether players may turn this chat off for themselves; a chat that must always reach everyone, such as staff

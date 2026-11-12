@@ -91,7 +91,7 @@ class ChatSelectionTest {
 			files.chats(
 					chat("global", 1, "!", 0, "[G] {playerName}: {message}"),
 					chat("staff", 2, "!", 0, "[S] {playerName}: {message}").toBuilder()
-							.requirements(requirements(permission("socialismus.chat.staff"), null))
+							.requires(permission("socialismus.chat.staff"))
 							.build()
 			);
 		}

@@ -28,8 +28,8 @@ public class Messages {
 		private CommandMessages commands;
 
 		/**
-		 * The wording of requirements wherever no feature words them, by the requirement's key, such as
-		 * {@code socialismus:world}
+		 * The texts of requirements wherever no feature words them, by the reason's key, such as
+		 * {@code permission.missing} or {@code bubbler:activator.outside}.
 		 */
-		private Map<String, RequirementReasons> requirements;
+		private Map<String, String> requirements = Map.of();
 }

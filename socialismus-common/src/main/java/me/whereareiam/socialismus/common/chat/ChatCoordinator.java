@@ -3,7 +3,6 @@ package me.whereareiam.socialismus.common.chat;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcastPolicy;
 import me.whereareiam.socialismus.common.chat.broadcast.ChatBroadcaster;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
@@ -15,7 +14,6 @@ import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.util.ComponentUtil;
 import me.whereareiam.socialismus.util.EventUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,10 +69,6 @@ public class ChatCoordinator implements ChatCoordinationService {
 		EventUtil.callEvent(
 				new ChatBroadcastEvent(msg, msg.isCancelled()),
 				() -> {
-					msg.getSender().setData(Constants.DataKeys.LAST_CHAT, msg.getChat());
-					msg.getSender().setData(Constants.DataKeys.LAST_TRIGGER, msg.getTrigger());
-					msg.getSender().setData(Constants.DataKeys.LAST_MESSAGE, 
-							msg.getContent() != null ? ComponentUtil.getPLAIN_TEXT_SERIALIZER().serialize(msg.getContent()) : "");
 					if (policy.allows(msg))
 						chatBroadcaster.broadcast(msg);
 					chatHistoryContainer.addMessage(msg.getId(), msg);

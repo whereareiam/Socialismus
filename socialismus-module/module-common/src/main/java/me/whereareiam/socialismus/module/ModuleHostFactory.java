@@ -14,6 +14,8 @@ import me.whereareiam.chassis.common.HostOptions;
 import me.whereareiam.chassis.common.loading.ExportLayer;
 import me.whereareiam.chassis.model.Version;
 import me.whereareiam.chassis.platform.Platform;
+import me.whereareiam.conditia.Conditions;
+import me.whereareiam.conditia.adapter.chassis.ExtensionConditions;
 import me.whereareiam.socialismus.BuildConfig;
 import me.whereareiam.socialismus.integration.Integration;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +36,7 @@ public final class ModuleHostFactory {
 	private static final List<String> EXPORTS = List.of(
 			"me.whereareiam.socialismus",
 			"me.whereareiam.chassis",
+			"me.whereareiam.conditia",
 			"me.whereareiam.configura",
 			"me.whereareiam.strata",
 			"me.whereareiam.keystone",
@@ -94,8 +97,11 @@ public final class ModuleHostFactory {
 				.transformers(libraries.getLibraryTransformers())
 				.build();
 
+		// Each module registers its condition types in a scope named after its id, closed when it stops.
+		ExtensionConditions conditions = new ExtensionConditions(injector.getInstance(Conditions.class));
+
 		return new ChassisHost<>(options(attache), SocialisticModule.class, ModuleFields.class,
-				(base, fields) -> new DefaultModuleContext(base, attache.groups(base.descriptor().getId())), factory());
+				(base, fields) -> new DefaultModuleContext(base, attache.groups(base.descriptor().getId()), conditions.open(base)), factory());
 	}
 
 	private HostOptions options(AttacheLibraries attache) {

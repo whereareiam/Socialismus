@@ -1,5 +1,6 @@
 package me.whereareiam.socialismus.module.dialogue.common.delivery;
 
+import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
@@ -10,18 +11,16 @@ import me.whereareiam.socialismus.module.dialogue.api.event.DialogueDeliveredEve
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
-import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
-import me.whereareiam.socialismus.module.dialogue.common.MessagingRequirements;
+import me.whereareiam.socialismus.module.dialogue.common.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.module.dialogue.common.control.RecipientControl;
+import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryIgnoreStore;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryPreferencesStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
-import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
-import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,15 +63,10 @@ class LocalDeliveryTest {
 		Serializer.initialize(() -> engine);
 
 		MessagingFormats formats = new MessagingFormats();
-		formats.setSent(List.of(new DialogueFormat("To {recipientName}: {message}", null)));
-		formats.setReceived(List.of(new DialogueFormat("{senderName} -> {recipientName}: {message}", null)));
+		formats.setSent(List.of(new DialogueFormat("To {recipientName}: {message}", Requirements.none(), Requirements.none())));
+		formats.setReceived(List.of(new DialogueFormat("{senderName} -> {recipientName}: {message}", Requirements.none(), Requirements.none())));
 
-		MessagingRequirements requirements = new MessagingRequirements(
-				mock(RequirementEvaluatorService.class),
-				mock(RequirementReasonService.class),
-				TestDataBuilder::defaultSettings,
-				DialogueMessages::new
-		);
+		DialogueRequirements requirements = DialogueConditions.bound(TestDataBuilder::defaultSettings, () -> formats, ModerationFormats::new);
 		RecipientControl control = new RecipientControl(TestDataBuilder::defaultSettings, toggles, ignores);
 		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, ModerationFormats::new, requirements), eventManager, control);
 	}

@@ -43,7 +43,7 @@ class ChatHistoryTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(chat("global", 0, "", 0, "{clear}[G] {playerName}: {message}"));
-			files.put(CHAT_SETTINGS, Map.of("history", Map.of("requirements", world("world"))));
+			files.put(CHAT_SETTINGS, Map.of("history", Map.of("requires", world("world"))));
 			files.put(CHAT_MESSAGES, Map.of("clearFormat", Map.of("format", CLEAR + " ")));
 		}
 	}

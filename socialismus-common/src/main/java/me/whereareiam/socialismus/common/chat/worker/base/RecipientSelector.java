@@ -5,7 +5,6 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Serializer;
-import me.whereareiam.socialismus.common.requirement.RequirementEvaluator;
 import me.whereareiam.socialismus.event.chat.recipient.RecipientsSelectedEvent;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.Worker;
@@ -15,9 +14,9 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.chat.ChatToggleStore;
 import me.whereareiam.socialismus.type.PlatformType;
-import me.whereareiam.socialismus.type.chat.Participants;
 import me.whereareiam.socialismus.util.EventUtil;
 
 import java.util.Collection;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class RecipientSelector {
-	private final RequirementEvaluator requirementEvaluator;
+	private final ChatRequirementService requirements;
 	private final Provider<ChatSettings> settingsProvider;
 	private final Provider<ChatMessages> messagesProvider;
 	private final ChatToggleStore toggles;
@@ -34,12 +33,12 @@ public class RecipientSelector {
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<ChatMessage> workerProcessor,
-			RequirementEvaluator requirementEvaluator,
+			ChatRequirementService requirements,
 			Provider<ChatSettings> settings,
 			Provider<ChatMessages> messages,
 			ChatToggleStore toggles
 	) {
-		this.requirementEvaluator = requirementEvaluator;
+		this.requirements = requirements;
 		this.settingsProvider = settings;
 		this.messagesProvider = messages;
 		this.toggles = toggles;
@@ -69,7 +68,7 @@ public class RecipientSelector {
 			recipients = recipients.stream()
 					.filter(r -> isInSameRealm(sender, r))
 					.filter(r -> isWithinRadius(sender, r, radius))
-					.filter(r -> meetsRecipientRequirements(chat, r))
+					.filter(r -> requirements.reaches(chat, r, chatMessage))
 					.filter(r -> reachesToggledOff || r == sender || !toggles.isOff(r.getUniqueId(), chat.getId()))
 					.collect(Collectors.toSet());
 
@@ -81,7 +80,7 @@ public class RecipientSelector {
 			}
 		} else {
 			recipients = recipients.stream()
-					.filter(r -> meetsRecipientRequirements(chat, r))
+					.filter(r -> requirements.reaches(chat, r, chatMessage))
 					.filter(r -> reachesToggledOff || r == sender || !toggles.isOff(r.getUniqueId(), chat.getId()))
 					.collect(Collectors.toSet());
 		}
@@ -128,15 +127,7 @@ public class RecipientSelector {
 		ChatSettings.Toggle toggle = settings.getToggle();
 		if (toggle == null || !toggle.isEnabled() || !chat.isToggleable()) return true;
 
-		return toggle.getBypass() != null && requirementEvaluator.check(toggle.getBypass(), sender);
-	}
-
-	private boolean meetsRecipientRequirements(Chat chat, SocialismusPlayer recipient) {
-		if (chat.getRequirements() == null) return true;
-		var req = chat.getRequirements().get(Participants.RECIPIENT);
-		if (req == null) return true;
-
-		return requirementEvaluator.check(req, recipient);
+		return requirements.bypassesToggle(sender);
 	}
 
 	private boolean isInSameRealm(SocialismusPlayer sender, SocialismusPlayer recipient) {

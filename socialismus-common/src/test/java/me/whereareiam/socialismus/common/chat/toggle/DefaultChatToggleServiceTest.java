@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -90,6 +89,6 @@ class DefaultChatToggleServiceTest {
 
 	private static InternalChat chat(String id, boolean toggleable) {
 		return InternalChat.from(Chat.builder().id(id).enabled(true).triggers(List.of()).formats(List.of())
-				.requirements(Map.of()).toggleable(toggleable).build());
+				.toggleable(toggleable).build());
 	}
 }

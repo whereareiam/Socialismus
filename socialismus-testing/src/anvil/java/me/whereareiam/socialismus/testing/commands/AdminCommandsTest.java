@@ -1,11 +1,9 @@
 package me.whereareiam.socialismus.testing.commands;
 
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
 import me.whereareiam.socialismus.testing.environment.Socialismus;
 import me.whereareiam.socialismus.testing.journey.Player;
-import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +12,7 @@ import java.util.function.Consumer;
 
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.CHAT_SETTINGS;
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.chat;
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.not;
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.world;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -113,10 +112,7 @@ class AdminCommandsTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}"));
-			RequirementGroup outsideTheOverworld = world("world").toBuilder()
-					.operator(RequirementOperatorType.NOT)
-					.build();
-			files.put(CHAT_SETTINGS, Map.of("history", Map.of("bypassRequirements", outsideTheOverworld)));
+			files.put(CHAT_SETTINGS, Map.of("history", Map.of("bypass", not(world("world")))));
 		}
 	}
 }

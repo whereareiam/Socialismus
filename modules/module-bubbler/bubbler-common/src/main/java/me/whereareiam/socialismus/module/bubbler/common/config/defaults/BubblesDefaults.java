@@ -1,10 +1,9 @@
 package me.whereareiam.socialismus.module.bubbler.common.config.defaults;
 
 import com.google.inject.Singleton;
+import me.whereareiam.conditia.model.Node;
+import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
-import me.whereareiam.socialismus.Constants;
-import me.whereareiam.socialismus.model.requirement.RequirementGroup;
-import me.whereareiam.socialismus.model.requirement.type.ChatRequirement;
 import me.whereareiam.socialismus.module.bubbler.api.model.Vector;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleTransition;
@@ -13,10 +12,8 @@ import me.whereareiam.socialismus.module.bubbler.api.type.AnimationType;
 import me.whereareiam.socialismus.module.bubbler.api.type.DisplayType;
 import me.whereareiam.socialismus.module.bubbler.api.type.TransitionType;
 import me.whereareiam.socialismus.module.bubbler.common.config.dynamic.BubblesConfig;
-import me.whereareiam.socialismus.type.chat.Participants;
-import me.whereareiam.socialismus.type.requirement.RequirementConditionType;
-import me.whereareiam.socialismus.type.requirement.RequirementOperatorType;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -65,21 +62,20 @@ public class BubblesDefaults implements DefaultsProvider<BubblesConfig> {
 						TransitionType.INTER, BubbleTransition.builder()
 								.sound(BubbleTransition.Sound.builder().type("ENTITY_CHICKEN_EGG").pitch(1.0f).volume(1.0f).build())
 								.build()
-				)).requirements(Map.of(
-						Participants.SENDER, RequirementGroup.builder()
-								.operator(RequirementOperatorType.OR)
-								.groups(RequirementGroup.of(
-										Constants.Requirements.CHAT,
-										ChatRequirement.builder()
-												.condition(RequirementConditionType.CONTAINS)
-												.expected("true")
-												.chatIdentifiers(List.of("null", "fallback", "local"))
-												.build()
-								)).build()
-				)).build();
+				)).requires(fromCommandOrChats("fallback", "local")).build();
 
 		config.getBubbles().add(bubble);
 
 		return config;
+	}
+
+	// - any:
+	//     - bubbler:activator: COMMAND
+	//     - bubbler:chat: [fallback, local]
+	private static Requirements fromCommandOrChats(String... chats) {
+		Node command = Node.Mapping.of("bubbler:activator", new Node.Scalar("COMMAND"));
+		Node chat = Node.Mapping.of("bubbler:chat", new Node.Sequence(Arrays.stream(chats).<Node>map(Node.Scalar::new).toList()));
+
+		return Requirements.of(new Node.Sequence(List.of(Node.Mapping.of("any", new Node.Sequence(List.of(command, chat))))));
 	}
 }

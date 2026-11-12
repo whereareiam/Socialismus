@@ -9,6 +9,8 @@ dependencies {
     compileOnly(projects.socialismusModule.moduleApi)
 
     implementation(libs.attache.standalone)
+    implementation(libs.conditia.adapter.configura)
+    implementation(libs.conditia.common)
 
     attache(libs.guice)
     attache(libs.configura)

@@ -18,9 +18,6 @@ public class BubbleCoordinator implements BubbleCoordinationService {
 	@Override
 	public void coordinate(BubbleMessage bubbleMessage) {
 		Logger.debug("Coordinating bubble message for: " + bubbleMessage.getSender().getUsername());
-		// Store activator type for requirement checks, before they select the bubble
-		bubbleMessage.getSender().setData(BubblerConstants.DataKeys.LAST_ACTIVATOR, bubbleMessage.getActivatorType());
-
 		bubbleMessage = bubbleMessageProcessor.process(bubbleMessage);
 		if (bubbleMessage.isCancelled()) return;
 
