@@ -13,6 +13,7 @@ import me.whereareiam.socialismus.module.bubbler.api.VersionResolver;
 import me.whereareiam.socialismus.module.bubbler.api.model.packet.type.entity.EntityPacket;
 import me.whereareiam.socialismus.type.Version;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,9 @@ import java.util.UUID;
  * Packet for spawning an armor stand entity with a custom name.
  * Used for displaying bubble text on older Minecraft versions
  * that don't support text display entities.
+ *
+ * <p>The text reaches PacketEvents as JSON: PacketEvents may use another Adventure than Bubbler, such as the server's
+ * on Paper while the BUKKIT jar relocates Bubbler's.
  */
 @Getter
 @SuperBuilder(toBuilder = true)
@@ -89,8 +93,8 @@ public class ArmorStandPacket extends EntityPacket {
 		if (customName != null) {
 			metadata.add(new EntityData<>(
 					VersionResolver.resolveOrThrow(CUSTOM_NAME_INDEX),
-					EntityDataTypes.OPTIONAL_ADV_COMPONENT,
-					Optional.of(customName)
+					EntityDataTypes.OPTIONAL_COMPONENT,
+					Optional.of(GsonComponentSerializer.gson().serialize(customName))
 			));
 		}
 
