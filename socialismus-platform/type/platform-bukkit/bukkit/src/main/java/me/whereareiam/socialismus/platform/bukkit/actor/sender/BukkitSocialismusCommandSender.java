@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.platform.bukkit.actor.sender;
 import lombok.Getter;
 import me.whereareiam.keystone.Actor;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import me.whereareiam.socialismus.platform.bukkit.audience.SenderAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -26,18 +26,18 @@ public class BukkitSocialismusCommandSender implements Actor {
 	private final CommandSender commandSender;
 
 	/**
-	 * The BukkitAudiences instance for Adventure API support
+	 * The audiences that reach the sender
 	 */
 	@NotNull
-	private final BukkitAudiences audiences;
+	private final SenderAudiences audiences;
 
 	/**
 	 * Creates a new BukkitSocialismusCommandSender wrapping a command sender.
 	 *
 	 * @param commandSender The original CommandSender
-	 * @param audiences     The BukkitAudiences instance for Adventure API support
+	 * @param audiences     The audiences that reach the sender
 	 */
-	public BukkitSocialismusCommandSender(@NotNull CommandSender commandSender, @NotNull BukkitAudiences audiences) {
+	public BukkitSocialismusCommandSender(@NotNull CommandSender commandSender, @NotNull SenderAudiences audiences) {
 		this.commandSender = commandSender;
 		this.audiences = audiences;
 	}

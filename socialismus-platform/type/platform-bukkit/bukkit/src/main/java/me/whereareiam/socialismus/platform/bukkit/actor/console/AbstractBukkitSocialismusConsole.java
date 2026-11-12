@@ -3,7 +3,7 @@ package me.whereareiam.socialismus.platform.bukkit.actor.console;
 import lombok.Getter;
 import me.whereareiam.commandant.model.Console;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import me.whereareiam.socialismus.platform.bukkit.audience.SenderAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -23,18 +23,18 @@ public abstract class AbstractBukkitSocialismusConsole implements Console {
 	private final ConsoleCommandSender consoleSender;
 	
 	/**
-	 * The BukkitAudiences instance for Adventure API support
+	 * The audiences that reach the sender
 	 */
 	@NotNull
-	private final BukkitAudiences audiences;
+	private final SenderAudiences audiences;
 
 	/**
 	 * Creates a new AbstractBukkitSocialismusConsole wrapping a console sender.
 	 *
 	 * @param consoleSender The Bukkit console sender
-	 * @param audiences     The BukkitAudiences instance for Adventure API support
+	 * @param audiences     The audiences that reach the sender
 	 */
-	protected AbstractBukkitSocialismusConsole(@NotNull ConsoleCommandSender consoleSender, @NotNull BukkitAudiences audiences) {
+	protected AbstractBukkitSocialismusConsole(@NotNull ConsoleCommandSender consoleSender, @NotNull SenderAudiences audiences) {
 		this.consoleSender = consoleSender;
 		this.audiences = audiences;
 	}
