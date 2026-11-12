@@ -21,15 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("platform")
 class PlatformStartTest {
 	@Test
-	@MinecraftVersions(since = "26.1")
+	@MinecraftVersions(since = "1.20.6")
 	@Socialismus(network = Network.PAPER, configure = GlobalChat.class)
 	void paperJarRunsOnPaper(ScenarioContext anvil) {
 		startsAndChats(anvil, "Platform: PAPER [PAPER]");
 	}
 
-	// Below 26.1 a Paper network installs the BUKKIT jar, as the PAPER jar needs the Paper API of 26.x.
+	// Below 1.20.6 a Paper network installs the BUKKIT jar, as the PAPER jar needs the Paper API of 1.20.6.
 	@Test
-	@MinecraftVersions(before = "26.1")
+	@MinecraftVersions(before = "1.20.6")
 	@Socialismus(network = Network.PAPER, configure = GlobalChat.class)
 	void bukkitJarRunsOnPaper(ScenarioContext anvil) {
 		startsAndChats(anvil, "Platform: PAPER [BUKKIT]");
@@ -48,7 +48,7 @@ class PlatformStartTest {
 	}
 
 	@Test
-	@MinecraftVersions(since = "26.1")
+	@MinecraftVersions(since = "1.20.6")
 	@Socialismus(network = Network.PAPER, bundle = true, configure = GlobalChat.class)
 	void bundleRunsOnPaper(ScenarioContext anvil) {
 		startsAndChats(anvil, "Platform: PAPER [PAPER]");

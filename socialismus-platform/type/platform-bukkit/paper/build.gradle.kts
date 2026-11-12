@@ -1,5 +1,6 @@
 plugins {
     id("packaging-platform-jar")
+    id("packaging-downgraded-jar")
     alias(libs.plugins.attache)
 }
 
@@ -13,6 +14,11 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(25))
     }
+}
+
+downgrade {
+    // Paper 1.20.6, the oldest version whose API the jar calls, runs on Java 21.
+    java.set(21)
 }
 
 dependencies {

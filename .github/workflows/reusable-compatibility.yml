@@ -24,10 +24,34 @@ jobs:
         # explains each. The newest, 26.3 and Velocity 4.3.1, run every suite in the checks of every pull request.
         platform: [Minecraft]
         version: ["1.16.5", "1.19.4", "1.20.6", "1.21.1", "1.21.11", "26.1.2"]
-        # modules and bubbler join once the BUKKIT jar delivers messages outside chat and Bubbler's components reach
-        # PacketEvents on it.
         suite: [platform]
         include:
+          # Their journeys run on Paper, which installs the PAPER jar from 1.20.6; below it they join once the BUKKIT jar
+          # delivers messages outside chat and Bubbler's components reach PacketEvents on it.
+          - platform: Minecraft
+            version: "1.20.6"
+            suite: modules
+          - platform: Minecraft
+            version: "1.20.6"
+            suite: bubbler
+          - platform: Minecraft
+            version: "1.21.1"
+            suite: modules
+          - platform: Minecraft
+            version: "1.21.1"
+            suite: bubbler
+          - platform: Minecraft
+            version: "1.21.11"
+            suite: modules
+          - platform: Minecraft
+            version: "1.21.11"
+            suite: bubbler
+          - platform: Minecraft
+            version: "26.1.2"
+            suite: modules
+          - platform: Minecraft
+            version: "26.1.2"
+            suite: bubbler
           # Velocity 4.0.0 speaks no newer Minecraft than 26.1.2, so its servers run that.
           - platform: Velocity
             version: "4.0.0"

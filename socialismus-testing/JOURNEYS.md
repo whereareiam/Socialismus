@@ -22,23 +22,23 @@ Journeys run on the newest versions by default: Paper 26.3, Spigot 26.3 and Velo
 `Versions` pins the builds the journeys can run, and a run picks one with
 `-Psocialismus.journeys.minecraft=<version>` and `-Psocialismus.journeys.velocity=<version>`; Anvil
 starts each server on the Java its version needs. The compatibility workflow runs the `platform`
-suite at the versions where the game or the platforms changed what Socialismus depends on; the
-`modules` and `bubbler` suites join once the BUKKIT jar delivers messages outside chat and Bubbler's
-components reach PacketEvents on it:
+suite at the versions where the game or the platforms changed what Socialismus depends on, and the
+`modules` and `bubbler` suites from 1.20.6, where Paper installs the PAPER jar; below it they join
+once the BUKKIT jar delivers messages outside chat and Bubbler's components reach PacketEvents on it:
 
 | Minecraft | Java | Why |
 | --- | --- | --- |
 | 1.16.5 | 11 | the oldest version the BUKKIT jar names; Bubbler draws armor stands |
 | 1.19.4 | 17 | signed chat, text displays |
-| 1.20.6 | 21 | Java 21, item components |
+| 1.20.6 | 21 | Java 21, item components; the oldest version the PAPER jar and the bundle run on |
 | 1.21.1 | 21 | before the packet changes of 1.21.2 |
 | 1.21.11 | 21 | after the text components of 1.21.5 and Paper's hard fork |
-| 26.1.2 | 25 | the oldest version the PAPER jar and the bundle run on |
+| 26.1.2 | 25 | Java 25, the oldest version Velocity 4.0.0 speaks |
 | 26.3 | 25 | the newest; every suite runs here on every pull request |
 
 Velocity 4.0.0, the oldest Velocity the VELOCITY jar runs on, runs the `platform` suite in front of
 26.1.2 servers, the newest it speaks. Paper below
-26.1 installs the BUKKIT jar, as admins of those servers do, and `@MinecraftVersions` skips a journey
+1.20.6 installs the BUKKIT jar, as admins of those servers do, and `@MinecraftVersions` skips a journey
 at the versions it does not apply to, such as text display bubbles before 1.19.4. Anvil's players
 speak no 1.20.4, 1.21.4 or 1.21.5, and Anvil starts no Folia yet.
 
@@ -111,10 +111,10 @@ One Paper server unless stated otherwise.
 - [x] The BUKKIT jar starts on the latest Spigot and a player chats **first**
 - [x] The VELOCITY jar starts on Velocity alone and a player chats **first**
 - [x] The BUNDLE jar starts on Paper and on Velocity **first**
-- [x] The BUKKIT jar starts on Paper below 26.1 and a player chats, at every version of the matrix
+- [x] The BUKKIT jar starts on Paper below 1.20.6 and a player chats, at every version of the matrix
 - [x] The BUKKIT jar and the PAPER jar start at the versions of the matrix they name
-- [ ] The BUKKIT jar on Paper 26.1 or newer recommends the PAPER jar
-- [ ] The PAPER jar refuses to start on Paper below 26.1 with a reason
+- [ ] The BUKKIT jar on Paper 1.20.6 or newer recommends the PAPER jar
+- [ ] The PAPER jar refuses to start on Paper below 1.20.6 with a reason
 
 ## network
 

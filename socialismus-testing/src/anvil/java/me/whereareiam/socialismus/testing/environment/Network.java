@@ -133,7 +133,7 @@ public enum Network {
 		if (bundle) return "bundle";
 		if (process.equals(PROXY)) return "velocity";
 
-		// Paper below 26.1 runs the BUKKIT jar, since the PAPER jar needs the Paper API of 26.x.
+		// Paper below 1.20.6 runs the BUKKIT jar, since the PAPER jar needs the Paper API of 1.20.6.
 		return this == SPIGOT || !Versions.paperJar() ? "bukkit" : "paper";
 	}
 
