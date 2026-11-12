@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.model.Event;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.type.EventPriority;
 import me.whereareiam.socialismus.type.PlatformType;
+import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.Version;
 
 import java.util.HashMap;
@@ -33,7 +34,8 @@ public class SettingsDefaults implements DefaultsProvider<Settings> {
 		if (PlatformType.isProxy())
 			listeners.setEvents(getPrioritiesForProxy());
 
-		if (PlatformType.isAtLeast(PlatformType.PAPER))
+		// The events the jar listens to: the BUKKIT jar listens to Bukkit's events on Paper too.
+		if (PlatformType.isAtLeast(PlatformType.PAPER) && PluginType.getExactType() == PluginType.PAPER)
 			listeners.setEvents(getPrioritiesForPaper());
 		else if (PlatformType.isAtLeast(PlatformType.BUKKIT))
 			listeners.setEvents(getPrioritiesForBukkit());
