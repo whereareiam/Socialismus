@@ -33,7 +33,7 @@ A module's build file holds its role, dependencies and metadata; shared behaviou
 | `packaging-shaded-jar` | a jar that bundles its dependencies, with the relocations of `packaging-relocations` |
 | `packaging-platform-jar` | a plugin jar; `platform { name.set("PAPER") }` names its classifier and `Plugin-Type` and it fills `plugin.yml` and `paper-plugin.yml` |
 | `packaging-bundle-jar` | the bundle jar: every platform whose `platform` block keeps `bundled`, with the descriptors it lists in `descriptors` |
-| `packaging-module-jar` | the jar of a Socialismus module; `socialismusModule { name.set("Chirper") }` names the jar and fills `module.json` |
+| `packaging-module-jar` | the jar of a Socialismus module; `socialismusModule { name.set("Chirper") }` names the jar and fills `module.yml` |
 
 The modules compile with Java 21 whichever Java runs Gradle; `platform-bukkit-paper` and `platform-proxy-velocity` use a Java 25 toolchain, because the Paper API of 26.x and the Velocity API of 4.x are built for Java 25.
 
@@ -57,14 +57,19 @@ modules/module-dialogue/
 
 - logic belongs in `-common`, never in the assembly
 - add a further side, such as `-command`, only when it exists; a small family starts with its assembly alone
-- a module's runtime libraries are Attache libraries of its own: declare them with `attache(...)` in the part that uses them (applying the `me.whereareiam.attache` plugin there), and Socialismus loads them into the module's class loader before its main class; put optional ones, such as one database driver, in a `group(...)` and load it with `libraries.loadGroups(...)` from the module
-- a module shares its API, and the libraries that API exposes, with the modules that depend on it through `socialismusModule { exports.add("org.jdbi") }`: package names, each with its subpackages; the build writes them to `module.json` and `checkModuleExports` fails when one has no class in the module or on its classpath
-- a module's `module.json` says what it is built for and what it needs, one fact in one place:
-  - `socialismus`: the Socialismus versions, filled by the build (`@socialismus@`)
-  - `platforms`: where it runs, any one of them, such as `{"type": "PAPER", "version": "26\\.1(\\..*)?"}`; the detected platform is exact, so Folia runs a module only when it lists `FOLIA`
-  - `dependencies`: `MODULE` (another module; its exports reach the dependent), `INTEGRATION` (a plugin through Socialismus's integration) and `PLATFORM` (a plugin the platform loaded; all its classes, looked up after the module's own); any of them may be `optional`
-  - versions are regular expressions the whole version must match, and any version when left out
+- a module's runtime libraries are Attache libraries of its own: declare them with `attache(...)` in the part that uses them (applying the `me.whereareiam.attache` plugin there), and Socialismus loads them into the module's class loader before its main class; put optional ones, such as one database driver, in a `group(...)` and load it with `context.libraries().load(...)` from the module
+- a module shares its API, and the libraries that API exposes, with the modules that depend on it through `socialismusModule { exports.add("org.jdbi") }`: package names, each with its subpackages; the build writes them to `module.yml` and `checkModuleExports` fails when one has no class in the module or on its classpath
+- modules are Chassis extensions (`me.whereareiam.chassis`): `socialismus-module` makes one `ChassisHost` of them, and the rest of Socialismus sees it as Chassis's `Extensions`; a main class implements `SocialisticModule` with `enable(ModuleContext)` and `disable()`, is made by Socialismus's injector, and gets its folder `modules/<id>/` from `context.dataFolder()`
+- a module's `module.yml` is a Chassis descriptor and says what it is built for and what it needs, one fact in one place:
+  - `id`: lowercase with hyphens, such as `socialismus-network`; it names the module's folder and what other modules depend on; `name` is what admins read
+  - `host`: the Socialismus versions, as a range filled by the build (`@host@`, `^` and Socialismus's host version); `version` is filled by the build too (`@projectVersion@`)
+  - `platforms`: where it runs, any one of them, such as `{name: paper, version: ">=1.16 <1.22 || ~26.1"}`; the detected platform is exact, so Folia runs a module only when it lists `folia`
+  - `dependencies` (other modules by id; their exports reach the dependent), `requires` (an integration Socialismus offers, by its name in lower case, such as `packetevents: "*"`) and `peers` (a plugin the platform loaded, with the `packages` of it the module uses); dependencies and peers may be `optional`
+  - versions are ranges such as `^2.0.0` or `>=1.16 <1.22`, and any version when left out
+  - `updater`: Socialismus's own field, read into `ModuleFields`
+- Socialismus's host version is its release version with `-RC7` written `-rc.7`, so pre-releases order by number; a dev build counts as the release `.github/release-notes.md` names, and its modules as a pre-release of it (`2.0.0-dev`)
 - modules stop in reverse dependency order, so a module still reaches what it depends on while it stops
+- a module sees of Socialismus only the packages `ModuleHostFactory` exports: Socialismus's own, the libraries it provides and the server's API; a new library modules use joins that list
 - `socialismus-testing/fixture/` holds modules built only for the module journeys, such as one that exports a package and one that depends on it
 
 ### Platforms

@@ -1,0 +1,117 @@
+---
+title: Writing a module
+description: Build a Socialismus module, the jar Socialismus loads from its modules folder.
+---
+
+A module is a jar in Socialismus's `modules/` folder. Socialismus reads its `module.yml`, starts it once everything it needs is there, and stops it before Socialismus stops. This page builds a small module end to end.
+
+## Prerequisites
+
+- Java 21 and a build tool; the examples use Gradle Kotlin DSL.
+- The module API on the compile class path, `compileOnly`, as [Consuming the API](../consuming-api/index.mdx) shows under "Socialismus Module". It brings Socialismus's API and the contract of the module system.
+
+## The main class
+
+The main class implements `SocialisticModule`. Socialismus makes it through its injector, so its constructor may take Socialismus's services, then calls `enable` with the module's context and `disable` when it stops.
+
+```java
+package com.example.greeter;
+
+import com.google.inject.Inject;
+import me.whereareiam.socialismus.event.EventManager;
+import me.whereareiam.socialismus.module.ModuleContext;
+import me.whereareiam.socialismus.module.SocialisticModule;
+import org.jetbrains.annotations.NotNull;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public final class Greeter implements SocialisticModule {
+    private final EventManager events;
+
+    @Inject
+    public Greeter(EventManager events) {
+        this.events = events;
+    }
+
+    @Override
+    public void enable(@NotNull ModuleContext context) throws Exception {
+        Path settings = context.dataFolder().resolve("settings.yml");
+        if (Files.notExists(settings)) Files.writeString(settings, "greeting: Hello\n");
+
+        context.logger().log(System.Logger.Level.INFO, "Greeter reads " + settings);
+    }
+
+    @Override
+    public void disable() {
+        // Release what enable acquired that the context does not track.
+    }
+}
+```
+
+- `context.dataFolder()` is the module's own folder, `modules/<id>/`; it exists when `enable` runs.
+- Register what should go away with the module through `context.onClose(...)`; it is closed after `disable`, also when `enable` fails.
+- An exception from `enable` makes the module fail to start. Socialismus logs why and keeps running without it.
+
+## The descriptor
+
+`src/main/resources/module.yml` tells Socialismus who the module is and what it needs:
+
+```yaml
+id: greeter
+name: Greeter
+version: 1.0.0
+authors:
+  - you
+main: com.example.greeter.Greeter
+host: ">=2.0.0-rc.7"
+platforms:
+  - name: paper
+  - name: folia
+  - name: velocity
+```
+
+| Field | Meaning |
+| --- | --- |
+| `id` | Lowercase letters, digits and hyphens. It names the module's folder and is what other modules depend on. |
+| `name` | What administrators read, such as in `/socialismus debug`. |
+| `version` | The module's version, such as `1.0.0` or `1.1.0-beta.1`. |
+| `main` | The class that implements `SocialisticModule`. |
+| `host` | The Socialismus versions the module runs on, as a range: `">=2.0.0-rc.7"` for 2.0.0-RC7 and everything after it, `^2.0.0` for 2.x. Release candidates read as `2.0.0-rc.7`, so they order by number. |
+| `platforms` | Where the module runs: `paper`, `folia`, `spigot`, `bukkit` or `velocity`, each with an optional `version` range of the game or proxy, such as `">=1.16 <1.22 \|\| ~26.1"`. Leave it out to run everywhere. |
+| `dependencies` | Other modules by id, such as `[{id: socialismus-network}]`, each with an optional `version` range and `optional: true`. They start first, and the module sees the packages they export. |
+| `requires` | Integrations of Socialismus the module needs, by name in lower case, such as `{packetevents: "*"}`. |
+| `peers` | Plugins the module uses directly, by the id the platform knows them by, with the `packages` of their API it uses: `[{id: LuckPerms, packages: [net.luckperms.api]}]`. The module waits until the plugin is loaded. |
+| `exports` | Packages of the module that its dependents see, such as its API, each with its subpackages. |
+
+A range is written like `^2.0.0`, `>=1.16 <1.22` or `~26.1`, with `||` between alternatives; an entry without a range accepts any version.
+
+## What a module sees
+
+A module sees its own jar, the packages its dependencies export, the packages it names of its peers, and of Socialismus: Socialismus's API, the libraries Socialismus provides (Configura, Strata, Keystone, Commandant, Adventure, Cloud, SLF4J, Guice, Jackson and Guava) and the server's or proxy's API. Anything else, such as a database driver, the module brings in its own jar or as a library of its own.
+
+Socialismus relocates Guice, Jackson and Guava below `me.whereareiam.socialismus.library`. A module that uses them, such as the `@Inject` above, relocates them the same way when it shades its jar: `com.google.inject` to `me.whereareiam.socialismus.library.guice`, `com.fasterxml.jackson` to `me.whereareiam.socialismus.library.jackson` and `com.google.common` to `me.whereareiam.socialismus.library.guava`.
+
+A library only some installations need, such as one database driver, goes in an Attache group of the module and is loaded once the module knows it needs it:
+
+```java
+context.libraries().load("postgres");
+```
+
+## Resources for other modules
+
+A main class that implements `ResourceProvider` has its resources registered as soon as it is enabled, before the modules that depend on it start, and unregistered when it stops. A module that uses another module's resource depends on that module.
+
+## Install and check
+
+Copy the jar into `plugins/Socialismus/modules/` and restart the server or proxy. A module that started is logged as `Enabled module Greeter 1.0.0` and listed by `/socialismus debug`.
+
+When it does not start, the log says why:
+
+| Log line | What to check |
+| --- | --- |
+| `The module greeter cannot start: It is built for the host's API >=2.0.0-rc.7, and the host's API is 2.0.0-rc.6` | Update Socialismus, or widen `host`. |
+| `The module greeter cannot start: It runs on velocity, not on paper` | Add the platform to `platforms`, or install the module where it runs. |
+| `The module greeter waits for 'socialismus-network' * (not installed)` | Install the module it depends on, or mark the dependency `optional: true`. |
+| `The module greeter waits for the peer 'LuckPerms', which is not loaded` | Install the plugin, or mark the peer `optional: true`. |
+| `The module greeter cannot start: The descriptor of greeter names no 'main'` | Fix `module.yml`; the message names the field. A jar without a readable descriptor is named by its file name. |

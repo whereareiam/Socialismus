@@ -14,7 +14,7 @@ Install on every Socialismus that takes part:
 - `Socialismus-Network` in `modules/`
 - one transport in `modules/`:
   - `Socialismus-Redis`, when you run a Redis that every Socialismus reaches. It also stores what the network shares, so a starting server picks it up straight from Redis.
-  - `Socialismus-Link`, for one proxy and its servers, when there is no Redis. The proxy listens on a port and every server connects to it with a shared secret, written by the proxy's first start into `modules/SocialismusLink/settings.yml`; copy it to every server and set `proxy` there to where the proxy listens.
+  - `Socialismus-Link`, for one proxy and its servers, when there is no Redis. The proxy listens on a port and every server connects to it with a shared secret, written by the proxy's first start into `modules/socialismus-link/settings.yml`; copy it to every server and set `proxy` there to where the proxy listens.
   - `Socialismus-Channelizer`, on servers behind a proxy that does not run Socialismus. It sends plugin messages through the proxy, so it only carries messages while players are online on both servers, and it cannot connect proxies to each other.
 
 Without a transport, SocialismusNetwork runs alone: nothing leaves the server.
@@ -37,7 +37,7 @@ A server behind a proxy that runs Socialismus still receives each message the pr
 
 ## Configuration
 
-SocialismusNetwork's settings are `modules/SocialismusNetwork/settings.yml`:
+SocialismusNetwork's settings are `modules/socialismus-network/settings.yml`:
 
 <Tabs items={["YAML", "JSON"]}>
   <Tab value="YAML">
