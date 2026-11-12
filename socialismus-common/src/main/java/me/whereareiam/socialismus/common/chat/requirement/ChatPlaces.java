@@ -8,6 +8,8 @@ import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
+import me.whereareiam.socialismus.service.chat.ChatRequirementService;
+import me.whereareiam.socialismus.service.phrase.PhraseService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,23 +34,25 @@ final class ChatPlaces implements AutoCloseable {
 	 * Binds the places of a chat.
 	 *
 	 * @param conditions binds the places
+	 * @param phrases    checks the phrases the lists' texts refer to
 	 * @param chat       the chat
 	 * @return the chat's places
-	 * @throws me.whereareiam.conditia.exception.ConditionException when one of its lists cannot be bound; the places
-	 *                                                              bound before are closed
+	 * @throws me.whereareiam.conditia.exception.ConditionException when one of its lists cannot be bound, or refers to
+	 *                                                              a phrase no file has; the places bound before are
+	 *                                                              closed
 	 */
-	static ChatPlaces bind(Conditions conditions, Chat chat) {
+	static ChatPlaces bind(Conditions conditions, PhraseService phrases, Chat chat) {
 		String path = "chats." + chat.getId();
 		List<Place> bound = new ArrayList<>();
 		try {
-			Place requires = open(bound, conditions.place(path + ".requires", listOf(chat.getRequires()), SENDER, MESSAGE));
-			Place reaches = open(bound, conditions.place(path + ".reaches", listOf(chat.getReaches()), RECIPIENT, SENDER, MESSAGE));
+			Place requires = open(bound, phrases, conditions.place(path + ".requires", listOf(chat.getRequires()), SENDER, MESSAGE));
+			Place reaches = open(bound, phrases, conditions.place(path + ".reaches", listOf(chat.getReaches()), RECIPIENT, SENDER, MESSAGE));
 
 			List<Place> formats = new ArrayList<>();
 			List<ChatFormat> chatFormats = chat.getFormats() == null ? List.of() : chat.getFormats();
 			for (int index = 0; index < chatFormats.size(); index++) {
 				String at = path + ".formats[" + index + "].requires";
-				formats.add(open(bound, conditions.place(at, listOf(chatFormats.get(index).getRequires()), SENDER, MESSAGE)));
+				formats.add(open(bound, phrases, conditions.place(at, listOf(chatFormats.get(index).getRequires()), SENDER, MESSAGE)));
 			}
 
 			return new ChatPlaces(requires, reaches, List.copyOf(formats));
@@ -62,8 +66,8 @@ final class ChatPlaces implements AutoCloseable {
 		return requires == null ? Requirements.none() : requires;
 	}
 
-	private static Place open(List<Place> bound, Place place) {
-		bound.add(place);
+	private static Place open(List<Place> bound, PhraseService phrases, Place place) {
+		bound.add(phrases.checked(ChatRequirementService.PHRASE_SCOPE, place));
 
 		return place;
 	}

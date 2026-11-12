@@ -21,6 +21,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFor
 import me.whereareiam.socialismus.module.dialogue.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.dialogue.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.dialogue.common.config.migration.DialogueConfigMigrations;
+import me.whereareiam.socialismus.module.dialogue.common.config.provider.DialoguePhrasesProvider;
 import me.whereareiam.socialismus.module.dialogue.common.control.IgnoredChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationChat;
 import me.whereareiam.socialismus.module.dialogue.common.conversation.ConversationModes;
@@ -33,6 +34,7 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
+import me.whereareiam.socialismus.service.phrase.PhraseService;
 import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +49,7 @@ public class Dialogue implements SocialisticModule {
 	/**
 	 * The module whose API Dialogue reaches only while it is enabled, as an optional dependency.
 	 */
+	private static final String ID = "dialogue";
 	private static final String NETWORK = "socialismus-network";
 
 	private final Injector parentInjector;
@@ -68,6 +71,7 @@ public class Dialogue implements SocialisticModule {
 						parentInjector.getInstance(PlayerRegistry.class),
 						parentInjector.getInstance(Conditions.class),
 						parentInjector.getInstance(RequirementReasonService.class),
+						parentInjector.getInstance(PhraseService.class),
 						parentInjector.getInstance(SerializationService.class),
 						parentInjector.getInstance(EventManager.class)
 				),
@@ -82,6 +86,9 @@ public class Dialogue implements SocialisticModule {
 				MessagingFormats.class,
 				ModerationFormats.class
 		).forEach(injector::getInstance);
+		DialoguePhrasesProvider phrases = injector.getInstance(DialoguePhrasesProvider.class);
+		phrases.get();
+		injector.getInstance(PhraseService.class).add(ID, phrases::get);
 		// A list that cannot be bound stops the module, naming the list.
 		injector.getInstance(DialogueRequirements.class).bind();
 
@@ -98,8 +105,9 @@ public class Dialogue implements SocialisticModule {
 			network = null;
 		}
 		listeners().forEach(eventManager()::unregister);
-		injector.getInstance(Scheduler.class).cancelByModule("dialogue");
+		injector.getInstance(Scheduler.class).cancelByModule(ID);
 		injector.getInstance(DialogueRequirements.class).close();
+		injector.getInstance(PhraseService.class).remove(ID);
 	}
 
 	private List<EventListener> listeners() {

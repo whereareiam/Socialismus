@@ -26,6 +26,7 @@ class ChatRequirementTest {
 	private static final String NO_PERMISSION = "{chat} is not yours: {permissions}";
 	private static final String OTHER_WORLD = "This stays in {worlds}";
 	private static final String NOT_IN_THE_NETHER = "{chat} is closed in {world}";
+	private static final String STAFF_ONLY = "Only the staff write in {chat}";
 
 	@Test
 	@Socialismus(configure = StaffChat.class)
@@ -71,6 +72,15 @@ class ChatRequirementTest {
 	}
 
 	@Test
+	@Socialismus(configure = WordedStaffChat.class)
+	void aLineTellsItsOwnTextAndHint_ReferringToAPhrase(ScenarioContext anvil) {
+		Player bob = Player.joins(anvil, "Bob");
+
+		bob.chat("#let me in");
+		bob.sees("Only the staff write in staff\nAsk an admin for socialismus.chat.staff");
+	}
+
+	@Test
 	@Socialismus(configure = ReplyChat.class)
 	void theMessageBeingSentSelectsTheChat(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
@@ -84,21 +94,24 @@ class ChatRequirementTest {
 	}
 
 	/**
-	 * Without a fallback chat, a message no chat takes gets the no-chat notice, and one its chat refuses why: chat
-	 * words a missing permission and a world it is closed in itself, and leaves the worlds it is open in to
-	 * {@code messages.yml}.
+	 * Without a fallback chat, a message no chat takes gets the no-chat notice, and one its chat refuses why: the
+	 * {@code chat.denied} phrases word a missing permission and a world it is closed in, and leave the worlds it is
+	 * open in to the {@code denied} phrases of everything.
 	 */
 	private static void noFallback(ServerFiles files) {
 		files.put(CHAT_SETTINGS, Map.of("fallback", Map.of("enabled", false, "chat", "fallback")));
-		files.put(CHAT_MESSAGES, Map.of(
-				"noChatMatch", NO_CHAT,
-				"requirements", Map.of(
-						"permission.missing", NO_PERMISSION,
-						"world.outside", "",
-						"world.inside", NOT_IN_THE_NETHER
+		files.put(CHAT_MESSAGES, Map.of("noChatMatch", NO_CHAT));
+		files.put(PHRASES, Map.of(
+				"denied", Map.of("world.outside", OTHER_WORLD),
+				"chat", Map.of(
+						"staff-only", STAFF_ONLY,
+						"denied", Map.of(
+								"permission.missing", NO_PERMISSION,
+								"world.outside", "",
+								"world.inside", NOT_IN_THE_NETHER
+						)
 				)
 		));
-		files.put(MESSAGES, Map.of("requirements", Map.of("world.outside", OTHER_WORLD)));
 	}
 
 	/**
@@ -141,6 +154,22 @@ class ChatRequirementTest {
 		public void accept(ServerFiles files) {
 			files.chats(chat("surface", 0, "", 0, "[S] {playerName}: {message}").toBuilder()
 					.requires(not(world("world_nether")))
+					.build());
+			noFallback(files);
+		}
+	}
+
+	/**
+	 * Staff chat tells a refused sender its own text, a phrase of {@code phrases.yml}, and a hint.
+	 */
+	static final class WordedStaffChat implements Consumer<ServerFiles> {
+		@Override
+		public void accept(ServerFiles files) {
+			files.chats(chat("staff", 0, "#", 0, "[S] {playerName}: {message}").toBuilder()
+					.requires(worded(permission("socialismus.chat.staff"), Map.of(
+							"denied", "<ref:staff-only>",
+							"hint", "Ask an admin for {permissions}"
+					)))
 					.build());
 			noFallback(files);
 		}

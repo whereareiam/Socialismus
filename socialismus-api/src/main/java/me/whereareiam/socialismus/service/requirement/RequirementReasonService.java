@@ -8,48 +8,47 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Words a failed requirement for the player: a condition reports what it found as a reason, and the feature that
- * checked it decides what the player reads. Texts are keyed by the reason's key, the condition's name and the
- * reason's in lower case with dashes, such as {@code permission.missing} or {@code world.inside}:
+ * Words a failed requirement for the player it refused. What the player reads is, in this order:
+ * <ol>
+ *   <li>the {@code denied} text of the failed line, or of the nearest line around it that has one;</li>
+ *   <li>the phrase of the reason's key under {@code denied.}, for the part the condition was about first, such as
+ *       {@code denied.recipient.permission.missing}, then for anyone, such as {@code denied.permission.missing};
+ *       each looked up in the feature's scope first, such as {@code chat.denied.permission.missing};</li>
+ * </ol>
+ * followed by the {@code hint} text of the failed line or the nearest around it. Both may refer to phrases as
+ * {@code <ref:key>}.
  *
  * <pre>{@code
- * # chat/messages.yml, for the requirements of the chats in chat/list/
- * requirements:
- *   world.outside: "{prefix}<gray>{chat}</gray> chat only works in {worlds}."
- *   world.inside: "{prefix}<gray>{chat}</gray> chat does not work in {world}."
+ * # phrases.yml
+ * denied:
+ *   world.outside: "{prefix}<white>This only works in <gray>{worlds}</gray>."
+ * chat:
+ *   denied:
+ *     world.outside: "{prefix}<white><gray>{chat}</gray> chat only works in <gray>{worlds}</gray>."
  * }</pre>
- *
- * The first of these that has a text is told:
- * <ol>
- *   <li>the feature's own text for the reason's key;</li>
- *   <li>the text of {@code requirements} in {@code messages.yml}, which holds no feature's context.</li>
- * </ol>
- * A failure without a reason, such as a failed {@code any}, or one no text words, is told by the feature's own
- * generic notice, such as that no chat took the message.
  *
  * <pre>{@code
  * if (verdict instanceof Verdict.Failed failed) {
- *     Optional<RequirementReason> reason = reasonService.resolve(
- *             failed,
- *             chatMessages.getRequirements(),
- *             Map.of("chat", chat.getId())
- *     );
+ *     Optional<RequirementReason> reason = reasonService.resolve(failed, "chat", Map.of("chat", chat.getId()));
  * }
  * }</pre>
+ *
+ * A failure that nothing words, such as a failed {@code any} without a {@code denied} text, is told by the
+ * feature's own generic notice, such as that no chat took the message.
  */
 public interface RequirementReasonService {
 	/**
 	 * Words a failed requirement for the player it refused.
 	 *
 	 * @param failed       the verdict of the place
-	 * @param wording      the feature's texts, by reason key; empty for none
+	 * @param scope        the feature's scope of phrases, such as {@code chat} or {@code dialogue}
 	 * @param placeholders the feature's own placeholders, such as {@code {chat}}; the reason's values keep their
 	 *                     meaning and are not replaced by them
-	 * @return the reason the player is told, empty when the failure has no reason or nothing words it
+	 * @return the reason the player is told, empty when nothing words the failure
 	 */
 	@NotNull Optional<RequirementReason> resolve(
 			@NotNull Verdict.Failed failed,
-			@NotNull Map<String, String> wording,
+			@NotNull String scope,
 			@NotNull Map<String, String> placeholders
 	);
 }

@@ -3,11 +3,6 @@ package me.whereareiam.socialismus.module.dialogue.common.config.defaults;
 import com.google.inject.Singleton;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
-import me.whereareiam.socialismus.type.chat.Participants;
-
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Singleton
 public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessages> {
@@ -29,7 +24,6 @@ public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessag
 		messaging.setNoRecipient("{prefix}<white>Recipient not found");
 		messaging.setSamePlayer("{prefix}<white>You cannot send a message to yourself");
 		messaging.setNotAllowed("{prefix}<white>You cannot send a message to {recipientName}");
-		messaging.setRequirements(requirements());
 		messaging.setReply(reply);
 		messaging.setConversationMode(conversationMode);
 
@@ -69,28 +63,5 @@ public class DialogueMessagesDefaults implements DefaultsProvider<DialogueMessag
 		config.setModeration(moderation);
 
 		return config;
-	}
-
-	private static Map<Participants, Map<String, String>> requirements() {
-		// Kept in this order in the file.
-		Map<String, String> sender = new LinkedHashMap<>();
-		sender.put("permission.missing", "{prefix}<white>You may not send private messages.");
-		sender.put("world.outside", "{prefix}<white>Private messages only work in <gray>{worlds}</gray>.");
-		sender.put("world.inside", "{prefix}<white>Private messages do not work in <gray>{world}</gray>.");
-		sender.put("server.outside", "{prefix}<white>Private messages only work on <gray>{servers}</gray>.");
-		sender.put("server.inside", "{prefix}<white>Private messages do not work on <gray>{server}</gray>.");
-
-		Map<String, String> recipient = new LinkedHashMap<>();
-		recipient.put("permission.missing", "{prefix}<gray>{recipientName}</gray> <white>may not receive private messages.");
-		recipient.put("world.outside", "{prefix}<gray>{recipientName}</gray> <white>is in <gray>{world}</gray>, which private messages do not reach.");
-		recipient.put("world.inside", "{prefix}<gray>{recipientName}</gray> <white>is in <gray>{world}</gray>, which private messages do not reach.");
-		recipient.put("server.outside", "{prefix}<gray>{recipientName}</gray> <white>is on <gray>{server}</gray>, which private messages do not reach.");
-		recipient.put("server.inside", "{prefix}<gray>{recipientName}</gray> <white>is on <gray>{server}</gray>, which private messages do not reach.");
-
-		Map<Participants, Map<String, String>> requirements = new EnumMap<>(Participants.class);
-		requirements.put(Participants.SENDER, sender);
-		requirements.put(Participants.RECIPIENT, recipient);
-
-		return requirements;
 	}
 }

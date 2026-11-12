@@ -2,11 +2,14 @@ package me.whereareiam.socialismus.common.config;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import me.whereareiam.socialismus.common.config.deserializer.ComponentDeserializer;
+import me.whereareiam.socialismus.common.config.deserializer.PhrasesDeserializer;
 import me.whereareiam.socialismus.common.config.deserializer.PositionDeserializer;
 import me.whereareiam.socialismus.common.config.deserializer.VersionDeserializer;
 import me.whereareiam.socialismus.common.config.serializer.ComponentSerializer;
+import me.whereareiam.socialismus.common.config.serializer.PhrasesSerializer;
 import me.whereareiam.socialismus.common.config.serializer.PositionSerializer;
 import me.whereareiam.socialismus.common.config.serializer.VersionSerializer;
+import me.whereareiam.socialismus.model.phrase.Phrases;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.type.Version;
 import net.kyori.adventure.text.Component;
@@ -21,5 +24,8 @@ public class SocialismusConfiguraModule extends SimpleModule {
 
 		addSerializer(Position.class, new PositionSerializer());
 		addDeserializer(Position.class, new PositionDeserializer());
+
+		addSerializer(Phrases.class, new PhrasesSerializer());
+		addDeserializer(Phrases.class, new PhrasesDeserializer());
 	}
 }

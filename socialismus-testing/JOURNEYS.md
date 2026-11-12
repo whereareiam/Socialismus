@@ -75,8 +75,9 @@ One Paper server unless stated otherwise.
 - [x] Local chat reaches only the players within its radius **first**
 - [x] A permission requirement decides who may send in a chat and who receives it
 - [x] A world requirement keeps a chat to the players of its worlds
-- [x] A sender a chat's requirements refuse is told why in chat's wording, or in `messages.yml`'s where chat
-  words nothing, such as the permission or the worlds the chat needs
+- [x] A sender a chat's requirements refuse is told why in the `chat.denied` phrases, or in the `denied` phrases of
+  everything where chat words nothing, such as the permission or the worlds the chat needs
+- [x] A line's own `denied` text, referring to a phrase as `<ref:...>`, and its `hint` are told instead
 - [x] A sender a negated condition refuses is told why the condition inside it held, such as the world they are in
 - [x] A `content` condition selects the chat by the message being sent
 - [ ] A `placeholder` condition, such as a balance `above` a number, selects the chat when PlaceholderAPI is installed
@@ -176,7 +177,7 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [x] `/reply` without a conversation fails with a reason
 - [x] A private message takes the last format whose requirements its participants meet
 - [x] `messaging.requires` and `messaging.reaches` refuse a message to a player they exclude
-- [x] A refused sender is told why in Dialogue's wording for the participant that failed, such as the
+- [x] A refused sender is told why in Dialogue's phrases for the participant that failed, such as the
   recipient's missing permission, and gets `notAllowed` only when nothing words it
 - [x] A private message is shown as its sender wrote it, never read as formatting such as a click
 - [x] The recipient gets the alert of their format: a sound, an action bar and a title

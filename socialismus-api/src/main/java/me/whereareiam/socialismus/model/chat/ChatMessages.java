@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Map;
-
 /**
  * Configuration model for chat-related messages and formats.
  * Contains various message templates used throughout the chat system
@@ -48,14 +46,6 @@ public class ChatMessages {
      */
     private String emptyMessage;
 
-    /**
-     * How a chat's refusal of its sender is told, by the reason's key, such as {@code world.outside}. The texts take
-     * the reason's placeholders and {@code {chat}}, the chat that refused the player; what they leave unworded comes
-     * from {@code requirements} in {@code messages.yml}.
-     *
-     * @see me.whereareiam.socialismus.service.requirement.RequirementReasonService
-     */
-    private Map<String, String> requirements = Map.of();
 
     /**
      * Configuration for clearing chat messages.
