@@ -13,8 +13,9 @@ lombok = "1.18.48"
 # general
 guice = "7.0.0"
 annotations = "26.1.0"
-attache = "1.3.0"
+attache = "feature-library-transformers-155344c"
 chassis = "dev-c97206f"
+jvmdowngrader = "2.0.1"
 configura = "2.1.0"
 keystone = "1.0.0"
 commandant = "1.0.0"
@@ -75,6 +76,8 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 lombok-plugin = { group = "io.freefair.gradle", name = "lombok-plugin", version.ref = "freefair" }
 shadow = { group = "com.gradleup.shadow", name = "shadow-gradle-plugin", version.ref = "shadow" }
 toolkit-publish-maven = { group = "me.whereareiam.toolkit", name = "publish-maven", version.ref = "toolkit" }
+jvmdowngrader = { group = "xyz.wagyourtail.jvmdowngrader", name = "jvmdowngrader", version.ref = "jvmdowngrader" }
+jvmdowngrader-java-api = { group = "xyz.wagyourtail.jvmdowngrader", name = "jvmdowngrader-java-api", version.ref = "jvmdowngrader" }
 
 # general
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }

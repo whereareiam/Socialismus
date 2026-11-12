@@ -22,4 +22,5 @@ dependencies {
     implementation(libs.shadow)
     implementation(libs.lombok.plugin)
     implementation(libs.toolkit.publish.maven)
+    implementation(libs.jvmdowngrader)
 }

@@ -5,6 +5,8 @@ import org.gradle.jvm.tasks.Jar
 
 plugins {
     id("packaging-shaded-jar")
+    // The BUKKIT jar runs on Java 11 servers, and so must every module it loads.
+    id("packaging-downgraded-jar")
 }
 
 // The Socialismus versions a module of this build accepts: the one it is built with and every later one before the
