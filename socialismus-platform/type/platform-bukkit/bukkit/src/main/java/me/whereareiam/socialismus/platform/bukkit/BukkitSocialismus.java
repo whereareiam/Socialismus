@@ -9,6 +9,7 @@ import me.whereareiam.socialismus.platform.bukkit.common.BukkitCommonConfigurati
 import me.whereareiam.socialismus.platform.bukkit.common.BukkitIntegrityChecker;
 import me.whereareiam.socialismus.platform.bukkit.common.BukkitLoggingHelper;
 import me.whereareiam.socialismus.platform.bukkit.common.BukkitModuleDependencyListener;
+import me.whereareiam.socialismus.platform.bukkit.library.LibraryDowngrade;
 import me.whereareiam.socialismus.platform.common.PlatformInjector;
 import me.whereareiam.socialismus.type.PluginType;
 import me.whereareiam.socialismus.type.Version;
@@ -41,6 +42,8 @@ public class BukkitSocialismus extends JavaPlugin {
 		libraryManager.setVerbosityMode(VerbosityMode.SUMMARY);
 		libraryManager.addMavenCentral();
 		libraryManager.addRepository("https://registry.whereareiam.me/maven/packages");
+		// Old servers run an older Java than the libraries are compiled for.
+		libraryManager.registerLibraryTransformer(new LibraryDowngrade(libraryManager));
 		libraryManager.loadDescriptors();
 
 		injector = PlatformInjector.create(dataPath, libraryManager, new BukkitInjectorConfiguration(this), new BukkitCommonConfiguration(this));
