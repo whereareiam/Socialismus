@@ -9,7 +9,7 @@ import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.service.chat.ChatRequirementService;
-import me.whereareiam.socialismus.service.phrase.PhraseService;
+import me.whereareiam.socialismus.service.Phrasebook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ final class ChatPlaces implements AutoCloseable {
 	 *                                                              a phrase no file has; the places bound before are
 	 *                                                              closed
 	 */
-	static ChatPlaces bind(Conditions conditions, PhraseService phrases, Chat chat) {
+	static ChatPlaces bind(Conditions conditions, Phrasebook phrases, Chat chat) {
 		String path = "chats." + chat.getId();
 		List<Place> bound = new ArrayList<>();
 		try {
@@ -66,7 +66,7 @@ final class ChatPlaces implements AutoCloseable {
 		return requires == null ? Requirements.none() : requires;
 	}
 
-	private static Place open(List<Place> bound, PhraseService phrases, Place place) {
+	private static Place open(List<Place> bound, Phrasebook phrases, Place place) {
 		bound.add(phrases.checked(ChatRequirementService.PHRASE_SCOPE, place));
 
 		return place;

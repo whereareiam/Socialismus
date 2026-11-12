@@ -4,9 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.requirement.RequirementReason;
+import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
-import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
+import me.whereareiam.socialismus.service.requirement.RequirementTexts;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class MessagingRequirements {
 	private final DialogueRequirements requirements;
-	private final RequirementReasonService reasonService;
+	private final RequirementTexts requirementTexts;
 
 	/**
 	 * Judges whether the sender may write to the recipient. A refusal carries why, worded by the line's
@@ -42,7 +42,7 @@ public class MessagingRequirements {
 		if (verdict.passed()) return Verdict.ALLOWED;
 		if (!(verdict instanceof me.whereareiam.conditia.result.Verdict.Failed failed)) return Verdict.REFUSED;
 
-		RequirementReason reason = reasonService.resolve(failed, DialogueRequirements.PHRASE_SCOPE, Map.of("recipientName", recipientName))
+		Phrase reason = requirementTexts.denied(failed, DialogueRequirements.PHRASE_SCOPE, Map.of("recipientName", recipientName))
 				.orElse(null);
 
 		return new Verdict(false, reason);
@@ -54,7 +54,7 @@ public class MessagingRequirements {
 	 * @param allowed whether the message may be sent
 	 * @param reason  why it may not, as the sender is told; {@code null} when allowed or nothing words it
 	 */
-	public record Verdict(boolean allowed, @Nullable RequirementReason reason) {
+	public record Verdict(boolean allowed, @Nullable Phrase reason) {
 		static final Verdict ALLOWED = new Verdict(true, null);
 		static final Verdict REFUSED = new Verdict(false, null);
 	}

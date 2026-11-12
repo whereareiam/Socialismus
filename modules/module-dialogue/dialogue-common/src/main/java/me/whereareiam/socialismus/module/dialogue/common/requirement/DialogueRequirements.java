@@ -17,7 +17,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
-import me.whereareiam.socialismus.service.phrase.PhraseService;
+import me.whereareiam.socialismus.service.Phrasebook;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +41,7 @@ public class DialogueRequirements implements EventListener {
 	public static final String PHRASE_SCOPE = "dialogue";
 
 	private final Conditions conditions;
-	private final PhraseService phrases;
+	private final Phrasebook phrases;
 	private final Provider<DialogueSettings> settings;
 	private final Provider<MessagingFormats> messagingFormats;
 	private final Provider<ModerationFormats> moderationFormats;
@@ -50,7 +50,7 @@ public class DialogueRequirements implements EventListener {
 	@Inject
 	public DialogueRequirements(
 			@NotNull Conditions conditions,
-			@NotNull PhraseService phrases,
+			@NotNull Phrasebook phrases,
 			@NotNull Provider<DialogueSettings> settings,
 			@NotNull Provider<MessagingFormats> messagingFormats,
 			@NotNull Provider<ModerationFormats> moderationFormats

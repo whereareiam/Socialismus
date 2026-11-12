@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.common.phrase;
 
 import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.exception.ConditionException;
+import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.model.phrase.Phrases;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +18,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class DefaultPhraseServiceTest {
-	private final DefaultPhraseService phrases = new DefaultPhraseService(() -> Phrases.builder()
+class DefaultPhrasebookTest {
+	private final DefaultPhrasebook phrases = new DefaultPhrasebook(() -> Phrases.builder()
 			.text("contact", "Ask <ref:staff>.")
 			.text("staff", "a moderator")
 			.text("loop", "<ref:loop> again")
@@ -35,6 +36,15 @@ class DefaultPhraseServiceTest {
 	@Test
 	void rendersReferences_AndTheReferencesInThem() {
 		assertEquals("<red>Only staff. Ask a moderator.", phrases.render("chat", "<red><ref:staff-only>"));
+	}
+
+	@Test
+	void givesAPhraseReadyToSend_WithItsReferencesAndPlaceholders() {
+		Phrase phrase = phrases.phrase("chat", "staff-only", Map.of("chat", "staff")).orElseThrow();
+
+		assertEquals("Only staff. Ask a moderator.", phrase.getMessage());
+		assertEquals(Map.of("chat", "staff"), phrase.getPlaceholders());
+		assertEquals(Optional.empty(), phrases.phrase("", "missing", Map.of()));
 	}
 
 	@Test

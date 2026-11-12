@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.module.dialogue.common;
 
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.requirement.RequirementReason;
+import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.module.dialogue.api.event.DialogueSendEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
@@ -184,7 +184,7 @@ class DefaultDialogueServiceTest {
 	@Test
 	void refusesAMessageTheRequirementsDoNotAllow() {
 		online(bob);
-		RequirementReason reason = RequirementReason.of("Bob is elsewhere", Map.of());
+		Phrase reason = Phrase.of("Bob is elsewhere", Map.of());
 		when(requirements.judge(alice, bob, "Bob")).thenReturn(new MessagingRequirements.Verdict(false, reason));
 
 		dialogueService.send(alice, "bob", "hello");
