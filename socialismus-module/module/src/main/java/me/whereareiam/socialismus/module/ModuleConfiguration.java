@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
+import me.whereareiam.chassis.ExtensionTransformer;
 import me.whereareiam.chassis.Extensions;
 import me.whereareiam.chassis.common.ChassisHost;
 import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
@@ -18,6 +19,8 @@ public class ModuleConfiguration extends AbstractModule {
 	protected void configure() {
 		Multibinder.newSetBinder(binder(), RuntimeLifecycle.class).addBinding().to(ModuleLifecycle.class);
 		bind(ResourceRegistry.class).to(ResourceRegistryAdapter.class);
+		// What a platform changes in module jars before they load, such as the BUKKIT jar's relocated Adventure.
+		Multibinder.newSetBinder(binder(), ExtensionTransformer.class);
 	}
 
 	@Provides
