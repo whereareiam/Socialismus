@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  */
 @Tag("essentials")
 class FeaturesCommandTest {
-	private static final String MESSAGES = "modules/Essentials/messages.yml";
+	private static final String MESSAGES = "modules/essentials/messages.yml";
 
 	@Test
 	@Socialismus(modules = Module.ESSENTIALS, configure = KnownTexts.class)

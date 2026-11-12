@@ -46,7 +46,7 @@ class ProxyChatOwnerTest {
 	static final class ProxyOwnsChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.put("modules/SocialismusNetwork/settings.yml", Map.of("chat", Map.of(
+			files.put("modules/socialismus-network/settings.yml", Map.of("chat", Map.of(
 					"enabled", true,
 					"owner", "PROXY",
 					"preserveFormat", true,

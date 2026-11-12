@@ -86,9 +86,9 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 					.target(Path.of("plugins", plugin.fileName() + ".jar"))
 					.build());
 		for (Module module : socialismus.modules())
-			workspace.asset(moduleJar(data, module.artifact(), module.moduleName()));
+			workspace.asset(moduleJar(data, module.artifact(), module.id()));
 		for (ModuleFixture fixture : socialismus.moduleFixtures())
-			workspace.asset(moduleJar(data, fixture.artifact(), fixture.moduleName()));
+			workspace.asset(moduleJar(data, fixture.artifact(), fixture.id()));
 
 		if (!socialismus.data().isBlank())
 			seeds(socialismus.data()).forEach(file -> workspace.asset(WorkspaceAsset.builder()
@@ -107,11 +107,11 @@ public final class SocialismusScenarios implements AnvilScenarioFactory<Socialis
 		return workspace.build();
 	}
 
-	private static WorkspaceAsset moduleJar(String data, String artifact, String moduleName) {
+	private static WorkspaceAsset moduleJar(String data, String artifact, String id) {
 		return WorkspaceAsset.builder()
 				.group("socialismus-modules")
 				.source(AssetSource.artifact(artifact))
-				.target(Path.of(data, "modules", moduleName + ".jar"))
+				.target(Path.of(data, "modules", id + ".jar"))
 				.build();
 	}
 

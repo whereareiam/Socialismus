@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @Tag("modules")
 class ModuleLoadingTest {
-	private static final String DIALOGUE_FORMATS = "modules/Dialogue/formats/messaging.yml";
+	private static final String DIALOGUE_FORMATS = "modules/dialogue/formats/messaging.yml";
 
 	@Test
 	@Socialismus(modules = {Module.CHIRPER, Module.DIALOGUE})
@@ -31,7 +31,7 @@ class ModuleLoadingTest {
 
 		String log = Console.of(anvil).log();
 		for (String module : new String[]{"Chirper", "Dialogue"})
-			assertTrue(log.contains("Loaded module " + module), module + " did not load:\n" + log);
+			assertTrue(log.contains("Enabled module " + module), module + " did not start:\n" + log);
 
 		alice.command("socialismus debug");
 		alice.seesAll("Chirper", "Dialogue");
@@ -43,10 +43,10 @@ class ModuleLoadingTest {
 		Player alice = Player.joins(anvil, "Alice").op();
 
 		String log = Console.of(anvil).log();
-		assertTrue(log.contains("Module Chirper is built for Socialismus 1\\.0\\.0"),
+		assertTrue(log.contains("The module chirper cannot start: It is built for the host's API ^1.0.0"),
 				"Chirper was not refused with a reason:\n" + log);
-		assertFalse(log.contains("Loaded module Chirper"), "Chirper loaded:\n" + log);
-		assertTrue(log.contains("Loaded module Dialogue"), "The other module did not load:\n" + log);
+		assertFalse(log.contains("Enabled module Chirper"), "Chirper started:\n" + log);
+		assertTrue(log.contains("Enabled module Dialogue"), "The other module did not start:\n" + log);
 
 		alice.command("socialismus debug");
 		String debug = alice.sees("Dialogue");
@@ -59,9 +59,10 @@ class ModuleLoadingTest {
 		Player.joins(anvil, "Alice");
 
 		String log = Console.of(anvil).log();
-		assertTrue(log.contains("Module Chirper does not run on PAPER"), "Chirper was not refused with a reason:\n" + log);
-		assertFalse(log.contains("Loaded module Chirper"), "Chirper loaded:\n" + log);
-		assertTrue(log.contains("Loaded module Dialogue"), "The other module did not load:\n" + log);
+		assertTrue(log.contains("The module chirper cannot start: It runs on velocity, not on paper"),
+				"Chirper was not refused with a reason:\n" + log);
+		assertFalse(log.contains("Enabled module Chirper"), "Chirper started:\n" + log);
+		assertTrue(log.contains("Enabled module Dialogue"), "The other module did not start:\n" + log);
 	}
 
 	@Test

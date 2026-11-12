@@ -8,6 +8,7 @@ import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.model.resource.ProvidedResource;
+import me.whereareiam.socialismus.module.ModuleContext;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.redis.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.redis.common.config.migration.RedisConfigMigrations;
@@ -15,20 +16,23 @@ import me.whereareiam.socialismus.module.redis.common.network.RedisNetworkResour
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.resource.ResourceProvider;
 import me.whereareiam.strata.Strata;
+import org.jetbrains.annotations.NotNull;
 import redis.clients.jedis.JedisPool;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
-public class SocialismusRedis extends SocialisticModule implements ResourceProvider {
+public class SocialismusRedis implements SocialisticModule, ResourceProvider {
 	private final Registry<Reloadable> reloadableRegistry;
 	private final EventManager eventManager;
 	private Injector injector;
 	private RedisNetworkResources network;
 
 	@Override
-	public void onLoad() {
-		new Strata(List.of(RedisConfigMigrations.on(Config.configured(), workingPath))).migrate();
+	public void enable(@NotNull ModuleContext context) {
+		Path dataFolder = context.dataFolder();
+		new Strata(List.of(RedisConfigMigrations.on(Config.configured(), dataFolder))).migrate();
 
 		injector =
 				Guice.createInjector(
@@ -36,26 +40,17 @@ public class SocialismusRedis extends SocialisticModule implements ResourceProvi
 								reloadableRegistry,
 								eventManager
 						),
-						new CommonConfiguration(workingPath));
+						new CommonConfiguration(dataFolder));
+		network = new RedisNetworkResources(injector.getInstance(JedisPool.class));
 	}
 
 	@Override
-	public void onEnable() {
-	}
-
-	@Override
-	public void onDisable() {
-	}
-
-	@Override
-	public void onUnload() {
+	public void disable() {
 		if (network != null) network.close();
 	}
 
 	@Override
 	public List<ProvidedResource<?>> provideResources() {
-		network = new RedisNetworkResources(injector.getInstance(JedisPool.class));
-
 		return network.provide();
 	}
 }

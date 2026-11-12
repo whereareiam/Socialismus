@@ -23,6 +23,8 @@ buildConfig {
 
     buildConfigField("String", "NAME", "\"${rootProject.name}\"")
     buildConfigField("String", "VERSION", "\"${rootProject.version}\"")
+    // The version modules' `host` ranges are compared with; see the root build.
+    buildConfigField("String", "HOST_VERSION", "\"${rootProject.extra["socialismusHostVersion"]}\"")
 
     val catalog = rootProject.extensions.getByType<VersionCatalogsExtension>().named("libs")
     catalog.versionAliases.forEach { alias ->

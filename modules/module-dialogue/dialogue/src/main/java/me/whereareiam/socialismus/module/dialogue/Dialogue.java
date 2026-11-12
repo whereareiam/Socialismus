@@ -4,11 +4,13 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.chassis.Extensions;
+import me.whereareiam.chassis.type.ExtensionState;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.EventManager;
-import me.whereareiam.socialismus.module.ModuleService;
+import me.whereareiam.socialismus.module.ModuleContext;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueCommands;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
@@ -32,27 +34,30 @@ import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.requirement.RequirementEvaluatorService;
 import me.whereareiam.socialismus.service.requirement.RequirementReasonService;
 import me.whereareiam.strata.Strata;
+import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 @RequiredArgsConstructor(onConstructor_ = @Inject)
-public class Dialogue extends SocialisticModule {
+public class Dialogue implements SocialisticModule {
 	/**
-	 * The module whose API Dialogue reaches only while it is loaded, as an optional dependency.
+	 * The module whose API Dialogue reaches only while it is enabled, as an optional dependency.
 	 */
-	private static final String NETWORK = "SocialismusNetwork";
+	private static final String NETWORK = "socialismus-network";
 
 	private final Injector parentInjector;
 	private final Registry<Reloadable> reloadableRegistry;
 	private Injector injector;
-	// Set only while SocialismusNetwork is installed, so its classes load only then.
+	// Set only while SocialismusNetwork is enabled, so its classes load only then.
 	private DialogueNetwork network;
 
 	@Override
-	public void onLoad() {
-		new Strata(List.of(DialogueConfigMigrations.on(Config.configured(), workingPath))).migrate();
+	public void enable(@NotNull ModuleContext context) {
+		Path dataFolder = context.dataFolder();
+		new Strata(List.of(DialogueConfigMigrations.on(Config.configured(), dataFolder))).migrate();
 
 		injector = Guice.createInjector(
 				new DialogueInjectorConfiguration(
@@ -65,7 +70,7 @@ public class Dialogue extends SocialisticModule {
 						parentInjector.getInstance(SerializationService.class),
 						parentInjector.getInstance(EventManager.class)
 				),
-				new CommonConfiguration(workingPath)
+				new CommonConfiguration(dataFolder)
 		);
 
 		// Writes every document, so an administrator finds them all after the first start.
@@ -76,18 +81,15 @@ public class Dialogue extends SocialisticModule {
 				MessagingFormats.class,
 				ModerationFormats.class
 		).forEach(injector::getInstance);
-	}
 
-	@Override
-	public void onEnable() {
 		injector.getInstance(CommandRegistrar.class).registerCommands();
-		if (isNetworkInstalled())
+		if (isNetworkEnabled())
 			network = DialogueNetwork.attach(parentInjector.getInstance(ResourceRegistry.class), injector).orElse(null);
 		listeners().forEach(eventManager()::register);
 	}
 
 	@Override
-	public void onDisable() {
+	public void disable() {
 		if (network != null) {
 			network.detach();
 			network = null;
@@ -106,17 +108,15 @@ public class Dialogue extends SocialisticModule {
 	}
 
 	/**
-	 * Returns whether SocialismusNetwork is installed, whose API Dialogue reaches only then.
+	 * Returns whether SocialismusNetwork is enabled, whose API Dialogue reaches only then.
 	 */
-	private boolean isNetworkInstalled() {
-		return parentInjector.getInstance(ModuleService.class).getModule(NETWORK).isPresent();
+	private boolean isNetworkEnabled() {
+		return parentInjector.getInstance(Extensions.class).find(NETWORK)
+				.filter(module -> module.getState() == ExtensionState.ENABLED)
+				.isPresent();
 	}
 
 	private EventManager eventManager() {
 		return injector.getInstance(EventManager.class);
-	}
-
-	@Override
-	public void onUnload() {
 	}
 }

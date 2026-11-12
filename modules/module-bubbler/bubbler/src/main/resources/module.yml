@@ -1,0 +1,25 @@
+id: bubbler
+name: "@projectName@"
+version: "@projectVersion@"
+authors:
+  - whereareiam
+main: me.whereareiam.socialismus.module.bubbler.Bubbler
+host: "@host@"
+platforms:
+  - name: paper
+    version: ">=1.16 <1.22 || ~26.1"
+  - name: folia
+    version: ">=1.16 <1.22 || ~26.1"
+  - name: spigot
+    version: ">=1.16 <1.22 || ~26.1"
+  - name: bukkit
+    version: ">=1.16 <1.22 || ~26.1"
+requires:
+  packetevents: "*"
+updater:
+  release:
+    provider: MODRINTH
+    id: whereareiam/Bubbler
+  dev:
+    provider: GITHUB
+    id: whereareiam/Bubbler

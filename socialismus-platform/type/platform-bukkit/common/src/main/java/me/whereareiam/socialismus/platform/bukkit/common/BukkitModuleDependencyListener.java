@@ -1,8 +1,9 @@
 package me.whereareiam.socialismus.platform.bukkit.common;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import lombok.RequiredArgsConstructor;
-import me.whereareiam.socialismus.module.ModuleService;
+import me.whereareiam.chassis.Extensions;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -13,10 +14,10 @@ import org.bukkit.event.server.PluginEnableEvent;
  */
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public final class BukkitModuleDependencyListener implements Listener {
-	private final ModuleService moduleService;
+	private final Provider<Extensions> modules;
 
 	@EventHandler
 	public void onPluginEnable(PluginEnableEvent event) {
-		moduleService.loadPendingModules();
+		modules.get().rescan();
 	}
 }

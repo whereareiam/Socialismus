@@ -19,6 +19,7 @@ import me.whereareiam.socialismus.event.resource.ResourceUnregisteredEvent;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.resource.ProvidedResource;
+import me.whereareiam.socialismus.module.ModuleContext;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.network.api.NetworkResources;
 import me.whereareiam.socialismus.module.network.api.model.NetworkNode;
@@ -45,7 +46,9 @@ import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.service.resource.ResourceProvider;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.strata.Strata;
+import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
@@ -61,7 +64,7 @@ import java.util.concurrent.TimeUnit;
  * transport a transport module registers, such as SocialismusRedis; without one this node is alone on the network.
  */
 @RequiredArgsConstructor(onConstructor_ = @Inject)
-public class SocialismusNetwork extends SocialisticModule implements ResourceProvider, EventListener {
+public class SocialismusNetwork implements SocialisticModule, ResourceProvider, EventListener {
 	private final Registry<Reloadable> reloadableRegistry;
 	private final SerializationService serializationService;
 	private final ResourceRegistry resourceRegistry;
@@ -78,14 +81,15 @@ public class SocialismusNetwork extends SocialisticModule implements ResourcePro
 	private Duration lifetime;
 
 	@Override
-	public void onLoad() {
-		new Strata(List.of(NetworkConfigMigrations.on(Config.configured(), workingPath))).migrate();
-		new CoreSyncImport(Config.configured(), workingPath.getParent().getParent(), workingPath)
+	public void enable(@NotNull ModuleContext context) {
+		Path dataFolder = context.dataFolder();
+		new Strata(List.of(NetworkConfigMigrations.on(Config.configured(), dataFolder))).migrate();
+		new CoreSyncImport(Config.configured(), dataFolder.getParent().getParent(), dataFolder)
 				.importInto(new NetworkSettingsDefaults().supply(new NetworkSettings()));
 
 		Injector injector = Guice.createInjector(
 				new SocialismusNetworkInjectorConfiguration(reloadableRegistry),
-				new CommonConfiguration(workingPath)
+				new CommonConfiguration(dataFolder)
 		);
 		Provider<NetworkSettings> settings = injector.getProvider(NetworkSettings.class);
 		lifetime = settings.get().getLease();
@@ -121,10 +125,7 @@ public class SocialismusNetwork extends SocialisticModule implements ResourcePro
 				network.players()
 		));
 		Logger.info("Joining the network as %s", self);
-	}
 
-	@Override
-	public void onEnable() {
 		eventManager.register(this);
 		playerRegistry.addSource(network.players());
 		network.players().onServerByProxy((player, server) -> executor.execute(this::learnServerName));
@@ -137,15 +138,11 @@ public class SocialismusNetwork extends SocialisticModule implements ResourcePro
 	}
 
 	@Override
-	public void onDisable() {
+	public void disable() {
 		chatOwnershipService.unregister(ownership);
 		playerRegistry.removeSource(network.players());
 		network.leave();
 		executor.shutdown();
-	}
-
-	@Override
-	public void onUnload() {
 	}
 
 	@Override

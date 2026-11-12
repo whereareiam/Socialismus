@@ -1,0 +1,22 @@
+id: socialismus-redis
+name: "@projectName@"
+version: "@projectVersion@"
+authors:
+  - whereareiam
+main: me.whereareiam.socialismus.module.redis.SocialismusRedis
+host: "@host@"
+platforms:
+  - name: paper
+  - name: folia
+  - name: spigot
+  - name: bukkit
+  - name: velocity
+dependencies:
+  - id: socialismus-network
+updater:
+  release:
+    provider: GITHUB
+    id: whereareiam/SocialismusRedis
+  dev:
+    provider: GITHUB
+    id: whereareiam/SocialismusRedis

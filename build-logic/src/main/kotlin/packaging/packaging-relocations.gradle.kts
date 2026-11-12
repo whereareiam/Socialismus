@@ -4,6 +4,12 @@ plugins {
     id("com.gradleup.shadow")
 }
 
+// Socialismus provides Configura, and what Configura brings, at runtime. A dependency that brings it too, such as
+// Chassis, must not ship a second copy of its classes in the jar.
+configurations.named("runtimeClasspath") {
+    exclude(group = "me.whereareiam", module = "configura")
+}
+
 tasks.withType<ShadowJar>().configureEach {
     relocate("me.whereareiam.attache", "me.whereareiam.socialismus.library.attache")
     relocate("org.bstats", "me.whereareiam.socialismus.library.bStats")

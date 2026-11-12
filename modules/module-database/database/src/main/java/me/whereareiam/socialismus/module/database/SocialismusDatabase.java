@@ -8,6 +8,7 @@ import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
 import me.whereareiam.socialismus.exception.ModuleLifecycleException;
 import me.whereareiam.socialismus.model.resource.ProvidedResource;
+import me.whereareiam.socialismus.module.ModuleContext;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.database.api.DatabaseResources;
 import me.whereareiam.socialismus.module.database.common.CommonConfiguration;
@@ -17,30 +18,34 @@ import me.whereareiam.socialismus.module.database.common.config.migration.Databa
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.resource.ResourceProvider;
 import me.whereareiam.strata.Strata;
+import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
  * Opens the database its settings choose and registers it as Socialismus's database resource, for the modules that
- * keep their data in it. The database is opened when the module loads, unregistered when it unloads and closed then.
+ * keep their data in it. The database is opened when the module is enabled, unregistered when it is disabled and closed then.
  */
 @RequiredArgsConstructor(onConstructor_ = @Inject)
-public class SocialismusDatabase extends SocialisticModule implements ResourceProvider {
+public class SocialismusDatabase implements SocialisticModule, ResourceProvider {
 	private final Registry<Reloadable> reloadableRegistry;
 	private DefaultDatabaseService database;
 
 	@Override
-	public void onLoad() {
-		new Strata(List.of(DatabaseConfigMigrations.on(Config.configured(), workingPath))).migrate();
+	public void enable(@NotNull ModuleContext context) {
+		Path dataFolder = context.dataFolder();
+		new Strata(List.of(DatabaseConfigMigrations.on(Config.configured(), dataFolder))).migrate();
 
 		Injector injector = Guice.createInjector(
 				new SocialismusDatabaseInjectorConfiguration(reloadableRegistry),
-				new CommonConfiguration(workingPath)
+				new CommonConfiguration(dataFolder)
 		);
 		DatabaseSettings settings = injector.getInstance(DatabaseSettings.class);
-		libraries.loadGroups(settings.getType().driverGroup());
+		context.libraries().load(settings.getType().driverGroup());
+
 		try {
-			database = DefaultDatabaseService.open(settings, workingPath);
+			database = DefaultDatabaseService.open(settings, dataFolder);
 		} catch (Exception failure) {
 			throw new ModuleLifecycleException("Could not open the " + settings.getType() + " database: "
 					+ failure.getMessage(), failure);
@@ -48,15 +53,7 @@ public class SocialismusDatabase extends SocialisticModule implements ResourcePr
 	}
 
 	@Override
-	public void onEnable() {
-	}
-
-	@Override
-	public void onDisable() {
-	}
-
-	@Override
-	public void onUnload() {
+	public void disable() {
 		// Socialismus has unregistered the database by now, so no module reaches for it while it closes.
 		if (database != null) database.close();
 	}

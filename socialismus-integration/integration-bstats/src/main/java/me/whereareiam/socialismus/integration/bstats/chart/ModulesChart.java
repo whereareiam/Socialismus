@@ -1,22 +1,25 @@
 package me.whereareiam.socialismus.integration.bstats.chart;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.socialismus.module.ModuleService;
-import me.whereareiam.socialismus.module.model.Module;
+import me.whereareiam.chassis.Extensions;
+import me.whereareiam.chassis.model.ExtensionDescriptor;
+import me.whereareiam.chassis.model.InstalledExtension;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.CustomChart;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Singleton
 public class ModulesChart implements Chart {
-    private final ModuleService moduleService;
+    private final Provider<Extensions> modules;
 
     @Inject
-    public ModulesChart(ModuleService moduleService) {
-        this.moduleService = moduleService;
+    public ModulesChart(Provider<Extensions> modules) {
+        this.modules = modules;
     }
 
     public CustomChart getChart() {
@@ -24,6 +27,9 @@ public class ModulesChart implements Chart {
     }
 
     private Map<String, Integer> getData() {
-        return moduleService.getModules().stream().collect(Collectors.toMap(Module::getName, module -> 1));
+        return modules.get().list().stream()
+                .map(InstalledExtension::getDescriptor)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(ExtensionDescriptor::getName, module -> 1, Integer::sum));
     }
 }

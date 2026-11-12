@@ -4,14 +4,15 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.chassis.Extensions;
+import me.whereareiam.chassis.model.InstalledExtension;
+import me.whereareiam.chassis.type.ExtensionState;
 import me.whereareiam.commandant.annotation.Definition;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Constants;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.module.ModuleService;
-import me.whereareiam.socialismus.module.type.ModuleState;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.PluginType;
 import net.kyori.adventure.text.Component;
@@ -24,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class DebugCommand {
 	private final Provider<Messages> messages;
-	private final ModuleService moduleService;
+	private final Provider<Extensions> modules;
 
 	@Definition("debug")
 	@Command("socialismus debug")
@@ -32,12 +33,13 @@ public class DebugCommand {
 		String message = String.join("\n", messages.get().getCommands().getDebugCommand().getFormat());
 		
 		String moduleFormat = messages.get().getCommands().getDebugCommand().getModuleFormat();
-		String modules = Serializer.template(moduleFormat)
-				.stream(moduleService.getModules().stream()
-						.filter(module -> module.getState() == ModuleState.ENABLED))
+		String enabledModules = Serializer.template(moduleFormat)
+				.stream(modules.get().list().stream()
+						.filter(module -> module.getState() == ExtensionState.ENABLED)
+						.map(InstalledExtension::getDescriptor))
 				.placeholders(module -> Map.of(
 						"name", module.getName(),
-						"version", module.getVersion(),
+						"version", module.getVersion().toString(),
 						"authors", String.join(", ", module.getAuthors())
 				))
 				.render();
@@ -52,7 +54,7 @@ public class DebugCommand {
 						"pluginPlatform", PluginType.getType().name(),
 						"javaVersion", System.getProperty("java.version"),
 						"os", System.getProperty("os.name"),
-						"modules", modules
+						"modules", enabledModules
 				))
 				.build());
 

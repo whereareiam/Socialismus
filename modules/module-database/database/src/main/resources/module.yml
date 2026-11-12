@@ -1,0 +1,20 @@
+id: socialismus-database
+name: "@projectName@"
+version: "@projectVersion@"
+authors:
+  - whereareiam
+main: me.whereareiam.socialismus.module.database.SocialismusDatabase
+host: "@host@"
+platforms:
+  - name: paper
+  - name: folia
+  - name: spigot
+  - name: bukkit
+  - name: velocity
+updater:
+  release:
+    provider: GITHUB
+    id: whereareiam/SocialismusDatabase
+  dev:
+    provider: GITHUB
+    id: whereareiam/SocialismusDatabase

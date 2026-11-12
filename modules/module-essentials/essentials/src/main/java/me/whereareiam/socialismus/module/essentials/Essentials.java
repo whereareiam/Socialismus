@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.configura.Config;
 import me.whereareiam.socialismus.Reloadable;
+import me.whereareiam.socialismus.module.ModuleContext;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.essentials.api.feature.FeatureManager;
 import me.whereareiam.socialismus.module.essentials.command.CommandRegistrar;
@@ -18,11 +19,13 @@ import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.strata.Strata;
+import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
-public class Essentials extends SocialisticModule {
+public class Essentials implements SocialisticModule {
 	private final Registry<Reloadable> reloadableRegistry;
 
 	// Services from parent injector
@@ -34,8 +37,9 @@ public class Essentials extends SocialisticModule {
 	private Injector injector;
 
 	@Override
-	public void onLoad() {
-		new Strata(List.of(EssentialsConfigMigrations.on(Config.configured(), workingPath))).migrate();
+	public void enable(@NotNull ModuleContext context) {
+		Path dataFolder = context.dataFolder();
+		new Strata(List.of(EssentialsConfigMigrations.on(Config.configured(), dataFolder))).migrate();
 
 		injector =
 				Guice.createInjector(
@@ -45,21 +49,10 @@ public class Essentials extends SocialisticModule {
 								playerRegistry,
 								platformInteractor,
 								serializationService),
-						new CommonConfiguration(workingPath),
+						new CommonConfiguration(dataFolder),
 						new FeatureConfiguration());
-	}
 
-	@Override
-	public void onEnable() {
 		injector.getInstance(CommandRegistrar.class).registerCommands();
 		injector.getInstance(FeatureManager.class).initializeFeatures();
-	}
-
-	@Override
-	public void onDisable() {
-	}
-
-	@Override
-	public void onUnload() {
 	}
 }

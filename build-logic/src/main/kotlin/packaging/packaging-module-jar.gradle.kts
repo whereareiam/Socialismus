@@ -1,5 +1,3 @@
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import me.whereareiam.socialismus.buildlogic.packaging.CheckModuleExports
 import me.whereareiam.socialismus.buildlogic.packaging.SocialismusModuleExtension
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -9,8 +7,10 @@ plugins {
     id("packaging-shaded-jar")
 }
 
-// The Socialismus versions a module accepts: any release, release candidate or development build.
-val socialismusVersionPattern = "((?:[0-9]+\\\\.){2}[0-9]+(?:-[A-Za-z0-9._-]+)?|dev(?:-[A-Za-z0-9._-]+)?)"
+// The Socialismus versions a module of this build accepts: the one it is built with and every later one before the
+// next major version, as Chassis compares the module's `host` range with Socialismus's host version.
+val hostRange = "^" + rootProject.extra["socialismusHostVersion"]
+val moduleVersion = rootProject.extra["socialismusModuleVersion"].toString()
 
 val socialismusModule = extensions.create<SocialismusModuleExtension>("socialismusModule")
 
@@ -40,38 +40,31 @@ tasks.named<Copy>("processResources").configure {
     val moduleExports = socialismusModule.exports
     inputs.property("moduleName", socialismusModule.name)
     inputs.property("moduleExports", moduleExports)
-    inputs.property("projectVersion", project.version)
-    inputs.property("socialismusVersionPattern", socialismusVersionPattern)
+    inputs.property("moduleVersion", moduleVersion)
+    inputs.property("hostRange", hostRange)
 
-    filesMatching("module.json") {
+    filesMatching("module.yml") {
         filter<ReplaceTokens>(
             "tokens" to mapOf(
                 "projectName" to socialismusModule.name.get(),
-                "projectVersion" to project.version,
-                "socialismus" to socialismusVersionPattern
+                "projectVersion" to moduleVersion,
+                "host" to hostRange
             )
         )
     }
 
     // The exports come from socialismusModule { exports }, checked by checkModuleExports, never from the file itself.
     doLast {
-        val moduleJson = destinationDir.resolve("module.json")
-        if (!moduleJson.isFile) return@doLast
+        val descriptor = destinationDir.resolve("module.yml")
+        if (!descriptor.isFile) return@doLast
 
-        @Suppress("UNCHECKED_CAST")
-        val module = JsonSlurper().parse(moduleJson) as MutableMap<String, Any?>
-        if (module.containsKey("exports"))
-            throw GradleException("module.json lists exports; declare them in socialismusModule { exports } instead")
+        val text = descriptor.readText()
+        if (Regex("(?m)^exports:").containsMatchIn(text))
+            throw GradleException("module.yml lists exports; declare them in socialismusModule { exports } instead")
 
         val exports = moduleExports.get()
         if (exports.isEmpty()) return@doLast
 
-        val withExports = LinkedHashMap<String, Any?>()
-        module.forEach { (key, value) ->
-            if (key == "main") withExports["exports"] = exports
-            withExports[key] = value
-        }
-        withExports.putIfAbsent("exports", exports)
-        moduleJson.writeText(JsonOutput.prettyPrint(JsonOutput.toJson(withExports)) + "\n")
+        descriptor.writeText(text.trimEnd() + "\nexports: [" + exports.joinToString(", ") + "]\n")
     }
 }

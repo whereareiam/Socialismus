@@ -1,5 +1,3 @@
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import me.whereareiam.anvil.integration.junit.gradle.AnvilTest
 import java.util.zip.ZipFile
 
@@ -71,42 +69,41 @@ val journeySuites = listOf(
 )
 
 /**
- * Chirper's jar with its module.json changed, for the journeys that expect Socialismus to refuse it.
+ * Chirper's jar with top-level fields of its module.yml replaced, for the journeys that expect Socialismus to refuse
+ * it. Each change names a field and its new value in YAML.
  */
-fun alteredChirper(artifact: String, change: MutableMap<String, Any?>.() -> Unit): TaskProvider<Zip> {
+fun alteredChirper(artifact: String, vararg changes: Pair<String, String>): TaskProvider<Zip> {
     val chirper = pluginJar(projects.moduleChirper)
-    val moduleJson = layout.buildDirectory.file("module-fixtures/$artifact/module.json")
-    val alterModuleJson = tasks.register("${artifact}ModuleJson") {
+    val descriptor = layout.buildDirectory.file("module-fixtures/$artifact/module.yml")
+    val alterDescriptor = tasks.register("${artifact}Descriptor") {
         inputs.files(chirper)
-        outputs.file(moduleJson)
+        inputs.property("changes", changes.toList().toString())
+        outputs.file(descriptor)
         doLast {
-            val original = ZipFile(chirper.singleFile).use { jar ->
-                jar.getInputStream(jar.getEntry("module.json")).reader().readText()
+            var text = ZipFile(chirper.singleFile).use { jar ->
+                jar.getInputStream(jar.getEntry("module.yml")).reader().readText()
             }
-            @Suppress("UNCHECKED_CAST")
-            val module = JsonSlurper().parseText(original) as MutableMap<String, Any?>
-            module.change()
-            moduleJson.get().asFile.writeText(JsonOutput.prettyPrint(JsonOutput.toJson(module)))
+            changes.forEach { (field, value) ->
+                text = Regex("(?m)^$field:.*(\\n[ \\t-].*)*\\n?").replace(text, "")
+                text = text.trimEnd() + "\n$field: $value\n"
+            }
+            descriptor.get().asFile.writeText(text)
         }
     }
 
     return tasks.register<Zip>(artifact) {
         from(chirper.elements.map { jars -> jars.map { zipTree(it) } }) {
-            exclude("module.json")
+            exclude("module.yml")
         }
-        from(alterModuleJson)
+        from(alterDescriptor)
         archiveFileName.set("$artifact.jar")
         destinationDirectory.set(layout.buildDirectory.dir("modules"))
     }
 }
 
-val moduleRequiringAnotherVersion = alteredChirper("module-requires-another-version") {
-    this["socialismus"] = "1\\.0\\.0"
-}
+val moduleRequiringAnotherVersion = alteredChirper("module-requires-another-version", "host" to "\"^1.0.0\"")
 
-val moduleForAnotherPlatform = alteredChirper("module-for-another-platform") {
-    this["platforms"] = listOf(mapOf("type" to "VELOCITY"))
-}
+val moduleForAnotherPlatform = alteredChirper("module-for-another-platform", "platforms" to "[{name: velocity}]")
 
 anvil {
     acceptEula()
