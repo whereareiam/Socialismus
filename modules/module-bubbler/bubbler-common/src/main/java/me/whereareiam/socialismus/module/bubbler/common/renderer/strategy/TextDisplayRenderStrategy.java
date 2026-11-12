@@ -1,6 +1,6 @@
 package me.whereareiam.socialismus.module.bubbler.common.renderer.strategy;
 
-import com.github.retrooper.packetevents.PacketEvents;
+import me.whereareiam.socialismus.module.bubbler.common.BubbleUsers;
 import com.github.retrooper.packetevents.protocol.player.User;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
@@ -121,9 +121,7 @@ public class TextDisplayRenderStrategy implements RenderStrategy {
 		if (lines.isEmpty())
 			return;
 
-		int vehicleId = PacketEvents.getAPI()
-				.getPlayerManager()
-				.getUser(sender.getAudience())
+		int vehicleId = BubbleUsers.of(sender)
 				.getEntityId();
 
 		int[] passengerIds = lines.stream()
