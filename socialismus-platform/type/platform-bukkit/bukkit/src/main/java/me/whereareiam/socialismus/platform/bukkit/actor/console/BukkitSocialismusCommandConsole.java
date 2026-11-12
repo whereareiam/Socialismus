@@ -1,7 +1,7 @@
 package me.whereareiam.socialismus.platform.bukkit.actor.console;
 
 import lombok.Getter;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import me.whereareiam.socialismus.platform.bukkit.audience.SenderAudiences;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -24,9 +24,9 @@ public class BukkitSocialismusCommandConsole extends AbstractBukkitSocialismusCo
 	 *
 	 * @param consoleSender The Bukkit console sender
 	 * @param commandSender The original CommandSender
-	 * @param audiences     The BukkitAudiences instance for Adventure API support
+	 * @param audiences     The audiences that reach the sender
 	 */
-	public BukkitSocialismusCommandConsole(@NotNull ConsoleCommandSender consoleSender, @NotNull CommandSender commandSender, @NotNull BukkitAudiences audiences) {
+	public BukkitSocialismusCommandConsole(@NotNull ConsoleCommandSender consoleSender, @NotNull CommandSender commandSender, @NotNull SenderAudiences audiences) {
 		super(consoleSender, audiences);
 		this.commandSender = commandSender;
 	}

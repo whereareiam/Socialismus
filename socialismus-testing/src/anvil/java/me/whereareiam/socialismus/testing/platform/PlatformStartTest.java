@@ -16,7 +16,8 @@ import static me.whereareiam.socialismus.testing.environment.ServerFiles.chat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Every jar Socialismus ships starts on the platform it is for and formats chat there.
+ * Every jar Socialismus ships starts on the platform it is for, formats chat there and, for the BUKKIT jar, replies
+ * to commands.
  */
 @Tag("platform")
 class PlatformStartTest {
@@ -33,12 +34,14 @@ class PlatformStartTest {
 	@Socialismus(network = Network.PAPER, configure = GlobalChat.class)
 	void bukkitJarRunsOnPaper(ScenarioContext anvil) {
 		startsAndChats(anvil, "Platform: PAPER [BUKKIT]");
+		repliesToCommands(anvil, "Server platform: PAPER", "Plugin platform: BUKKIT");
 	}
 
 	@Test
 	@Socialismus(network = Network.SPIGOT, configure = GlobalChat.class)
 	void bukkitJarRunsOnSpigot(ScenarioContext anvil) {
 		startsAndChats(anvil, "Platform: SPIGOT [BUKKIT]");
+		repliesToCommands(anvil, "Server platform: SPIGOT", "Plugin platform: BUKKIT");
 	}
 
 	@Test
@@ -69,6 +72,15 @@ class PlatformStartTest {
 		alice.chat("hello");
 		alice.sees("[G] Alice: hello");
 		bob.sees("[G] Alice: hello");
+	}
+
+	/**
+	 * A command reply reaches the player outside the chat event, through the jar's own way of sending messages.
+	 */
+	private static void repliesToCommands(ScenarioContext anvil, String... reply) {
+		Player carol = Player.joins(anvil, "Carol").op();
+		carol.command("socialismus debug");
+		carol.seesAll(reply);
 	}
 
 	static final class GlobalChat implements Consumer<ServerFiles> {

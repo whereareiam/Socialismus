@@ -22,9 +22,9 @@ Journeys run on the newest versions by default: Paper 26.3, Spigot 26.3 and Velo
 `Versions` pins the builds the journeys can run, and a run picks one with
 `-Psocialismus.journeys.minecraft=<version>` and `-Psocialismus.journeys.velocity=<version>`; Anvil
 starts each server on the Java its version needs. The compatibility workflow runs the `platform`
-suite at the versions where the game or the platforms changed what Socialismus depends on, and the
-`modules` and `bubbler` suites from 1.20.6, where Paper installs the PAPER jar; below it they join
-once the BUKKIT jar delivers messages outside chat and Bubbler's components reach PacketEvents on it:
+and `modules` suites at the versions where the game or the platforms changed what Socialismus
+depends on, and the `bubbler` suite from 1.20.6, where Paper installs the PAPER jar; below it
+`bubbler` joins once Bubbler's components reach PacketEvents on the BUKKIT jar:
 
 | Minecraft | Java | Why |
 | --- | --- | --- |
@@ -113,6 +113,7 @@ One Paper server unless stated otherwise.
 - [x] The BUNDLE jar starts on Paper and on Velocity **first**
 - [x] The BUKKIT jar starts on Paper below 1.20.6 and a player chats, at every version of the matrix
 - [x] The BUKKIT jar and the PAPER jar start at the versions of the matrix they name
+- [x] The BUKKIT jar replies to a command on Spigot and on Paper below 1.20.6, at every version of the matrix
 - [ ] The BUKKIT jar on Paper 1.20.6 or newer recommends the PAPER jar
 - [ ] The PAPER jar refuses to start on Paper below 1.20.6 with a reason
 
