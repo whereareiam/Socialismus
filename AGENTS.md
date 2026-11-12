@@ -21,6 +21,7 @@
 - drive players with `Player.joins(anvil, "Alice")`, `switchesTo(Network.SURVIVAL)`, `chat`, `command`, `sees` and `neverSees`, the console with `Console.of(anvil)` or `Console.of(anvil, Network.LOBBY)`, and any process, a container included, with `anvil.processes().freeze("redis")`, `thaw`, `kill` and `restart`; `sees` only looks at what arrived since the player's previous step
 - the journeys' classpath leaves out Adventure, which Anvil's player workers only take from their protocol library, so files are written with plain Configura
 - a failed journey keeps its network under `socialismus-testing/build/anvil/`; read the servers' `logs/latest.log` there
+- journeys run on the newest versions; `-Psocialismus.journeys.minecraft=1.16.5` and `-Psocialismus.journeys.velocity=4.0.0` run them at another version that `Versions` pins, on the Java Anvil picks for it, and `@MinecraftVersions(since = ..., before = ...)` skips a journey where it does not apply; `JOURNEYS.md` lists the versions of the compatibility matrix and why each
 
 ### Convention Plugins
 
@@ -34,6 +35,7 @@ A module's build file holds its role, dependencies and metadata; shared behaviou
 | `packaging-platform-jar` | a plugin jar; `platform { name.set("PAPER") }` names its classifier and `Plugin-Type` and it fills `plugin.yml` and `paper-plugin.yml` |
 | `packaging-bundle-jar` | the bundle jar: every platform whose `platform` block keeps `bundled`, with the descriptors it lists in `descriptors` |
 | `packaging-module-jar` | the jar of a Socialismus module; `socialismusModule { name.set("Chirper") }` names the jar and fills `module.yml` |
+| `packaging-downgraded-jar` | a shaded jar rewritten for an older Java with JvmDowngrader, `downgrade { java.set(11) }`; the BUKKIT jar and every module jar, so they run on Minecraft 1.16.5 |
 
 The modules compile with Java 21 whichever Java runs Gradle; `platform-bukkit-paper` and `platform-proxy-velocity` use a Java 25 toolchain, because the Paper API of 26.x and the Velocity API of 4.x are built for Java 25.
 
@@ -111,7 +113,8 @@ socialismus-platform/
 - Add `module:chirper`, `module:bubbler`, `module:dialogue`, `module:essentials`, `module:redis`, `module:channelizer`, `module:database`, `module:network` or `module:link` when a pull request or issue concerns that module's jar; work on the plugin itself carries no such label.
 - A run keeps as artifacts only what someone downloads: `socialismus-plugins-<version>` from a development build or release, and `test-results` when a test failed.
 - Development builds are started manually and publish a branch-qualified version. A published GitHub release publishes Maven artifacts, attaches the jars, and publishes to the stores; a manual run of the release workflow only republishes to the stores.
-- Entry workflows only select a trigger and call `reusable-verify.yml` and `reusable-publish.yml`; shared steps come from `whereareiam/devops` and `whereareiam/blockops`.
+- Entry workflows only select a trigger and call `reusable-verify.yml`, `reusable-compatibility.yml` and `reusable-publish.yml`; shared steps come from `whereareiam/devops` and `whereareiam/blockops`.
+- `compatibility.yml` runs the `platform` suite at the older versions of the matrix on pull requests that touch the platforms, the modules or the build, on pushes of those to `dev`, and by hand before a release; it is not required by the `dev` ruleset.
 - The Gradle build cache is on. Pull requests only read caches, so `build-cache.yml` compiles on every push to `dev` and writes the Gradle cache; when the checks start running other tasks before their tests, add those tasks to its command.
 
 ### Issues

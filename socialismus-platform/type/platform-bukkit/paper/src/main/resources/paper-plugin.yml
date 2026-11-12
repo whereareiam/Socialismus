@@ -1,7 +1,7 @@
 name: ${projectName}
 main: me.whereareiam.socialismus.platform.paper.PaperSocialismus
 version: '${projectVersion}'
-api-version: '1.20'
+api-version: '26.1'
 folia-supported: true
 authors:
   - whereareiam
