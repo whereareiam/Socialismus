@@ -1,14 +1,10 @@
 package me.whereareiam.socialismus.common.requirement.type;
 
-import com.google.inject.Provider;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.conditia.ConditionType;
 import me.whereareiam.conditia.result.Outcome;
 import me.whereareiam.conditia.result.Reason;
-import me.whereareiam.socialismus.integration.Integration;
-import me.whereareiam.socialismus.integration.placeholder.PlaceholderIntegration;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.util.PlaceholderUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +21,7 @@ import java.util.regex.Pattern;
  */
 @RequiredArgsConstructor
 public final class PlaceholderCondition implements ConditionType.Single<SocialismusPlayer, PlaceholderCondition.Settings> {
-	private final Provider<Set<Integration>> integrations;
+	private final PlaceholderReader placeholders;
 
 	@Override
 	public @NotNull String name() {
@@ -49,22 +45,14 @@ public final class PlaceholderCondition implements ConditionType.Single<Socialis
 
 	@Override
 	public @NotNull Outcome holds(@NotNull SocialismusPlayer player, @NotNull Settings settings) {
-		Optional<PlaceholderIntegration> integration = integration();
-		if (integration.isEmpty()) return Outcome.fail();
+		Optional<String> read = placeholders.read(player, settings.text());
+		if (read.isEmpty()) return Outcome.fail();
 
-		String value = PlaceholderUtil.resolve(integration.get(), player.getUniqueId(), settings.text());
+		String value = read.get();
 
 		return compares(value, settings)
 				? Outcome.pass(new Match(settings.text(), value))
 				: Outcome.fail(new Mismatch(settings.text(), value));
-	}
-
-	private Optional<PlaceholderIntegration> integration() {
-		return integrations.get().stream()
-				.filter(PlaceholderIntegration.class::isInstance)
-				.filter(Integration::isAvailable)
-				.map(PlaceholderIntegration.class::cast)
-				.findFirst();
 	}
 
 	private static boolean compares(String value, Settings settings) {

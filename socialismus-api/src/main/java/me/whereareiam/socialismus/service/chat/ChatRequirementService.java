@@ -40,9 +40,10 @@ public interface ChatRequirementService {
 	 * @param chat      the chat
 	 * @param recipient the player
 	 * @param message   the message, with its sender
-	 * @return whether the player receives the message
+	 * @return the verdict; a failed one names the condition and its reason, which the sender is told when the
+	 * message reaches nobody
 	 */
-	boolean reaches(@NotNull Chat chat, @NotNull SocialismusPlayer recipient, @NotNull ChatMessage message);
+	@NotNull Verdict reaches(@NotNull Chat chat, @NotNull SocialismusPlayer recipient, @NotNull ChatMessage message);
 
 	/**
 	 * Chooses the format of a message: the last of the chat's formats whose {@code requires} the sender meets.

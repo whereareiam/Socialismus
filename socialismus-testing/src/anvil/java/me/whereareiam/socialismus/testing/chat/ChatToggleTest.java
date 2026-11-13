@@ -56,8 +56,8 @@ class ChatToggleTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(
-					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
-					chat("announcements", 1, "!", 0, "[A] {playerName}: {message}").toBuilder().toggleable(false).build()
+					chat("global", 0, "", "[G] {playerName}: {message}"),
+					chat("announcements", 1, "!", "[A] {playerName}: {message}").toBuilder().toggleable(false).build()
 			);
 		}
 	}

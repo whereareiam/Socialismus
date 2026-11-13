@@ -86,7 +86,7 @@ class PlatformStartTest {
 	static final class GlobalChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}"));
+			files.chats(chat("global", 0, "", "[G] {playerName}: {message}"));
 		}
 	}
 }

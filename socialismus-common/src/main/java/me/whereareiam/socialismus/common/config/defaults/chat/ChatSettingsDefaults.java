@@ -12,8 +12,7 @@ public class ChatSettingsDefaults implements DefaultsProvider<ChatSettings> {
 		ChatSettings.Notifications notifications = new ChatSettings.Notifications();
 		notifications.setNoChat(true);
 		notifications.setNoFormat(true);
-		notifications.setNoPlayers(false);
-		notifications.setNoNearbyPlayers(false);
+		notifications.setNobody(false);
 		notifications.setEmptyMessage(true);
 		chatSettings.setNotifications(notifications);
 

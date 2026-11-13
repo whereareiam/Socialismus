@@ -27,6 +27,7 @@ class ChatRequirementTest {
 	private static final String OTHER_WORLD = "This stays in {worlds}";
 	private static final String NOT_IN_THE_NETHER = "{chat} is closed in {world}";
 	private static final String STAFF_ONLY = "Only the staff write in {chat}";
+	private static final String UNHEARD = "Nobody within {blocks} blocks heard you in {chat}";
 
 	@Test
 	@Socialismus(configure = StaffChat.class)
@@ -93,6 +94,30 @@ class ChatRequirementTest {
 		bob.sees("[R] Alice: pong");
 	}
 
+	@Test
+	@Socialismus(configure = UnheardLocalChat.class)
+	void aMessageThatReachesNobodyTellsItsSenderWhy(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+		Player bob = Player.joins(anvil, "Bob").teleport(500, 100, 500);
+
+		alice.chat("anyone?");
+		alice.sees("Nobody within 100 blocks heard you in local");
+		bob.neverSees("anyone?");
+		alice.neverSees("[L] Alice: anyone?");
+	}
+
+	@Test
+	@Socialismus(configure = SameWorldChat.class)
+	void sameWorldKeepsAChatToThePlayersOfTheSendersWorld(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+		Player bob = Player.joins(anvil, "Bob").teleport(5000, 100, 5000);
+		Player carol = Player.joins(anvil, "Carol").travelsTo("minecraft:the_nether");
+
+		alice.chat("same world");
+		bob.sees("[W] Alice: same world");
+		carol.neverSees("same world");
+	}
+
 	/**
 	 * Without a fallback chat, a message no chat takes gets the no-chat notice, and one its chat refuses why: the
 	 * {@code chat.denied} phrases word a missing permission and a world it is closed in, and leave the worlds it is
@@ -122,8 +147,8 @@ class ChatRequirementTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(
-					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
-					chat("staff", 1, "#", 0, "[S] {playerName}: {message}").toBuilder()
+					chat("global", 0, "", "[G] {playerName}: {message}"),
+					chat("staff", 1, "#", "[S] {playerName}: {message}").toBuilder()
 							.requires(permission("socialismus.chat.staff"))
 							.reaches(permission("socialismus.chat.staff"))
 							.build()
@@ -138,7 +163,7 @@ class ChatRequirementTest {
 	static final class OverworldChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("overworld", 0, "", 0, "[O] {playerName}: {message}").toBuilder()
+			files.chats(chat("overworld", 0, "", "[O] {playerName}: {message}").toBuilder()
 					.requires(world("world"))
 					.reaches(world("world"))
 					.build());
@@ -152,7 +177,7 @@ class ChatRequirementTest {
 	static final class ClosedInTheNetherChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("surface", 0, "", 0, "[S] {playerName}: {message}").toBuilder()
+			files.chats(chat("surface", 0, "", "[S] {playerName}: {message}").toBuilder()
 					.requires(not(world("world_nether")))
 					.build());
 			noFallback(files);
@@ -165,7 +190,7 @@ class ChatRequirementTest {
 	static final class WordedStaffChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("staff", 0, "#", 0, "[S] {playerName}: {message}").toBuilder()
+			files.chats(chat("staff", 0, "#", "[S] {playerName}: {message}").toBuilder()
 					.requires(worded(permission("socialismus.chat.staff"), Map.of(
 							"denied", "<ref:staff-only>",
 							"hint", "Ask an admin for {permissions}"
@@ -176,14 +201,41 @@ class ChatRequirementTest {
 	}
 
 	/**
+	 * Local chat reaches 100 blocks and keeps back a message that reaches nobody, telling its sender in the
+	 * {@code chat.denied.recipient} phrase of the reason.
+	 */
+	static final class UnheardLocalChat implements Consumer<ServerFiles> {
+		@Override
+		public void accept(ServerFiles files) {
+			files.chats(chat("local", 0, "", "[L] {playerName}: {message}").toBuilder()
+					.reaches(nearby(100))
+					.build());
+			files.put(CHAT_SETTINGS, Map.of("notifications", Map.of("nobody", true)));
+			files.put(PHRASES, Map.of("chat", Map.of("denied", Map.of("recipient", Map.of("nearby.outside", UNHEARD)))));
+		}
+	}
+
+	/**
+	 * World chat reaches every player of the sender's world, however far: {@code same: world}.
+	 */
+	static final class SameWorldChat implements Consumer<ServerFiles> {
+		@Override
+		public void accept(ServerFiles files) {
+			files.chats(chat("world", 0, "", "[W] {playerName}: {message}").toBuilder()
+					.reaches(sameWorld())
+					.build());
+		}
+	}
+
+	/**
 	 * A message containing {@code pong} goes to reply chat; every other one falls back to global chat.
 	 */
 	static final class ReplyChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(
-					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
-					chat("reply", 1, "", 0, "[R] {playerName}: {message}").toBuilder()
+					chat("global", 0, "", "[G] {playerName}: {message}"),
+					chat("reply", 1, "", "[R] {playerName}: {message}").toBuilder()
 							.requires(content("pong"))
 							.build()
 			);

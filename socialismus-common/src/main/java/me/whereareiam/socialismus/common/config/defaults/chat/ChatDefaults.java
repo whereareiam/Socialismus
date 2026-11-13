@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.common.config.defaults.chat;
 
 import com.google.inject.Singleton;
+import me.whereareiam.conditia.model.Node;
 import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.common.config.dynamic.ChatsConfig;
@@ -8,6 +9,7 @@ import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.model.requirement.RequirementLists;
+import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.chat.TriggerType;
 
 import java.util.List;
@@ -25,7 +27,6 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 								.type(TriggerType.SYMBOL)
 								.symbol("")
 								.strip(true)
-								.radius(0)
 								.build()
 				),
 				List.of(new ChatFormat("{clear}<gray>[F] {playerName}: <white>{message}", Requirements.none())),
@@ -43,7 +44,6 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 								.type(TriggerType.SYMBOL)
 								.symbol("")
 								.strip(true)
-								.radius(200)
 								.build()
 				),
 				List.of(
@@ -51,7 +51,10 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 						new ChatFormat("{clear}<gray>[L] {playerName}: <gold>{message}", RequirementLists.permission("socialismus.admin"))
 				),
 				RequirementLists.permission("socialismus.chat.local"),
-				RequirementLists.permission("socialismus.chat.local"),
+				RequirementLines.of(
+						RequirementLines.line("permission", "socialismus.chat.local"),
+						nearby()
+				),
 				true
 		);
 
@@ -64,7 +67,6 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 								.type(TriggerType.SYMBOL)
 								.symbol("!")
 								.strip(true)
-								.radius(0)
 								.build()
 				),
 				List.of(
@@ -77,6 +79,15 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 		);
 
 		chatsConfig.getChats().addAll(List.of(fallback, local, global));
+		chatsConfig.getChats().addAll(ShowcaseChats.all());
+
 		return chatsConfig;
+	}
+
+	// A proxy knows no positions, so its local chat is the sender's server.
+	private static Node.Mapping nearby() {
+		if (PlatformType.isGameServer()) return RequirementLines.line("nearby", "200");
+
+		return RequirementLines.line("same", "server");
 	}
 }

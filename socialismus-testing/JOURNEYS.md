@@ -72,7 +72,9 @@ One Paper server unless stated otherwise.
 
 - [x] A message reaches every player in the format of the chat it matched **first**
 - [x] A symbol trigger picks its chat and is stripped from the message, such as `!` for global chat **first**
-- [x] Local chat reaches only the players within its radius **first**
+- [x] Local chat reaches only the players `nearby` in its `reaches` **first**
+- [x] `same: world` keeps a chat to the players of the sender's world, however far
+- [x] A message that reaches nobody is kept back and tells its sender why, in the `chat.denied.recipient` phrase of the reason
 - [x] A permission requirement decides who may send in a chat and who receives it
 - [x] A world requirement keeps a chat to the players of its worlds
 - [x] A sender a chat's requirements refuse is told why in the `chat.denied` phrases, or in the `denied` phrases of

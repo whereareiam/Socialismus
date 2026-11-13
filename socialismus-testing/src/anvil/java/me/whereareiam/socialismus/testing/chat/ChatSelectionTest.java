@@ -89,8 +89,8 @@ class ChatSelectionTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(
-					chat("global", 1, "!", 0, "[G] {playerName}: {message}"),
-					chat("staff", 2, "!", 0, "[S] {playerName}: {message}").toBuilder()
+					chat("global", 1, "!", "[G] {playerName}: {message}"),
+					chat("staff", 2, "!", "[S] {playerName}: {message}").toBuilder()
 							.requires(permission("socialismus.chat.staff"))
 							.build()
 			);
@@ -104,7 +104,7 @@ class ChatSelectionTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(
-					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
+					chat("global", 0, "", "[G] {playerName}: {message}"),
 					regexChat("question", 1, ".*\\?", "[Q] {playerName}: {message}")
 			);
 		}
@@ -117,8 +117,8 @@ class ChatSelectionTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(
-					chat("local", 0, "", 0, "[L] {playerName}: {message}"),
-					chat("global", 1, "", 0, "[G] {playerName}: {message}").toBuilder()
+					chat("local", 0, "", "[L] {playerName}: {message}"),
+					chat("global", 1, "", "[G] {playerName}: {message}").toBuilder()
 							.enabled(false)
 							.build()
 			);
@@ -131,7 +131,7 @@ class ChatSelectionTest {
 	static final class OnlySymbolChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "!", 0, "[G] {playerName}: {message}"));
+			files.chats(chat("global", 0, "!", "[G] {playerName}: {message}"));
 			files.put(CHAT_SETTINGS, Map.of("fallback", Map.of("enabled", false, "chat", "fallback")));
 			files.put(CHAT_MESSAGES, Map.of("noChatMatch", NO_CHAT));
 		}
@@ -143,8 +143,8 @@ class ChatSelectionTest {
 	static final class ChatsInTwoFiles implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chatsIn("global.yml", chat("global", 0, "", 0, "[G] {playerName}: {message}"));
-			files.chatsIn("announcement.yml", chat("announcement", 1, "!", 0, "[A] {playerName}: {message}"));
+			files.chatsIn("global.yml", chat("global", 0, "", "[G] {playerName}: {message}"));
+			files.chatsIn("announcement.yml", chat("announcement", 1, "!", "[A] {playerName}: {message}"));
 		}
 	}
 }

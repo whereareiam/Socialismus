@@ -25,11 +25,13 @@ import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.phrase.Phrases;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.RequirementLists;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import static me.whereareiam.conditia.testing.TestRequirements.yaml;
@@ -55,7 +57,8 @@ class DefaultChatRequirementServiceTest {
 		Logger.init(mock(LoggingHelper.class));
 		conditions = new RequirementConfiguration().provideConditions(
 				Config.builder().format(Format.YAML).feature(new ConditiaFeature()).build(),
-				Set::of
+				Set::of,
+				() -> mock(PlayerRegistry.class)
 		);
 		requirements = new DefaultChatRequirementService(conditions, new DefaultPhrasebook(() -> phrases), () -> settings, mock(EventManager.class));
 		when(alice.hasPermission("socialismus.chat.local")).thenReturn(true);
@@ -98,8 +101,61 @@ class DefaultChatRequirementServiceTest {
 		assertTrue(requirements.writes(local, message(alice)).passed());
 		Verdict.Failed refused = assertInstanceOf(Verdict.Failed.class, requirements.writes(local, message(bob)));
 		assertEquals("permission.missing", refused.key().orElseThrow());
-		assertTrue(requirements.reaches(local, alice, message(bob)));
-		assertFalse(requirements.reaches(local, bob, message(alice)));
+		assertTrue(requirements.reaches(local, alice, message(bob)).passed());
+		assertFalse(requirements.reaches(local, bob, message(alice)).passed());
+	}
+
+	@Test
+	void aChatReachesWhoSharesTheSendersServerAndSeesThem_AndTellsWhyNot() {
+		Chat staff = chat("staff", "[]", """
+				- same: server
+				- sees: [recipient, sender]
+				""");
+		when(alice.getServer()).thenReturn("lobby");
+		when(bob.getServer()).thenReturn("lobby");
+		when(alice.canSee(bob)).thenReturn(true);
+		requirements.bind(staff);
+		requirements.start();
+
+		assertTrue(requirements.reaches(staff, alice, message(bob)).passed());
+
+		when(alice.canSee(bob)).thenReturn(false);
+		Verdict.Failed hidden = assertInstanceOf(Verdict.Failed.class, requirements.reaches(staff, alice, message(bob)));
+		assertEquals("sees.hidden", hidden.key().orElseThrow());
+
+		when(bob.getServer()).thenReturn("survival");
+		Verdict.Failed elsewhere = assertInstanceOf(Verdict.Failed.class, requirements.reaches(staff, alice, message(bob)));
+		assertEquals("same.outside", elsewhere.key().orElseThrow());
+	}
+
+	@Test
+	void aChatReachesThePlayersOfItsLanguages() {
+		Chat deutsch = chat("deutsch", "[]", "- language: de");
+		when(alice.getLocale()).thenReturn(Locale.GERMANY);
+		when(bob.getLocale()).thenReturn(Locale.US);
+		requirements.bind(deutsch);
+		requirements.start();
+
+		assertTrue(requirements.reaches(deutsch, alice, message(bob)).passed());
+		assertFalse(requirements.reaches(deutsch, bob, message(alice)).passed());
+	}
+
+	@Test
+	void sameNamesNeitherAPlaceNorAPlaceholder_AndStopsTheStart() {
+		requirements.bind(chat("staff", "[]", "- same: { }"));
+
+		ConditionException exception = assertThrows(ConditionException.class, requirements::start);
+
+		assertEquals("chats.staff.reaches[0].same", exception.getPath());
+	}
+
+	@Test
+	void nearbyAndWorldAreUnknownWhereNoPositionsAre() {
+		requirements.bind(chat("local", "[]", "- nearby: 200"));
+
+		ConditionException exception = assertThrows(ConditionException.class, requirements::start);
+
+		assertEquals("chats.local.reaches[0].nearby", exception.getPath());
 	}
 
 	@Test

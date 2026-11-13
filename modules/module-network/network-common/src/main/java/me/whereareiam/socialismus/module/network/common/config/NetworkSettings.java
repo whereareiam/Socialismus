@@ -39,7 +39,8 @@ public class NetworkSettings {
 	@ToString
 	public static class Chat {
 		/**
-		 * Whether chat messages go to and come from the other nodes. A chat with a radius always stays on its node.
+		 * Whether chat messages go to and come from the other nodes. Each node delivers them to whom the chat's
+		 * {@code reaches} lets through, so a chat of nearby players stays on its node.
 		 */
 		private boolean enabled;
 

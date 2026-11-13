@@ -30,7 +30,7 @@ class PlaceholderConditionTest {
 		when(placeholders.resolutionMode()).thenReturn(PlaceholderResolutionMode.SINGLE_PASS);
 		when(placeholders.resolve(any(UUID.class), anyString())).thenReturn("150.5");
 		when(player.getUniqueId()).thenReturn(UUID.randomUUID());
-		PlaceholderCondition placeholder = new PlaceholderCondition(() -> Set.<Integration>of(placeholders));
+		PlaceholderCondition placeholder = new PlaceholderCondition(new PlaceholderReader(() -> Set.<Integration>of(placeholders)));
 
 		Outcome above = placeholder.holds(player, new PlaceholderCondition.Settings("%balance%", null, null, 100.0, null));
 		Outcome below = placeholder.holds(player, new PlaceholderCondition.Settings("%balance%", null, null, null, 100.0));
@@ -42,7 +42,7 @@ class PlaceholderConditionTest {
 
 	@Test
 	void placeholder_FailsWithoutAPlaceholderPlugin() {
-		PlaceholderCondition placeholder = new PlaceholderCondition(Set::of);
+		PlaceholderCondition placeholder = new PlaceholderCondition(new PlaceholderReader(Set::of));
 
 		assertFalse(placeholder.holds(player, new PlaceholderCondition.Settings("%x%", "1", null, null, null)).passed());
 	}

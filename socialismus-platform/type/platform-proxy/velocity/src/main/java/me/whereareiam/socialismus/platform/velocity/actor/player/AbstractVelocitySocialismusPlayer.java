@@ -9,6 +9,8 @@ import com.velocitypowered.api.proxy.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+
 /**
  * Abstract base class for all Velocity SocialismusPlayer implementations.
  * Provides common functionality for wrapping Velocity Players.
@@ -59,6 +61,16 @@ public abstract class AbstractVelocitySocialismusPlayer extends SocialismusPlaye
 	@NotNull
 	public Audience getAudience() {
 		return velocityPlayer;
+	}
+
+	/**
+	 * The language of the player's game client, English until the client has sent its settings.
+	 */
+	@Override
+	public @NotNull Locale getLocale() {
+		Locale locale = velocityPlayer.getEffectiveLocale();
+
+		return locale == null ? Locale.ENGLISH : locale;
 	}
 
 	@Override

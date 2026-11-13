@@ -30,7 +30,7 @@ import java.util.Map;
  * <pre>{@code
  * static final class GlobalChat implements Consumer<ServerFiles> {
  *     public void accept(ServerFiles files) {
- *         files.chats(ServerFiles.chat("global", 0, "", 0, "[G] {playerName}: {message}"));
+ *         files.chats(ServerFiles.chat("global", 0, "", "[G] {playerName}: {message}"));
  *     }
  * }
  * }</pre>
@@ -117,11 +117,10 @@ public final class ServerFiles {
 	 * @param id       the chat's identifier
 	 * @param priority which chat wins when several match; the highest
 	 * @param symbol   the symbol that selects the chat, empty for every message
-	 * @param radius   how far, in blocks, a message reaches; 0 for everyone
 	 * @param format   the format, with {@code {playerName}} and {@code {message}}
 	 */
 	@NotNull
-	public static Chat chat(@NotNull String id, int priority, @NotNull String symbol, int radius, @NotNull String format) {
+	public static Chat chat(@NotNull String id, int priority, @NotNull String symbol, @NotNull String format) {
 		return Chat.builder()
 				.id(id)
 				.priority(priority)
@@ -129,7 +128,6 @@ public final class ServerFiles {
 				.triggers(List.of(SymbolChatTrigger.builder()
 						.type(TriggerType.SYMBOL)
 						.strip(true)
-						.radius(radius)
 						.symbol(symbol)
 						.build()))
 				.formats(List.of(new ChatFormat(format, Requirements.none())))
@@ -146,11 +144,10 @@ public final class ServerFiles {
 	 */
 	@NotNull
 	public static Chat regexChat(@NotNull String id, int priority, @NotNull String pattern, @NotNull String format) {
-		return chat(id, priority, "", 0, format).toBuilder()
+		return chat(id, priority, "", format).toBuilder()
 				.triggers(List.of(RegexChatTrigger.builder()
 						.type(TriggerType.REGEX)
 						.strip(false)
-						.radius(0)
 						.pattern(pattern)
 						.build()))
 				.build();
@@ -162,6 +159,30 @@ public final class ServerFiles {
 	@NotNull
 	public static Requirements permission(@NotNull String... permissions) {
 		return RequirementLists.permission(permissions);
+	}
+
+	/**
+	 * Returns a list a recipient meets within the given blocks of the sender; only game servers know it.
+	 */
+	@NotNull
+	public static Requirements nearby(int blocks) {
+		return RequirementLists.of("nearby", String.valueOf(blocks));
+	}
+
+	/**
+	 * Returns a list a recipient meets on the sender's server, on a game server and on a proxy alike.
+	 */
+	@NotNull
+	public static Requirements sameServer() {
+		return RequirementLists.of("same", "server");
+	}
+
+	/**
+	 * Returns a list a recipient meets in the sender's world; only game servers know it.
+	 */
+	@NotNull
+	public static Requirements sameWorld() {
+		return RequirementLists.of("same", "world");
 	}
 
 	/**
