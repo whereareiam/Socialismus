@@ -151,6 +151,28 @@ phrasebook.remove("greeter");                              // in disable
 
 Get Socialismus's `Phrasebook` from its injector. `phrasebook.phrase("greeter", "welcome-back", placeholders)` gives a phrase ready to send, looking under `greeter.` first, and `phrasebook.render("greeter", text)` puts the phrases into a text with `<ref:key>`. To tell a refused player why, pass a failed verdict to `ConditionTexts.denied(failed, "greeter", placeholders)`: it takes the line's `denied` text or the `greeter.denied.*` and `denied.*` phrases of the reason, and adds the line's `hint`. `phrasebook.checked("greeter", place)` refuses a place whose texts refer to a phrase no file has, naming the text's path.
 
+## Keeping data
+
+A module that keeps values by key, such as a choice each player made, asks Socialismus's `Stores` for a store instead of choosing where to keep them. Its key says what the values need; what the server has decides where they live:
+
+```java
+static final StoreKey<UUID, Greeting> GREETINGS =
+        StoreKey.of("greeter:greetings", UUID.class, Greeting.class).replicated().persistent();
+
+Store<UUID, Greeting> greetings = stores.of(GREETINGS);
+greetings.put(player.getUniqueId(), Greeting.LOUD);
+Greeting greeting = greetings.get(player.getUniqueId()).orElse(Greeting.QUIET);
+```
+
+| The key asks for | Installed | The values |
+|------------------|-----------|------------|
+| nothing | anything | stay in this server's memory |
+| `.replicated()` | SocialismusNetwork | are shared with every server; with SocialismusRedis they usually outlive restarts too |
+| `.persistent()` | SocialismusDatabase | outlive restarts, in the database's `socialismus_store_entries` table |
+| `.expiring(Duration.ofHours(1))` | anything | are forgotten an hour after they were put, unless `put(key, value, expiry)` gives a time of its own |
+
+Every server keeps a working copy, so `get` and `entries` answer at once, even on a chat thread; sharing and saving happen in the background. When SocialismusNetwork or SocialismusDatabase starts or stops, the store moves its values over, so a module never waits for them or depends on them. `onChange` tells a module of every change, including those made on another server. Name a store after your module's id, and give its keys and values types that JSON carries, such as `UUID`, enums and plain models.
+
 ## Resources for other modules
 
 A main class that implements `ResourceProvider` has its resources registered as soon as it is enabled, before the modules that depend on it start, and unregistered when it stops. A module that uses another module's resource depends on that module.
