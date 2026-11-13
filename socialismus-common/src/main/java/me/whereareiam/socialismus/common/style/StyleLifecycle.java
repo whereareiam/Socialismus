@@ -16,7 +16,7 @@ public final class StyleLifecycle implements RuntimeLifecycle {
 
 	@Override
 	public @NotNull StartupPhase phase() {
-		return StartupPhase.REQUIREMENTS;
+		return StartupPhase.CONDITIONS;
 	}
 
 	@Override

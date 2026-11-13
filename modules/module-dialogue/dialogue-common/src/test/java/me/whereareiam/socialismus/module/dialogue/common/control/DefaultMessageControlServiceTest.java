@@ -3,10 +3,10 @@ package me.whereareiam.socialismus.module.dialogue.common.control;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
-import me.whereareiam.socialismus.module.dialogue.common.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.DialogueNotices;
 import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
+import me.whereareiam.socialismus.module.dialogue.common.TestDialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryIgnoreStore;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryPreferencesStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
@@ -36,7 +36,7 @@ class DefaultMessageControlServiceTest {
 		when(playerRegistry.getPlayerData(anyString())).thenReturn(Optional.empty());
 		when(playerRegistry.getPlayerData("bob")).thenReturn(Optional.of(bob));
 		when(playerRegistry.getPlayerData("alice")).thenReturn(Optional.of(alice));
-		service = new DefaultMessageControlService(() -> settings, toggles, ignores, new SenderPrivileges(DialogueConditions.bound(settings), () -> settings, TestDataBuilder.plainStyles()), playerRegistry, notices);
+		service = new DefaultMessageControlService(() -> settings, toggles, ignores, new SenderPrivileges(TestDialogueConditions.bound(settings), () -> settings, TestDataBuilder.plainStyles()), playerRegistry, notices);
 	}
 
 	@Test

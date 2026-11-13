@@ -6,7 +6,7 @@ import me.whereareiam.conditia.ConditionType;
 import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.result.Reason;
 import me.whereareiam.socialismus.logging.Logger;
-import me.whereareiam.socialismus.service.requirement.RequirementTexts;
+import me.whereareiam.socialismus.service.condition.ConditionTexts;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public final class PhraseCheck {
 	public void run() {
 		for (Map.Entry<String, ConditionType<?>> type : conditions.types().entrySet()) {
 			for (Class<? extends Reason> reason : type.getValue().reasons()) {
-				String key = RequirementTexts.Word.DENIED.word() + "." + Reason.key(type.getKey(), reason);
+				String key = ConditionTexts.Word.DENIED.word() + "." + Reason.key(type.getKey(), reason);
 				if (phrasebook.find("", key).isEmpty())
 					Logger.warn("No phrase is named %s, so players denied for it are told the generic notice", key);
 			}

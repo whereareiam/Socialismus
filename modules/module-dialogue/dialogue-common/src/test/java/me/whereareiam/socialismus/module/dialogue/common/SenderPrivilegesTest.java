@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 class SenderPrivilegesTest {
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
 	private final StyleService styles = mock(StyleService.class);
-	private final SenderPrivileges privileges = new SenderPrivileges(DialogueConditions.bound(settings), () -> settings, styles);
+	private final SenderPrivileges privileges = new SenderPrivileges(TestDialogueConditions.bound(settings), () -> settings, styles);
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 
 	@Test

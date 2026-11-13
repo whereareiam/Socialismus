@@ -12,12 +12,12 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerCommands;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
+import me.whereareiam.socialismus.module.bubbler.common.condition.BubbleConditions;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblerCommandsProvider;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblerMessagesProvider;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblerSettingsProvider;
 import me.whereareiam.socialismus.module.bubbler.common.config.provider.BubblesProvider;
 import me.whereareiam.socialismus.module.bubbler.common.processor.BubbleMessageProcessor;
-import me.whereareiam.socialismus.module.bubbler.common.requirement.BubbleRequirements;
 import me.whereareiam.socialismus.module.bubbler.common.worker.BubbleSelector;
 import me.whereareiam.socialismus.module.bubbler.common.worker.container.ContentArranger;
 import me.whereareiam.socialismus.module.bubbler.common.worker.container.ContentTimeEvaluator;
@@ -63,8 +63,8 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ContentArranger.class).asEagerSingleton();
 		bind(ContentTimeEvaluator.class).asEagerSingleton();
 
-		// Requirements
-		bind(BubbleRequirements.class).asEagerSingleton();
+		// Conditions
+		bind(BubbleConditions.class).asEagerSingleton();
 	}
 
 	@Provides

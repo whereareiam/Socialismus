@@ -25,7 +25,7 @@ class ChatFormatTest {
 
 	@Test
 	@Socialismus(configure = StaffFormat.class)
-	void messageTakesTheLastFormatWhoseRequirementsTheSenderMeets(ScenarioContext anvil) {
+	void messageTakesTheLastFormatWhoseConditionsTheSenderMeets(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice").op();
 		Player bob = Player.joins(anvil, "Bob");
 

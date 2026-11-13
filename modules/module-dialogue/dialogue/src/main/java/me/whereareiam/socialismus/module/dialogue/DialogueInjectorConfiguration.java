@@ -12,7 +12,7 @@ import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
-import me.whereareiam.socialismus.service.requirement.RequirementTexts;
+import me.whereareiam.socialismus.service.condition.ConditionTexts;
 import me.whereareiam.socialismus.service.style.StyleService;
 
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 	private final CommandService commandService;
 	private final PlayerRegistry playerRegistry;
 	private final Conditions conditions;
-	private final RequirementTexts requirementTexts;
+	private final ConditionTexts conditionTexts;
 	private final Phrasebook phrases;
 	private final SerializationService serializationService;
 	private final EventManager eventManager;
@@ -37,7 +37,7 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 		bind(CommandService.class).toInstance(commandService);
 		bind(PlayerRegistry.class).toInstance(playerRegistry);
 		bind(Conditions.class).toInstance(conditions);
-		bind(RequirementTexts.class).toInstance(requirementTexts);
+		bind(ConditionTexts.class).toInstance(conditionTexts);
 		bind(Phrasebook.class).toInstance(phrases);
 		bind(SerializationService.class).toInstance(serializationService);
 		bind(EventManager.class).toInstance(eventManager);

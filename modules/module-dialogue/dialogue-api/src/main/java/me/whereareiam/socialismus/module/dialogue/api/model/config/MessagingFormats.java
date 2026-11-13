@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * How a private message looks, {@code formats/messaging} in Dialogue's working directory. Each viewer sees the last
- * format of their list whose requirements the sender and the recipient meet.
+ * format of their list whose conditions the sender and the recipient meet.
  */
 @Getter
 @Setter

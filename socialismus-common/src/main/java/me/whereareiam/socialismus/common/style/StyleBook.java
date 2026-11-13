@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static me.whereareiam.socialismus.model.requirement.RequirementParts.SENDER;
+import static me.whereareiam.socialismus.model.condition.ConditionParts.SENDER;
 
 /**
  * The styles of {@code styles.yml}, bound: each with the place of its {@code requires} and a reader that knows only

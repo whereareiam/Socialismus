@@ -28,7 +28,7 @@ postgresql = "42.7.14"
 mariadb = "4.0.0"
 sqlite = "3.54.1.0"
 testcontainers = "2.0.5"
-anvil = "rebuild-df18a9a"
+anvil = "dev-c9b6246"
 dockerJava = "3.7.1"
 
 # testing

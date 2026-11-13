@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * One way a private message is shown, as a chat format is: of a list of formats, a viewer sees the last one whose
- * requirements are met.
+ * conditions are met.
  */
 @Getter
 @ToString

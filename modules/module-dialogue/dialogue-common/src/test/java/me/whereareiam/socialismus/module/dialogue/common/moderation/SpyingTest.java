@@ -4,9 +4,9 @@ import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.event.DialogueDeliveredEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
-import me.whereareiam.socialismus.module.dialogue.common.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
+import me.whereareiam.socialismus.module.dialogue.common.TestDialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.delivery.MessageRenderer;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryPreferencesStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
@@ -23,7 +23,7 @@ class SpyingTest {
 	private final InMemoryPreferencesStore spies = new InMemoryPreferencesStore();
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
 	private final MessageRenderer renderer = mock(MessageRenderer.class);
-	private final Spying spying = new Spying(() -> settings, spies, new SenderPrivileges(DialogueConditions.bound(settings), () -> settings, TestDataBuilder.plainStyles()), playerRegistry, renderer);
+	private final Spying spying = new Spying(() -> settings, spies, new SenderPrivileges(TestDialogueConditions.bound(settings), () -> settings, TestDataBuilder.plainStyles()), playerRegistry, renderer);
 
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");

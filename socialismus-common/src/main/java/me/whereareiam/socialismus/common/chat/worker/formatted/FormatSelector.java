@@ -11,11 +11,11 @@ import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.chat.ChatRequirementService;
+import me.whereareiam.socialismus.service.chat.ChatConditionService;
 
 @Singleton
 public class FormatSelector {
-	private final ChatRequirementService requirements;
+	private final ChatConditionService conditions;
 
 	// Configs
 	private final Provider<ChatMessages> chatMessages;
@@ -24,11 +24,11 @@ public class FormatSelector {
 	@Inject
 	public FormatSelector(
 			WorkerProcessor<FormattedChatMessage> workerProcessor,
-			ChatRequirementService requirements,
+			ChatConditionService conditions,
 			Provider<ChatMessages> chatMessages,
 			Provider<ChatSettings> chatSettings
 	) {
-		this.requirements = requirements;
+		this.conditions = conditions;
 		this.chatMessages = chatMessages;
 		this.chatSettings = chatSettings;
 
@@ -41,7 +41,7 @@ public class FormatSelector {
 	private FormattedChatMessage formatChat(FormattedChatMessage msg) {
 		Logger.debug("Formatting chat message for user " + msg.getSender().getUsername());
 
-		ChatFormat chosen = requirements.format(msg.getChat(), msg).orElse(null);
+		ChatFormat chosen = conditions.format(msg.getChat(), msg).orElse(null);
 
 		if (chosen == null) {
 			notifyAboutAbsentFormat(msg);

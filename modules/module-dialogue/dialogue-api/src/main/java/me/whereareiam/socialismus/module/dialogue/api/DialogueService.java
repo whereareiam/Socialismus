@@ -13,7 +13,7 @@ public interface DialogueService {
 	/**
 	 * Sends a private message, which reaches the recipient in the first of their {@code received} formats they
 	 * meet and is shown to the sender in their {@code sent} format. The sender is told instead when they write to
-	 * themselves, when {@code messaging.requirements} do not let them write to the recipient, or when the recipient
+	 * themselves, when {@code messaging.requires} do not let them write to the recipient, or when the recipient
 	 * is not online.
 	 *
 	 * @param sender        the player who writes

@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * How staff see private messages, {@code formats/moderation} in Dialogue's working directory. A spy sees the last
- * format of the list whose requirements the sender and the recipient meet.
+ * format of the list whose conditions the sender and the recipient meet.
  */
 @Getter
 @Setter

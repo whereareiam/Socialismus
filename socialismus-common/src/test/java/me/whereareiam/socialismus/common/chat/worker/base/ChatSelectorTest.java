@@ -7,8 +7,8 @@ import me.whereareiam.keystone.model.SerializerOptions;
 import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
+import me.whereareiam.socialismus.common.condition.DefaultConditionTexts;
 import me.whereareiam.socialismus.common.phrase.DefaultPhrasebook;
-import me.whereareiam.socialismus.common.requirement.DefaultRequirementTexts;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
@@ -18,10 +18,10 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
+import me.whereareiam.socialismus.model.condition.ConditionParts;
 import me.whereareiam.socialismus.model.phrase.Phrases;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.requirement.RequirementParts;
-import me.whereareiam.socialismus.service.chat.ChatRequirementService;
+import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.type.chat.TriggerType;
 import me.whereareiam.socialismus.util.ComponentUtil;
@@ -55,7 +55,7 @@ class ChatSelectorTest {
 	@Mock
 	private ChatContainerService containerService;
 	@Mock
-	private ChatRequirementService requirements;
+	private ChatConditionService conditions;
 	@Mock
 	private SocialismusPlayer sender;
 	@Mock
@@ -67,7 +67,7 @@ class ChatSelectorTest {
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
 		// A chat whose verdict a test does not set takes everyone.
-		when(requirements.writes(any(), any())).thenAnswer(invocation ->
+		when(conditions.writes(any(), any())).thenAnswer(invocation ->
 				verdicts.getOrDefault(invocation.<Chat>getArgument(0).getId(), new Verdict.Passed()));
 		Logger.init(mock(LoggingHelper.class));
 		EventUtil.initialize(mock(EventManager.class));
@@ -112,7 +112,7 @@ class ChatSelectorTest {
 
 	@Test
 	void selectChatSendsTheNoChatNoticeWhenTheRefusalGivesNoReason() {
-		verdicts.put("staff", new Verdict.Failed("chats.staff.requires[0].any", "any", List.of(RequirementParts.SENDER), Optional.empty()));
+		verdicts.put("staff", new Verdict.Failed("chats.staff.requires[0].any", "any", List.of(ConditionParts.SENDER), Optional.empty()));
 
 		ChatMessage result = createSelector(symbolChat("staff", "#"), false).selectChat(createTriggeredMessage("#hello"));
 
@@ -173,8 +173,8 @@ class ChatSelectorTest {
 
 		return new ChatSelector(
 				containerService,
-				requirements,
-				new DefaultRequirementTexts(new DefaultPhrasebook(() -> phrases)),
+				conditions,
+				new DefaultConditionTexts(new DefaultPhrasebook(() -> phrases)),
 				() -> messages,
 				() -> settings,
 				new ChatMessageProcessor()
@@ -183,7 +183,7 @@ class ChatSelectorTest {
 
 	// A failure whose reason's key is "<type>.refusal".
 	private static Verdict failedBy(String type) {
-		return new Verdict.Failed("chats.test.requires[0]." + type, type, List.of(RequirementParts.SENDER), Optional.of(new Refusal()));
+		return new Verdict.Failed("chats.test.requires[0]." + type, type, List.of(ConditionParts.SENDER), Optional.of(new Refusal()));
 	}
 
 	private static String render(SerializerContent content) {
@@ -239,8 +239,8 @@ class ChatSelectorTest {
 
 		return new ChatSelector(
 				containerService,
-				requirements,
-				new DefaultRequirementTexts(new DefaultPhrasebook(Phrases::none)),
+				conditions,
+				new DefaultConditionTexts(new DefaultPhrasebook(Phrases::none)),
 				() -> messages,
 				() -> settings,
 				new ChatMessageProcessor()

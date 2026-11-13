@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 /**
  * A file of phrases: texts that other config refers to by key, as {@code <ref:key>}, such as what a player is told
- * when a requirement denies them. A key is the path of a text in the file, its sections joined by dots, so
+ * when a condition denies them. A key is the path of a text in the file, its sections joined by dots, so
  * {@code denied: { world.outside: ... }} under {@code chat:} has the key {@code chat.denied.world.outside}.
  *
  * <pre>{@code

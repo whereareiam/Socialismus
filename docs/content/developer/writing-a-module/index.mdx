@@ -125,7 +125,7 @@ A condition answers at once from what the module holds in memory, such as playti
 
 A condition that fails with a reason declares it, so administrators can word it: a record nested in the type, listed in `reasons()`, keyed by the condition and the record's name, such as `greeter:playtime.short`. Ship its text in your own `phrases.yml` under `denied.`, and Socialismus logs at startup each reason of a registered condition that no phrase words.
 
-A module checks lists of its own files through Socialismus's `Conditions`: `conditions.place("greeter.requires", settings.getRequires(), RequirementParts.SENDER)` binds a list once, so a mistake stops `enable` with its path, and `place.check(Situation.of(RequirementParts.SENDER, player))` checks it. Close the places of a file you reload. The [Requirements](../../configuration/requirements/index.mdx) page lists what administrators write.
+A module checks lists of its own files through Socialismus's `Conditions`: `conditions.place("greeter.requires", settings.getRequires(), ConditionParts.SENDER)` binds a list once, so a mistake stops `enable` with its path, and `place.check(Situation.of(ConditionParts.SENDER, player))` checks it. Close the places of a file you reload. The [Conditions](../../configuration/conditions/index.mdx) page lists what administrators write.
 
 ## Phrases
 
@@ -149,7 +149,7 @@ phrasebook.add("greeter", greeterPhrases::get);            // in enable
 phrasebook.remove("greeter");                              // in disable
 ```
 
-Get Socialismus's `Phrasebook` from its injector. `phrasebook.phrase("greeter", "welcome-back", placeholders)` gives a phrase ready to send, looking under `greeter.` first, and `phrasebook.render("greeter", text)` puts the phrases into a text with `<ref:key>`. To tell a refused player why, pass a failed verdict to `RequirementTexts.denied(failed, "greeter", placeholders)`: it takes the line's `denied` text or the `greeter.denied.*` and `denied.*` phrases of the reason, and adds the line's `hint`. `phrasebook.checked("greeter", place)` refuses a place whose texts refer to a phrase no file has, naming the text's path.
+Get Socialismus's `Phrasebook` from its injector. `phrasebook.phrase("greeter", "welcome-back", placeholders)` gives a phrase ready to send, looking under `greeter.` first, and `phrasebook.render("greeter", text)` puts the phrases into a text with `<ref:key>`. To tell a refused player why, pass a failed verdict to `ConditionTexts.denied(failed, "greeter", placeholders)`: it takes the line's `denied` text or the `greeter.denied.*` and `denied.*` phrases of the reason, and adds the line's `hint`. `phrasebook.checked("greeter", place)` refuses a place whose texts refer to a phrase no file has, naming the text's path.
 
 ## Resources for other modules
 

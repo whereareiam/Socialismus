@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.common.config.defaults;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
-import me.whereareiam.socialismus.model.requirement.RequirementLists;
+import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.model.style.Style;
 import me.whereareiam.socialismus.model.style.Styles;
 
@@ -20,12 +20,12 @@ public class StylesDefaults implements DefaultsProvider<Styles> {
 		Style basic = Style.builder()
 				.id("basic")
 				.tags(new ArrayList<>(List.of("color", "bold", "italic", "underlined", "strikethrough")))
-				.requires(RequirementLists.permission("socialismus.style.basic"))
+				.requires(ConditionLists.permission("socialismus.style.basic"))
 				.build();
 		Style full = Style.builder()
 				.id("full")
 				.tags(new ArrayList<>(List.of("*")))
-				.requires(RequirementLists.permission("socialismus.style.full"))
+				.requires(ConditionLists.permission("socialismus.style.full"))
 				.build();
 
 		styles.setStyles(new ArrayList<>(List.of(basic, full)));

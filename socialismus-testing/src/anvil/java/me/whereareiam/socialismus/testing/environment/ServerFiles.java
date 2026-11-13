@@ -11,7 +11,7 @@ import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.trigger.RegexChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
-import me.whereareiam.socialismus.model.requirement.RequirementLists;
+import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.type.chat.TriggerType;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +44,7 @@ public final class ServerFiles {
 	public static final String CHAT_MESSAGES = "chat/messages.yml";
 	/** The messages of Socialismus itself, such as the notices of its commands. */
 	public static final String MESSAGES = "messages.yml";
-	/** The phrases of Socialismus, such as what a player denied by a requirement is told. */
+	/** The phrases of Socialismus, such as what a player denied by a condition is told. */
 	public static final String PHRASES = "phrases.yml";
 
 	// The documents journeys write hold no Adventure types, so plain YAML writes them as Socialismus does, with the
@@ -158,7 +158,7 @@ public final class ServerFiles {
 	 */
 	@NotNull
 	public static Requirements permission(@NotNull String... permissions) {
-		return RequirementLists.permission(permissions);
+		return ConditionLists.permission(permissions);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public final class ServerFiles {
 	 */
 	@NotNull
 	public static Requirements nearby(int blocks) {
-		return RequirementLists.of("nearby", String.valueOf(blocks));
+		return ConditionLists.of("nearby", String.valueOf(blocks));
 	}
 
 	/**
@@ -174,7 +174,7 @@ public final class ServerFiles {
 	 */
 	@NotNull
 	public static Requirements sameServer() {
-		return RequirementLists.of("same", "server");
+		return ConditionLists.of("same", "server");
 	}
 
 	/**
@@ -182,7 +182,7 @@ public final class ServerFiles {
 	 */
 	@NotNull
 	public static Requirements sameWorld() {
-		return RequirementLists.of("same", "world");
+		return ConditionLists.of("same", "world");
 	}
 
 	/**
@@ -190,7 +190,7 @@ public final class ServerFiles {
 	 */
 	@NotNull
 	public static Requirements world(@NotNull String... worlds) {
-		return RequirementLists.of("world", worlds);
+		return ConditionLists.of("world", worlds);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public final class ServerFiles {
 	 */
 	@NotNull
 	public static Requirements server(@NotNull String... servers) {
-		return RequirementLists.of("server", servers);
+		return ConditionLists.of("server", servers);
 	}
 
 	/**
@@ -206,7 +206,7 @@ public final class ServerFiles {
 	 */
 	@NotNull
 	public static Requirements content(@NotNull String text) {
-		return RequirementLists.of("content", text);
+		return ConditionLists.of("content", text);
 	}
 
 	/**

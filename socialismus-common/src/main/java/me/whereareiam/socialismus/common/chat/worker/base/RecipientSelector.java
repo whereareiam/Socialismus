@@ -12,7 +12,7 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.chat.ChatRequirementService;
+import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.service.chat.ChatToggleStore;
 import me.whereareiam.socialismus.util.EventUtil;
 
@@ -29,7 +29,7 @@ import java.util.Set;
  */
 @Singleton
 public class RecipientSelector {
-	private final ChatRequirementService requirements;
+	private final ChatConditionService conditions;
 	private final Provider<ChatSettings> settingsProvider;
 	private final ChatToggleStore toggles;
 	private final NobodyNotice nobody;
@@ -37,12 +37,12 @@ public class RecipientSelector {
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<ChatMessage> workerProcessor,
-			ChatRequirementService requirements,
+			ChatConditionService conditions,
 			Provider<ChatSettings> settings,
 			ChatToggleStore toggles,
 			NobodyNotice nobody
 	) {
-		this.requirements = requirements;
+		this.conditions = conditions;
 		this.settingsProvider = settings;
 		this.toggles = toggles;
 		this.nobody = nobody;
@@ -89,7 +89,7 @@ public class RecipientSelector {
 		for (SocialismusPlayer recipient : message.getRecipients()) {
 			if (!reachesToggledOff && turnedOff(recipient, message)) continue;
 
-			Verdict verdict = requirements.reaches(message.getChat(), recipient, message);
+			Verdict verdict = conditions.reaches(message.getChat(), recipient, message);
 			if (verdict instanceof Verdict.Failed failed) refusals.add(failed);
 			if (verdict.passed()) reached.add(recipient);
 		}
@@ -109,6 +109,6 @@ public class RecipientSelector {
 		ChatSettings.Toggle toggle = settings.getToggle();
 		if (toggle == null || !toggle.isEnabled() || !chat.getParameters().isToggleable()) return true;
 
-		return requirements.bypassesToggle(sender);
+		return conditions.bypassesToggle(sender);
 	}
 }

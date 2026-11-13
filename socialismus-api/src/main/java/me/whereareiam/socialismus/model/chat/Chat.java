@@ -13,7 +13,7 @@ import me.whereareiam.configura.type.merge.WhenPresent;
 import java.util.List;
 
 /**
- * Represents a chat configuration with its parameters, formats, and requirements.
+ * Represents a chat configuration with its parameters, formats, and conditions.
  * This class is used to define chat settings and behaviors in the Socialismus system.
  */
 @Getter

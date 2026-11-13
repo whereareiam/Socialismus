@@ -4,14 +4,14 @@ import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.adapter.configura.ConditiaFeature;
 import me.whereareiam.configura.Config;
 import me.whereareiam.configura.type.Format;
-import me.whereareiam.socialismus.common.requirement.RequirementConfiguration;
+import me.whereareiam.socialismus.common.condition.ConditionConfiguration;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
+import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.requirement.RequirementLists;
 import me.whereareiam.socialismus.model.style.Style;
 import me.whereareiam.socialismus.model.style.Styles;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
@@ -49,7 +49,7 @@ class DefaultStyleServiceTest {
 	void setUp() {
 		Logger.init(mock(LoggingHelper.class));
 		settings.setSerialization(new Settings.Serialization());
-		Conditions conditions = new RequirementConfiguration().provideConditions(
+		Conditions conditions = new ConditionConfiguration().provideConditions(
 				Config.builder().format(Format.YAML).feature(new ConditiaFeature()).build(),
 				Set::of,
 				() -> mock(PlayerRegistry.class)
@@ -167,7 +167,7 @@ class DefaultStyleServiceTest {
 				.id(id)
 				.tags(tags)
 				.excluded(excluded)
-				.requires(RequirementLists.permission("socialismus.style." + id))
+				.requires(ConditionLists.permission("socialismus.style." + id))
 				.build();
 	}
 

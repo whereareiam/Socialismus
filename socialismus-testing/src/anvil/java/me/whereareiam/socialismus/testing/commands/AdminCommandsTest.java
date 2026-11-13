@@ -50,7 +50,7 @@ class AdminCommandsTest {
 
 	@Test
 	@Socialismus(configure = NetherProtected.class)
-	void clearKeepsTheMessagesOfAPlayerWhoMeetsTheBypassRequirements(ScenarioContext anvil) {
+	void clearKeepsTheMessagesOfAPlayerWhoMeetsTheBypassConditions(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob").travelsTo("minecraft:the_nether");
 		Player carol = Player.joins(anvil, "Carol").op();

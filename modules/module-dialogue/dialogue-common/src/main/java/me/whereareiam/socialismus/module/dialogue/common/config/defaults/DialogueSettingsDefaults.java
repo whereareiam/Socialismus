@@ -2,7 +2,7 @@ package me.whereareiam.socialismus.module.dialogue.common.config.defaults;
 
 import com.google.inject.Singleton;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
-import me.whereareiam.socialismus.model.requirement.RequirementLists;
+import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 
 import java.time.Duration;
@@ -33,12 +33,12 @@ public class DialogueSettingsDefaults implements DefaultsProvider<DialogueSettin
 
 		DialogueSettings.Control.Toggle toggle = new DialogueSettings.Control.Toggle();
 		toggle.setEnabled(true);
-		toggle.setBypass(RequirementLists.permission("socialismus.dialogue.toggle.bypass"));
+		toggle.setBypass(ConditionLists.permission("socialismus.dialogue.toggle.bypass"));
 
 		DialogueSettings.Control.Ignore ignore = new DialogueSettings.Control.Ignore();
 		ignore.setEnabled(true);
 		ignore.setIncludesChat(false);
-		ignore.setExempt(RequirementLists.permission("socialismus.dialogue.ignore.exempt"));
+		ignore.setExempt(ConditionLists.permission("socialismus.dialogue.ignore.exempt"));
 
 		DialogueSettings.Control control = new DialogueSettings.Control();
 		control.setToggle(toggle);
@@ -47,7 +47,7 @@ public class DialogueSettingsDefaults implements DefaultsProvider<DialogueSettin
 
 		DialogueSettings.Moderation.Spy spy = new DialogueSettings.Moderation.Spy();
 		spy.setEnabled(true);
-		spy.setExempt(RequirementLists.permission("socialismus.dialogue.spy.exempt"));
+		spy.setExempt(ConditionLists.permission("socialismus.dialogue.spy.exempt"));
 
 		DialogueSettings.Moderation moderation = new DialogueSettings.Moderation();
 		moderation.setSpy(spy);

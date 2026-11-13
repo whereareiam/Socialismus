@@ -11,7 +11,7 @@ import me.whereareiam.socialismus.model.chat.render.ChatRenderContext;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.base.Registry;
-import me.whereareiam.socialismus.service.chat.ChatRequirementService;
+import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -23,20 +23,20 @@ public class ClearPlaceholderResolver implements ChatPlaceholderResolver {
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<ChatMessages> chatMessages;
 	private final Provider<Commands> commands;
-	private final ChatRequirementService requirements;
+	private final ChatConditionService conditions;
 
 	@Inject
 	public ClearPlaceholderResolver(
 			Provider<ChatSettings> chatSettings,
 			Provider<ChatMessages> chatMessages,
 			Provider<Commands> commands,
-			ChatRequirementService requirements,
+			ChatConditionService conditions,
 			Registry<ChatPlaceholderResolver> registry
 	) {
 		this.chatSettings = chatSettings;
 		this.chatMessages = chatMessages;
 		this.commands = commands;
-		this.requirements = requirements;
+		this.conditions = conditions;
 		registry.register(this);
 	}
 
@@ -61,8 +61,8 @@ public class ClearPlaceholderResolver implements ChatPlaceholderResolver {
 		}
 
 		SocialismusPlayer sender = context.getSender();
-		if (!requirements.clears(recipient)) return Component.empty();
-		if (sender != null && requirements.keepsHistory(sender)) return Component.empty();
+		if (!conditions.clears(recipient)) return Component.empty();
+		if (sender != null && conditions.keepsHistory(sender)) return Component.empty();
 
 		if (commandConfig == null
 				|| commandConfig.getCommands() == null

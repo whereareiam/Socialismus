@@ -7,16 +7,16 @@ import me.whereareiam.keystone.serializer.SerializerEngine;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
+import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.model.requirement.RequirementLists;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueAlert;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
-import me.whereareiam.socialismus.module.dialogue.common.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
-import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
+import me.whereareiam.socialismus.module.dialogue.common.TestDialogueConditions;
+import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
 import me.whereareiam.socialismus.service.style.StyleService;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -40,7 +40,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class MessageRendererTest {
-	private static final Requirements STAFF = RequirementLists.permission("staff");
+	private static final Requirements STAFF = ConditionLists.permission("staff");
 
 	private final MessagingFormats formats = new MessagingFormats();
 	private final ModerationFormats moderationFormats = new ModerationFormats();
@@ -48,7 +48,7 @@ class MessageRendererTest {
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
 	private final StyleService styles = mock(StyleService.class);
 
-	private DialogueRequirements requirements;
+	private DialogueConditions conditions;
 	private MessageRenderer renderer;
 
 	@BeforeEach
@@ -68,12 +68,12 @@ class MessageRendererTest {
 				new DialogueFormat("to staff", Requirements.none(), STAFF)
 		));
 
-		requirements = DialogueConditions.bound(TestDataBuilder::defaultSettings, () -> formats, () -> moderationFormats);
-		renderer = new MessageRenderer(() -> formats, () -> moderationFormats, requirements, styles);
+		conditions = TestDialogueConditions.bound(TestDataBuilder::defaultSettings, () -> formats, () -> moderationFormats);
+		renderer = new MessageRenderer(() -> formats, () -> moderationFormats, conditions, styles);
 	}
 
 	@Test
-	void takesTheLastFormatWhoseRequirementsAreMet() {
+	void takesTheLastFormatWhoseConditionsAreMet() {
 		when(alice.hasPermission("staff")).thenReturn(true);
 
 		renderer.showReceived(message(), bob);
@@ -82,7 +82,7 @@ class MessageRendererTest {
 	}
 
 	@Test
-	void readsTheRecipientsRequirements() {
+	void readsTheRecipientsConditions() {
 		when(alice.hasPermission("staff")).thenReturn(true);
 		when(bob.hasPermission("staff")).thenReturn(true);
 
@@ -92,7 +92,7 @@ class MessageRendererTest {
 	}
 
 	@Test
-	void fallsBackToAFormatWithoutRequirements() {
+	void fallsBackToAFormatWithoutConditions() {
 
 		renderer.showReceived(message(), bob);
 
@@ -102,7 +102,7 @@ class MessageRendererTest {
 	@Test
 	void showsNothingWhenNoFormatMatches() {
 		formats.setSent(List.of(new DialogueFormat("to staff", Requirements.none(), STAFF)));
-		requirements.bind();
+		conditions.bind();
 
 		renderer.showSent(message(), null);
 
@@ -113,7 +113,7 @@ class MessageRendererTest {
 	void showsWhatThePlayerWroteAsWrittenNotAsFormatting() {
 		useMiniMessage();
 		formats.setReceived(List.of(format("<gray>{senderName}: <white>{message}")));
-		requirements.bind();
+		conditions.bind();
 		String written = "<click:run_command:'/op Alice'>free diamonds</click>";
 
 		renderer.showReceived(TestDataBuilder.messageFrom(alice, "Bob").content(written).build(), bob);
@@ -128,7 +128,7 @@ class MessageRendererTest {
 	void showsWhatThePlayerWroteWithTheStyleTheSendersServerChose() {
 		useMiniMessage();
 		formats.setReceived(List.of(format("<gray>{senderName}: <white>{message}")));
-		requirements.bind();
+		conditions.bind();
 		when(styles.read("<bold>hi", "vip")).thenReturn(Component.text("hi", NamedTextColor.GOLD));
 
 		renderer.showReceived(TestDataBuilder.messageFrom(alice, "Bob").content("<bold>hi").style("vip").build(), bob);
@@ -150,7 +150,7 @@ class MessageRendererTest {
 		title.setTitle("{senderName}");
 		alert.setTitle(title);
 		formats.setReceived(List.of(new DialogueFormat("plain", Requirements.none(), Requirements.none(), alert)));
-		requirements.bind();
+		conditions.bind();
 
 		renderer.showReceived(message(), bob);
 
