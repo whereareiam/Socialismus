@@ -25,6 +25,7 @@ class ModuleLoadingTest {
 	private static final String DIALOGUE_FORMATS = "modules/dialogue/formats/messaging.yml";
 
 	@Test
+	@Tag("compatibility")
 	@Socialismus(modules = {Module.CHIRPER, Module.DIALOGUE})
 	void modulesInTheModulesDirectoryLoad(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice").op();
@@ -54,6 +55,7 @@ class ModuleLoadingTest {
 	}
 
 	@Test
+	@Tag("compatibility")
 	@Socialismus(modules = Module.DIALOGUE, moduleFixtures = ModuleFixture.FOR_ANOTHER_PLATFORM)
 	void moduleForAnotherPlatformIsRefused(ScenarioContext anvil) {
 		Player.joins(anvil, "Alice");

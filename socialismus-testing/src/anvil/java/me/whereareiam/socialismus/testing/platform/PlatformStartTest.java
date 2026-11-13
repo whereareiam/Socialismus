@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * to commands.
  */
 @Tag("platform")
+@Tag("compatibility")
 class PlatformStartTest {
 	@Test
 	@MinecraftVersions(since = "1.20.6")

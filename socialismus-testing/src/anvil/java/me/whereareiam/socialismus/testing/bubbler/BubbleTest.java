@@ -30,6 +30,7 @@ class BubbleTest {
 	private static final String ARMOR_STAND = "minecraft:armor_stand";
 
 	@Test
+	@Tag("compatibility")
 	@MinecraftVersions(since = "1.19.4")
 	@Socialismus(plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER)
 	void chatShowsATextDisplayBubbleThatDisappears(ScenarioContext anvil) {
@@ -44,6 +45,7 @@ class BubbleTest {
 	}
 
 	@Test
+	@Tag("compatibility")
 	@MinecraftVersions(since = "1.19.4")
 	@Socialismus(plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER)
 	void bubbleCommandShowsATextDisplayBubble(ScenarioContext anvil) {
@@ -58,6 +60,7 @@ class BubbleTest {
 	}
 
 	@Test
+	@Tag("compatibility")
 	@Socialismus(plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER, configure = ArmorStands.class)
 	void chatShowsAnArmorStandBubbleThatDisappears(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
@@ -71,6 +74,7 @@ class BubbleTest {
 	}
 
 	@Test
+	@Tag("compatibility")
 	@Socialismus(plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER, configure = ArmorStands.class)
 	void bubbleCommandShowsAnArmorStandBubble(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice").op();
@@ -100,6 +104,7 @@ class BubbleTest {
 	}
 
 	@Test
+	@Tag("compatibility")
 	@MinecraftVersions(since = "1.19.4")
 	@Socialismus(network = Network.SPIGOT, plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER)
 	void chatShowsATextDisplayBubbleOnSpigot(ScenarioContext anvil) {
@@ -114,6 +119,7 @@ class BubbleTest {
 	}
 
 	@Test
+	@Tag("compatibility")
 	@Socialismus(network = Network.SPIGOT, plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER, configure = ArmorStands.class)
 	void chatShowsAnArmorStandBubbleOnSpigot(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
@@ -127,6 +133,7 @@ class BubbleTest {
 	}
 
 	@Test
+	@Tag("compatibility")
 	@MinecraftVersions(before = "1.19.4")
 	@Socialismus(plugins = Plugin.PACKETEVENTS, modules = Module.BUBBLER)
 	void textDisplaysBeforeTheirVersionAreWarnedAbout(ScenarioContext anvil) {
