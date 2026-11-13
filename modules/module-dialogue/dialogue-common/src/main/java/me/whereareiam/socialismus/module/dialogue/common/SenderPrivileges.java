@@ -5,18 +5,18 @@ import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
-import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
+import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Decides what a sender's requirements allow their private message, on the server they write on, the only one where
- * those requirements can be checked: bypassing a recipient who turned messages off, not being ignored, and staying
+ * Decides what a sender's conditions allow their private message, on the server they write on, the only one where
+ * those conditions can be checked: bypassing a recipient who turned messages off, not being ignored, and staying
  * hidden from spies. The message carries the answers to whichever server delivers it.
  */
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SenderPrivileges {
-	private final DialogueRequirements requirements;
+	private final DialogueConditions conditions;
 
 	/**
 	 * Records the sender's privileges on a message written on this server.
@@ -25,9 +25,9 @@ public class SenderPrivileges {
 	 */
 	public void grant(@NotNull Message message) {
 		SocialismusPlayer sender = message.getSender();
-		message.setBypassesToggle(requirements.bypassesToggle(sender));
-		message.setExemptFromIgnore(requirements.exemptFromIgnore(sender));
-		message.setHiddenFromSpies(requirements.hiddenFromSpies(sender));
+		message.setBypassesToggle(conditions.bypassesToggle(sender));
+		message.setExemptFromIgnore(conditions.exemptFromIgnore(sender));
+		message.setHiddenFromSpies(conditions.hiddenFromSpies(sender));
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class SenderPrivileges {
 	 * @return whether nobody ignores them
 	 */
 	public boolean exemptFromIgnore(@NotNull SocialismusPlayer player) {
-		return requirements.exemptFromIgnore(player);
+		return conditions.exemptFromIgnore(player);
 	}
 
 	/**
@@ -47,6 +47,6 @@ public class SenderPrivileges {
 	 * @return whether spies never see their messages
 	 */
 	public boolean hiddenFromSpies(@NotNull SocialismusPlayer player) {
-		return requirements.hiddenFromSpies(player);
+		return conditions.hiddenFromSpies(player);
 	}
 }

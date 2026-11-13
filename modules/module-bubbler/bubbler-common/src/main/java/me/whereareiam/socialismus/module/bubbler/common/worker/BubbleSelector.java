@@ -10,14 +10,14 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
-import me.whereareiam.socialismus.module.bubbler.common.requirement.BubbleRequirements;
+import me.whereareiam.socialismus.module.bubbler.common.condition.BubbleConditions;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 
 import java.util.List;
 
 @Singleton
 public class BubbleSelector {
-	private final BubbleRequirements requirements;
+	private final BubbleConditions conditions;
 
 	// Configs
 	private final Provider<BubblerMessages> bubblerMessages;
@@ -26,13 +26,13 @@ public class BubbleSelector {
 
 	@Inject
 	public BubbleSelector(
-			BubbleRequirements requirements,
+			BubbleConditions conditions,
 			WorkerProcessor<BubbleMessage> workerProcessor,
 			Provider<BubblerMessages> bubblerMessages,
 			Provider<BubblerSettings> bubblerSettings,
 			Provider<List<Bubble>> bubbles
 	) {
-		this.requirements = requirements;
+		this.conditions = conditions;
 		this.bubblerMessages = bubblerMessages;
 		this.bubblerSettings = bubblerSettings;
 		this.bubbles = bubbles;
@@ -44,7 +44,7 @@ public class BubbleSelector {
 		Logger.debug("Selecting bubble for user " + bubbleMessage.getSender().getUsername());
 
 		Bubble bubble = bubbles.get().stream()
-				.filter(b -> requirements.selects(b, bubbleMessage))
+				.filter(b -> conditions.selects(b, bubbleMessage))
 				.findFirst()
 				.orElse(null);
 

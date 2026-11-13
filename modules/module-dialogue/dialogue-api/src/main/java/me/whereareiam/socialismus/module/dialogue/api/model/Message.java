@@ -55,7 +55,7 @@ public class Message {
 
 	/**
 	 * Whether the sender reaches recipients who turned private messages off, as {@code control.toggle.bypass}
-	 * decided on the sender's server, where the sender's requirements can be checked.
+	 * decided on the sender's server, where the sender's conditions can be checked.
 	 */
 	private boolean bypassesToggle;
 

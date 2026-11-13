@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * A phrase ready to tell a player, such as why a requirement refused them: its text, with references to other
+ * A phrase ready to tell a player, such as why a condition refused them: its text, with references to other
  * phrases already filled in, and the placeholders it is filled with. It stays a template until it is shown, so it is
  * serialized for whoever receives it, with that receiver's own placeholders, like every other message of
  * Socialismus.

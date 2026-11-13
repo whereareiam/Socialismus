@@ -9,8 +9,8 @@ import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.service.Phrasebook;
-import me.whereareiam.socialismus.service.chat.ChatRequirementService;
-import me.whereareiam.socialismus.service.requirement.RequirementTexts;
+import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.condition.ConditionTexts;
 
 import java.util.Comparator;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class NobodyNotice {
 	private static final String NOBODY = "nobody";
 
-	private final RequirementTexts texts;
+	private final ConditionTexts texts;
 	private final Phrasebook phrasebook;
 
 	/**
@@ -42,8 +42,8 @@ public class NobodyNotice {
 	public void tell(SocialismusPlayer sender, Chat chat, List<Verdict.Failed> refusals) {
 		Map<String, String> placeholders = Map.of("chat", chat.getId());
 		Optional<Phrase> phrase = mostCommon(refusals)
-				.flatMap(refusal -> texts.denied(refusal, ChatRequirementService.PHRASE_SCOPE, placeholders))
-				.or(() -> phrasebook.phrase(ChatRequirementService.PHRASE_SCOPE, NOBODY, placeholders));
+				.flatMap(refusal -> texts.denied(refusal, ChatConditionService.PHRASE_SCOPE, placeholders))
+				.or(() -> phrasebook.phrase(ChatConditionService.PHRASE_SCOPE, NOBODY, placeholders));
 
 		phrase.ifPresent(found -> sender.sendMessage(Serializer.serialize(found.toContent(sender))));
 	}

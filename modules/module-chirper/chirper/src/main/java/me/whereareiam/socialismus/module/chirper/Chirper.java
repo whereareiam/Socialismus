@@ -13,8 +13,8 @@ import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.chirper.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.chirper.common.AnnouncerController;
 import me.whereareiam.socialismus.module.chirper.common.CommonConfiguration;
+import me.whereareiam.socialismus.module.chirper.common.condition.AnnouncementConditions;
 import me.whereareiam.socialismus.module.chirper.common.config.migration.ChirperConfigMigrations;
-import me.whereareiam.socialismus.module.chirper.common.requirement.AnnouncementRequirements;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
@@ -51,10 +51,10 @@ public class Chirper implements SocialisticModule {
 				new CommonConfiguration(dataFolder)
 		);
 
-		// An announcement whose requirements cannot be bound stops the module, naming the list.
-		AnnouncementRequirements requirements = injector.getInstance(AnnouncementRequirements.class);
-		requirements.bind();
-		injector.getInstance(EventManager.class).register(requirements);
+		// An announcement whose conditions cannot be bound stops the module, naming the list.
+		AnnouncementConditions conditions = injector.getInstance(AnnouncementConditions.class);
+		conditions.bind();
+		injector.getInstance(EventManager.class).register(conditions);
 
 		injector.getInstance(CommandRegistrar.class).registerCommands();
 		injector.getInstance(AnnouncerController.class).init();
@@ -64,7 +64,7 @@ public class Chirper implements SocialisticModule {
 	public void disable() {
 		injector.getInstance(EventManager.class).unregister(injector.getInstance(AnnouncerController.class));
 		injector.getInstance(Scheduler.class).cancelByModule("chirper");
-		injector.getInstance(EventManager.class).unregister(injector.getInstance(AnnouncementRequirements.class));
-		injector.getInstance(AnnouncementRequirements.class).close();
+		injector.getInstance(EventManager.class).unregister(injector.getInstance(AnnouncementConditions.class));
+		injector.getInstance(AnnouncementConditions.class).close();
 	}
 }

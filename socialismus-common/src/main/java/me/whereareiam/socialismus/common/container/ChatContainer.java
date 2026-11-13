@@ -5,7 +5,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.conditia.exception.ConditionException;
-import me.whereareiam.socialismus.common.chat.requirement.DefaultChatRequirementService;
+import me.whereareiam.socialismus.common.chat.condition.DefaultChatConditionService;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.base.SocialisticEvent;
@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatContainer implements ChatContainerService, EventListener {
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<List<Chat>> chatsProvider;
-	private final DefaultChatRequirementService requirements;
+	private final DefaultChatConditionService conditions;
 
 	private final ConcurrentHashMap<String, InternalChat> chats = new ConcurrentHashMap<>();
 
@@ -40,12 +40,12 @@ public class ChatContainer implements ChatContainerService, EventListener {
 	public ChatContainer(
 			@Named("chats") Provider<List<Chat>> chatsProvider,
 			Provider<ChatSettings> chatSettings,
-			DefaultChatRequirementService requirements,
+			DefaultChatConditionService conditions,
 			EventManager eventManager
 	) {
 		this.chatsProvider = chatsProvider;
 		this.chatSettings = chatSettings;
-		this.requirements = requirements;
+		this.conditions = conditions;
 
 		eventManager.register(this);
 	}
@@ -54,7 +54,7 @@ public class ChatContainer implements ChatContainerService, EventListener {
 	 * Replaces the held chats with those of the chats document.
 	 */
 	public void load() {
-		requirements.forgetChats();
+		conditions.forgetChats();
 		chats.clear();
 		chatsProvider.get().forEach(this::addChat);
 	}
@@ -124,10 +124,10 @@ public class ChatContainer implements ChatContainerService, EventListener {
 		return new HashSet<>(chats.values());
 	}
 
-	// A chat whose requirements cannot be bound is left out, and the console says which list is wrong.
+	// A chat whose conditions cannot be bound is left out, and the console says which list is wrong.
 	private boolean bound(Chat chat) {
 		try {
-			requirements.bind(chat);
+			conditions.bind(chat);
 
 			return true;
 		} catch (ConditionException exception) {

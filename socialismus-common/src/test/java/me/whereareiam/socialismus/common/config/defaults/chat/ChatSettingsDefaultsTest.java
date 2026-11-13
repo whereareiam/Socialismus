@@ -5,7 +5,7 @@ import me.whereareiam.configura.Config;
 import me.whereareiam.configura.Configura;
 import me.whereareiam.configura.type.Format;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
-import me.whereareiam.socialismus.model.requirement.RequirementLists;
+import me.whereareiam.socialismus.model.condition.ConditionLists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -20,19 +20,19 @@ class ChatSettingsDefaultsTest {
 	Path dataPath;
 
 	@Test
-	void givesChatHistoryTheAdministratorPermissionWhereTheFileHasNoRequirements() throws IOException {
+	void givesChatHistoryTheAdministratorPermissionWhereTheFileHasNoConditions() throws IOException {
 		Path file = write("history:\n  historySize: 500\n");
 
 		ChatSettings settings = configura().update(file, ChatSettings.class);
 
 		assertEquals(500, settings.getHistory().getHistorySize());
-		assertEquals(RequirementLists.permission("socialismus.admin"), settings.getHistory().getRequires());
-		assertEquals(RequirementLists.permission("socialismus.admin"), settings.getHistory().getBypass());
-		assertEquals(RequirementLists.permission("socialismus.chat.toggle.bypass"), settings.getToggle().getBypass());
+		assertEquals(ConditionLists.permission("socialismus.admin"), settings.getHistory().getRequires());
+		assertEquals(ConditionLists.permission("socialismus.admin"), settings.getHistory().getBypass());
+		assertEquals(ConditionLists.permission("socialismus.chat.toggle.bypass"), settings.getToggle().getBypass());
 	}
 
 	@Test
-	void keepsTheRequirementListsOfChatHistoryAsWritten() throws IOException {
+	void keepsTheConditionListsOfChatHistoryAsWritten() throws IOException {
 		Path file = write("""
 				history:
 				  requires:
@@ -42,8 +42,8 @@ class ChatSettingsDefaultsTest {
 		configura().update(file, ChatSettings.class);
 		ChatSettings.ChatHistorySettings history = configura().update(file, ChatSettings.class).getHistory();
 
-		assertEquals(RequirementLists.of("world", "world"), history.getRequires());
-		assertEquals(RequirementLists.permission("socialismus.admin"), history.getBypass());
+		assertEquals(ConditionLists.of("world", "world"), history.getRequires());
+		assertEquals(ConditionLists.permission("socialismus.admin"), history.getBypass());
 	}
 
 	private Configura configura() {

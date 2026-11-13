@@ -8,7 +8,7 @@ import me.whereareiam.socialismus.common.config.dynamic.ChatsConfig;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
-import me.whereareiam.socialismus.model.requirement.RequirementLists;
+import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.type.chat.TriggerType;
 
@@ -48,11 +48,11 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 				),
 				List.of(
 						new ChatFormat("{clear}<gray>[L] {playerName}: <white>{message}", Requirements.none()),
-						new ChatFormat("{clear}<gray>[L] {playerName}: <gold>{message}", RequirementLists.permission("socialismus.admin"))
+						new ChatFormat("{clear}<gray>[L] {playerName}: <gold>{message}", ConditionLists.permission("socialismus.admin"))
 				),
-				RequirementLists.permission("socialismus.chat.local"),
-				RequirementLines.of(
-						RequirementLines.line("permission", "socialismus.chat.local"),
+				ConditionLists.permission("socialismus.chat.local"),
+				ConditionLines.of(
+						ConditionLines.line("permission", "socialismus.chat.local"),
 						nearby()
 				),
 				true
@@ -71,7 +71,7 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 				),
 				List.of(
 						new ChatFormat("{clear}<gray>[G] {playerName}: <white>{message}", Requirements.none()),
-						new ChatFormat("{clear}<gray>[G] {playerName}: <gold>{message}", RequirementLists.permission("socialismus.admin"))
+						new ChatFormat("{clear}<gray>[G] {playerName}: <gold>{message}", ConditionLists.permission("socialismus.admin"))
 				),
 				Requirements.none(),
 				Requirements.none(),
@@ -86,8 +86,8 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 
 	// A proxy knows no positions, so its local chat is the sender's server.
 	private static Node.Mapping nearby() {
-		if (PlatformType.isGameServer()) return RequirementLines.line("nearby", "200");
+		if (PlatformType.isGameServer()) return ConditionLines.line("nearby", "200");
 
-		return RequirementLines.line("same", "server");
+		return ConditionLines.line("same", "server");
 	}
 }

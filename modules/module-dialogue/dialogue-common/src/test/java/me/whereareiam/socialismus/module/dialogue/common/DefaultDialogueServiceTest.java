@@ -1,8 +1,8 @@
 package me.whereareiam.socialismus.module.dialogue.common;
 
 import me.whereareiam.socialismus.event.EventManager;
-import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.phrase.Phrase;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.event.DialogueSendEvent;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class DefaultDialogueServiceTest {
-	private final MessagingRequirements requirements = mock(MessagingRequirements.class);
+	private final MessagingConditions conditions = mock(MessagingConditions.class);
 	private final MessageDeliveryCoordinator deliveryCoordinator = mock(MessageDeliveryCoordinator.class);
 	private final DialogueNotices notices = mock(DialogueNotices.class);
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
@@ -48,12 +48,12 @@ class DefaultDialogueServiceTest {
 	@BeforeEach
 	void setUp() {
 		when(playerRegistry.getPlayerData(anyString())).thenReturn(Optional.empty());
-		when(requirements.judge(any(), any(), any())).thenReturn(MessagingRequirements.Verdict.ALLOWED);
+		when(conditions.judge(any(), any(), any())).thenReturn(MessagingConditions.Verdict.ALLOWED);
 
 		dialogueService = new DefaultDialogueService(
 				conversationService,
 				new MessageFactory(),
-				requirements,
+				conditions,
 				deliveryCoordinator,
 				notices,
 				playerRegistry,
@@ -182,10 +182,10 @@ class DefaultDialogueServiceTest {
 	}
 
 	@Test
-	void refusesAMessageTheRequirementsDoNotAllow() {
+	void refusesAMessageTheConditionsDoNotAllow() {
 		online(bob);
 		Phrase reason = Phrase.of("Bob is elsewhere", Map.of());
-		when(requirements.judge(alice, bob, "Bob")).thenReturn(new MessagingRequirements.Verdict(false, reason));
+		when(conditions.judge(alice, bob, "Bob")).thenReturn(new MessagingConditions.Verdict(false, reason));
 
 		dialogueService.send(alice, "bob", "hello");
 

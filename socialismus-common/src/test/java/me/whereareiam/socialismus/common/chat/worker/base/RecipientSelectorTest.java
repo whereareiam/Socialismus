@@ -14,7 +14,7 @@ import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.chat.ChatRequirementService;
+import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.util.EventUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 class RecipientSelectorTest {
 	private final ChatSettings settings = new ChatSettingsDefaults().supply(new ChatSettings());
 	private final InMemoryChatToggleStore toggles = new InMemoryChatToggleStore();
-	private final ChatRequirementService requirements = mock(ChatRequirementService.class);
+	private final ChatConditionService conditions = mock(ChatConditionService.class);
 	private final NobodyNotice nobody = mock(NobodyNotice.class);
 	private final SocialismusPlayer alice = player("Alice");
 	private final SocialismusPlayer bob = player("Bob");
@@ -51,8 +51,8 @@ class RecipientSelectorTest {
 		Logger.init(mock(LoggingHelper.class));
 		EventUtil.initialize(mock(EventManager.class));
 		WorkerProcessor<ChatMessage> processor = mock(WorkerProcessor.class);
-		when(requirements.reaches(any(), any(), any())).thenReturn(new Verdict.Passed());
-		new RecipientSelector(processor, requirements, () -> settings, toggles, nobody);
+		when(conditions.reaches(any(), any(), any())).thenReturn(new Verdict.Passed());
+		new RecipientSelector(processor, conditions, () -> settings, toggles, nobody);
 		ArgumentCaptor<Worker<ChatMessage>> worker = ArgumentCaptor.forClass(Worker.class);
 		verify(processor).addWorker(worker.capture());
 		selector = worker.getValue().getFunction();
@@ -75,14 +75,14 @@ class RecipientSelectorTest {
 	@Test
 	void aSenderWhoBypassesItReachesThePlayersWhoTurnedItOff() {
 		toggles.setOff(bob.getUniqueId(), "global", true);
-		when(requirements.bypassesToggle(alice)).thenReturn(true);
+		when(conditions.bypassesToggle(alice)).thenReturn(true);
 
 		assertEquals(Set.of(alice, bob, carol), recipientsOf(chat(true)));
 	}
 
 	@Test
 	void keepsAChatFromThePlayersItDoesNotReach() {
-		when(requirements.reaches(any(), eq(carol), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
+		when(conditions.reaches(any(), eq(carol), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
 
 		assertEquals(Set.of(alice, bob), recipientsOf(chat(true)));
 	}
@@ -91,8 +91,8 @@ class RecipientSelectorTest {
 	void aMessageThatReachesOnlyItsSenderIsKeptBack_AndTheSenderToldWhy() {
 		settings.getNotifications().setNobody(true);
 		Verdict.Failed far = refused("chats.global.reaches[0].nearby");
-		when(requirements.reaches(any(), eq(bob), any())).thenReturn(far);
-		when(requirements.reaches(any(), eq(carol), any())).thenReturn(far);
+		when(conditions.reaches(any(), eq(bob), any())).thenReturn(far);
+		when(conditions.reaches(any(), eq(carol), any())).thenReturn(far);
 
 		ChatMessage message = selector.apply(message(chat(true)));
 
@@ -102,8 +102,8 @@ class RecipientSelectorTest {
 
 	@Test
 	void withoutTheNoticeAMessageThatReachesOnlyItsSenderGoesToTheSender() {
-		when(requirements.reaches(any(), eq(bob), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
-		when(requirements.reaches(any(), eq(carol), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
+		when(conditions.reaches(any(), eq(bob), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
+		when(conditions.reaches(any(), eq(carol), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
 
 		ChatMessage message = selector.apply(message(chat(true)));
 
@@ -115,8 +115,8 @@ class RecipientSelectorTest {
 	@Test
 	void aRelayedMessageThatReachesNobodyHereTellsNobody() {
 		settings.getNotifications().setNobody(true);
-		when(requirements.reaches(any(), any(), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
-		when(requirements.reaches(any(), eq(alice), any())).thenReturn(new Verdict.Passed());
+		when(conditions.reaches(any(), any(), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
+		when(conditions.reaches(any(), eq(alice), any())).thenReturn(new Verdict.Passed());
 		ChatMessage relayed = message(chat(true));
 		relayed.setRelayed(true);
 

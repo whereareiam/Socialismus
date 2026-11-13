@@ -106,7 +106,7 @@ class ChatOwnershipTest {
 			modules = {Module.NETWORK, Module.REDIS},
 			configure = {LobbyChat.class, ThroughRedis.class}
 	)
-	void aServerLearnsItsNameFromTheProxySoAServerRequirementJudgesItsPlayers(ScenarioContext anvil) {
+	void aServerLearnsItsNameFromTheProxySoAServerConditionJudgesItsPlayers(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob").switchesTo(Network.SURVIVAL);
 

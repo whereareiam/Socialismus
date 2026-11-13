@@ -6,8 +6,8 @@ import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Serializer;
-import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.phrase.Phrase;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.IgnoredPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueMessages;
 import me.whereareiam.socialismus.module.dialogue.api.model.conversation.Conversation;
@@ -31,11 +31,11 @@ public class DialogueNotices {
 	}
 
 	/**
-	 * Tells the sender that {@code messaging.requirements} refuse their message.
+	 * Tells the sender that {@code messaging.requires} refuse their message.
 	 *
 	 * @param sender        the player who wrote it
 	 * @param recipientName the recipient's name
-	 * @param reason        why, as the requirements were worded; {@code null} tells {@code notAllowed}
+	 * @param reason        why, as the conditions were worded; {@code null} tells {@code notAllowed}
 	 */
 	public void notAllowed(@NotNull SocialismusPlayer sender, @NotNull String recipientName, @Nullable Phrase reason) {
 		if (reason != null) {

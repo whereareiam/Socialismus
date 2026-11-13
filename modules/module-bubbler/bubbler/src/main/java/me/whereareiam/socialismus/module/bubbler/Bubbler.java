@@ -12,12 +12,12 @@ import me.whereareiam.socialismus.module.ModuleContext;
 import me.whereareiam.socialismus.module.SocialisticModule;
 import me.whereareiam.socialismus.module.bubbler.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.bubbler.common.CommonConfiguration;
+import me.whereareiam.socialismus.module.bubbler.common.condition.ActivatorCondition;
+import me.whereareiam.socialismus.module.bubbler.common.condition.BubbleConditions;
+import me.whereareiam.socialismus.module.bubbler.common.condition.ChatActivationCondition;
 import me.whereareiam.socialismus.module.bubbler.common.config.migration.BubblerConfigMigrations;
 import me.whereareiam.socialismus.module.bubbler.common.listener.BubbleTransitionListener;
 import me.whereareiam.socialismus.module.bubbler.common.listener.ChatBroadcastListener;
-import me.whereareiam.socialismus.module.bubbler.common.requirement.ActivatorCondition;
-import me.whereareiam.socialismus.module.bubbler.common.requirement.BubbleRequirements;
-import me.whereareiam.socialismus.module.bubbler.common.requirement.ChatActivationCondition;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
@@ -59,12 +59,12 @@ public class Bubbler implements SocialisticModule {
 						),
 						new CommonConfiguration(dataFolder));
 
-		// A bubble whose requirements cannot be bound stops the module, naming the list.
-		BubbleRequirements requirements = injector.getInstance(BubbleRequirements.class);
-		requirements.bind();
+		// A bubble whose bubbleConditions cannot be bound stops the module, naming the list.
+		BubbleConditions bubbleConditions = injector.getInstance(BubbleConditions.class);
+		bubbleConditions.bind();
 
 		Stream.of(
-				requirements,
+				bubbleConditions,
 				injector.getInstance(ChatBroadcastListener.class),
 				injector.getInstance(BubbleTransitionListener.class)
 		).forEach(eventManager::register);
@@ -75,6 +75,6 @@ public class Bubbler implements SocialisticModule {
 	@Override
 	public void disable() {
 		injector.getInstance(Scheduler.class).cancelByModule("bubbler");
-		injector.getInstance(BubbleRequirements.class).close();
+		injector.getInstance(BubbleConditions.class).close();
 	}
 }

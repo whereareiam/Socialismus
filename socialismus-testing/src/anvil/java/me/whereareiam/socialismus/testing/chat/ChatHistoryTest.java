@@ -23,7 +23,7 @@ class ChatHistoryTest {
 
 	@Test
 	@Socialismus(configure = OverworldClearers.class)
-	void onlyThePlayersWhoMeetTheHistoryRequirementsSeeTheClearButton(ScenarioContext anvil) {
+	void onlyThePlayersWhoMeetTheHistoryConditionsSeeTheClearButton(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");
 		Player carol = Player.joins(anvil, "Carol").travelsTo("minecraft:the_nether");
@@ -32,7 +32,7 @@ class ChatHistoryTest {
 
 		String seenByAlice = alice.sees("[G] Bob: hello");
 		String seenByCarol = carol.sees("[G] Bob: hello");
-		assertTrue(seenByAlice.contains(CLEAR), "Alice meets the requirements but has no clear button: " + seenByAlice);
+		assertTrue(seenByAlice.contains(CLEAR), "Alice meets the conditions but has no clear button: " + seenByAlice);
 		assertFalse(seenByCarol.contains(CLEAR), "Carol is in the nether but has a clear button: " + seenByCarol);
 	}
 

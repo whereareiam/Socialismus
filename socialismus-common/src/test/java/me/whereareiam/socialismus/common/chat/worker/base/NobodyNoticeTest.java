@@ -6,7 +6,7 @@ import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.service.Phrasebook;
-import me.whereareiam.socialismus.service.requirement.RequirementTexts;
+import me.whereareiam.socialismus.service.condition.ConditionTexts;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class NobodyNoticeTest {
-	private final RequirementTexts texts = mock(RequirementTexts.class);
+	private final ConditionTexts texts = mock(ConditionTexts.class);
 	private final Phrasebook phrasebook = mock(Phrasebook.class);
 	private final NobodyNotice notice = new NobodyNotice(texts, phrasebook);
 

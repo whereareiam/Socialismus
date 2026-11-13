@@ -77,26 +77,26 @@ One Paper server unless stated otherwise.
 - [x] Local chat reaches only the players `nearby` in its `reaches` **first**
 - [x] `same: world` keeps a chat to the players of the sender's world, however far
 - [x] A message that reaches nobody is kept back and tells its sender why, in the `chat.denied.recipient` phrase of the reason
-- [x] A permission requirement decides who may send in a chat and who receives it
-- [x] A world requirement keeps a chat to the players of its worlds
-- [x] A sender a chat's requirements refuse is told why in the `chat.denied` phrases, or in the `denied` phrases of
+- [x] A `permission` condition decides who may send in a chat and who receives it
+- [x] A `world` condition keeps a chat to the players of its worlds
+- [x] A sender a chat's conditions refuse is told why in the `chat.denied` phrases, or in the `denied` phrases of
   everything where chat words nothing, such as the permission or the worlds the chat needs
 - [x] A line's own `denied` text, referring to a phrase as `<ref:...>`, and its `hint` are told instead
 - [x] A sender a negated condition refuses is told why the condition inside it held, such as the world they are in
 - [x] A `content` condition selects the chat by the message being sent
 - [ ] A `placeholder` condition, such as a balance `above` a number, selects the chat when PlaceholderAPI is installed
 - [x] The chat with the highest priority wins when several match
-- [x] A message takes the last format whose requirements its sender meets
+- [x] A message takes the last format whose conditions its sender meets
 - [x] A message whose sender meets none of its chat's formats gets the no-format message
-- [ ] A chat shows each recipient the format whose requirements they meet: Socialismus picks one
-  format for the sender and does not read a format's recipient requirements yet
+- [ ] A chat shows each recipient the format whose conditions they meet: Socialismus picks one
+  format for the sender and does not read a format's recipient conditions yet
 - [x] A regex trigger sends to its chat
 - [ ] A command trigger sends to its chat: Socialismus reads command triggers but does not act on them yet
 - [x] A disabled chat is skipped
 - [x] A message that matches no chat gets the no-chat message
 - [x] Chats from several files in `chat/list/` are all loaded
 - [x] Legacy serialization renders a format as MiniMessage does
-- [x] Only the players who meet chat history's requirements see the clear button
+- [x] Only the players who meet chat history's conditions see the clear button
 - [ ] PlaceholderAPI placeholders are filled in formats when PlaceholderAPI is installed
 - [x] `/socialismus toggle <chat>` keeps a chat from the player, except from senders who meet `toggle.bypass`; a chat with `toggleable: false` refuses
 
@@ -105,7 +105,7 @@ One Paper server unless stated otherwise.
 - [x] `/socialismus help` lists the commands the player may use **first**
 - [x] `/socialismus reload` applies a changed format without a restart **first**
 - [x] `/socialismus clear` clears the chat of the players
-- [x] `/socialismus clear` keeps the messages of a player who meets chat history's bypass requirements
+- [x] `/socialismus clear` keeps the messages of a player who meets chat history's bypass conditions
 - [x] `/socialismus debug` reports the platform and version
 - [x] A player without permission neither sees nor runs the administrator commands
 
@@ -126,7 +126,7 @@ One Paper server unless stated otherwise.
 A Velocity proxy with Paper backends.
 
 - [ ] A proxy chat reaches the players on every backend
-- [ ] A server requirement keeps a chat to the players of its servers
+- [ ] A `server` condition keeps a chat to the players of its servers
 - [ ] A split installation delivers the proxy's staff chat and the backends' local and global chats, none of them twice
 - [ ] A player who switches servers stays in the proxy's chats
 - [ ] PAPIProxyBridge fills backend placeholders in proxy formats
@@ -149,7 +149,7 @@ as a container process of the network (`containers = Container.REDIS`), so those
 - [x] A server without Socialismus behind such a proxy still gets its players' chat handled by the proxy
 - [x] A server with `chat.owner: PROXY` leaves its players' chat to the proxy and shows each message once
 - [x] A server that stops answering hands its players' chat to the proxy within the lease time, and takes it back once it answers
-- [x] A server behind a proxy learns its name, so a server requirement judges its players
+- [x] A server behind a proxy learns its name, so a `server` condition judges its players
 - [x] `/msg` reaches a player on another backend, and the sender sees it once that backend confirms
 - [ ] A private message to a player on no backend fails once `messaging.confirmation` has passed
 
@@ -170,7 +170,7 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 
 - [x] Chirper broadcasts the chat announcements of an announcer on its schedule
 - [x] `/socialismus announce` sends an announcement right away
-- [x] An announcer's requirements limit who receives its announcements
+- [x] An announcer's conditions limit who receives its announcements
 - [x] Chirper's title, action-bar, boss-bar and sound announcements arrive
 
 ## dialogue
@@ -179,7 +179,7 @@ SocialismusRedis and SocialismusChannelizer, which carry chat between servers, a
 - [x] `/reply` answers the last conversation partner
 - [x] Messaging an offline player fails with a reason
 - [x] `/reply` without a conversation fails with a reason
-- [x] A private message takes the last format whose requirements its participants meet
+- [x] A private message takes the last format whose conditions its participants meet
 - [x] `messaging.requires` and `messaging.reaches` refuse a message to a player they exclude
 - [x] A refused sender is told why in Dialogue's phrases for the participant that failed, such as the
   recipient's missing permission, and gets `notAllowed` only when nothing words it

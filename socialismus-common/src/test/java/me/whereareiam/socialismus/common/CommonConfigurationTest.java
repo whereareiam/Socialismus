@@ -5,8 +5,8 @@ import me.whereareiam.configura.Configura;
 import me.whereareiam.socialismus.common.config.defaults.PhrasesDefaults;
 import me.whereareiam.socialismus.config.PhrasesConfigProvider;
 import me.whereareiam.socialismus.model.chat.Chat;
+import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.model.phrase.Phrases;
-import me.whereareiam.socialismus.model.requirement.RequirementLists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -23,7 +23,7 @@ class CommonConfigurationTest {
 	Path dataPath;
 
 	@Test
-	void readsTheRequirementListsOfAChatAsWritten() {
+	void readsTheConditionListsOfAChatAsWritten() {
 		Configura configura = new CommonConfiguration(dataPath).provideConfigura(dataPath);
 		String yaml = """
 				id: local
@@ -36,7 +36,7 @@ class CommonConfigurationTest {
 
 		Chat chat = configura.read(yaml.getBytes(StandardCharsets.UTF_8), Chat.class);
 
-		assertEquals(RequirementLists.permission("socialismus.chat.local"), chat.getRequires());
+		assertEquals(ConditionLists.permission("socialismus.chat.local"), chat.getRequires());
 		assertEquals(1, chat.getReaches().getConditions().items().size());
 	}
 
@@ -78,7 +78,7 @@ class CommonConfigurationTest {
 	}
 
 	@Test
-	void readsAChatWithoutRequirementsAsMetByEveryone() {
+	void readsAChatWithoutConditionsAsMetByEveryone() {
 		Configura configura = new CommonConfiguration(dataPath).provideConfigura(dataPath);
 
 		Chat chat = configura.read("id: fallback".getBytes(StandardCharsets.UTF_8), Chat.class);
