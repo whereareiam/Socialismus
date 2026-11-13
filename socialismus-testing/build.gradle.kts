@@ -147,6 +147,12 @@ anvil {
                 includeTags(suite)
             }
         }
+
+        // The journeys whose outcome depends on the Minecraft or Velocity version, whatever their suite; the
+        // compatibility workflow runs them at every version of its matrix.
+        register("compatibility") {
+            includeTags("compatibility")
+        }
     }
 }
 

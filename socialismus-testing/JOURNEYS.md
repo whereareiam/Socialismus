@@ -21,9 +21,11 @@ Journeys run on the newest versions by default: Paper 26.3, Spigot 26.3 and Velo
 
 `Versions` pins the builds the journeys can run, and a run picks one with
 `-Psocialismus.journeys.minecraft=<version>` and `-Psocialismus.journeys.velocity=<version>`; Anvil
-starts each server on the Java its version needs. The compatibility workflow runs the `platform`
-and `modules` suites at the versions where the game or the platforms changed what Socialismus
-depends on, and the `bubbler` suite at all of them:
+starts each server on the Java its version needs. The compatibility workflow runs the journeys
+tagged `compatibility`, whatever their suite, at the versions where the game or the platforms
+changed what Socialismus depends on. A journey carries that tag beside its suite when its outcome
+depends on the version: a jar starting, a module loading, a bubble entity. One whose outcome is the
+same everywhere, such as a chat rule, runs only at the newest versions:
 
 | Minecraft | Java | Why |
 | --- | --- | --- |
@@ -35,8 +37,8 @@ depends on, and the `bubbler` suite at all of them:
 | 26.1.2 | 25 | Java 25, the oldest version Velocity 4.0.0 speaks |
 | 26.3 | 25 | the newest; every suite runs here on every pull request |
 
-Velocity 4.0.0, the oldest Velocity the VELOCITY jar runs on, runs the `platform` suite in front of
-26.1.2 servers, the newest it speaks. Paper below
+Velocity 4.0.0, the oldest Velocity the VELOCITY jar runs on, runs the `compatibility` journeys in
+front of 26.1.2 servers, the newest it speaks. Paper below
 1.20.6 installs the BUKKIT jar, as admins of those servers do, and `@MinecraftVersions` skips a journey
 at the versions it does not apply to, such as text display bubbles before 1.19.4. Anvil's players
 speak no 1.20.4, 1.21.4 or 1.21.5, and Anvil starts no Folia yet.

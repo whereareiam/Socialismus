@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("modules")
 class ModuleDependencyTest {
 	@Test
+	@Tag("compatibility")
 	@Socialismus(
 			plugins = Plugin.PACKETEVENTS,
 			moduleFixtures = {ModuleFixture.JOURNEY_LIBRARY, ModuleFixture.JOURNEY_CONSUMER}

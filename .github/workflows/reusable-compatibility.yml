@@ -14,42 +14,22 @@ permissions:
 
 jobs:
   journeys:
-    name: ${{ matrix.platform }} ${{ matrix.version }} (${{ matrix.suite }})
+    name: ${{ matrix.platform }} ${{ matrix.version }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         # The versions where the game or the platforms changed what Socialismus depends on; socialismus-testing/JOURNEYS.md
-        # explains each. The newest, 26.3 and Velocity 4.3.1, run every suite in the checks of every pull request.
+        # explains each. The newest, 26.3 and Velocity 4.3.1, run every suite in the checks of every pull request. Each
+        # version runs the journeys tagged compatibility, whatever their suite.
         platform: [Minecraft]
         version: ["1.16.5", "1.19.4", "1.20.6", "1.21.1", "1.21.11", "26.1.2"]
-        suite: [platform, modules]
         include:
-          # Bubbler runs at every version: the BUKKIT jar below 1.20.6, the PAPER jar from it.
-          - platform: Minecraft
-            version: "1.16.5"
-            suite: bubbler
-          - platform: Minecraft
-            version: "1.19.4"
-            suite: bubbler
-          - platform: Minecraft
-            version: "1.20.6"
-            suite: bubbler
-          - platform: Minecraft
-            version: "1.21.1"
-            suite: bubbler
-          - platform: Minecraft
-            version: "1.21.11"
-            suite: bubbler
-          - platform: Minecraft
-            version: "26.1.2"
-            suite: bubbler
           # Velocity 4.0.0 speaks no newer Minecraft than 26.1.2, so its servers run that.
           - platform: Velocity
             version: "4.0.0"
             minecraft: "26.1.2"
-            suite: platform
     steps:
       - uses: actions/checkout@v7
         with:
@@ -64,22 +44,21 @@ jobs:
       - uses: whereareiam/anvil-actions/setup@v1
 
       # Anvil starts each server on the Java its version needs.
-      - name: Run the ${{ matrix.suite }} journeys
+      - name: Run the compatibility journeys
         env:
-          SUITE: ${{ matrix.suite }}
           VERSION_PROPERTY: socialismus.journeys.${{ matrix.platform == 'Velocity' && 'velocity' || 'minecraft' }}
           TARGET_VERSION: ${{ matrix.version }}
           MINECRAFT: ${{ matrix.minecraft }}
         run: |
           arguments=("-P${VERSION_PROPERTY}=${TARGET_VERSION}")
           [[ -z "$MINECRAFT" ]] || arguments+=("-Psocialismus.journeys.minecraft=${MINECRAFT}")
-          ./gradlew --no-daemon ":socialismus-testing:anvil${SUITE^}Test" "${arguments[@]}"
+          ./gradlew --no-daemon :socialismus-testing:anvilCompatibilityTest "${arguments[@]}"
 
       - uses: whereareiam/devops/primitive/report/junit/publish@v3
         if: always()
         with:
-          name: Compatibility (${{ matrix.platform }} ${{ matrix.version }}, ${{ matrix.suite }})
-          artifact-name: test-results-compatibility-${{ matrix.platform }}-${{ matrix.version }}-${{ matrix.suite }}
+          name: Compatibility (${{ matrix.platform }} ${{ matrix.version }})
+          artifact-name: test-results-compatibility-${{ matrix.platform }}-${{ matrix.version }}
           reports: |
             **/build/reports/tests/**
             socialismus-testing/build/anvil/**/logs/latest.log
