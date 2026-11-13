@@ -21,7 +21,8 @@ import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.model.condition.ConditionParts;
 import me.whereareiam.socialismus.model.phrase.Phrases;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.chat.ChatConditions;
+import me.whereareiam.socialismus.service.chat.ChatPlaces;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.type.chat.TriggerType;
 import me.whereareiam.socialismus.util.ComponentUtil;
@@ -55,7 +56,7 @@ class ChatSelectorTest {
 	@Mock
 	private ChatContainerService containerService;
 	@Mock
-	private ChatConditionService conditions;
+	private ChatConditions conditions;
 	@Mock
 	private SocialismusPlayer sender;
 	@Mock
@@ -67,8 +68,13 @@ class ChatSelectorTest {
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
 		// A chat whose verdict a test does not set takes everyone.
-		when(conditions.writes(any(), any())).thenAnswer(invocation ->
-				verdicts.getOrDefault(invocation.<Chat>getArgument(0).getId(), new Verdict.Passed()));
+		when(conditions.of(any())).thenAnswer(invocation -> {
+			String id = invocation.<Chat>getArgument(0).getId();
+			ChatPlaces places = mock(ChatPlaces.class);
+			when(places.writes(any())).thenAnswer(writes -> verdicts.getOrDefault(id, new Verdict.Passed()));
+
+			return Optional.of(places);
+		});
 		Logger.init(mock(LoggingHelper.class));
 		EventUtil.initialize(mock(EventManager.class));
 		Serializer.initialize(() -> serializerEngine);

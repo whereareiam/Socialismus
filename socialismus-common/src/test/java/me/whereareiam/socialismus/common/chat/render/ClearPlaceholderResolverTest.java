@@ -8,7 +8,7 @@ import me.whereareiam.socialismus.model.chat.render.ChatRenderContext;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.base.Registry;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.chat.ChatHistoryConditions;
 import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
@@ -35,7 +35,7 @@ class ClearPlaceholderResolverTest {
 	@Mock
 	private Provider<Commands> commands;
 	@Mock
-	private ChatConditionService conditions;
+	private ChatHistoryConditions conditions;
 	@Mock
 	private Registry<ChatPlaceholderResolver> registry;
 
@@ -106,7 +106,7 @@ class ClearPlaceholderResolverTest {
 		SocialismusPlayer sender = mock(SocialismusPlayer.class,
 				withSettings().useConstructor(UUID.randomUUID(), "sender").defaultAnswer(CALLS_REAL_METHODS));
 		when(conditions.clears(recipient)).thenReturn(true);
-		when(conditions.keepsHistory(sender)).thenReturn(true);
+		when(conditions.keeps(sender)).thenReturn(true);
 
 		ClearPlaceholderResolver resolver = new ClearPlaceholderResolver(
 				chatSettings,
@@ -120,6 +120,6 @@ class ClearPlaceholderResolverTest {
 		Component resolved = resolver.resolve(new ChatRenderContext(message, recipient));
 
 		assertEquals("", ComponentUtil.toPlain(resolved));
-		verify(conditions).keepsHistory(sender);
+		verify(conditions).keeps(sender);
 	}
 }

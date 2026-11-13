@@ -5,7 +5,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.conditia.exception.ConditionException;
-import me.whereareiam.socialismus.common.chat.condition.DefaultChatConditionService;
+import me.whereareiam.socialismus.common.chat.condition.DefaultChatConditions;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.base.SocialisticEvent;
@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatContainer implements ChatContainerService, EventListener {
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<List<Chat>> chatsProvider;
-	private final DefaultChatConditionService conditions;
+	private final DefaultChatConditions conditions;
 
 	private final ConcurrentHashMap<String, InternalChat> chats = new ConcurrentHashMap<>();
 
@@ -41,7 +41,7 @@ public class ChatContainer implements ChatContainerService, EventListener {
 	public ChatContainer(
 			@Named("chats") Provider<List<Chat>> chatsProvider,
 			Provider<ChatSettings> chatSettings,
-			DefaultChatConditionService conditions,
+			DefaultChatConditions conditions,
 			EventManager eventManager
 	) {
 		this.chatsProvider = chatsProvider;

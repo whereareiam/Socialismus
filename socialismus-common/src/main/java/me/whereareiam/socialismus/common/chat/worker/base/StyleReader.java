@@ -5,7 +5,8 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.chat.ChatConditions;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,11 +16,11 @@ import org.jetbrains.annotations.NotNull;
  */
 @Singleton
 public class StyleReader {
-	private final ChatConditionService conditions;
+	private final ChatConditions chatConditions;
 
 	@Inject
-	public StyleReader(@NotNull WorkerProcessor<ChatMessage> workerProcessor, @NotNull ChatConditionService conditions) {
-		this.conditions = conditions;
+	public StyleReader(@NotNull WorkerProcessor<ChatMessage> workerProcessor, @NotNull ChatConditions chatConditions) {
+		this.chatConditions = chatConditions;
 
 		workerProcessor.addWorker(new Worker<>(this::read, 60, true, false));
 	}
@@ -29,7 +30,10 @@ public class StyleReader {
 		if (message.getChat().getParameters().getStyles().isEmpty()) return message;
 
 		String text = ComponentUtil.toPlain(message.getContent());
-		message.setContent(conditions.style(message.getChat(), message.getSender()).read(text));
+		TextStyle style = chatConditions.of(message.getChat())
+				.map(places -> places.style(message.getSender()))
+				.orElse(TextStyle.PLAIN);
+		message.setContent(style.read(text));
 
 		return message;
 	}

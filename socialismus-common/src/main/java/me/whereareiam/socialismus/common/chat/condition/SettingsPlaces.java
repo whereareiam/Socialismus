@@ -23,8 +23,8 @@ import static me.whereareiam.socialismus.model.condition.ConditionParts.VIEWER;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class SettingsPlaces implements AutoCloseable {
 	private final Place clears;
-	private final Place keepsHistory;
-	private final Place bypassToggle;
+	private final Place keeps;
+	private final Place bypasses;
 
 	/**
 	 * Binds the places of the chat settings.
@@ -40,9 +40,9 @@ final class SettingsPlaces implements AutoCloseable {
 		ChatSettings.Toggle toggle = settings.getToggle();
 		List<Place> bound = new ArrayList<>();
 		try {
-			Place clears = open(bound, conditions.place("chat.settings.history.requires", history == null ? none() : ChatPlaces.listOf(history.getRequires()), VIEWER));
-			Place keeps = open(bound, conditions.place("chat.settings.history.bypass", history == null ? none() : ChatPlaces.listOf(history.getBypass()), SENDER));
-			Place bypass = open(bound, conditions.place("chat.settings.toggle.bypass", toggle == null ? none() : ChatPlaces.listOf(toggle.getBypass()), SENDER));
+			Place clears = open(bound, conditions.place("chat.settings.history.requires", history == null ? none() : BoundChatPlaces.listOf(history.getRequires()), VIEWER));
+			Place keeps = open(bound, conditions.place("chat.settings.history.bypass", history == null ? none() : BoundChatPlaces.listOf(history.getBypass()), SENDER));
+			Place bypass = open(bound, conditions.place("chat.settings.toggle.bypass", toggle == null ? none() : BoundChatPlaces.listOf(toggle.getBypass()), SENDER));
 
 			return new SettingsPlaces(clears, keeps, bypass);
 		} catch (RuntimeException failure) {
@@ -64,7 +64,7 @@ final class SettingsPlaces implements AutoCloseable {
 	@Override
 	public void close() {
 		clears.close();
-		keepsHistory.close();
-		bypassToggle.close();
+		keeps.close();
+		bypasses.close();
 	}
 }

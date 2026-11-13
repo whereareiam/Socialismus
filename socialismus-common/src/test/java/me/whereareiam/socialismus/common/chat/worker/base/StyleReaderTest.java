@@ -5,13 +5,15 @@ import me.whereareiam.socialismus.model.chat.ChatParameters;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.chat.ChatConditions;
+import me.whereareiam.socialismus.service.chat.ChatPlaces;
 import me.whereareiam.socialismus.service.style.TextStyle;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,7 +26,8 @@ class StyleReaderTest {
 	private static final Component STYLED = Component.text("styled");
 
 	private final SocialismusPlayer sender = mock(SocialismusPlayer.class);
-	private final ChatConditionService conditions = mock(ChatConditionService.class);
+	private final ChatConditions conditions = mock(ChatConditions.class);
+	private final ChatPlaces places = mock(ChatPlaces.class);
 
 	@SuppressWarnings("unchecked")
 	private final StyleReader reader = new StyleReader(mock(WorkerProcessor.class), conditions);
@@ -32,7 +35,8 @@ class StyleReaderTest {
 	@Test
 	void readsWhatTheSenderWroteWithTheStyleTheirChatGivesThem() {
 		Chat chat = chat(List.of("basic"));
-		when(conditions.style(chat, sender)).thenReturn(new Styled());
+		when(conditions.of(chat)).thenReturn(Optional.of(places));
+		when(places.style(sender)).thenReturn(new Styled());
 
 		ChatMessage message = reader.read(message(chat, false));
 
@@ -44,7 +48,7 @@ class StyleReaderTest {
 		ChatMessage message = reader.read(message(chat(List.of()), false));
 
 		assertEquals(Component.text("<bold>hi"), message.getContent());
-		verify(conditions, never()).style(any(), any());
+		verify(conditions, never()).of(any());
 	}
 
 	@Test
@@ -52,7 +56,7 @@ class StyleReaderTest {
 		ChatMessage message = reader.read(message(chat(List.of("basic")), true));
 
 		assertEquals(Component.text("<bold>hi"), message.getContent());
-		verify(conditions, never()).style(any(), any());
+		verify(conditions, never()).of(any());
 	}
 
 	private static Chat chat(List<String> styles) {

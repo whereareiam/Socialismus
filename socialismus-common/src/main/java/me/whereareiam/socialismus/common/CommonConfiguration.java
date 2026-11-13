@@ -18,7 +18,8 @@ import me.whereareiam.socialismus.common.chat.ChatHistoryController;
 import me.whereareiam.socialismus.common.chat.ChatLifecycle;
 import me.whereareiam.socialismus.common.chat.DefaultChatOwnershipService;
 import me.whereareiam.socialismus.common.chat.condition.ConditionLifecycle;
-import me.whereareiam.socialismus.common.chat.condition.DefaultChatConditionService;
+import me.whereareiam.socialismus.common.chat.condition.ChatSettingsConditions;
+import me.whereareiam.socialismus.common.chat.condition.DefaultChatConditions;
 import me.whereareiam.socialismus.common.chat.processor.ChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.processor.FormattedChatMessageProcessor;
 import me.whereareiam.socialismus.common.chat.render.ClearPlaceholderResolver;
@@ -71,10 +72,12 @@ import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.UpdateProvider;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.chat.ChatConditions;
+import me.whereareiam.socialismus.service.chat.ChatHistoryConditions;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
 import me.whereareiam.socialismus.service.chat.ChatOwnershipService;
+import me.whereareiam.socialismus.service.chat.ChatToggleConditions;
 import me.whereareiam.socialismus.service.chat.ChatToggleService;
 import me.whereareiam.socialismus.service.chat.ChatToggleStore;
 import me.whereareiam.socialismus.service.chat.render.ChatMessageTransformer;
@@ -176,7 +179,9 @@ public class CommonConfiguration extends AbstractModule {
 
 		// Conditions
 		install(new ConditionConfiguration());
-		bind(ChatConditionService.class).to(DefaultChatConditionService.class);
+		bind(ChatConditions.class).to(DefaultChatConditions.class);
+		bind(ChatHistoryConditions.class).to(ChatSettingsConditions.class);
+		bind(ChatToggleConditions.class).to(ChatSettingsConditions.class);
 		bind(Styles.class).to(DefaultStyles.class);
 
 		// Other
