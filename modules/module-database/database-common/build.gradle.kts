@@ -15,8 +15,15 @@ dependencies {
     attache(libs.dialectica.adapter.jdbi)
     attache(libs.strata.adapter.database)
     attache(libs.strata.adapter.database.jdbi)
-    attache(libs.strata.adapter.database.dialectica)
+    attache(libs.strata.adapter.database.dialectica) {
+        // Its Dialectica is the one SocialismusDatabase declares, not the 3.x it was built against.
+        exclude(group = "me.whereareiam", module = "dialectica")
+        exclude(group = "me.whereareiam", module = "dialectica-api")
+    }
     attache(libs.hikaricp)
+
+    // Writes the typed columns of the module's entities, such as StoreEntryEntityColumns.
+    annotationProcessor(libs.dialectica.processor)
 
     testImplementation(projects.moduleDatabaseApi)
     testImplementation(libs.jdbi.core)
@@ -24,7 +31,11 @@ dependencies {
     testImplementation(libs.dialectica.adapter.jdbi)
     testImplementation(libs.strata.adapter.database)
     testImplementation(libs.strata.adapter.database.jdbi)
-    testImplementation(libs.strata.adapter.database.dialectica)
+    testImplementation(libs.strata.adapter.database.dialectica) {
+        // Its Dialectica is the one SocialismusDatabase declares, not the 3.x it was built against.
+        exclude(group = "me.whereareiam", module = "dialectica")
+        exclude(group = "me.whereareiam", module = "dialectica-api")
+    }
     testImplementation(libs.hikaricp)
     testImplementation(libs.sqlite)
     testImplementation(libs.postgresql)
