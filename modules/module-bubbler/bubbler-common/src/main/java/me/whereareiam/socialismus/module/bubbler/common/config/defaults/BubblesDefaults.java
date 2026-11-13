@@ -62,7 +62,9 @@ public class BubblesDefaults implements DefaultsProvider<BubblesConfig> {
 						TransitionType.INTER, BubbleTransition.builder()
 								.sound(BubbleTransition.Sound.builder().type("ENTITY_CHICKEN_EGG").pitch(1.0f).volume(1.0f).build())
 								.build()
-				)).requires(fromCommandOrChats("fallback", "local")).build();
+				)).requires(fromCommandOrChats("fallback", "local"))
+				.styles(List.of("basic", "full"))
+				.build();
 
 		config.getBubbles().add(bubble);
 

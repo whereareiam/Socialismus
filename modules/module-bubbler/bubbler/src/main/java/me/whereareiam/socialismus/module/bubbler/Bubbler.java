@@ -23,6 +23,7 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
+import me.whereareiam.socialismus.service.style.StyleService;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,7 +56,8 @@ public class Bubbler implements SocialisticModule {
 								parentInjector.getInstance(Conditions.class),
 								parentInjector.getInstance(CommandService.class),
 								parentInjector.getInstance(PlayerRegistry.class),
-								eventManager
+								eventManager,
+								parentInjector.getInstance(StyleService.class)
 						),
 						new CommonConfiguration(dataFolder));
 
