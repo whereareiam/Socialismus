@@ -15,9 +15,8 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static me.whereareiam.socialismus.testing.environment.ServerFiles.CHAT_MESSAGES;
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.CHAT_SETTINGS;
-import static me.whereareiam.socialismus.testing.environment.ServerFiles.MESSAGES;
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.PHRASES;
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.chat;
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.server;
 
@@ -142,10 +141,12 @@ class ChatOwnershipTest {
 							.requires(server(Network.LOBBY))
 							.build()
 			);
-			// Without a fallback chat, a refused sender is told why, in messages.yml's wording.
+			// Without a fallback chat, a refused sender is told why, in the denied phrases of everything.
 			files.put(CHAT_SETTINGS, Map.of("fallback", Map.of("enabled", false, "chat", "fallback")));
-			files.put(CHAT_MESSAGES, Map.of("requirements", Map.of("server.outside", "")));
-			files.put(MESSAGES, Map.of("requirements", Map.of("server.outside", LOBBY_ONLY)));
+			files.put(PHRASES, Map.of(
+					"denied", Map.of("server.outside", LOBBY_ONLY),
+					"chat", Map.of("denied", Map.of("server.outside", ""))
+			));
 		}
 	}
 }

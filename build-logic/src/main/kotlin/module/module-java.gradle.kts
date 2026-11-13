@@ -54,6 +54,12 @@ dependencies {
     }
 }
 
+// Constructors keep their parameters' names, so Configura reads a settings record through its constructor also where
+// the BUKKIT jar turned it into a plain class for Java 11.
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("-parameters")
+}
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     ignoreFailures = providers.gradleProperty("ignoreTestFailures")
