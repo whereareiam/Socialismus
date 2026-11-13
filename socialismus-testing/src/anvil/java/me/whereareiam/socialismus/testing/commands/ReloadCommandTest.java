@@ -27,7 +27,7 @@ class ReloadCommandTest {
 		alice.chat("before");
 		bob.sees("[first] Alice: before");
 
-		ServerFiles.replace(anvil, ServerFiles.CHATS, Map.of("chats", List.of(chat("global", 0, "", 0, "[second] {playerName}: {message}"))));
+		ServerFiles.replace(anvil, ServerFiles.CHATS, Map.of("chats", List.of(chat("global", 0, "", "[second] {playerName}: {message}"))));
 		Console.of(anvil).run("socialismus reload").printed("Configuration reloaded");
 
 		alice.chat("after");
@@ -37,7 +37,7 @@ class ReloadCommandTest {
 	static final class FirstFormat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "[first] {playerName}: {message}"));
+			files.chats(chat("global", 0, "", "[first] {playerName}: {message}"));
 		}
 	}
 }

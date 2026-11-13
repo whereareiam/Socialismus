@@ -136,8 +136,8 @@ class ChatOwnershipTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(
-					chat("global", 0, "", 0, "[G] {playerName}: {message}"),
-					chat("lobby", 1, "%", 0, "[Lobby] {playerName}: {message}").toBuilder()
+					chat("global", 0, "", "[G] {playerName}: {message}"),
+					chat("lobby", 1, "%", "[Lobby] {playerName}: {message}").toBuilder()
 							.requires(server(Network.LOBBY))
 							.build()
 			);

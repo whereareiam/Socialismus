@@ -52,7 +52,6 @@ public class RecipientSelector {
 		Collection<SocialismusPlayer> recipients = bubbleMessage.getRecipients();
 
 		recipients = recipients.parallelStream()
-				.filter(recipient -> isWithinRadius(sender, recipient, bubble.getDisplay().getRadius()))
 				.filter(recipient -> requirements.reaches(bubble, recipient, bubbleMessage))
 				.collect(Collectors.toSet());
 
@@ -69,9 +68,5 @@ public class RecipientSelector {
 			sender.sendMessage(Serializer.serialize(sender, messages.get().getNoPlayers()));
 
 		return bubbleMessage;
-	}
-
-	private boolean isWithinRadius(SocialismusPlayer sender, SocialismusPlayer recipient, double radius) {
-		return sender.isWithinRange(recipient, radius);
 	}
 }

@@ -10,10 +10,11 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Consumer;
 
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.chat;
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.nearby;
 
 /**
  * How a chat message reaches players: in the format of the chat it matched, through the chat its symbol selects,
- * and only as far as the chat's radius.
+ * and only as far as its {@code reaches} lets it.
  */
 @Tag("chat")
 class ChatDeliveryTest {
@@ -59,7 +60,7 @@ class ChatDeliveryTest {
 	static final class GlobalChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "<gray>[G] {playerName}: <white>{message}"));
+			files.chats(chat("global", 0, "", "<gray>[G] {playerName}: <white>{message}"));
 		}
 	}
 
@@ -70,8 +71,8 @@ class ChatDeliveryTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(
-					chat("local", 0, "", 100, "<gray>[L] {playerName}: <white>{message}"),
-					chat("global", 1, "!", 0, "<gray>[G] {playerName}: <white>{message}")
+					chat("local", 0, "", "<gray>[L] {playerName}: <white>{message}").toBuilder().reaches(nearby(100)).build(),
+					chat("global", 1, "!", "<gray>[G] {playerName}: <white>{message}")
 			);
 		}
 	}

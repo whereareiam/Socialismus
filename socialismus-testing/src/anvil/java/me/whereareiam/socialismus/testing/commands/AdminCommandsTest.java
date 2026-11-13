@@ -101,7 +101,7 @@ class AdminCommandsTest {
 	static final class GlobalChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}"));
+			files.chats(chat("global", 0, "", "[G] {playerName}: {message}"));
 		}
 	}
 
@@ -111,7 +111,7 @@ class AdminCommandsTest {
 	static final class NetherProtected implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}"));
+			files.chats(chat("global", 0, "", "[G] {playerName}: {message}"));
 			files.put(CHAT_SETTINGS, Map.of("history", Map.of("bypass", not(world("world")))));
 		}
 	}

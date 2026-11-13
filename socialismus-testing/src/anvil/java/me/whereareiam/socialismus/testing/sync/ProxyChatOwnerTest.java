@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static me.whereareiam.socialismus.testing.environment.ServerFiles.chat;
+import static me.whereareiam.socialismus.testing.environment.ServerFiles.sameServer;
 
 /**
  * Servers whose {@code chat.owner} is {@code PROXY} leave their players' chat to the proxy in front of them, which
@@ -62,8 +63,8 @@ class ProxyChatOwnerTest {
 		@Override
 		public void accept(ServerFiles files) {
 			files.chats(
-					chat("local", 0, "", 64, "[L] {playerName}: {message}"),
-					chat("global", 1, "!", 0, "[P] {playerName}: {message}")
+					chat("local", 0, "", "[L] {playerName}: {message}").toBuilder().reaches(sameServer()).build(),
+					chat("global", 1, "!", "[P] {playerName}: {message}")
 			);
 		}
 	}
