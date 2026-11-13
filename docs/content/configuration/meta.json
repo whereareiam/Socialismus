@@ -5,6 +5,6 @@
     "settings",
     "commands",
     "updater",
-    "requirements"
+    "conditions"
   ]
 }
