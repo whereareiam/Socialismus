@@ -53,7 +53,8 @@ public final class SpyCopies implements EventListener {
 				recipient.getUsername(),
 				recipient.getServer(),
 				message.getContent(),
-				message.getTimestamp() == null ? System.currentTimeMillis() : message.getTimestamp().toEpochMilli()
+				message.getTimestamp() == null ? System.currentTimeMillis() : message.getTimestamp().toEpochMilli(),
+				message.getStyle()
 		));
 	}
 
@@ -69,6 +70,7 @@ public final class SpyCopies implements EventListener {
 				.content(record.getContent())
 				.timestamp(Instant.ofEpochMilli(record.getTimestamp()))
 				.deliveryStatus(DeliveryStatus.DELIVERED_REMOTELY)
+				.style(record.getStyle())
 				.build();
 
 		spying.showToSpies(message, recipient);

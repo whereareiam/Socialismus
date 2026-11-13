@@ -32,10 +32,11 @@ import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
+import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
-import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.requirement.RequirementTexts;
+import me.whereareiam.socialismus.service.style.StyleService;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,7 +74,8 @@ public class Dialogue implements SocialisticModule {
 						parentInjector.getInstance(RequirementTexts.class),
 						parentInjector.getInstance(Phrasebook.class),
 						parentInjector.getInstance(SerializationService.class),
-						parentInjector.getInstance(EventManager.class)
+						parentInjector.getInstance(EventManager.class),
+						parentInjector.getInstance(StyleService.class)
 				),
 				new CommonConfiguration(dataFolder)
 		);

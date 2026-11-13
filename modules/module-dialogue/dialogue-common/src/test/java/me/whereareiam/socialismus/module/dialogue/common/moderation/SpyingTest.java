@@ -23,7 +23,7 @@ class SpyingTest {
 	private final InMemoryPreferencesStore spies = new InMemoryPreferencesStore();
 	private final PlayerRegistry playerRegistry = mock(PlayerRegistry.class);
 	private final MessageRenderer renderer = mock(MessageRenderer.class);
-	private final Spying spying = new Spying(() -> settings, spies, new SenderPrivileges(DialogueConditions.bound(settings)), playerRegistry, renderer);
+	private final Spying spying = new Spying(() -> settings, spies, new SenderPrivileges(DialogueConditions.bound(settings), () -> settings, TestDataBuilder.plainStyles()), playerRegistry, renderer);
 
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");

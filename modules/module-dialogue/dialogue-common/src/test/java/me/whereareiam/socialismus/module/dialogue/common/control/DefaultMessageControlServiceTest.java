@@ -36,7 +36,7 @@ class DefaultMessageControlServiceTest {
 		when(playerRegistry.getPlayerData(anyString())).thenReturn(Optional.empty());
 		when(playerRegistry.getPlayerData("bob")).thenReturn(Optional.of(bob));
 		when(playerRegistry.getPlayerData("alice")).thenReturn(Optional.of(alice));
-		service = new DefaultMessageControlService(() -> settings, toggles, ignores, new SenderPrivileges(DialogueConditions.bound(settings)), playerRegistry, notices);
+		service = new DefaultMessageControlService(() -> settings, toggles, ignores, new SenderPrivileges(DialogueConditions.bound(settings), () -> settings, TestDataBuilder.plainStyles()), playerRegistry, notices);
 	}
 
 	@Test

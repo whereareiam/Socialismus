@@ -96,7 +96,8 @@ public final class DialogueNetworkDelivery implements RemoteDelivery {
 				message.getConversationId(),
 				message.isBypassesToggle(),
 				message.isExemptFromIgnore(),
-				message.isHiddenFromSpies()
+				message.isHiddenFromSpies(),
+				message.getStyle()
 		));
 
 		scheduler.schedule(DelayedRunnableTask.builder()
@@ -124,6 +125,7 @@ public final class DialogueNetworkDelivery implements RemoteDelivery {
 				.bypassesToggle(record.isBypassesToggle())
 				.exemptFromIgnore(record.isExemptFromIgnore())
 				.hiddenFromSpies(record.isHiddenFromSpies())
+				.style(record.getStyle())
 				.build();
 
 		DeliveryStatus status = localDelivery.deliver(message, false);

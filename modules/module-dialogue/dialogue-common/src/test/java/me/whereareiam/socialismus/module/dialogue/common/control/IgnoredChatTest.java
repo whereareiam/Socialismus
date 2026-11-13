@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 class IgnoredChatTest {
 	private final DialogueSettings settings = TestDataBuilder.defaultSettings();
 	private final InMemoryIgnoreStore ignores = new InMemoryIgnoreStore();
-	private final IgnoredChat ignoredChat = new IgnoredChat(() -> settings, ignores, new SenderPrivileges(DialogueConditions.bound(settings)));
+	private final IgnoredChat ignoredChat = new IgnoredChat(() -> settings, ignores, new SenderPrivileges(DialogueConditions.bound(settings), () -> settings, TestDataBuilder.plainStyles()));
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
 	private final SocialismusPlayer carol = TestDataBuilder.mockPlayer("Carol");

@@ -9,10 +9,11 @@ import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
+import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
-import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.requirement.RequirementTexts;
+import me.whereareiam.socialismus.service.style.StyleService;
 
 @RequiredArgsConstructor
 public class DialogueInjectorConfiguration extends AbstractModule {
@@ -25,6 +26,7 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 	private final Phrasebook phrases;
 	private final SerializationService serializationService;
 	private final EventManager eventManager;
+	private final StyleService styleService;
 
 	@Override
 	protected void configure() {
@@ -39,5 +41,6 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 		bind(Phrasebook.class).toInstance(phrases);
 		bind(SerializationService.class).toInstance(serializationService);
 		bind(EventManager.class).toInstance(eventManager);
+		bind(StyleService.class).toInstance(styleService);
 	}
 }

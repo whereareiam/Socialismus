@@ -68,7 +68,7 @@ class LocalDeliveryTest {
 
 		DialogueRequirements requirements = DialogueConditions.bound(TestDataBuilder::defaultSettings, () -> formats, ModerationFormats::new);
 		RecipientControl control = new RecipientControl(TestDataBuilder::defaultSettings, toggles, ignores);
-		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, ModerationFormats::new, requirements), eventManager, control);
+		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, ModerationFormats::new, requirements, TestDataBuilder.plainStyles()), eventManager, control);
 	}
 
 	@DisplayName("Fills the names and the message into both formats")

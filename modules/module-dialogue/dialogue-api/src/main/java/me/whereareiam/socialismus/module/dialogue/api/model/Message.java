@@ -69,4 +69,10 @@ public class Message {
 	 * sender's server.
 	 */
 	private boolean hiddenFromSpies;
+
+	/**
+	 * The style of {@code styles.yml} the message is shown with, as {@code messaging.styles} chose it on the sender's
+	 * server; {@code null} shows it as plain text.
+	 */
+	private String style;
 }
