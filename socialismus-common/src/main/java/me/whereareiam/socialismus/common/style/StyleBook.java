@@ -6,6 +6,7 @@ import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.conditia.model.Situation;
+import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.style.Style;
 import me.whereareiam.socialismus.model.style.Styles;
@@ -14,6 +15,8 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +45,7 @@ final class StyleBook implements AutoCloseable {
 	 */
 	static @NotNull StyleBook bind(@NotNull Conditions conditions, @NotNull Styles file, boolean legacy) {
 		Map<String, BoundStyle> bound = new HashMap<>();
+		Set<StyleTag> unreadable = EnumSet.noneOf(StyleTag.class);
 		List<Style> styles = file.getStyles() == null ? List.of() : file.getStyles();
 		try {
 			for (int index = 0; index < styles.size(); index++) {
@@ -50,15 +54,23 @@ final class StyleBook implements AutoCloseable {
 				if (style.getId() == null || style.getId().isBlank())
 					throw new IllegalArgumentException(path + ": a style needs an id");
 
-				BoundStyle previous = bound.put(style.getId(), BoundStyle.bind(conditions, path, style, legacy));
+				BoundStyle previous = bound.put(style.getId(), BoundStyle.bind(conditions, path, style, legacy, unreadable));
 				if (previous != null) previous.place().close();
 			}
+
+			if (!unreadable.isEmpty()) warnUnreadable(unreadable);
 
 			return new StyleBook(Map.copyOf(bound));
 		} catch (RuntimeException failure) {
 			bound.values().forEach(style -> style.place().close());
 			throw failure;
 		}
+	}
+
+	// Older servers ship an Adventure without the newest tags, such as Paper before 1.21.4 without <shadow>.
+	private static void warnUnreadable(Set<StyleTag> tags) {
+		List<String> names = tags.stream().map(tag -> "<" + tag.getKey() + ">").toList();
+		Logger.warn("This server's Adventure cannot read %s, so styles show them as text", names);
 	}
 
 	/**
@@ -98,11 +110,16 @@ final class StyleBook implements AutoCloseable {
 	 * @param legacy  whether legacy codes are read as the tags they stand for
 	 */
 	private record BoundStyle(Place place, Set<StyleTag> tags, MiniMessage reader, boolean legacy) {
-		static BoundStyle bind(Conditions conditions, String path, Style style, boolean legacy) {
+		static BoundStyle bind(Conditions conditions, String path, Style style, boolean legacy, Set<StyleTag> unreadable) {
 			Set<StyleTag> tags = StyleTags.read(path, listOf(style.getTags()), listOf(style.getExcluded()));
-			MiniMessage reader = MiniMessage.builder()
-					.tags(TagResolver.resolver(tags.stream().map(StyleTag::getResolver).toList()))
-					.build();
+			List<TagResolver> resolvers = new ArrayList<>();
+			for (StyleTag tag : tags) {
+				Optional<TagResolver> resolver = tag.resolver();
+				if (resolver.isPresent()) resolvers.add(resolver.get());
+				else unreadable.add(tag);
+			}
+
+			MiniMessage reader = MiniMessage.builder().tags(TagResolver.resolver(resolvers)).build();
 			Requirements requires = style.getRequires() == null ? Requirements.none() : style.getRequires();
 
 			return new BoundStyle(conditions.place(path + ".requires", requires, SENDER), tags, reader, legacy);
