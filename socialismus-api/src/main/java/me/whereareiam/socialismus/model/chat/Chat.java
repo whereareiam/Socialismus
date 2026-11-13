@@ -38,6 +38,12 @@ public class Chat {
 	private boolean enabled;
 
 	/**
+	 * What players may do in this chat: turn it off for themselves, and format what they write.
+	 */
+	@Builder.Default
+	private ChatParameters parameters = new ChatParameters();
+
+	/**
 	 * Triggers that route messages into this chat and may carry per-trigger radius.
 	 */
 	private List<ChatTrigger> triggers;
@@ -60,11 +66,4 @@ public class Chat {
 	@Builder.Default
 	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
 	private Requirements reaches = Requirements.none();
-
-	/**
-	 * Whether players may turn this chat off for themselves; a chat that must always reach everyone, such as staff
-	 * announcements, sets it to {@code false}.
-	 */
-	@Builder.Default
-	private boolean toggleable = true;
 }

@@ -159,6 +159,16 @@ public final class Player {
 	}
 
 	/**
+	 * Expects a message that contains the given text, for a journey that looks at how it is formatted.
+	 *
+	 * @return the whole message, with the style of each of its parts
+	 */
+	@NotNull
+	public Text seesFormatted(@NotNull String text) {
+		return receivedText("\"" + text + "\"", message -> message.contains(text));
+	}
+
+	/**
 	 * Expects a message that contains every given text.
 	 *
 	 * @return the whole message
@@ -385,8 +395,12 @@ public final class Player {
 	}
 
 	private String received(String expected, Predicate<String> matcher) {
+		return receivedText(expected, matcher).plain();
+	}
+
+	private Text receivedText(String expected, Predicate<String> matcher) {
 		try {
-			return inbox.received(matcher, TIMEOUT).plain();
+			return inbox.received(matcher, TIMEOUT);
 		} catch (IllegalStateException failure) {
 			throw new AssertionError(name + " did not receive " + expected + "; since its previous step it received "
 					+ inbox.unread().stream().map(Text::plain).toList(), failure);

@@ -37,7 +37,7 @@ public class InternalChat extends Chat {
 				.formats(chat.getFormats())
 				.requires(chat.getRequires())
 				.reaches(chat.getReaches())
-				.toggleable(chat.isToggleable())
+				.parameters(chat.getParameters())
 				.vanillaSending(true)
 				.build();
 	}

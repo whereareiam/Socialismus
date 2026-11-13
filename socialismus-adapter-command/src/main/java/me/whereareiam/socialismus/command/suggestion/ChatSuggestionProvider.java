@@ -20,7 +20,7 @@ public final class ChatSuggestionProvider {
 	@Suggestions("toggleableChats")
 	public Collection<String> suggestToggleableChats() {
 		return chats.getChats().stream()
-				.filter(Chat::isToggleable)
+				.filter(chat -> chat.getParameters().isToggleable())
 				.map(Chat::getId)
 				.sorted()
 				.toList();

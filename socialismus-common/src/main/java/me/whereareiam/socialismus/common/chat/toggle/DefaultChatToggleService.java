@@ -38,7 +38,7 @@ public class DefaultChatToggleService implements ChatToggleService {
 			tell(player, notices.getUnknown(), chatId);
 			return;
 		}
-		if (!chat.get().isToggleable()) {
+		if (!chat.get().getParameters().isToggleable()) {
 			tell(player, notices.getNotToggleable(), chatId);
 			return;
 		}

@@ -32,6 +32,7 @@ import me.whereareiam.socialismus.common.config.migration.SocialismusConfigMigra
 import me.whereareiam.socialismus.common.config.provider.CommandsProvider;
 import me.whereareiam.socialismus.common.config.provider.MessagesProvider;
 import me.whereareiam.socialismus.common.config.provider.SettingsProvider;
+import me.whereareiam.socialismus.common.config.provider.StylesProvider;
 import me.whereareiam.socialismus.common.config.provider.UpdaterProvider;
 import me.whereareiam.socialismus.common.config.provider.chat.ChatMessagesProvider;
 import me.whereareiam.socialismus.common.config.provider.chat.ChatSettingsProvider;
@@ -45,6 +46,8 @@ import me.whereareiam.socialismus.common.logging.LoggingLifecycle;
 import me.whereareiam.socialismus.common.player.DefaultPlayerRegistry;
 import me.whereareiam.socialismus.common.provider.*;
 import me.whereareiam.socialismus.common.requirement.RequirementConfiguration;
+import me.whereareiam.socialismus.common.style.DefaultStyleService;
+import me.whereareiam.socialismus.common.style.StyleLifecycle;
 import me.whereareiam.socialismus.common.updater.UpdateScheduler;
 import me.whereareiam.socialismus.common.updater.provider.GitHubProvider;
 import me.whereareiam.socialismus.common.updater.provider.ModrinthProvider;
@@ -62,6 +65,7 @@ import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.config.Updater;
 import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.model.style.Styles;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -78,6 +82,7 @@ import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
+import me.whereareiam.socialismus.service.style.StyleService;
 import me.whereareiam.socialismus.type.ConfigurationType;
 import me.whereareiam.socialismus.type.module.ProviderType;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -109,6 +114,7 @@ public class CommonConfiguration extends AbstractModule {
 		lifecycles.addBinding().to(IntegrationLifecycle.class);
 		lifecycles.addBinding().to(ChatLifecycle.class);
 		lifecycles.addBinding().to(RequirementLifecycle.class);
+		lifecycles.addBinding().to(StyleLifecycle.class);
 		lifecycles.addBinding().to(ConnectionLifecycle.class);
 		lifecycles.addBinding().to(UpdateScheduler.class);
 
@@ -142,6 +148,9 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ChatMessagesProvider.class).asEagerSingleton();
 		bind(ChatMessages.class).toProvider(ChatMessagesProvider.class);
 
+		bind(StylesProvider.class).asEagerSingleton();
+		bind(Styles.class).toProvider(StylesProvider.class);
+
 		bind(ChatToggleStore.class).to(InMemoryChatToggleStore.class);
 		bind(ChatToggleService.class).to(DefaultChatToggleService.class);
 
@@ -168,6 +177,7 @@ public class CommonConfiguration extends AbstractModule {
 		// Requirements
 		install(new RequirementConfiguration());
 		bind(ChatRequirementService.class).to(DefaultChatRequirementService.class);
+		bind(StyleService.class).to(DefaultStyleService.class);
 
 		// Other
 		bind(new TypeLiteral<WorkerProcessor<ChatMessage>>() {

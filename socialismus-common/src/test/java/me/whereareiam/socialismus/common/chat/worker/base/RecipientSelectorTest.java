@@ -9,6 +9,7 @@ import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
+import me.whereareiam.socialismus.model.chat.ChatParameters;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
@@ -108,7 +109,7 @@ class RecipientSelectorTest {
 				.enabled(true)
 				.triggers(List.of())
 				.formats(List.of())
-				.toggleable(toggleable)
+				.parameters(ChatParameters.builder().toggleable(toggleable).build())
 				.build());
 	}
 
