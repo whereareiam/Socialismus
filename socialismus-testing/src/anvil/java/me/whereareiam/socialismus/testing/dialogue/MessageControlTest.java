@@ -74,7 +74,7 @@ class MessageControlTest {
 	static final class IgnoringIncludesChat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}"));
+			files.chats(chat("global", 0, "", "[G] {playerName}: {message}"));
 			files.put(DialogueFiles.SETTINGS, Map.of("control", Map.of("ignore", Map.of("includesChat", true))));
 		}
 	}

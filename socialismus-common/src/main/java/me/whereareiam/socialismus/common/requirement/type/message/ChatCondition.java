@@ -1,4 +1,4 @@
-package me.whereareiam.socialismus.common.requirement.type;
+package me.whereareiam.socialismus.common.requirement.type.message;
 
 import me.whereareiam.conditia.ConditionType;
 import me.whereareiam.conditia.result.Outcome;

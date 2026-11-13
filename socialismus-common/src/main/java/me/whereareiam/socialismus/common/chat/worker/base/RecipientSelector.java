@@ -3,45 +3,49 @@ package me.whereareiam.socialismus.common.chat.worker.base;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import me.whereareiam.keystone.model.SerializerContent;
-import me.whereareiam.socialismus.Serializer;
+import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.socialismus.event.chat.recipient.RecipientsSelectedEvent;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.model.chat.Chat;
-import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.chat.ChatToggleStore;
-import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.socialismus.util.EventUtil;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+/**
+ * Keeps the players a message reaches: those its chat's {@code reaches} lets through and who did not turn the chat
+ * off. A message that reaches nobody but its sender is kept back when {@code notifications.nobody} is on, and the
+ * sender is told why.
+ */
 @Singleton
 public class RecipientSelector {
 	private final ChatRequirementService requirements;
 	private final Provider<ChatSettings> settingsProvider;
-	private final Provider<ChatMessages> messagesProvider;
 	private final ChatToggleStore toggles;
+	private final NobodyNotice nobody;
 
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<ChatMessage> workerProcessor,
 			ChatRequirementService requirements,
 			Provider<ChatSettings> settings,
-			Provider<ChatMessages> messages,
-			ChatToggleStore toggles
+			ChatToggleStore toggles,
+			NobodyNotice nobody
 	) {
 		this.requirements = requirements;
 		this.settingsProvider = settings;
-		this.messagesProvider = messages;
 		this.toggles = toggles;
+		this.nobody = nobody;
 
 		workerProcessor.addWorker(new Worker<>(this::selectRecipients, 100, true, false));
 	}
@@ -52,38 +56,13 @@ public class RecipientSelector {
 			return chatMessage;
 		}
 
-		final Chat chat = chatMessage.getChat();
-		final SocialismusPlayer sender = chatMessage.getSender();
-		final ChatSettings settings = settingsProvider.get();
-		final ChatMessages messages = messagesProvider.get();
+		Chat chat = chatMessage.getChat();
+		SocialismusPlayer sender = chatMessage.getSender();
+		ChatSettings settings = settingsProvider.get();
+		int beforeCount = chatMessage.getRecipients().size();
 
-		final int beforeCount = chatMessage.getRecipients().size();
-
-		Collection<SocialismusPlayer> recipients = chatMessage.getRecipients();
-
-		final int radius = determineRadius(chatMessage, chat);
-		final boolean reachesToggledOff = reachesPlayersWhoTurnedItOff(chat, sender, settings);
-
-		if (radius > 0) {
-			recipients = recipients.stream()
-					.filter(r -> isInSameRealm(sender, r))
-					.filter(r -> isWithinRadius(sender, r, radius))
-					.filter(r -> requirements.reaches(chat, r, chatMessage))
-					.filter(r -> reachesToggledOff || r == sender || !toggles.isOff(r.getUniqueId(), chat.getId()))
-					.collect(Collectors.toSet());
-
-			// If nobody nearby (<=1 usually means only the sender), optionally notify & cancel
-			if (recipients.size() <= 1 && settings.getNotifications().isNoNearbyPlayers()) {
-				sendNoNearbyPlayersMessage(sender, radius, messages);
-				chatMessage.setCancelled(true);
-				return chatMessage;
-			}
-		} else {
-			recipients = recipients.stream()
-					.filter(r -> requirements.reaches(chat, r, chatMessage))
-					.filter(r -> reachesToggledOff || r == sender || !toggles.isOff(r.getUniqueId(), chat.getId()))
-					.collect(Collectors.toSet());
-		}
+		List<Verdict.Failed> refusals = new ArrayList<>();
+		Set<SocialismusPlayer> recipients = reached(chatMessage, refusals, reachesPlayersWhoTurnedItOff(chat, sender, settings));
 
 		RecipientsSelectedEvent event = new RecipientsSelectedEvent(chatMessage, recipients, chatMessage.isCancelled());
 		EventUtil.callEvent(event, () -> chatMessage.setRecipients(event.getNewRecipients()));
@@ -96,27 +75,30 @@ public class RecipientSelector {
 			return chatMessage;
 		}
 
-		if (finalRecipients.size() == 1 && settings.getNotifications().isNoPlayers()) {
-			sender.sendMessage(Serializer.serialize(sender, messages.getNoPlayers()));
-			chatMessage.setCancelled(true);
-		}
+		boolean reachesOthers = finalRecipients.stream().anyMatch(recipient -> recipient != sender);
+		if (reachesOthers || !settings.getNotifications().isNobody()) return chatMessage;
+
+		if (!chatMessage.isRelayed()) nobody.tell(sender, chat, refusals);
+		chatMessage.setCancelled(true);
 
 		return chatMessage;
 	}
 
-	private int determineRadius(ChatMessage message, Chat chat) {
-		if (message.getTrigger() != null && message.getTrigger().getRadius() != null)
-			return message.getTrigger().getRadius();
+	private Set<SocialismusPlayer> reached(ChatMessage message, List<Verdict.Failed> refusals, boolean reachesToggledOff) {
+		Set<SocialismusPlayer> reached = new HashSet<>();
+		for (SocialismusPlayer recipient : message.getRecipients()) {
+			if (!reachesToggledOff && turnedOff(recipient, message)) continue;
 
-		if (chat.getTriggers() != null) {
-			return chat.getTriggers().stream()
-					.map(t -> t.getRadius() == null ? 0 : t.getRadius())
-					.filter(r -> r > 0)
-					.findFirst()
-					.orElse(0);
+			Verdict verdict = requirements.reaches(message.getChat(), recipient, message);
+			if (verdict instanceof Verdict.Failed failed) refusals.add(failed);
+			if (verdict.passed()) reached.add(recipient);
 		}
 
-		return 0;
+		return reached;
+	}
+
+	private boolean turnedOff(SocialismusPlayer recipient, ChatMessage message) {
+		return recipient != message.getSender() && toggles.isOff(recipient.getUniqueId(), message.getChat().getId());
 	}
 
 	/**
@@ -128,26 +110,5 @@ public class RecipientSelector {
 		if (toggle == null || !toggle.isEnabled() || !chat.getParameters().isToggleable()) return true;
 
 		return requirements.bypassesToggle(sender);
-	}
-
-	private boolean isInSameRealm(SocialismusPlayer sender, SocialismusPlayer recipient) {
-		if (PlatformType.isProxy())
-			return Objects.equals(recipient.getServer(), sender.getServer());
-
-		return Objects.equals(recipient.getLocation(), sender.getLocation());
-	}
-
-	private boolean isWithinRadius(SocialismusPlayer sender, SocialismusPlayer recipient, double radius) {
-		return sender.isWithinRange(recipient, radius);
-	}
-
-	private void sendNoNearbyPlayersMessage(SocialismusPlayer sender, int radius, ChatMessages messages) {
-		sender.sendMessage(Serializer.serialize(
-				SerializerContent.builder()
-						.receiver(sender)
-						.message(messages.getNoNearbyPlayers())
-						.placeholder("radius", String.valueOf(radius))
-						.build()
-		));
 	}
 }

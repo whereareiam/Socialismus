@@ -16,7 +16,12 @@ chats:
     reaches:                     # who receives it
       - permission: "socialismus.chat.staff"
       - not: { world: "world_nether" }
+  - id: "local"
+    reaches:
+      - nearby: 200              # within 200 blocks of the sender
 ```
+
+How far a chat or a bubble reaches is a condition of its `reaches` like any other; chat triggers and bubbles have no radius of their own.
 
 ## Where lists are
 
@@ -29,7 +34,7 @@ chats:
 | `chat/settings.yml` | `history.bypass` | the sender whose messages nobody clears |
 | `chat/settings.yml` | `toggle.bypass` | the sender whose messages reach players who turned the chat off |
 | `styles.yml` | a style's `requires` | the player who writes with the style; see [Styles](../styles/index.mdx) |
-| `modules/bubbler/bubbles/*.yml` | a bubble's `requires` and `reaches` | the sender, and each nearby player |
+| `modules/bubbler/bubbles/*.yml` | a bubble's `requires` and `reaches` | the sender, and each player the message reached |
 | `modules/chirper/` announcements | an announcement's and a content's `requires` | each player who would receive it |
 | `modules/dialogue/settings.yml` | `messaging.requires` and `messaging.reaches` | the sender, and the recipient |
 | `modules/dialogue/settings.yml` | `control.toggle.bypass`, `control.ignore.exempt`, `moderation.spy.exempt` | the player the privilege is for |
@@ -64,7 +69,13 @@ reaches:
 | `time` | from `from` until before `to` each day | `time: { from: "22:00", to: "06:00" }` |
 | `date` | on the days from `from` to `to` | `date: { from: 2026-12-20, to: 2027-01-06 }` |
 | `chance` | for a share of checks | `chance: 0.25` |
+| `language` | the player's game client is set to one of the languages; `de` takes every German, `pt_br` only Brazilian Portuguese | `language: [de, pt_br]` |
+| `nearby` | the player is within that many blocks of the sender, in the same world; not on a proxy | `nearby: 200` |
+| `same` | the player shares the sender's `world` (not on a proxy) or `server`, or the value of a placeholder; an empty value is shared with nobody | `same: { placeholder: "%townyadvanced_town%" }` |
+| `sees` | the player may see the sender, whom a vanish plugin may hide | `sees: [recipient, sender]` |
 | `bubbler:activator`, `bubbler:chat` | what raised a bubble: `CHAT` or `COMMAND`, and the chat of the message | `bubbler:chat: [fallback, local]` |
+
+`nearby`, `same` and `sees` compare two players: in a `reaches` list the recipient with the sender, which `sees: [recipient, sender]` spells out. On a proxy, which knows no positions, a local chat reaches its server with `same: server`.
 
 Modules add conditions of their own, named `<module id>:<name>`. A list that names a condition nobody registered, a part its place does not have, or settings that cannot be read stops the start with its path, such as `chats.staff.requires[0].permission`; after `/socialismus reload` the console names the list and the previous one stays in use.
 
@@ -98,6 +109,26 @@ A blank phrase leaves the reason to the next place that words it. Phrases Social
 | `world.inside`, `server.inside` | `{world}` or `{server}` |
 | `chat.outside`, `chat.inside` | `{chats}`, `{chat}` |
 | `placeholder.mismatch`, `placeholder.match` | `{text}`, `{value}` |
+| `nearby.outside`, `nearby.inside` | `{blocks}` |
+| `same.outside`, `same.inside` | `{place}`: `world`, `server`, or the sender's value of the placeholder |
+| `sees.hidden`, `sees.visible` | none |
+| `language.outside`, `language.inside` | `{languages}` listed and the player's `{language}` |
+
+### A message that reaches nobody
+
+With `notifications.nobody: true` in `chat/settings.yml`, a message whose chat's `reaches` lets nobody but its sender through is kept back, and the sender is told why: the reason of the line that refused the most players, the earlier line when two refused as many.
+It is worded like any refusal, from the line's `denied` first, then under `chat.denied.recipient`, and `chat.nobody` tells it when nothing words the reason or nobody else is online:
+
+```yaml
+# phrases.yml
+chat:
+  nobody: "{prefix}<white>Nobody received your message.</white>"
+  denied:
+    recipient:
+      nearby.outside: "{prefix}<white>No one within <gray>{blocks}</gray> blocks heard you.</white>"
+```
+
+The default `chat/list/chats-default.yml` ends with chats that are turned off, `shout`, `world`, `town`, `staff` and `deutsch`, to show these conditions; turn one on with `enabled: true`. A chat that is off is neither loaded nor checked, so `town` needs Towny and PlaceholderAPI only once it is on.
 
 ### A line's own text
 

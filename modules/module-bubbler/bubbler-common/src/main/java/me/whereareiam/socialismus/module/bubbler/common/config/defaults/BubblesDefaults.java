@@ -26,7 +26,6 @@ public class BubblesDefaults implements DefaultsProvider<BubblesConfig> {
 				.id("default")
 				.enabled(true)
 				.display(Bubble.Display.builder()
-						.radius(50)
 						.headLineGap(0.3F)
 						.lineSpacing(0.2F)
 						.maxLinesCount(5)
@@ -63,12 +62,22 @@ public class BubblesDefaults implements DefaultsProvider<BubblesConfig> {
 								.sound(BubbleTransition.Sound.builder().type("ENTITY_CHICKEN_EGG").pitch(1.0f).volume(1.0f).build())
 								.build()
 				)).requires(fromCommandOrChats("fallback", "local"))
+				.reaches(nearbyAndSeen(50))
 				.styles(List.of("basic", "full"))
 				.build();
 
 		config.getBubbles().add(bubble);
 
 		return config;
+	}
+
+	// - nearby: 50
+	// - sees: [recipient, sender]
+	private static Requirements nearbyAndSeen(int blocks) {
+		Node nearby = Node.Mapping.of("nearby", new Node.Scalar(String.valueOf(blocks)));
+		Node sees = Node.Mapping.of("sees", new Node.Sequence(List.of(new Node.Scalar("recipient"), new Node.Scalar("sender"))));
+
+		return Requirements.of(new Node.Sequence(List.of(nearby, sees)));
 	}
 
 	// - any:

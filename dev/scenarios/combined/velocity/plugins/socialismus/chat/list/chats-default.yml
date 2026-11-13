@@ -4,7 +4,6 @@ chats:
     enabled: true
     triggers:
       - type: "COMMAND"
-        radius: 0
         command: "staff"
     formats:
       - format: "{clear}<gray>[Proxy-S] {playerName}: <white>{message}"

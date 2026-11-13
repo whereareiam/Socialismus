@@ -75,7 +75,7 @@ class ChatStyleTest {
 	static final class BasicAndStaffStyles implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}").toBuilder()
+			files.chats(chat("global", 0, "", "[G] {playerName}: {message}").toBuilder()
 					.parameters(ChatParameters.builder().styles(List.of("basic", "staff")).build())
 					.build());
 
@@ -94,7 +94,7 @@ class ChatStyleTest {
 	static final class ChatWithoutStyles implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}"));
+			files.chats(chat("global", 0, "", "[G] {playerName}: {message}"));
 		}
 	}
 }

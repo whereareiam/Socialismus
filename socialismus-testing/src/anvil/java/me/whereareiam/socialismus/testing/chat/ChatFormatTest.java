@@ -66,7 +66,7 @@ class ChatFormatTest {
 	static final class StaffFormat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "[G] {playerName}: {message}").toBuilder()
+			files.chats(chat("global", 0, "", "[G] {playerName}: {message}").toBuilder()
 					.formats(List.of(
 							new ChatFormat("[G] {playerName}: {message}", Requirements.none()),
 							new ChatFormat("[Staff] {playerName}: {message}", permission("socialismus.chat.staff"))
@@ -81,7 +81,7 @@ class ChatFormatTest {
 	static final class StaffOnlyFormat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "[Staff] {playerName}: {message}").toBuilder()
+			files.chats(chat("global", 0, "", "[Staff] {playerName}: {message}").toBuilder()
 					.formats(List.of(new ChatFormat("[Staff] {playerName}: {message}", permission("socialismus.chat.staff"))))
 					.build());
 			files.put(CHAT_MESSAGES, Map.of("noFormatMatch", NO_FORMAT));
@@ -94,7 +94,7 @@ class ChatFormatTest {
 	static final class LegacyFormat implements Consumer<ServerFiles> {
 		@Override
 		public void accept(ServerFiles files) {
-			files.chats(chat("global", 0, "", 0, "&7[G] {playerName}: &f{message}"));
+			files.chats(chat("global", 0, "", "&7[G] {playerName}: &f{message}"));
 			files.put("settings.yml", Map.of("serialization", Map.of("type", "LEGACY_AMPERSAND")));
 		}
 	}

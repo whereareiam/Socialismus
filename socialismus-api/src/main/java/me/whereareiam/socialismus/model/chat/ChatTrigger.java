@@ -15,7 +15,7 @@ import me.whereareiam.socialismus.type.chat.TriggerType;
  * Describes a trigger that can route a message into a chat.
  * Common fields are defined here; concrete data lives on subclasses
  * (e.g. {@code SymbolChatTrigger#symbol}, {@code RegexChatTrigger#regex}, {@code CommandChatTrigger#command}).
- * Each trigger can optionally carry a radius override applied for recipient selection.
+ * Who a message reaches is the chat's {@code reaches}, whichever trigger brought it.
  */
 @Getter
 @ToString
@@ -42,11 +42,5 @@ public class ChatTrigger {
      * Only applicable for SYMBOL and REGEX triggers.
      */
     private boolean strip;
-
-    /**
-     * Optional radius in blocks applied for messages using this trigger.
-     * If null or <= 0, message is considered global.
-     */
-    private Integer radius;
 }
 

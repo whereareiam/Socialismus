@@ -6,7 +6,6 @@ import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveByAmountEv
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
-import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.network.api.NetworkAttributes;
 import me.whereareiam.socialismus.module.network.api.model.NodeId;
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static me.whereareiam.socialismus.module.network.common.TestPlayers.player;
@@ -36,10 +34,6 @@ import static org.mockito.Mockito.when;
 
 class ChatRelayTest {
 	private static final InternalChat GLOBAL = InternalChat.builder().id("global").build();
-	private static final InternalChat LOCAL = InternalChat.builder()
-			.id("local")
-			.triggers(List.of(SymbolChatTrigger.builder().symbol("!").radius(50).build()))
-			.build();
 
 	private final TestNetwork network = new TestNetwork(Integer.MAX_VALUE, new SerializationServiceAdapter());
 	private final NetworkSettings.Chat settings = settings(true);
@@ -72,16 +66,6 @@ class ChatRelayTest {
 		lobby.relay.onChatBroadcast(new ChatBroadcastEvent(message(player("Alice", null), GLOBAL), false));
 
 		verify(survival.coordination).relay(any(ChatMessage.class));
-		verify(survival.coordination, never()).relay(any(FormattedChatMessage.class));
-	}
-
-	@Test
-	void aChatWithARadiusStaysOnItsNode() {
-		Side lobby = side("lobby");
-		Side survival = side("survival");
-
-		lobby.relay.onChatBroadcast(new ChatBroadcastEvent(message(player("Alice", null), LOCAL), false));
-
 		verify(survival.coordination, never()).relay(any(FormattedChatMessage.class));
 	}
 
@@ -139,7 +123,6 @@ class ChatRelayTest {
 		ChatHistoryService history = mock(ChatHistoryService.class);
 		when(chats.getChat(anyString())).thenAnswer(call -> switch (call.getArgument(0, String.class)) {
 			case "global" -> Optional.of(GLOBAL);
-			case "local" -> Optional.of(LOCAL);
 			default -> Optional.empty();
 		});
 		ChatRelay relay = new ChatRelay(node.service().replication(), () -> settings, coordination, chats, history, node.service().players());

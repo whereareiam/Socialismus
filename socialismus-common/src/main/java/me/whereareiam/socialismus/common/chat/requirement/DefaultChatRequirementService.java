@@ -133,12 +133,13 @@ public class DefaultChatRequirementService implements ChatRequirementService, Ev
 	}
 
 	@Override
-	public boolean reaches(@NotNull Chat chat, @NotNull SocialismusPlayer recipient, @NotNull ChatMessage message) {
-		return Optional.ofNullable(chats.get(chat.getId()))
-				.map(places -> places.getReaches().check(Situation.of(RECIPIENT, recipient)
-						.and(SENDER, message.getSender())
-						.and(MESSAGE, message)).passed())
-				.orElse(false);
+	public @NotNull Verdict reaches(@NotNull Chat chat, @NotNull SocialismusPlayer recipient, @NotNull ChatMessage message) {
+		Optional<ChatPlaces> places = Optional.ofNullable(chats.get(chat.getId()));
+		if (places.isEmpty()) return unbound("chats." + chat.getId());
+
+		return places.get().getReaches().check(Situation.of(RECIPIENT, recipient)
+				.and(SENDER, message.getSender())
+				.and(MESSAGE, message));
 	}
 
 	@Override

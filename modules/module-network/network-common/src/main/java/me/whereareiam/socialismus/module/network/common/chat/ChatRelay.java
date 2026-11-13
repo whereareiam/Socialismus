@@ -30,9 +30,9 @@ import java.util.function.Supplier;
 
 /**
  * Carries chat between the nodes of the network: a message written on this node and broadcast here goes to the other
- * nodes, which deliver it to the players whose chat they handle, and so does a removal from the chat history. A chat
- * with a radius stays on its node, since distance means nothing across servers. A message or removal that arrived
- * from another node is never sent on.
+ * nodes, which deliver it to the players whose chat they handle and its {@code reaches} lets through, and so does a
+ * removal from the chat history. A sender on another server is never {@code nearby}, so a chat that reaches only
+ * nearby players stays on its node by itself. A message or removal that arrived from another node is never sent on.
  */
 public final class ChatRelay implements EventListener {
 	static final String CHAT_CHANNEL = "socialismus:chat";
@@ -70,7 +70,7 @@ public final class ChatRelay implements EventListener {
 	public void onChatBroadcast(ChatBroadcastEvent event) {
 		FormattedChatMessage message = event.getChatMessage();
 		if (event.isCancelled() || message.isRelayed() || !settings.get().isEnabled()) return;
-		if (message.getChat() == null || hasRadius(message)) return;
+		if (message.getChat() == null) return;
 
 		SocialismusPlayer sender = message.getSender();
 		chat.publish(new ChatRecord(
@@ -152,14 +152,5 @@ public final class ChatRelay implements EventListener {
 				if (removal.getUsername() != null) chatHistory.removeMessages(removal.getUsername(), false);
 			}
 		}
-	}
-
-	private static boolean hasRadius(FormattedChatMessage message) {
-		if (message.getTrigger() != null && message.getTrigger().getRadius() != null)
-			return message.getTrigger().getRadius() > 0;
-		if (message.getChat().getTriggers() == null) return false;
-
-		return message.getChat().getTriggers().stream()
-				.anyMatch(trigger -> trigger.getRadius() != null && trigger.getRadius() > 0);
 	}
 }

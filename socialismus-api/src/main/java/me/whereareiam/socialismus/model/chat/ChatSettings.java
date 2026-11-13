@@ -108,14 +108,11 @@ public class ChatSettings {
 		private boolean noFormat;
 
 		/**
-		 * Whether to tell the sender that no other player is online.
+		 * Whether to tell the sender, and keep the message back, when it reaches no other player: why the chat's
+		 * {@code reaches} refused most of them, or {@code chat.nobody} of {@code phrases.yml} when nothing words it
+		 * or nobody else is online.
 		 */
-		private boolean noPlayers;
-
-		/**
-		 * Whether to tell the sender that no player is within the chat's radius.
-		 */
-		private boolean noNearbyPlayers;
+		private boolean nobody;
 
 		/**
 		 * Whether to tell the sender that a trigger was used without any message.

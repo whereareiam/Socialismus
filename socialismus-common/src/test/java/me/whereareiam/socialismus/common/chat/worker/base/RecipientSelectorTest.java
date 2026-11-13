@@ -1,14 +1,14 @@
 package me.whereareiam.socialismus.common.chat.worker.base;
 
+import me.whereareiam.conditia.model.Part;
+import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.socialismus.common.chat.toggle.InMemoryChatToggleStore;
-import me.whereareiam.socialismus.common.config.defaults.chat.ChatMessagesDefaults;
 import me.whereareiam.socialismus.common.config.defaults.chat.ChatSettingsDefaults;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.model.chat.Chat;
-import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatParameters;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.InternalChat;
@@ -23,20 +23,23 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class RecipientSelectorTest {
 	private final ChatSettings settings = new ChatSettingsDefaults().supply(new ChatSettings());
-	private final ChatMessages messages = new ChatMessagesDefaults().supply(new ChatMessages());
 	private final InMemoryChatToggleStore toggles = new InMemoryChatToggleStore();
 	private final ChatRequirementService requirements = mock(ChatRequirementService.class);
+	private final NobodyNotice nobody = mock(NobodyNotice.class);
 	private final SocialismusPlayer alice = player("Alice");
 	private final SocialismusPlayer bob = player("Bob");
 	private final SocialismusPlayer carol = player("Carol");
@@ -49,8 +52,8 @@ class RecipientSelectorTest {
 		Logger.init(mock(LoggingHelper.class));
 		EventUtil.initialize(mock(EventManager.class));
 		WorkerProcessor<ChatMessage> processor = mock(WorkerProcessor.class);
-		when(requirements.reaches(any(), any(), any())).thenReturn(true);
-		new RecipientSelector(processor, requirements, () -> settings, () -> messages, toggles);
+		when(requirements.reaches(any(), any(), any())).thenReturn(new Verdict.Passed());
+		new RecipientSelector(processor, requirements, () -> settings, toggles, nobody);
 		ArgumentCaptor<Worker<ChatMessage>> worker = ArgumentCaptor.forClass(Worker.class);
 		verify(processor).addWorker(worker.capture());
 		selector = worker.getValue().getFunction();
@@ -80,9 +83,50 @@ class RecipientSelectorTest {
 
 	@Test
 	void keepsAChatFromThePlayersItDoesNotReach() {
-		when(requirements.reaches(any(), eq(carol), any())).thenReturn(false);
+		when(requirements.reaches(any(), eq(carol), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
 
 		assertEquals(Set.of(alice, bob), recipientsOf(chat(true)));
+	}
+
+	@Test
+	void aMessageThatReachesOnlyItsSenderIsKeptBack_AndTheSenderToldWhy() {
+		settings.getNotifications().setNobody(true);
+		Verdict.Failed far = refused("chats.global.reaches[0].nearby");
+		when(requirements.reaches(any(), eq(bob), any())).thenReturn(far);
+		when(requirements.reaches(any(), eq(carol), any())).thenReturn(far);
+
+		ChatMessage message = selector.apply(message(chat(true)));
+
+		assertTrue(message.isCancelled());
+		verify(nobody).tell(alice, message.getChat(), List.of(far, far));
+	}
+
+	@Test
+	void withoutTheNoticeAMessageThatReachesOnlyItsSenderGoesToTheSender() {
+		when(requirements.reaches(any(), eq(bob), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
+		when(requirements.reaches(any(), eq(carol), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
+
+		ChatMessage message = selector.apply(message(chat(true)));
+
+		assertFalse(message.isCancelled());
+		assertEquals(Set.of(alice), Set.copyOf(message.getRecipients()));
+		verify(nobody, never()).tell(any(), any(), any());
+	}
+
+	@Test
+	void aRelayedMessageThatReachesNobodyHereTellsNobody() {
+		settings.getNotifications().setNobody(true);
+		when(requirements.reaches(any(), any(), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
+		when(requirements.reaches(any(), eq(alice), any())).thenReturn(new Verdict.Passed());
+		ChatMessage relayed = message(chat(true));
+		relayed.setRelayed(true);
+
+		assertTrue(selector.apply(relayed).isCancelled());
+		verify(nobody, never()).tell(any(), any(), any());
+	}
+
+	private static Verdict.Failed refused(String path) {
+		return new Verdict.Failed(path, "nearby", List.<Part<?>>of(), Optional.empty());
 	}
 
 	@Test
@@ -94,13 +138,15 @@ class RecipientSelectorTest {
 	}
 
 	private Set<SocialismusPlayer> recipientsOf(InternalChat chat) {
-		ChatMessage message = ChatMessage.builder()
+		return Set.copyOf(selector.apply(message(chat)).getRecipients());
+	}
+
+	private ChatMessage message(InternalChat chat) {
+		return ChatMessage.builder()
 				.sender(alice)
 				.recipients(new HashSet<>(Set.of(alice, bob, carol)))
 				.chat(chat)
 				.build();
-
-		return Set.copyOf(selector.apply(message).getRecipients());
 	}
 
 	private static InternalChat chat(boolean toggleable) {

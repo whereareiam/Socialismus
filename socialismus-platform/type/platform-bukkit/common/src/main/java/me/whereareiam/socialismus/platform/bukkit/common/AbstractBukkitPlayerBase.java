@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+
 /**
  * Common base for all Bukkit-backed {@link SocialismusPlayer} implementations.
  * <p>
@@ -94,6 +96,14 @@ public abstract class AbstractBukkitPlayerBase extends SocialismusPlayer {
 	public Position getEyePosition() {
 		Location loc = bukkitPlayer.getEyeLocation();
 		return new Position(loc.getX(), loc.getY(), loc.getZ());
+	}
+
+	/**
+	 * The language of the player's game client, such as {@code de_de}, sent by the client after it joined.
+	 */
+	@Override
+	public @NotNull Locale getLocale() {
+		return Locale.forLanguageTag(bukkitPlayer.getLocale().replace('_', '-'));
 	}
 
 	/**

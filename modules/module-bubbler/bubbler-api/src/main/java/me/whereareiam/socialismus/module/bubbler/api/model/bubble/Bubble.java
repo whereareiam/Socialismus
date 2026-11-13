@@ -54,21 +54,21 @@ public class Bubble {
 	private Requirements requires = Requirements.none();
 
 	/**
-	 * What a nearby player must meet to see the bubble, checked with the parts recipient, sender and activation.
+	 * Who sees the bubble, such as {@code nearby: 50}, checked with the parts recipient, sender and activation
+	 * among the players the message reached.
 	 */
 	@Builder.Default
 	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
 	private Requirements reaches = Requirements.none();
 
 	/**
-	 * Display configuration controlling visibility and timing of bubbles.
+	 * Display configuration controlling the layout and timing of bubbles.
 	 */
 	@Getter
 	@ToString
 	@NoArgsConstructor
 	@SuperBuilder(toBuilder = true)
 	public static class Display {
-		private int radius;
 		private float headLineGap;
 		private float lineSpacing;
 

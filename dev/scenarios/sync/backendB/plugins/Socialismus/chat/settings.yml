@@ -9,6 +9,5 @@ history:
 notifications:
   noChat: true
   noFormat: true
-  noPlayers: false
-  noNearbyPlayers: false
+  nobody: false
   emptyMessage: true

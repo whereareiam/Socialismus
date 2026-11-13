@@ -14,6 +14,7 @@ import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.requirement.RequirementLists;
 import me.whereareiam.socialismus.model.style.Style;
 import me.whereareiam.socialismus.model.style.Styles;
+import me.whereareiam.socialismus.registry.PlayerRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -50,7 +51,8 @@ class DefaultStyleServiceTest {
 		settings.setSerialization(new Settings.Serialization());
 		Conditions conditions = new RequirementConfiguration().provideConditions(
 				Config.builder().format(Format.YAML).feature(new ConditiaFeature()).build(),
-				Set::of
+				Set::of,
+				() -> mock(PlayerRegistry.class)
 		);
 		file.setStyles(new ArrayList<>(List.of(
 				style("basic", List.of("color", "bold", "italic"), List.of()),

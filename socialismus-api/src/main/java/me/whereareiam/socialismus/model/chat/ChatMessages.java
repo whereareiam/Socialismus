@@ -17,11 +17,6 @@ import lombok.ToString;
 @ToString
 public class ChatMessages {
     /**
-     * Message shown when no players are online.
-     */
-    private String noPlayers;
-
-    /**
      * Message shown when no matching chat channel is found.
      */
     private String noChatMatch;
@@ -35,11 +30,6 @@ public class ChatMessages {
      * Message shown when no fallback chat channel is available.
      */
     private String noFallbackChat;
-
-    /**
-     * Message shown when no players are nearby.
-     */
-    private String noNearbyPlayers;
 
     /**
      * Message shown when a trigger is used without any message content.
