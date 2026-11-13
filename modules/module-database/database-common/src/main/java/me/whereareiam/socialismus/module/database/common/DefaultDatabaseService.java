@@ -11,11 +11,15 @@ import me.whereareiam.socialismus.module.database.common.config.DatabaseSettings
 import me.whereareiam.socialismus.module.database.common.connection.DataSourceFactory;
 import me.whereareiam.socialismus.module.database.common.connection.DatabaseServerRequirement;
 import me.whereareiam.socialismus.module.database.common.schema.DatabaseSchemaInstaller;
+import me.whereareiam.socialismus.module.database.common.store.DatabaseStorePersistence;
+import me.whereareiam.socialismus.module.database.common.store.StoreEntryEntity;
+import me.whereareiam.socialismus.module.database.common.store.StoreSchema;
 import org.jdbi.v3.core.Jdbi;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.sql.SQLException;
+import java.time.Clock;
 
 /**
  * The database SocialismusDatabase opens: a connection pool on the configured database, the Jdbi that speaks its
@@ -67,6 +71,17 @@ public final class DefaultDatabaseService implements DatabaseService, AutoClosea
 	@Override
 	public @NotNull SchemaInstaller getSchemaInstaller() {
 		return schemaInstaller;
+	}
+
+	/**
+	 * Installs the table of Socialismus's persistent stores and returns what keeps them in it.
+	 *
+	 * @return the stores' persistence, to close before the database
+	 */
+	public @NotNull DatabaseStorePersistence storePersistence() {
+		schemaInstaller.install(new StoreSchema());
+
+		return new DatabaseStorePersistence(access(StoreEntryEntity.class), Clock.systemUTC());
 	}
 
 	/**

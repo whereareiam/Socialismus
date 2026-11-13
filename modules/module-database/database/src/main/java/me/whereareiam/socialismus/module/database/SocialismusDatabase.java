@@ -15,8 +15,10 @@ import me.whereareiam.socialismus.module.database.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.database.common.DefaultDatabaseService;
 import me.whereareiam.socialismus.module.database.common.config.DatabaseSettings;
 import me.whereareiam.socialismus.module.database.common.config.migration.DatabaseConfigMigrations;
+import me.whereareiam.socialismus.module.database.common.store.DatabaseStorePersistence;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.resource.ResourceProvider;
+import me.whereareiam.socialismus.store.Stores;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +32,9 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SocialismusDatabase implements SocialisticModule, ResourceProvider {
 	private final Registry<Reloadable> reloadableRegistry;
+	private final Stores stores;
 	private DefaultDatabaseService database;
+	private DatabaseStorePersistence storePersistence;
 
 	@Override
 	public void enable(@NotNull ModuleContext context) {
@@ -50,12 +54,26 @@ public class SocialismusDatabase implements SocialisticModule, ResourceProvider 
 			throw new ModuleLifecycleException("Could not open the " + settings.getType() + " database: "
 					+ failure.getMessage(), failure);
 		}
+
+		storePersistence = database.storePersistence();
+		stores.addPersistence(storePersistence);
 	}
 
 	@Override
 	public void disable() {
-		// Socialismus has unregistered the database by now, so no module reaches for it while it closes.
+		// Socialismus has unregistered the database by now, so no module reaches for it while it closes; the stores
+		// stop saving first, and what they asked before is written.
+		if (storePersistence != null) closeStores();
 		if (database != null) database.close();
+	}
+
+	private void closeStores() {
+		stores.removePersistence(storePersistence);
+		try {
+			storePersistence.close();
+		} catch (InterruptedException interrupted) {
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	@Override
