@@ -3,6 +3,8 @@ package me.whereareiam.socialismus.module.bubbler.common.condition;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.exception.ConditionException;
@@ -24,14 +26,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static me.whereareiam.socialismus.model.condition.ConditionParts.RECIPIENT;
 import static me.whereareiam.socialismus.model.condition.ConditionParts.SENDER;
 import static me.whereareiam.socialismus.module.bubbler.api.model.condition.BubblerParts.ACTIVATION;
 
 /**
- * The conditions and styles of the bubbles: bound when Bubbler is enabled and again after every reload, checked at once on
- * the thread that shows the bubble. A bubble that is not bound meets nobody.
+ * The conditions and styles of the bubbles: bound when Bubbler is enabled and again after every reload, and handed
+ * out per bubble as its {@link Places}, which check them at once on the thread that shows the bubble.
  */
 @Singleton
 public class BubbleConditions implements EventListener {
@@ -84,48 +87,26 @@ public class BubbleConditions implements EventListener {
 	}
 
 	/**
-	 * Checks whether a sender gets a bubble: its {@code requires}.
-	 *
-	 * @param bubble  the bubble
-	 * @param message the bubble message, with its sender
-	 * @return whether the sender meets the bubble's conditions
-	 */
-	public boolean selects(@NotNull Bubble bubble, @NotNull BubbleMessage message) {
-		Places bound = places.get(bubble.getId());
-
-		return bound != null && bound.requires().check(Situation.of(SENDER, message.getSender()).and(ACTIVATION, message)).passed();
-	}
-
-	/**
-	 * Checks whether a nearby player sees a bubble: its {@code reaches}.
-	 *
-	 * @param bubble    the bubble
-	 * @param recipient the nearby player
-	 * @param message   the bubble message, with its sender
-	 * @return whether the player sees the bubble
-	 */
-	public boolean reaches(@NotNull Bubble bubble, @NotNull SocialismusPlayer recipient, @NotNull BubbleMessage message) {
-		Places bound = places.get(bubble.getId());
-		Situation situation = Situation.of(RECIPIENT, recipient).and(SENDER, message.getSender()).and(ACTIVATION, message);
-
-		return bound != null && bound.reaches().check(situation).passed();
-	}
-
-	/**
-	 * Chooses the style a sender writes a bubble with: the last of its {@code styles} whose conditions they meet.
+	 * Finds the places of a bubble.
 	 *
 	 * @param bubble the bubble
-	 * @param sender the sender
-	 * @return the style, {@link TextStyle#PLAIN} when they meet none or the bubble accepts none
+	 * @return its places; empty when it has none, before Bubbler is enabled or for a bubble Bubbler does not hold
 	 */
-	public @NotNull TextStyle style(@NotNull Bubble bubble, @NotNull SocialismusPlayer sender) {
-		Places bound = places.get(bubble.getId());
-
-		return bound == null ? TextStyle.PLAIN : bound.styles().of(sender);
+	public @NotNull Optional<Places> of(@NotNull Bubble bubble) {
+		return Optional.ofNullable(places.get(bubble.getId()));
 	}
 
-	private record Places(Place requires, Place reaches, StylePlace styles) {
-		static Places bind(Conditions conditions, Styles styles, Bubble bubble) {
+	/**
+	 * The bound places of one bubble, bound together and closed together when the bubbles are reloaded: whose
+	 * messages raise it, who sees it, and the style its sender writes with.
+	 */
+	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	public static final class Places {
+		private final Place requires;
+		private final Place reaches;
+		private final StylePlace styles;
+
+		private static Places bind(Conditions conditions, Styles styles, Bubble bubble) {
 			String path = "bubbles." + bubble.getId();
 			Place requires = conditions.place(path + ".requires", listOf(bubble.getRequires()), SENDER, ACTIVATION);
 			Place reaches = null;
@@ -145,7 +126,41 @@ public class BubbleConditions implements EventListener {
 			return requires == null ? Requirements.none() : requires;
 		}
 
-		void close() {
+		/**
+		 * Checks whether a sender gets the bubble: its {@code requires}.
+		 *
+		 * @param message the bubble message, with its sender
+		 * @return whether the sender meets the bubble's conditions
+		 */
+		public boolean selects(@NotNull BubbleMessage message) {
+			return requires.check(Situation.of(SENDER, message.getSender()).and(ACTIVATION, message)).passed();
+		}
+
+		/**
+		 * Checks whether a nearby player sees the bubble: its {@code reaches}.
+		 *
+		 * @param recipient the nearby player
+		 * @param message   the bubble message, with its sender
+		 * @return whether the player sees the bubble
+		 */
+		public boolean reaches(@NotNull SocialismusPlayer recipient, @NotNull BubbleMessage message) {
+			Situation situation = Situation.of(RECIPIENT, recipient).and(SENDER, message.getSender()).and(ACTIVATION, message);
+
+			return reaches.check(situation).passed();
+		}
+
+		/**
+		 * Chooses the style a sender writes the bubble with: the last of its {@code styles} whose conditions they
+		 * meet.
+		 *
+		 * @param sender the sender
+		 * @return the style, {@link TextStyle#PLAIN} when they meet none or the bubble accepts none
+		 */
+		public @NotNull TextStyle style(@NotNull SocialismusPlayer sender) {
+			return styles.of(sender);
+		}
+
+		private void close() {
 			requires.close();
 			reaches.close();
 			styles.close();

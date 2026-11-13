@@ -3,6 +3,8 @@ package me.whereareiam.socialismus.module.dialogue.common.condition;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.exception.ConditionException;
@@ -27,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static me.whereareiam.socialismus.model.condition.ConditionParts.RECIPIENT;
@@ -123,20 +126,15 @@ public class DialogueConditions implements EventListener {
 	}
 
 	/**
-	 * Checks whether a format fits a private message: its {@code requires} and {@code reaches}.
+	 * Finds the places of a format.
 	 *
-	 * @param format    the format, from Dialogue's formats as they are loaded now
-	 * @param sender    the player who writes
-	 * @param recipient the player written to, or {@code null} when they are on another server
-	 * @return whether the format fits
+	 * @param format the format, from Dialogue's formats as they are loaded now
+	 * @return its places; empty before Dialogue is enabled or for a format of an earlier load
 	 */
-	public boolean fits(@NotNull DialogueFormat format, @NotNull SocialismusPlayer sender, @Nullable SocialismusPlayer recipient) {
+	public @NotNull Optional<FormatPlaces> of(@NotNull DialogueFormat format) {
 		DialoguePlaces current = places;
-		DialoguePlaces.FormatPlaces bound = current == null ? null : current.getFormats().get(format);
-		if (bound == null || !bound.requires().check(Situation.of(SENDER, sender)).passed()) return false;
-		if (bound.reachesAnyone()) return true;
 
-		return recipient != null && bound.reaches().check(Situation.of(RECIPIENT, recipient).and(SENDER, sender)).passed();
+		return current == null ? Optional.empty() : Optional.ofNullable(current.getFormats().get(format));
 	}
 
 	/**
@@ -190,5 +188,35 @@ public class DialogueConditions implements EventListener {
 
 	private static Verdict unbound(String path) {
 		return new Verdict.Broken(path, path, new IllegalStateException(path + " cannot be checked here"));
+	}
+
+	/**
+	 * The places of one format, found through {@link #of}: what the sender and what the recipient must meet.
+	 */
+	@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+	public static final class FormatPlaces {
+		private final Place requires;
+		private final Place reaches;
+		private final boolean reachesAnyone;
+
+		/**
+		 * Checks whether the format fits a private message: its {@code requires} and {@code reaches}. A recipient
+		 * on another server cannot be checked here, so it meets only an empty {@code reaches}.
+		 *
+		 * @param sender    the player who writes
+		 * @param recipient the player written to, or {@code null} when they are on another server
+		 * @return whether the format fits
+		 */
+		public boolean fits(@NotNull SocialismusPlayer sender, @Nullable SocialismusPlayer recipient) {
+			if (!requires.check(Situation.of(SENDER, sender)).passed()) return false;
+			if (reachesAnyone) return true;
+
+			return recipient != null && reaches.check(Situation.of(RECIPIENT, recipient).and(SENDER, sender)).passed();
+		}
+
+		void close() {
+			requires.close();
+			reaches.close();
+		}
 	}
 }

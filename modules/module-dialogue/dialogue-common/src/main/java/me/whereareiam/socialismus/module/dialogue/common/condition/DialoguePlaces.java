@@ -33,7 +33,7 @@ final class DialoguePlaces implements AutoCloseable {
 	private final Place bypassesToggle;
 	private final Place exemptFromIgnore;
 	private final Place hiddenFromSpies;
-	private final Map<DialogueFormat, FormatPlaces> formats;
+	private final Map<DialogueFormat, DialogueConditions.FormatPlaces> formats;
 	private final StylePlace styles;
 
 	/**
@@ -94,22 +94,8 @@ final class DialoguePlaces implements AutoCloseable {
 		bypassesToggle.close();
 		exemptFromIgnore.close();
 		hiddenFromSpies.close();
-		formats.values().forEach(FormatPlaces::close);
+		formats.values().forEach(DialogueConditions.FormatPlaces::close);
 		styles.close();
-	}
-
-	/**
-	 * The places of one format: what the sender and what the recipient must meet.
-	 *
-	 * @param requires      the format's {@code requires}, with the part sender
-	 * @param reaches       the format's {@code reaches}, with the parts recipient and sender
-	 * @param reachesAnyone whether the format's {@code reaches} is empty, so a recipient on another server meets it
-	 */
-	record FormatPlaces(Place requires, Place reaches, boolean reachesAnyone) {
-		void close() {
-			requires.close();
-			reaches.close();
-		}
 	}
 
 	private record Binding(Conditions conditions, Phrasebook phrases, List<Place> bound, List<StylePlace> styled) {
@@ -133,10 +119,10 @@ final class DialoguePlaces implements AutoCloseable {
 			return place;
 		}
 
-		FormatPlaces format(String path, DialogueFormat format) {
+		DialogueConditions.FormatPlaces format(String path, DialogueFormat format) {
 			Requirements reaches = listOf(format.getReaches());
 
-			return new FormatPlaces(
+			return new DialogueConditions.FormatPlaces(
 					open(path + ".requires", format.getRequires(), false),
 					open(path + ".reaches", reaches, true),
 					reaches.getConditions().items().isEmpty()

@@ -15,7 +15,9 @@ import me.whereareiam.socialismus.service.Scheduler;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -30,10 +32,11 @@ public class BroadcastCoordinator implements AnnouncementBroadcaster {
 
     @Override
     public void broadcast(Announcement announcement) {
-        Collection<SocialismusPlayer> recipients = playerRegistry.getPlayers();
-        recipients = recipients.parallelStream()
-                .filter(r -> conditions.reaches(announcement, r))
-                .collect(Collectors.toSet());
+        Collection<SocialismusPlayer> recipients = conditions.of(announcement)
+                .map(places -> playerRegistry.getPlayers().parallelStream()
+                        .filter(places::reaches)
+                        .collect(Collectors.toSet()))
+                .orElseGet(Set::of);
 
 		if (announcement.getSettings().getDelay() > 0) {
 			Collection<SocialismusPlayer> finalRecipients = recipients;
@@ -62,9 +65,12 @@ public class BroadcastCoordinator implements AnnouncementBroadcaster {
     }
 
 	private void sendAnnouncement(Announcement announcement, Collection<SocialismusPlayer> recipients) {
+		Optional<AnnouncementConditions.Places> places = conditions.of(announcement);
+		if (places.isEmpty()) return;
+
 		for (SocialismusPlayer recipient : recipients) {
 			for (Map.Entry<AnnouncementType, ? extends AnnouncementContent> entry : announcement.getContents().entrySet())
-				if (conditions.reaches(announcement, entry.getKey(), recipient))
+				if (places.get().reaches(entry.getKey(), recipient))
 					broadcastSender.sendContent(entry.getKey(), entry.getValue(), recipient);
 		}
 	}

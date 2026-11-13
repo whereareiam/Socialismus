@@ -38,10 +38,10 @@ class BubbleConditionsTest {
 		bubbles.add(bubble);
 		bubbleConditions.bind();
 
-		assertTrue(bubbleConditions.selects(bubble, message(ActivatorType.COMMAND, null)));
-		assertTrue(bubbleConditions.selects(bubble, message(ActivatorType.CHAT, "local")));
-		assertFalse(bubbleConditions.selects(bubble, message(ActivatorType.CHAT, "global")));
-		assertTrue(bubbleConditions.reaches(bubble, alice, message(ActivatorType.CHAT, "global")));
+		assertTrue(places(bubble).selects(message(ActivatorType.COMMAND, null)));
+		assertTrue(places(bubble).selects(message(ActivatorType.CHAT, "local")));
+		assertFalse(places(bubble).selects(message(ActivatorType.CHAT, "global")));
+		assertTrue(places(bubble).reaches(alice, message(ActivatorType.CHAT, "global")));
 	}
 
 	@Test
@@ -54,7 +54,11 @@ class BubbleConditionsTest {
 		ConditionException exception = assertThrows(ConditionException.class, bubbleConditions::bind);
 
 		assertEquals("bubbles.default.reaches[0].bubbler:nearby", exception.getPath());
-		assertTrue(bubbleConditions.selects(bubble, message(ActivatorType.CHAT, "local")));
+		assertTrue(places(bubble).selects(message(ActivatorType.CHAT, "local")));
+	}
+
+	private BubbleConditions.Places places(Bubble bubble) {
+		return bubbleConditions.of(bubble).orElseThrow();
 	}
 
 	private BubbleMessage message(ActivatorType activator, String chat) {

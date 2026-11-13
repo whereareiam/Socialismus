@@ -126,7 +126,7 @@ public class MessageRenderer {
 		if (formats == null) return null;
 
 		for (DialogueFormat format : formats.reversed())
-			if (conditions.fits(format, message.getSender(), recipient))
+			if (conditions.of(format).filter(places -> places.fits(message.getSender(), recipient)).isPresent())
 				return format;
 
 		return null;

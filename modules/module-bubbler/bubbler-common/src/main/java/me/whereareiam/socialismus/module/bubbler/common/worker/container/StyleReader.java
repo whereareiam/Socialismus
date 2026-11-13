@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.type.ActivatorType;
 import me.whereareiam.socialismus.module.bubbler.common.condition.BubbleConditions;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +35,10 @@ public class StyleReader {
 		if (accepted == null || accepted.isEmpty()) return message;
 
 		String text = ComponentUtil.toPlain(message.getContent());
-		message.setContent(conditions.style(message.getBubble(), message.getSender()).read(text));
+		TextStyle style = conditions.of(message.getBubble())
+				.map(places -> places.style(message.getSender()))
+				.orElse(TextStyle.PLAIN);
+		message.setContent(style.read(text));
 
 		return message;
 	}

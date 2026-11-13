@@ -44,7 +44,7 @@ public class BubbleSelector {
 		Logger.debug("Selecting bubble for user " + bubbleMessage.getSender().getUsername());
 
 		Bubble bubble = bubbles.get().stream()
-				.filter(b -> conditions.selects(b, bubbleMessage))
+				.filter(b -> conditions.of(b).filter(places -> places.selects(bubbleMessage)).isPresent())
 				.findFirst()
 				.orElse(null);
 
