@@ -18,15 +18,15 @@ public class IgnoreCommand {
 	@Definition("ignore")
 	@Command("ignore [player]")
 	public void onCommand(
-			SocialismusPlayer player,
+			SocialismusPlayer sender,
 			@Argument(value = "player", suggestions = "players") @Nullable String target
 	) {
-		// Without a player, the command lists whom the player ignores.
+		// Without a player, the command lists whom the sender ignores.
 		if (target == null) {
-			controlService.showIgnored(player);
+			controlService.showIgnored(sender);
 			return;
 		}
 
-		controlService.ignore(player, target);
+		controlService.ignore(sender, target);
 	}
 }
