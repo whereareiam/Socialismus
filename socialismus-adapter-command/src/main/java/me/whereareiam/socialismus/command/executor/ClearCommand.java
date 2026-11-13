@@ -10,7 +10,9 @@ import me.whereareiam.keystone.model.SerializerContent;
 import me.whereareiam.socialismus.Serializer;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.history.HistorySelection;
 import me.whereareiam.socialismus.model.config.message.Messages;
+import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
@@ -19,6 +21,8 @@ import net.kyori.adventure.text.Component;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = @Inject)
@@ -66,7 +70,7 @@ public class ClearCommand {
 			return;
 		}
 
-		int count = chatHistory.removeMessages(number);
+		int count = chatHistory.remove(HistorySelection.oldest(number));
 		sendResponse(actor, count, messages.get().getCommands().getClearCommand().getClearedAmount(), messages.get().getCommands().getClearCommand().getNoHistory());
 	}
 
@@ -76,7 +80,7 @@ public class ClearCommand {
 			return;
 		}
 
-		boolean removed = chatHistory.removeMessage(number);
+		boolean removed = chatHistory.remove(HistorySelection.message(number)) > 0;
 		sendResponse(actor, removed, messages.get().getCommands().getClearCommand().getCleared(), messages.get().getCommands().getClearCommand().getNoIdHistory(), number);
 	}
 
@@ -86,27 +90,19 @@ public class ClearCommand {
 			return;
 		}
 
-		if (bypasses(context)) {
+		Optional<SocialismusPlayer> player = playerRegistry.getPlayerData(context);
+		if (player.map(conditions::keepsHistory).orElse(false)) {
 			actor.sendMessage(Serializer.serialize(actor, messages.get().getCommands().getClearCommand().getBypassUser()));
 			return;
 		}
 
-		int count = chatHistory.removeMessages(context);
+		HistorySelection selection = player.map(HistorySelection::of).orElseGet(() -> HistorySelection.byName(context));
+		int count = chatHistory.remove(selection);
 		sendResponse(
 				actor, count,
 				messages.get().getCommands().getClearCommand().getClearedAmount(),
 				messages.get().getCommands().getClearCommand().getNoUserHistory()
 		);
-	}
-
-	/**
-	 * Returns whether the messages of a player are kept from clearing; only an online player can meet the bypass
-	 * conditions.
-	 */
-	private boolean bypasses(String username) {
-		return playerRegistry.getPlayerData(username)
-				.map(conditions::keepsHistory)
-				.orElse(false);
 	}
 
 	private boolean hasMinimumMessages() {
