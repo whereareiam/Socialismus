@@ -5,24 +5,24 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.model.Worker;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.type.ActivatorType;
+import me.whereareiam.socialismus.module.bubbler.common.condition.BubbleConditions;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.style.StyleService;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 /**
- * Reads the text of a bubble raised by {@code /socialismus bubble} with the styles its bubble accepts, once the bubble
- * is chosen. A bubble raised by a chat message keeps the message as its chat read it.
+ * Reads the text of a bubble raised by {@code /socialismus bubble} with the style its bubble gives the sender, once
+ * the bubble is chosen. A bubble raised by a chat message keeps the message as its chat read it.
  */
 @Singleton
 public class StyleReader {
-	private final StyleService styles;
+	private final BubbleConditions conditions;
 
 	@Inject
-	public StyleReader(@NotNull WorkerProcessor<BubbleMessage> workerProcessor, @NotNull StyleService styles) {
-		this.styles = styles;
+	public StyleReader(@NotNull WorkerProcessor<BubbleMessage> workerProcessor, @NotNull BubbleConditions conditions) {
+		this.conditions = conditions;
 
 		workerProcessor.addWorker(new Worker<>(this::read, 125, false, false));
 	}
@@ -34,7 +34,7 @@ public class StyleReader {
 		if (accepted == null || accepted.isEmpty()) return message;
 
 		String text = ComponentUtil.toPlain(message.getContent());
-		message.setContent(styles.read(message.getSender(), text, accepted));
+		message.setContent(conditions.style(message.getBubble(), message.getSender()).read(text));
 
 		return message;
 	}

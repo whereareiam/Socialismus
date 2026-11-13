@@ -16,6 +16,7 @@ import me.whereareiam.socialismus.module.network.api.player.NetworkPlayer;
 import me.whereareiam.socialismus.module.network.api.replication.ReplicatedChannel;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.Scheduler;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -125,7 +126,7 @@ public final class DialogueNetworkDelivery implements RemoteDelivery {
 				.bypassesToggle(record.isBypassesToggle())
 				.exemptFromIgnore(record.isExemptFromIgnore())
 				.hiddenFromSpies(record.isHiddenFromSpies())
-				.style(record.getStyle())
+				.style(record.getStyle() == null ? TextStyle.PLAIN.id() : record.getStyle())
 				.build();
 
 		DeliveryStatus status = localDelivery.deliver(message, false);

@@ -6,10 +6,12 @@ import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.conditia.model.Situation;
+import me.whereareiam.socialismus.exception.StyleException;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.model.style.Style;
-import me.whereareiam.socialismus.model.style.Styles;
+import me.whereareiam.socialismus.model.style.StylesConfig;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -26,8 +28,8 @@ import java.util.Set;
 import static me.whereareiam.socialismus.model.condition.ConditionParts.SENDER;
 
 /**
- * The styles of {@code styles.yml}, bound: each with the place of its {@code requires} and a reader that knows only
- * its tags. They are bound together and closed together when the file is read again.
+ * One generation of the styles of {@code styles.yml}, bound: each with the place of its {@code requires} and a reader
+ * that knows only its tags. They are bound together and closed together when the file is read again.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class StyleBook implements AutoCloseable {
@@ -36,25 +38,23 @@ final class StyleBook implements AutoCloseable {
 	/**
 	 * Binds the styles of {@code styles.yml}.
 	 *
-	 * @param conditions binds the styles' requirements
+	 * @param conditions binds the styles' conditions
 	 * @param file       the styles
 	 * @param legacy     whether legacy codes are read as the tags they stand for
 	 * @return the bound styles
-	 * @throws RuntimeException naming the path of a style whose tags or requirements cannot be read; the styles bound
-	 *                          before are closed
+	 * @throws StyleException naming the path of a style whose tags cannot be read
+	 * @throws me.whereareiam.conditia.exception.ConditionException naming the path of conditions that cannot be
+	 *                                                              bound; the styles bound before are closed
 	 */
-	static @NotNull StyleBook bind(@NotNull Conditions conditions, @NotNull Styles file, boolean legacy) {
+	static @NotNull StyleBook bind(@NotNull Conditions conditions, @NotNull StylesConfig file, boolean legacy) {
 		Map<String, BoundStyle> bound = new HashMap<>();
 		Set<StyleTag> unreadable = EnumSet.noneOf(StyleTag.class);
 		List<Style> styles = file.getStyles() == null ? List.of() : file.getStyles();
 		try {
 			for (int index = 0; index < styles.size(); index++) {
-				Style style = styles.get(index);
 				String path = "styles[" + index + "]";
-				if (style.getId() == null || style.getId().isBlank())
-					throw new IllegalArgumentException(path + ": a style needs an id");
-
-				BoundStyle previous = bound.put(style.getId(), BoundStyle.bind(conditions, path, style, legacy, unreadable));
+				Style style = styles.get(index);
+				BoundStyle previous = bound.put(idOf(path, style), BoundStyle.bind(conditions, path, style, legacy, unreadable));
 				if (previous != null) previous.place().close();
 			}
 
@@ -67,6 +67,14 @@ final class StyleBook implements AutoCloseable {
 		}
 	}
 
+	private static String idOf(String path, Style style) {
+		String id = style.getId();
+		if (id == null || id.isBlank()) throw new StyleException(path, "a style needs an id");
+		if (id.equals(TextStyle.PLAIN.id())) throw new StyleException(path, "plain is the style of no style, so no style is called that");
+
+		return id;
+	}
+
 	// Older servers ship an Adventure without the newest tags, such as Paper before 1.21.4 without <shadow>.
 	private static void warnUnreadable(Set<StyleTag> tags) {
 		List<String> names = tags.stream().map(tag -> "<" + tag.getKey() + ">").toList();
@@ -74,26 +82,38 @@ final class StyleBook implements AutoCloseable {
 	}
 
 	/**
-	 * Chooses the last of the styles listed whose requirements the writer meets.
+	 * Checks that a place accepts only styles the book has.
+	 *
+	 * @throws StyleException naming the path of the first id no style has
 	 */
-	@NotNull Optional<String> styleOf(@NotNull SocialismusPlayer writer, @NotNull List<String> ids) {
-		Situation situation = Situation.of(SENDER, writer);
-		for (String id : ids.reversed()) {
-			BoundStyle style = styles.get(id);
-			if (style != null && style.place().check(situation).passed()) return Optional.of(id);
+	void check(@NotNull String path, @NotNull List<String> ids) {
+		for (int index = 0; index < ids.size(); index++) {
+			String id = ids.get(index);
+			if (!styles.containsKey(id) && !TextStyle.PLAIN.id().equals(id))
+				throw new StyleException(path + "[" + index + "]", "no style is called " + id);
 		}
-
-		return Optional.empty();
 	}
 
 	/**
-	 * Reads a text with a style; plain when the book has no style of that id.
+	 * Chooses the last of the styles listed whose conditions the writer meets.
 	 */
-	@NotNull Component read(@NotNull String text, String id) {
-		BoundStyle style = id == null ? null : styles.get(id);
-		if (style == null) return Component.text(text);
+	@NotNull TextStyle styleOf(@NotNull SocialismusPlayer writer, @NotNull List<String> ids) {
+		Situation situation = Situation.of(SENDER, writer);
+		for (String id : ids.reversed()) {
+			BoundStyle style = styles.get(id);
+			if (style != null && style.place().check(situation).passed()) return style;
+		}
 
-		return style.read(text);
+		return TextStyle.PLAIN;
+	}
+
+	/**
+	 * Finds a style by id; plain when the book has none of that id.
+	 */
+	@NotNull TextStyle style(@NotNull String id) {
+		BoundStyle style = styles.get(id);
+
+		return style == null ? TextStyle.PLAIN : style;
 	}
 
 	@Override
@@ -104,12 +124,13 @@ final class StyleBook implements AutoCloseable {
 	/**
 	 * A style, bound.
 	 *
-	 * @param place   the style's requirements
-	 * @param tags    the tags it allows
-	 * @param reader  reads only those tags
-	 * @param legacy  whether legacy codes are read as the tags they stand for
+	 * @param id     the style's id
+	 * @param place  the style's conditions
+	 * @param tags   the tags it allows
+	 * @param reader reads only those tags
+	 * @param legacy whether legacy codes are read as the tags they stand for
 	 */
-	private record BoundStyle(Place place, Set<StyleTag> tags, MiniMessage reader, boolean legacy) {
+	private record BoundStyle(String id, Place place, Set<StyleTag> tags, MiniMessage reader, boolean legacy) implements TextStyle {
 		static BoundStyle bind(Conditions conditions, String path, Style style, boolean legacy, Set<StyleTag> unreadable) {
 			Set<StyleTag> tags = StyleTags.read(path, listOf(style.getTags()), listOf(style.getExcluded()));
 			List<TagResolver> resolvers = new ArrayList<>();
@@ -122,10 +143,11 @@ final class StyleBook implements AutoCloseable {
 			MiniMessage reader = MiniMessage.builder().tags(TagResolver.resolver(resolvers)).build();
 			Requirements requires = style.getRequires() == null ? Requirements.none() : style.getRequires();
 
-			return new BoundStyle(conditions.place(path + ".requires", requires, SENDER), tags, reader, legacy);
+			return new BoundStyle(style.getId(), conditions.place(path + ".requires", requires, SENDER), tags, reader, legacy);
 		}
 
-		Component read(String text) {
+		@Override
+		public @NotNull Component read(@NotNull String text) {
 			return reader.deserialize(legacy ? LegacyCodes.toTags(text, tags) : text);
 		}
 

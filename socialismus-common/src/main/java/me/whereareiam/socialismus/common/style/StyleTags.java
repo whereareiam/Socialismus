@@ -2,6 +2,7 @@ package me.whereareiam.socialismus.common.style;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import me.whereareiam.socialismus.exception.StyleException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -41,8 +42,7 @@ final class StyleTags {
 	 * @param tags     the names the style allows
 	 * @param excluded the names it takes out again
 	 * @return the tags
-	 * @throws IllegalArgumentException naming the path of a name that is no tag or group, or of a tag no style may
-	 *                                  allow
+	 * @throws StyleException naming the path of a name that is no tag or group, or of a tag no style may allow
 	 */
 	static @NotNull Set<StyleTag> read(@NotNull String path, @NotNull List<String> tags, @NotNull List<String> excluded) {
 		Set<StyleTag> allowed = EnumSet.noneOf(StyleTag.class);
@@ -58,13 +58,13 @@ final class StyleTags {
 	private static Set<StyleTag> named(String path, String name) {
 		String key = name == null ? "" : name.trim().toLowerCase();
 		if (NEVER.contains(key))
-			throw new IllegalArgumentException(path + ": <" + key + "> is never read from what players write");
+			throw new StyleException(path, "<" + key + "> is never read from what players write");
 
 		Set<StyleTag> group = GROUPS.get(key);
 		if (group != null) return group;
 
 		StyleTag tag = BY_KEY.get(key);
-		if (tag == null) throw new IllegalArgumentException(path + ": " + name + " is no tag or group of tags");
+		if (tag == null) throw new StyleException(path, name + " is no tag or group of tags");
 
 		return EnumSet.of(tag);
 	}

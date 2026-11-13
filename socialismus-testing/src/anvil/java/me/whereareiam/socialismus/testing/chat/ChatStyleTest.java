@@ -6,7 +6,7 @@ import me.whereareiam.anvil.protocol.api.model.text.TextSpan;
 import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.socialismus.model.chat.ChatParameters;
 import me.whereareiam.socialismus.model.style.Style;
-import me.whereareiam.socialismus.model.style.Styles;
+import me.whereareiam.socialismus.model.style.StylesConfig;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
 import me.whereareiam.socialismus.testing.environment.Socialismus;
 import me.whereareiam.socialismus.testing.journey.Player;
@@ -79,7 +79,7 @@ class ChatStyleTest {
 					.parameters(ChatParameters.builder().styles(List.of("basic", "staff")).build())
 					.build());
 
-			Styles styles = new Styles();
+			StylesConfig styles = new StylesConfig();
 			styles.setStyles(List.of(
 					Style.builder().id("basic").tags(List.of("bold")).requires(Requirements.none()).build(),
 					Style.builder().id("staff").tags(List.of("*")).requires(permission("socialismus.style.staff")).build()

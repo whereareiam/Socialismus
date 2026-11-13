@@ -1,11 +1,14 @@
 package me.whereareiam.socialismus.module.dialogue.api.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
+import me.whereareiam.socialismus.service.style.TextStyle;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
@@ -71,8 +74,9 @@ public class Message {
 	private boolean hiddenFromSpies;
 
 	/**
-	 * The style of {@code styles.yml} the message is shown with, as {@code messaging.styles} chose it on the sender's
-	 * server; {@code null} shows it as plain text.
+	 * The id of the style of {@code styles.yml} the message is shown with, as {@code messaging.styles} chose it on the
+	 * sender's server; {@code plain} for none.
 	 */
-	private String style;
+	@Builder.Default
+	private @NotNull String style = TextStyle.PLAIN.id();
 }

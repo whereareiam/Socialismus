@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public final class StyleLifecycle implements RuntimeLifecycle {
-	private final DefaultStyleService styles;
+	private final DefaultStyles styles;
 
 	@Override
 	public @NotNull StartupPhase phase() {

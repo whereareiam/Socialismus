@@ -16,6 +16,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFor
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.module.dialogue.common.TestDialogueConditions;
+import me.whereareiam.socialismus.module.dialogue.common.TestStyles;
 import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.control.RecipientControl;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryIgnoreStore;
@@ -68,7 +69,7 @@ class LocalDeliveryTest {
 
 		DialogueConditions conditions = TestDialogueConditions.bound(TestDataBuilder::defaultSettings, () -> formats, ModerationFormats::new);
 		RecipientControl control = new RecipientControl(TestDataBuilder::defaultSettings, toggles, ignores);
-		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, ModerationFormats::new, conditions, TestDataBuilder.plainStyles()), eventManager, control);
+		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, ModerationFormats::new, conditions, new TestStyles()), eventManager, control);
 	}
 
 	@DisplayName("Fills the names and the message into both formats")

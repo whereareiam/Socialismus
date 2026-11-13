@@ -36,7 +36,7 @@ import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
-import me.whereareiam.socialismus.service.style.StyleService;
+import me.whereareiam.socialismus.service.style.Styles;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,7 +75,7 @@ public class Dialogue implements SocialisticModule {
 						parentInjector.getInstance(Phrasebook.class),
 						parentInjector.getInstance(SerializationService.class),
 						parentInjector.getInstance(EventManager.class),
-						parentInjector.getInstance(StyleService.class)
+						parentInjector.getInstance(Styles.class)
 				),
 				new CommonConfiguration(dataFolder)
 		);

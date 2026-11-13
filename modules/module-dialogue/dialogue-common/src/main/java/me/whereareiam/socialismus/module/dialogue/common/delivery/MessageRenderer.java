@@ -14,7 +14,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
-import me.whereareiam.socialismus.service.style.StyleService;
+import me.whereareiam.socialismus.service.style.Styles;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.title.Title;
@@ -34,7 +34,7 @@ public class MessageRenderer {
 	private final Provider<MessagingFormats> formats;
 	private final Provider<ModerationFormats> moderationFormats;
 	private final DialogueConditions conditions;
-	private final StyleService styles;
+	private final Styles styles;
 
 	/**
 	 * Shows the sender their message in a {@code sent} format.
@@ -114,7 +114,7 @@ public class MessageRenderer {
 
 		return rendered.replaceText(TextReplacementConfig.builder()
 				.matchLiteral(Serializer.placeholder("message"))
-				.replacement(styles.read(message.getContent(), message.getStyle()))
+				.replacement(styles.style(message.getStyle()).read(message.getContent()))
 				.build());
 	}
 

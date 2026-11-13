@@ -4,7 +4,7 @@ import com.google.inject.Singleton;
 import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.model.style.Style;
-import me.whereareiam.socialismus.model.style.Styles;
+import me.whereareiam.socialismus.model.style.StylesConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +14,9 @@ import java.util.List;
  * a player may use. The default chats accept both.
  */
 @Singleton
-public class StylesDefaults implements DefaultsProvider<Styles> {
+public class StylesDefaults implements DefaultsProvider<StylesConfig> {
 	@Override
-	public Styles supply(Styles styles) {
+	public StylesConfig supply(StylesConfig styles) {
 		Style basic = Style.builder()
 				.id("basic")
 				.tags(new ArrayList<>(List.of("color", "bold", "italic", "underlined", "strikethrough")))

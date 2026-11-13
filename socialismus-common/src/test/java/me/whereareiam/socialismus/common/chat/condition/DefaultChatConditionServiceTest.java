@@ -14,6 +14,7 @@ import me.whereareiam.configura.type.Format;
 import me.whereareiam.socialismus.common.condition.ConditionConfiguration;
 import me.whereareiam.socialismus.common.config.defaults.chat.ChatSettingsDefaults;
 import me.whereareiam.socialismus.common.phrase.DefaultPhrasebook;
+import me.whereareiam.socialismus.common.style.TestStyles;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
 import me.whereareiam.socialismus.logging.Logger;
@@ -60,7 +61,7 @@ class DefaultChatConditionServiceTest {
 				Set::of,
 				() -> mock(PlayerRegistry.class)
 		);
-		chatConditions = new DefaultChatConditionService(conditions, new DefaultPhrasebook(() -> phrases), () -> settings, mock(EventManager.class));
+		chatConditions = new DefaultChatConditionService(conditions, new DefaultPhrasebook(() -> phrases), new TestStyles(), () -> settings, mock(EventManager.class));
 		when(alice.hasPermission("socialismus.chat.local")).thenReturn(true);
 	}
 

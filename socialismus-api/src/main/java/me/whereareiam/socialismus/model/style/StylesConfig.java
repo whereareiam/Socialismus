@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class Styles {
+public class StylesConfig {
 	/**
 	 * The styles. Kept as written, so a file of one's own takes none of the default styles.
 	 */

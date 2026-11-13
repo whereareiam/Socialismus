@@ -17,7 +17,8 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFor
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.module.dialogue.common.TestDialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
-import me.whereareiam.socialismus.service.style.StyleService;
+import me.whereareiam.socialismus.service.style.Styles;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -46,7 +47,7 @@ class MessageRendererTest {
 	private final ModerationFormats moderationFormats = new ModerationFormats();
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
-	private final StyleService styles = mock(StyleService.class);
+	private final Styles styles = mock(Styles.class);
 
 	private DialogueConditions conditions;
 	private MessageRenderer renderer;
@@ -59,7 +60,7 @@ class MessageRendererTest {
 		when(engine.getPlaceholderFormat()).thenReturn(SerializerOptions.PlaceholderFormat.CURLY_BRACES);
 		Serializer.initialize(() -> engine);
 		Logger.init(mock(LoggingHelper.class));
-		when(styles.read(anyString(), any())).thenAnswer(call -> Component.text(call.getArgument(0, String.class)));
+		when(styles.style(anyString())).thenReturn(TextStyle.PLAIN);
 
 		formats.setSent(List.of(format("sent")));
 		formats.setReceived(List.of(
@@ -129,7 +130,9 @@ class MessageRendererTest {
 		useMiniMessage();
 		formats.setReceived(List.of(format("<gray>{senderName}: <white>{message}")));
 		conditions.bind();
-		when(styles.read("<bold>hi", "vip")).thenReturn(Component.text("hi", NamedTextColor.GOLD));
+		TextStyle vip = mock(TextStyle.class);
+		when(vip.read("<bold>hi")).thenReturn(Component.text("hi", NamedTextColor.GOLD));
+		when(styles.style("vip")).thenReturn(vip);
 
 		renderer.showReceived(TestDataBuilder.messageFrom(alice, "Bob").content("<bold>hi").style("vip").build(), bob);
 

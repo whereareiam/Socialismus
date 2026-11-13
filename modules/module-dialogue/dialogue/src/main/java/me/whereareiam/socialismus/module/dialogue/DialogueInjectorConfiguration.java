@@ -13,7 +13,7 @@ import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
-import me.whereareiam.socialismus.service.style.StyleService;
+import me.whereareiam.socialismus.service.style.Styles;
 
 @RequiredArgsConstructor
 public class DialogueInjectorConfiguration extends AbstractModule {
@@ -26,7 +26,7 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 	private final Phrasebook phrases;
 	private final SerializationService serializationService;
 	private final EventManager eventManager;
-	private final StyleService styleService;
+	private final Styles styles;
 
 	@Override
 	protected void configure() {
@@ -41,6 +41,6 @@ public class DialogueInjectorConfiguration extends AbstractModule {
 		bind(Phrasebook.class).toInstance(phrases);
 		bind(SerializationService.class).toInstance(serializationService);
 		bind(EventManager.class).toInstance(eventManager);
-		bind(StyleService.class).toInstance(styleService);
+		bind(Styles.class).toInstance(styles);
 	}
 }

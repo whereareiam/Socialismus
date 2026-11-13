@@ -38,6 +38,9 @@ A place lists its styles from lowest to highest, like the formats of a chat: the
 With the lists above, a player with `socialismus.style.vip` writes with `vip` whether or not they also have `basic`, and a member of staff writes with `staff`.
 A writer who meets none of the listed styles, or a place that lists none, writes plain text: every tag shows as typed.
 
+A place that lists a style no one defines stops the start with its path, such as `chats.global.parameters.styles[1]`; after `/socialismus reload` the console names it and the previous styles stay in use.
+`plain` is the style of a writer who gets none, so no style in `styles.yml` may be called that.
+
 A tag the writer's style does not allow stays as typed too, so `<rainbow>hi</rainbow>` from a `basic` player reads `<rainbow>hi</rainbow>`.
 
 ## Tags

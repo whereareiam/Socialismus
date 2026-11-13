@@ -1,14 +1,11 @@
 package me.whereareiam.socialismus.module.dialogue.common;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
-import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
-import me.whereareiam.socialismus.service.style.StyleService;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,8 +17,6 @@ import org.jetbrains.annotations.NotNull;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SenderPrivileges {
 	private final DialogueConditions conditions;
-	private final Provider<DialogueSettings> settings;
-	private final StyleService styles;
 
 	/**
 	 * Records the sender's privileges on a message written on this server.
@@ -33,7 +28,7 @@ public class SenderPrivileges {
 		message.setBypassesToggle(conditions.bypassesToggle(sender));
 		message.setExemptFromIgnore(conditions.exemptFromIgnore(sender));
 		message.setHiddenFromSpies(conditions.hiddenFromSpies(sender));
-		message.setStyle(styles.styleOf(sender, settings.get().getMessaging().getStyles()).orElse(null));
+		message.setStyle(conditions.style(sender).id());
 	}
 
 	/**

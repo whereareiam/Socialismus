@@ -46,7 +46,7 @@ import me.whereareiam.socialismus.common.integration.IntegrationLifecycle;
 import me.whereareiam.socialismus.common.logging.LoggingLifecycle;
 import me.whereareiam.socialismus.common.player.DefaultPlayerRegistry;
 import me.whereareiam.socialismus.common.provider.*;
-import me.whereareiam.socialismus.common.style.DefaultStyleService;
+import me.whereareiam.socialismus.common.style.DefaultStyles;
 import me.whereareiam.socialismus.common.style.StyleLifecycle;
 import me.whereareiam.socialismus.common.updater.UpdateScheduler;
 import me.whereareiam.socialismus.common.updater.provider.GitHubProvider;
@@ -65,7 +65,7 @@ import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.config.Settings;
 import me.whereareiam.socialismus.model.config.Updater;
 import me.whereareiam.socialismus.model.config.message.Messages;
-import me.whereareiam.socialismus.model.style.Styles;
+import me.whereareiam.socialismus.model.style.StylesConfig;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -82,7 +82,7 @@ import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import me.whereareiam.socialismus.service.chat.render.ChatRenderService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
-import me.whereareiam.socialismus.service.style.StyleService;
+import me.whereareiam.socialismus.service.style.Styles;
 import me.whereareiam.socialismus.type.ConfigurationType;
 import me.whereareiam.socialismus.type.module.ProviderType;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -149,7 +149,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(ChatMessages.class).toProvider(ChatMessagesProvider.class);
 
 		bind(StylesProvider.class).asEagerSingleton();
-		bind(Styles.class).toProvider(StylesProvider.class);
+		bind(StylesConfig.class).toProvider(StylesProvider.class);
 
 		bind(ChatToggleStore.class).to(InMemoryChatToggleStore.class);
 		bind(ChatToggleService.class).to(DefaultChatToggleService.class);
@@ -177,7 +177,7 @@ public class CommonConfiguration extends AbstractModule {
 		// Conditions
 		install(new ConditionConfiguration());
 		bind(ChatConditionService.class).to(DefaultChatConditionService.class);
-		bind(StyleService.class).to(DefaultStyleService.class);
+		bind(Styles.class).to(DefaultStyles.class);
 
 		// Other
 		bind(new TypeLiteral<WorkerProcessor<ChatMessage>>() {

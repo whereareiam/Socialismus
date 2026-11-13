@@ -11,7 +11,7 @@ import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
 import me.whereareiam.socialismus.service.PlatformInteractor;
 import me.whereareiam.socialismus.service.Scheduler;
-import me.whereareiam.socialismus.service.style.StyleService;
+import me.whereareiam.socialismus.service.style.Styles;
 
 @RequiredArgsConstructor
 public class BubblerInjectorConfiguration extends AbstractModule {
@@ -24,7 +24,7 @@ public class BubblerInjectorConfiguration extends AbstractModule {
 	private final CommandService commandService;
 	private final PlayerRegistry playerRegistry;
 	private final EventManager eventManager;
-	private final StyleService styleService;
+	private final Styles styles;
 
 	@Override
 	protected void configure() {
@@ -37,6 +37,6 @@ public class BubblerInjectorConfiguration extends AbstractModule {
 		bind(CommandService.class).toInstance(commandService);
 		bind(PlayerRegistry.class).toInstance(playerRegistry);
 		bind(EventManager.class).toInstance(eventManager);
-		bind(StyleService.class).toInstance(styleService);
+		bind(Styles.class).toInstance(styles);
 	}
 }
