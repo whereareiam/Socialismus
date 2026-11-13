@@ -14,10 +14,10 @@ import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.api.type.DeliveryStatus;
-import me.whereareiam.socialismus.module.dialogue.common.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
+import me.whereareiam.socialismus.module.dialogue.common.TestDialogueConditions;
+import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.control.RecipientControl;
-import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryIgnoreStore;
 import me.whereareiam.socialismus.module.dialogue.common.store.InMemoryPreferencesStore;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
@@ -66,9 +66,9 @@ class LocalDeliveryTest {
 		formats.setSent(List.of(new DialogueFormat("To {recipientName}: {message}", Requirements.none(), Requirements.none())));
 		formats.setReceived(List.of(new DialogueFormat("{senderName} -> {recipientName}: {message}", Requirements.none(), Requirements.none())));
 
-		DialogueRequirements requirements = DialogueConditions.bound(TestDataBuilder::defaultSettings, () -> formats, ModerationFormats::new);
+		DialogueConditions conditions = TestDialogueConditions.bound(TestDataBuilder::defaultSettings, () -> formats, ModerationFormats::new);
 		RecipientControl control = new RecipientControl(TestDataBuilder::defaultSettings, toggles, ignores);
-		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, ModerationFormats::new, requirements), eventManager, control);
+		delivery = new LocalDelivery(playerRegistry, new MessageRenderer(() -> formats, ModerationFormats::new, conditions), eventManager, control);
 	}
 
 	@DisplayName("Fills the names and the message into both formats")

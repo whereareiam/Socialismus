@@ -16,7 +16,7 @@ import java.util.Optional;
 
 /**
  * Decides, on the recipient's server, whether a recipient refuses a private message: because they turned messages
- * off, or because they ignore the sender. What only the sender's server can check, its requirements, travels on the
+ * off, or because they ignore the sender. What only the sender's server can check, its conditions, travels on the
  * message, recorded by {@link me.whereareiam.socialismus.module.dialogue.common.SenderPrivileges}.
  */
 @Singleton

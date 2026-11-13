@@ -36,7 +36,7 @@ public class Bubble {
 	private Map<TransitionType, BubbleTransition> transitions;
 	/**
 	 * What a sender must meet for this bubble, checked with the parts sender and activation; the first bubble whose
-	 * requirements the sender meets is shown.
+	 * conditions the sender meets is shown.
 	 */
 	@Builder.Default
 	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)

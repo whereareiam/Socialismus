@@ -11,7 +11,7 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerMessages;
 import me.whereareiam.socialismus.module.bubbler.api.model.config.BubblerSettings;
-import me.whereareiam.socialismus.module.bubbler.common.requirement.BubbleRequirements;
+import me.whereareiam.socialismus.module.bubbler.common.condition.BubbleConditions;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 
 import java.util.Collection;
@@ -19,18 +19,18 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class RecipientSelector {
-	private final BubbleRequirements requirements;
+	private final BubbleConditions conditions;
 	private final Provider<BubblerSettings> settings;
 	private final Provider<BubblerMessages> messages;
 
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<BubbleMessage> workerProcessor,
-			BubbleRequirements requirements,
+			BubbleConditions conditions,
 			Provider<BubblerSettings> settings,
 			Provider<BubblerMessages> messages
 	) {
-		this.requirements = requirements;
+		this.conditions = conditions;
 		this.settings = settings;
 		this.messages = messages;
 
@@ -52,7 +52,7 @@ public class RecipientSelector {
 		Collection<SocialismusPlayer> recipients = bubbleMessage.getRecipients();
 
 		recipients = recipients.parallelStream()
-				.filter(recipient -> requirements.reaches(bubble, recipient, bubbleMessage))
+				.filter(recipient -> conditions.reaches(bubble, recipient, bubbleMessage))
 				.collect(Collectors.toSet());
 
 		if (recipients.size() < minimumRecipients) bubbleMessage.setCancelled(true);

@@ -13,7 +13,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
-import me.whereareiam.socialismus.module.dialogue.common.requirement.DialogueRequirements;
+import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.title.Title;
@@ -25,14 +25,14 @@ import java.util.Map;
 
 /**
  * Shows a private message to its sender, its recipient and the spies, each in the last format of their list in
- * {@code formats/messaging} or {@code formats/moderation} whose requirements the two participants meet.
+ * {@code formats/messaging} or {@code formats/moderation} whose conditions the two participants meet.
  */
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class MessageRenderer {
 	private final Provider<MessagingFormats> formats;
 	private final Provider<ModerationFormats> moderationFormats;
-	private final DialogueRequirements requirements;
+	private final DialogueConditions conditions;
 
 	/**
 	 * Shows the sender their message in a {@code sent} format.
@@ -123,7 +123,7 @@ public class MessageRenderer {
 		if (formats == null) return null;
 
 		for (DialogueFormat format : formats.reversed())
-			if (requirements.fits(format, message.getSender(), recipient))
+			if (conditions.fits(format, message.getSender(), recipient))
 				return format;
 
 		return null;

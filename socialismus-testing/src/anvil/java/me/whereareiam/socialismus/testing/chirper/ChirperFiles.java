@@ -71,7 +71,7 @@ final class ChirperFiles {
 	}
 
 	/**
-	 * Describes an announcement sent at once to every player who meets its requirements.
+	 * Describes an announcement sent at once to every player who meets its conditions.
 	 *
 	 * @param id           the announcement's identifier
 	 * @param requires     what a recipient meets

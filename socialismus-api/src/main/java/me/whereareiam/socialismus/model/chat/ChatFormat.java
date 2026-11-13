@@ -10,7 +10,7 @@ import me.whereareiam.configura.type.merge.WhenPresent;
 
 /**
  * Represents the formatting configuration for a chat message.
- * This class defines how messages should be formatted and what requirements
+ * This class defines how messages should be formatted and what conditions
  * different participants need to meet to use this format.
  */
 @Getter
@@ -26,7 +26,7 @@ public class ChatFormat {
 
 	/**
 	 * What the sender must meet for this format, checked with the parts sender and message. The last format of a chat
-	 * whose requirements the sender meets is used.
+	 * whose conditions the sender meets is used.
 	 */
 	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
 	private Requirements requires = Requirements.none();

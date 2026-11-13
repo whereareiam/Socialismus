@@ -14,7 +14,7 @@ import static me.whereareiam.socialismus.testing.chirper.ChirperFiles.*;
 
 /**
  * The announcers of Chirper: each broadcasts its announcements one after another on its schedule, to the players
- * who meet each announcement's requirements.
+ * who meet each announcement's conditions.
  */
 @Tag("chirper")
 class ScheduledAnnouncementTest {
@@ -30,7 +30,7 @@ class ScheduledAnnouncementTest {
 
 	@Test
 	@Socialismus(modules = Module.CHIRPER, configure = StaffNews.class)
-	void requirementsKeepAnAnnouncementToThePlayersWhoMeetThem(ScenarioContext anvil) {
+	void conditionsKeepAnAnnouncementToThePlayersWhoMeetThem(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice").op();
 		Player bob = Player.joins(anvil, "Bob");
 

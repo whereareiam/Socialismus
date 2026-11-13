@@ -28,7 +28,7 @@ import java.util.Optional;
 public final class DefaultDialogueService implements DialogueService {
 	private final ConversationService conversationService;
 	private final MessageFactory messageFactory;
-	private final MessagingRequirements requirements;
+	private final MessagingConditions conditions;
 	private final MessageDeliveryCoordinator deliveryCoordinator;
 	private final DialogueNotices notices;
 	private final PlayerRegistry playerRegistry;
@@ -53,7 +53,7 @@ public final class DefaultDialogueService implements DialogueService {
 			return;
 		}
 
-		MessagingRequirements.Verdict verdict = requirements.judge(sender, recipient.orElse(null), recipientAsSpelled);
+		MessagingConditions.Verdict verdict = conditions.judge(sender, recipient.orElse(null), recipientAsSpelled);
 		if (!verdict.allowed()) {
 			notices.notAllowed(sender, recipientAsSpelled, verdict.reason());
 			return;

@@ -12,8 +12,8 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
+import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
-import me.whereareiam.socialismus.service.chat.ChatRequirementService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import net.kyori.adventure.text.Component;
 import org.incendo.cloud.annotations.Argument;
@@ -29,7 +29,7 @@ public class ClearCommand {
 	private final ChatHistoryService chatHistory;
 	private final ChatHistoryContainerService containerService;
 	private final PlayerRegistry playerRegistry;
-	private final ChatRequirementService requirements;
+	private final ChatConditionService conditions;
 
 	@Definition("clear")
 	@Command("socialismus clear [context]")
@@ -101,11 +101,11 @@ public class ClearCommand {
 
 	/**
 	 * Returns whether the messages of a player are kept from clearing; only an online player can meet the bypass
-	 * requirements.
+	 * conditions.
 	 */
 	private boolean bypasses(String username) {
 		return playerRegistry.getPlayerData(username)
-				.map(requirements::keepsHistory)
+				.map(conditions::keepsHistory)
 				.orElse(false);
 	}
 

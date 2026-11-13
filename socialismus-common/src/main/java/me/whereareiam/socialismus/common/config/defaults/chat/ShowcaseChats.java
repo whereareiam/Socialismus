@@ -12,11 +12,11 @@ import me.whereareiam.socialismus.type.chat.TriggerType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.whereareiam.socialismus.common.config.defaults.chat.RequirementLines.block;
-import static me.whereareiam.socialismus.common.config.defaults.chat.RequirementLines.denied;
-import static me.whereareiam.socialismus.common.config.defaults.chat.RequirementLines.line;
-import static me.whereareiam.socialismus.common.config.defaults.chat.RequirementLines.list;
-import static me.whereareiam.socialismus.common.config.defaults.chat.RequirementLines.not;
+import static me.whereareiam.socialismus.common.config.defaults.chat.ConditionLines.block;
+import static me.whereareiam.socialismus.common.config.defaults.chat.ConditionLines.denied;
+import static me.whereareiam.socialismus.common.config.defaults.chat.ConditionLines.line;
+import static me.whereareiam.socialismus.common.config.defaults.chat.ConditionLines.list;
+import static me.whereareiam.socialismus.common.config.defaults.chat.ConditionLines.not;
 
 /**
  * Chats written into the defaults to show what {@code requires} and {@code reaches} can say, each turned off: a
@@ -41,7 +41,7 @@ final class ShowcaseChats {
 				"?",
 				"{clear}<gray>[Shout] {playerName}: <yellow>{message}",
 				Requirements.none(),
-				RequirementLines.of(denied(line("nearby", "500"), "<ref:shout-unheard>"))
+				ConditionLines.of(denied(line("nearby", "500"), "<ref:shout-unheard>"))
 		);
 	}
 
@@ -51,7 +51,7 @@ final class ShowcaseChats {
 				"#",
 				"{clear}<gray>[{world}] {playerName}: <white>{message}",
 				Requirements.none(),
-				RequirementLines.of(line("same", "world"))
+				ConditionLines.of(line("same", "world"))
 		);
 	}
 
@@ -62,8 +62,8 @@ final class ShowcaseChats {
 				"town",
 				"+",
 				"{clear}<green>[Town] {playerName}: <white>{message}",
-				RequirementLines.of(denied(not(line("placeholder", block("text", town, "is", ""))), "<ref:town-needed>")),
-				RequirementLines.of(line("same", block("placeholder", town)))
+				ConditionLines.of(denied(not(line("placeholder", block("text", town, "is", ""))), "<ref:town-needed>")),
+				ConditionLines.of(line("same", block("placeholder", town)))
 		);
 	}
 
@@ -72,8 +72,8 @@ final class ShowcaseChats {
 				"staff",
 				"*",
 				"{clear}<red>[Staff] {playerName}: <white>{message}",
-				RequirementLines.of(line("permission", "socialismus.chat.staff")),
-				RequirementLines.of(line("permission", "socialismus.chat.staff"), line("sees", list("recipient", "sender")))
+				ConditionLines.of(line("permission", "socialismus.chat.staff")),
+				ConditionLines.of(line("permission", "socialismus.chat.staff"), line("sees", list("recipient", "sender")))
 		);
 	}
 
@@ -83,7 +83,7 @@ final class ShowcaseChats {
 				"de:",
 				"{clear}<gold>[DE] {playerName}: <white>{message}",
 				Requirements.none(),
-				RequirementLines.of(line("language", list("de")))
+				ConditionLines.of(line("language", list("de")))
 		);
 	}
 

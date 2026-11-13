@@ -215,7 +215,7 @@ public class SocialismusNetwork implements SocialisticModule, ResourceProvider, 
 
 	/**
 	 * Lets a server learn its own name from the proxy in front of it, which announces the server of each player, and
-	 * gives it to the players it hosts, so a server requirement judges them here too.
+	 * gives it to the players it hosts, so a server condition judges them here too.
 	 */
 	private void learnServerName() {
 		NetworkNode self = network.self();

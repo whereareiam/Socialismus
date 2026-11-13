@@ -8,7 +8,7 @@ import me.whereareiam.socialismus.model.chat.render.ChatRenderContext;
 import me.whereareiam.socialismus.model.config.Commands;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.base.Registry;
-import me.whereareiam.socialismus.service.chat.ChatRequirementService;
+import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.service.chat.render.ChatPlaceholderResolver;
 import me.whereareiam.socialismus.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
@@ -35,7 +35,7 @@ class ClearPlaceholderResolverTest {
 	@Mock
 	private Provider<Commands> commands;
 	@Mock
-	private ChatRequirementService requirements;
+	private ChatConditionService conditions;
 	@Mock
 	private Registry<ChatPlaceholderResolver> registry;
 
@@ -45,7 +45,7 @@ class ClearPlaceholderResolverTest {
 				chatSettings,
 				chatMessages,
 				commands,
-				requirements,
+				conditions,
 				registry
 		);
 
@@ -56,7 +56,7 @@ class ClearPlaceholderResolverTest {
 	}
 
 	@Test
-	void resolveReturnsEmptyWhenRecipientDoesNotMeetTheRequirements() {
+	void resolveReturnsEmptyWhenRecipientDoesNotMeetTheConditions() {
 		ChatSettings settings = new ChatSettings();
 		ChatSettings.ChatHistorySettings history = new ChatSettings.ChatHistorySettings();
 		settings.setHistory(history);
@@ -71,13 +71,13 @@ class ClearPlaceholderResolverTest {
 
 		SocialismusPlayer recipient = mock(SocialismusPlayer.class,
 				withSettings().useConstructor(UUID.randomUUID(), "recipient").defaultAnswer(CALLS_REAL_METHODS));
-		when(requirements.clears(recipient)).thenReturn(false);
+		when(conditions.clears(recipient)).thenReturn(false);
 
 		ClearPlaceholderResolver resolver = new ClearPlaceholderResolver(
 				chatSettings,
 				chatMessages,
 				commands,
-				requirements,
+				conditions,
 				registry
 		);
 
@@ -88,7 +88,7 @@ class ClearPlaceholderResolverTest {
 	}
 
 	@Test
-	void resolveReturnsEmptyForTheMessageOfASenderWhoMeetsTheBypassRequirements() {
+	void resolveReturnsEmptyForTheMessageOfASenderWhoMeetsTheBypassConditions() {
 		ChatSettings settings = new ChatSettings();
 		ChatSettings.ChatHistorySettings history = new ChatSettings.ChatHistorySettings();
 		settings.setHistory(history);
@@ -105,14 +105,14 @@ class ClearPlaceholderResolverTest {
 				withSettings().useConstructor(UUID.randomUUID(), "recipient").defaultAnswer(CALLS_REAL_METHODS));
 		SocialismusPlayer sender = mock(SocialismusPlayer.class,
 				withSettings().useConstructor(UUID.randomUUID(), "sender").defaultAnswer(CALLS_REAL_METHODS));
-		when(requirements.clears(recipient)).thenReturn(true);
-		when(requirements.keepsHistory(sender)).thenReturn(true);
+		when(conditions.clears(recipient)).thenReturn(true);
+		when(conditions.keepsHistory(sender)).thenReturn(true);
 
 		ClearPlaceholderResolver resolver = new ClearPlaceholderResolver(
 				chatSettings,
 				chatMessages,
 				commands,
-				requirements,
+				conditions,
 				registry
 		);
 
@@ -120,6 +120,6 @@ class ClearPlaceholderResolverTest {
 		Component resolved = resolver.resolve(new ChatRenderContext(message, recipient));
 
 		assertEquals("", ComponentUtil.toPlain(resolved));
-		verify(requirements).keepsHistory(sender);
+		verify(conditions).keepsHistory(sender);
 	}
 }

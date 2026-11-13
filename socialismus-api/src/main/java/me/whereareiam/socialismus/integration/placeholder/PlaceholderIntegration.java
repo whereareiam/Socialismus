@@ -10,7 +10,7 @@ import java.util.UUID;
  * Integration interface for placeholder resolution systems.
  * Implementations provide the ability to resolve placeholders in text for specific players.
  * <p>
- * This interface is used for direct placeholder resolution in contexts like requirement validation,
+ * This interface is used for direct placeholder resolution in contexts like condition validation,
  * while {@link SerializerIntegration} handles integration into the main serialization pipeline.
  */
 public interface PlaceholderIntegration extends Integration {
