@@ -54,6 +54,7 @@ public final class TestMentionator {
 		when(player.getUsername()).thenReturn(name);
 		when(player.hasPermission(anyString())).thenAnswer(call -> Set.of(permissions).contains(call.getArgument(0, String.class)));
 		when(player.canSee(any())).thenReturn(true);
+		when(player.isHostedHere()).thenReturn(true);
 
 		return player;
 	}

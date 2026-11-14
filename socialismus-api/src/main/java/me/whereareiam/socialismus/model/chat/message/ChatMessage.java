@@ -71,13 +71,6 @@ public class ChatMessage {
 	private boolean vanillaSending;
 
 	/**
-	 * Whether the message was written elsewhere, such as on another server of a network, and reached this server
-	 * through {@link me.whereareiam.socialismus.service.chat.ChatCoordinationService#relay}. A relayed message is
-	 * only delivered here; it is neither offered to modules as written here nor sent on.
-	 */
-	private boolean relayed;
-
-	/**
 	 * What the message carries for those who know the keys, such as where it came from on a network.
 	 */
 	@Builder.Default

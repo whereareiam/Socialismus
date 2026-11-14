@@ -6,6 +6,7 @@ import lombok.ToString;
 import me.whereareiam.keystone.Actor;
 import me.whereareiam.socialismus.model.position.Position;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
+import me.whereareiam.socialismus.registry.PlayerSource;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -155,6 +156,18 @@ public abstract class SocialismusPlayer implements Actor {
 	 * @return true if players are within range, false otherwise
 	 */
 	public abstract boolean isWithinRange(@NotNull SocialismusPlayer other, double range);
+
+	/**
+	 * Returns whether this server hosts the player, so that what concerns a player in front of this server, such as
+	 * being told that nobody heard them or a bubble above their head, leaves out a player Socialismus only knows of,
+	 * such as one on another server of a network.
+	 *
+	 * @return whether this server hosts the player; {@code true} unless the player comes from a
+	 * {@link PlayerSource}
+	 */
+	public boolean isHostedHere() {
+		return true;
+	}
 
 	/**
 	 * Returns whether this player may see another one, so that a feature that names players, such as a private

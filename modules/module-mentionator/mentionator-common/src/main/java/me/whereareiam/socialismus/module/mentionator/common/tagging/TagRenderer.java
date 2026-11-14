@@ -115,7 +115,6 @@ public final class TagRenderer {
 				.content(message.getContent())
 				.chat(message.getChat())
 				.trigger(message.getTrigger())
-				.relayed(message.isRelayed())
 				.build();
 		alone.setAttribute(Tagging.ATTRIBUTE, new Tagging(List.of(use)));
 

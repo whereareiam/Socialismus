@@ -113,14 +113,13 @@ class RecipientSelectorTest {
 	}
 
 	@Test
-	void aRelayedMessageThatReachesNobodyHereTellsNobody() {
+	void aMessageOfAPlayerHostedElsewhereThatReachesNobodyHereTellsNobody() {
 		settings.getNotifications().setNobody(true);
 		when(conditions.reaches(any(), any(), any())).thenReturn(refused("chats.global.reaches[0].nearby"));
 		when(conditions.reaches(any(), eq(alice), any())).thenReturn(new Verdict.Passed());
-		ChatMessage relayed = message(chat(true));
-		relayed.setRelayed(true);
+		when(alice.isHostedHere()).thenReturn(false);
 
-		assertTrue(selector.apply(relayed).isCancelled());
+		assertTrue(selector.apply(message(chat(true))).isCancelled());
 		verify(nobody, never()).tell(any(), any(), any());
 	}
 
@@ -162,6 +161,7 @@ class RecipientSelectorTest {
 		SocialismusPlayer player = mock(SocialismusPlayer.class);
 		when(player.getUsername()).thenReturn(name);
 		when(player.getUniqueId()).thenReturn(UUID.nameUUIDFromBytes(name.getBytes()));
+		when(player.isHostedHere()).thenReturn(true);
 		return player;
 	}
 }

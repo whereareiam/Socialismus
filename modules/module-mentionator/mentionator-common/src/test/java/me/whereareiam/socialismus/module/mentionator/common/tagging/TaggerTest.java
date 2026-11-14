@@ -166,11 +166,10 @@ class TaggerTest {
 	}
 
 	@Test
-	void aRelayedMessageIsNotTaggedAgain() {
-		ChatMessage relayed = message(alex, "hi @Steve");
-		relayed.setRelayed(true);
+	void aMessageOfAPlayerHostedElsewhereIsNotTaggedAgain() {
+		when(alex.isHostedHere()).thenReturn(false);
 
-		assertFalse(tagger.tag(relayed).getAttribute(Tagging.ATTRIBUTE).isPresent());
+		assertFalse(tagger.tag(message(alex, "hi @Steve")).getAttribute(Tagging.ATTRIBUTE).isPresent());
 	}
 
 	private static String plain(Component component) {

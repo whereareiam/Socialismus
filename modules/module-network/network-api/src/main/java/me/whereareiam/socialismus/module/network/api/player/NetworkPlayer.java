@@ -46,6 +46,11 @@ public final class NetworkPlayer extends SocialismusPlayer {
 	}
 
 	@Override
+	public boolean isHostedHere() {
+		return false;
+	}
+
+	@Override
 	public @Nullable String getLocation() {
 		return null;
 	}

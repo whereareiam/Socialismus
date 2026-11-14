@@ -10,8 +10,9 @@ import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 public class ChatBroadcastPolicy {
 
 	public boolean allows(FormattedChatMessage msg) {
-		// A relayed message has no vanilla message on this server to fall back on, so Socialismus always sends it.
-		if (msg.isRelayed()) return true;
+		// A message of a player this server does not host has no vanilla message here to fall back on, so Socialismus
+		// always sends it.
+		if (!msg.getSender().isHostedHere()) return true;
 
 		return !msg.isVanillaSending();
 	}
