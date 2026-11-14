@@ -28,6 +28,7 @@ class ChatConditionTest {
 	private static final String NOT_IN_THE_NETHER = "{chat} is closed in {world}";
 	private static final String STAFF_ONLY = "Only the staff write in {chat}";
 	private static final String UNHEARD = "Nobody within {blocks} blocks heard you in {chat}";
+	private static final String SLOW_DOWN = "Wait {remaining} before {chat} again";
 
 	@Test
 	@Socialismus(configure = StaffChat.class)
@@ -104,6 +105,23 @@ class ChatConditionTest {
 		alice.sees("Nobody within 100 blocks heard you in local");
 		bob.neverSees("anyone?");
 		alice.neverSees("[L] Alice: anyone?");
+	}
+
+	@Test
+	@Socialismus(configure = SlowChat.class)
+	void aCooldownKeepsASenderFromWritingAgain_WhileOthersWriteOn(ScenarioContext anvil) {
+		Player alice = Player.joins(anvil, "Alice");
+		Player bob = Player.joins(anvil, "Bob");
+
+		alice.chat("first");
+		bob.sees("[S] Alice: first");
+
+		alice.chat("second");
+		alice.sees("Wait 1m before slow again");
+		bob.neverSees("second");
+
+		bob.chat("mine");
+		alice.sees("[S] Bob: mine");
 	}
 
 	@Test
@@ -212,6 +230,19 @@ class ChatConditionTest {
 					.build());
 			files.put(CHAT_SETTINGS, Map.of("notifications", Map.of("nobody", true)));
 			files.put(PHRASES, Map.of("chat", Map.of("denied", Map.of("recipient", Map.of("nearby.outside", UNHEARD)))));
+		}
+	}
+
+	/**
+	 * The only chat lets each sender write once a minute: {@code cooldown: 1m}.
+	 */
+	static final class SlowChat implements Consumer<ServerFiles> {
+		@Override
+		public void accept(ServerFiles files) {
+			files.chats(chat("slow", 0, "", "[S] {playerName}: {message}").toBuilder()
+					.requires(cooldown("1m"))
+					.build());
+			files.put(PHRASES, Map.of("chat", Map.of("denied", Map.of("cooldown.waiting", SLOW_DOWN))));
 		}
 	}
 

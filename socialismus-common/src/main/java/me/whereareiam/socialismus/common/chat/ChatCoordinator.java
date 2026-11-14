@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.event.chat.ChatBroadcastEvent;
 import me.whereareiam.socialismus.event.chat.ChatReceivedEvent;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
+import me.whereareiam.socialismus.model.condition.Recordings;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.util.EventUtil;
@@ -72,6 +73,7 @@ public class ChatCoordinator implements ChatCoordinationService {
 					if (policy.allows(msg))
 						chatBroadcaster.broadcast(msg);
 					chatHistoryContainer.addMessage(msg.getId(), msg);
+					msg.getAttribute(Recordings.ATTRIBUTE).ifPresent(Recordings::record);
 				}
 		);
 	}

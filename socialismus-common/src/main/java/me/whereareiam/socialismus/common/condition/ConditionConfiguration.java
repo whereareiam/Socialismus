@@ -18,6 +18,8 @@ import me.whereareiam.socialismus.common.condition.type.WorldCondition;
 import me.whereareiam.socialismus.common.condition.type.message.ChatCondition;
 import me.whereareiam.socialismus.common.condition.type.message.ContentCondition;
 import me.whereareiam.socialismus.common.condition.type.message.TriggerCondition;
+import me.whereareiam.socialismus.common.condition.type.recording.CooldownCondition;
+import me.whereareiam.socialismus.common.condition.type.recording.Cooldowns;
 import me.whereareiam.socialismus.common.condition.type.relation.NearbyCondition;
 import me.whereareiam.socialismus.common.condition.type.relation.SameCondition;
 import me.whereareiam.socialismus.common.condition.type.relation.SeesCondition;
@@ -26,8 +28,10 @@ import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
+import me.whereareiam.socialismus.store.Stores;
 import me.whereareiam.socialismus.type.PlatformType;
 
+import java.time.Clock;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -47,7 +51,8 @@ public final class ConditionConfiguration extends AbstractModule {
 	public Conditions provideConditions(
 			Configura configura,
 			Provider<Set<Integration>> integrations,
-			Provider<PlayerRegistry> players
+			Provider<PlayerRegistry> players,
+			Stores stores
 	) {
 		Conditions conditions = new DefaultConditions(ConditionsOptions.builder()
 				.reader(new ConfiguraSettings(configura.mapper()))
@@ -68,6 +73,7 @@ public final class ConditionConfiguration extends AbstractModule {
 
 		conditions.register(new SameCondition(players, placeholders));
 		conditions.register(new SeesCondition());
+		conditions.register(new CooldownCondition(new Cooldowns(stores, Clock.systemUTC())));
 		if (!PlatformType.isGameServer()) return conditions;
 
 		// A proxy knows neither worlds nor positions.

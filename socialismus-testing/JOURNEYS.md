@@ -77,6 +77,7 @@ One Paper server unless stated otherwise.
 - [x] Local chat reaches only the players `nearby` in its `reaches` **first**
 - [x] `same: world` keeps a chat to the players of the sender's world, however far
 - [x] A message that reaches nobody is kept back and tells its sender why, in the `chat.denied.recipient` phrase of the reason
+- [x] A `cooldown` in a chat's `requires` keeps a sender from writing again until it ends; another sender writes on
 - [x] A `permission` condition decides who may send in a chat and who receives it
 - [x] A `world` condition keeps a chat to the players of its worlds
 - [x] A sender a chat's conditions refuse is told why in the `chat.denied` phrases, or in the `denied` phrases of
