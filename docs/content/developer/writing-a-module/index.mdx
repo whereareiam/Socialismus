@@ -153,11 +153,11 @@ public final class GreeterPhrases extends PhrasesConfigProvider {
     }
 }
 
-phrasebook.add("greeter", greeterPhrases::get);            // in enable
-phrasebook.remove("greeter");                              // in disable
+PhraseSource source = phrasebook.add("greeter", greeterPhrases::get);   // in enable
+source.close();                                                        // in disable
 ```
 
-Get Socialismus's `Phrasebook` from its injector. `phrasebook.phrase("greeter", "welcome-back", placeholders)` gives a phrase ready to send, looking under `greeter.` first, and `phrasebook.render("greeter", text)` puts the phrases into a text with `<ref:key>`. To tell a refused player why, pass a failed verdict to `ConditionTexts.denied(failed, "greeter", placeholders)`: it takes the line's `denied` text or the `greeter.denied.*` and `denied.*` phrases of the reason, and adds the line's `hint`. `phrasebook.checked("greeter", place)` refuses a place whose texts refer to a phrase no file has, naming the text's path.
+Get Socialismus's `Phrasebook` from its injector and bind your scope once, `PhraseScope greeter = phrasebook.scope("greeter")`. `greeter.phrase("welcome-back", placeholders)` gives a phrase ready to send, looking under `greeter.` first, `greeter.find("welcome-back")` the text as written, and `greeter.render(text)` puts the phrases into a text with `<ref:key>`. To tell a refused player why, pass a failed verdict to `ConditionTexts.denied(failed, greeter, placeholders)`: it takes the line's `denied` text or the `greeter.denied.*` and `denied.*` phrases of the reason, and adds the line's `hint`. `greeter.checked(place)` refuses a place whose texts refer to a phrase no file has, naming the text's path.
 
 ## Keeping data
 
