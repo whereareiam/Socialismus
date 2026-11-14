@@ -111,6 +111,8 @@ class BubbleTest {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");
 
+		bob.standsBeside(alice);
+
 		alice.chat("hello");
 
 		SeenEntity bubble = bob.seesAbove(alice, "hello");
@@ -124,6 +126,8 @@ class BubbleTest {
 	void chatShowsAnArmorStandBubbleOnSpigot(ScenarioContext anvil) {
 		Player alice = Player.joins(anvil, "Alice");
 		Player bob = Player.joins(anvil, "Bob");
+
+		bob.standsBeside(alice);
 
 		alice.chat("hello");
 
