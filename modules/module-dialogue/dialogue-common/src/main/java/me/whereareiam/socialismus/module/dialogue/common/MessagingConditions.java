@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.module.dialogue.common;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
@@ -33,19 +34,19 @@ public class MessagingConditions {
 	 * @param recipientName the recipient's name, for {@code {recipientName}}
 	 * @return whether the message may be sent, and why not
 	 */
-	public @NotNull Verdict judge(
+	public @NotNull Judgement judge(
 			@NotNull SocialismusPlayer sender,
 			@Nullable SocialismusPlayer recipient,
 			@NotNull String recipientName
 	) {
-		me.whereareiam.conditia.result.Verdict verdict = conditions.writes(sender, recipient);
-		if (verdict.passed()) return Verdict.ALLOWED;
-		if (!(verdict instanceof me.whereareiam.conditia.result.Verdict.Failed failed)) return Verdict.REFUSED;
+		Verdict verdict = conditions.writes(sender, recipient);
+		if (verdict instanceof Verdict.Passed passed) return new Judgement(true, null, passed);
+		if (!(verdict instanceof Verdict.Failed failed)) return Judgement.REFUSED;
 
 		Phrase reason = conditionTexts.denied(failed, DialogueConditions.PHRASE_SCOPE, Map.of("recipientName", recipientName))
 				.orElse(null);
 
-		return new Verdict(false, reason);
+		return new Judgement(false, reason, null);
 	}
 
 	/**
@@ -53,9 +54,21 @@ public class MessagingConditions {
 	 *
 	 * @param allowed whether the message may be sent
 	 * @param reason  why it may not, as the sender is told; {@code null} when allowed or nothing words it
+	 * @param passed  the passed verdict, to {@link #record()} once the message is sent; {@code null} when refused
 	 */
-	public record Verdict(boolean allowed, @Nullable Phrase reason) {
-		static final Verdict ALLOWED = new Verdict(true, null);
-		static final Verdict REFUSED = new Verdict(false, null);
+	public record Judgement(
+			boolean allowed,
+			@Nullable Phrase reason,
+			@Nullable Verdict.Passed passed
+	) {
+		static final Judgement ALLOWED = new Judgement(true, null, null);
+		static final Judgement REFUSED = new Judgement(false, null, null);
+
+		/**
+		 * Records what the lists that allowed the message record, such as a cooldown, once it was sent.
+		 */
+		public void record() {
+			if (passed != null) passed.record();
+		}
 	}
 }

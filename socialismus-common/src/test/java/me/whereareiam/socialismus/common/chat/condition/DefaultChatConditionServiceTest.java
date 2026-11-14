@@ -12,8 +12,10 @@ import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.configura.Config;
 import me.whereareiam.configura.type.Format;
 import me.whereareiam.socialismus.common.condition.ConditionConfiguration;
+import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
 import me.whereareiam.socialismus.common.config.defaults.chat.ChatSettingsDefaults;
 import me.whereareiam.socialismus.common.phrase.DefaultPhrasebook;
+import me.whereareiam.socialismus.common.store.DefaultStores;
 import me.whereareiam.socialismus.common.style.TestStyles;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import static me.whereareiam.conditia.testing.TestRequirements.yaml;
@@ -59,7 +62,8 @@ class DefaultChatConditionServiceTest {
 		conditions = new ConditionConfiguration().provideConditions(
 				Config.builder().format(Format.YAML).feature(new ConditiaFeature()).build(),
 				Set::of,
-				() -> mock(PlayerRegistry.class)
+				() -> mock(PlayerRegistry.class),
+				new DefaultStores(new SerializationServiceAdapter())
 		);
 		chatConditions = new DefaultChatConditionService(conditions, new DefaultPhrasebook(() -> phrases), new TestStyles(), () -> settings, mock(EventManager.class));
 		when(alice.hasPermission("socialismus.chat.local")).thenReturn(true);
@@ -157,6 +161,30 @@ class DefaultChatConditionServiceTest {
 		ConditionException exception = assertThrows(ConditionException.class, chatConditions::start);
 
 		assertEquals("chats.local.reaches[0].nearby", exception.getPath());
+	}
+
+	@Test
+	void aCooldownCountsOnlyWhatWasRecorded_PerLine_OrPerKeyAcrossLines() {
+		when(alice.getUniqueId()).thenReturn(java.util.UUID.randomUUID());
+		Chat global = chat("global", "- cooldown: 1m", "[]");
+		Chat shout = chat("shout", "- cooldown: { duration: 1m, key: loud }", "[]");
+		Chat yell = chat("yell", "- cooldown: { duration: 1m, key: loud }", "[]");
+		List.of(global, shout, yell).forEach(chatConditions::bind);
+		chatConditions.start();
+
+		Verdict.Passed first = assertInstanceOf(Verdict.Passed.class, chatConditions.writes(global, message(alice)));
+		assertTrue(chatConditions.writes(global, message(alice)).passed());
+
+		first.record();
+
+		Verdict.Failed waiting = assertInstanceOf(Verdict.Failed.class, chatConditions.writes(global, message(alice)));
+		assertEquals("cooldown.waiting", waiting.key().orElseThrow());
+		assertEquals(Map.of("remaining", "1m"), waiting.reason().orElseThrow().values());
+		assertTrue(chatConditions.writes(shout, message(alice)).passed());
+
+		((Verdict.Passed) chatConditions.writes(shout, message(alice))).record();
+
+		assertFalse(chatConditions.writes(yell, message(alice)).passed());
 	}
 
 	@Test

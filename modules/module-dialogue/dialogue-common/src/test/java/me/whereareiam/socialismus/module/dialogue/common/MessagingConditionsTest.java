@@ -51,7 +51,7 @@ class MessagingConditionsTest {
 		Phrase reason = Phrase.of("Bob may not receive", Map.of());
 		when(conditionTexts.denied(any(), eq("dialogue"), eq(Map.of("recipientName", "Bob")))).thenReturn(Optional.of(reason));
 
-		MessagingConditions.Verdict verdict = conditions().judge(alice, bob, "Bob");
+		MessagingConditions.Judgement verdict = conditions().judge(alice, bob, "Bob");
 
 		assertFalse(verdict.allowed());
 		assertSame(reason, verdict.reason());
@@ -73,7 +73,7 @@ class MessagingConditionsTest {
 
 	@Test
 	void refusesARecipientThisServerDoesNotKnowWithoutAReason() {
-		MessagingConditions.Verdict verdict = conditions().judge(alice, null, "Bob");
+		MessagingConditions.Judgement verdict = conditions().judge(alice, null, "Bob");
 
 		assertFalse(verdict.allowed());
 		assertNull(verdict.reason());

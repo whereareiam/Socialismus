@@ -5,6 +5,8 @@ import me.whereareiam.conditia.adapter.configura.ConditiaFeature;
 import me.whereareiam.configura.Config;
 import me.whereareiam.configura.type.Format;
 import me.whereareiam.socialismus.common.condition.ConditionConfiguration;
+import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
+import me.whereareiam.socialismus.common.store.DefaultStores;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
 import me.whereareiam.socialismus.exception.StyleException;
@@ -55,7 +57,8 @@ class DefaultStylesTest {
 		Conditions conditions = new ConditionConfiguration().provideConditions(
 				Config.builder().format(Format.YAML).feature(new ConditiaFeature()).build(),
 				Set::of,
-				() -> mock(PlayerRegistry.class)
+				() -> mock(PlayerRegistry.class),
+				new DefaultStores(new SerializationServiceAdapter())
 		);
 		file.setStyles(new ArrayList<>(List.of(
 				style("basic", List.of("color", "bold", "italic"), List.of()),

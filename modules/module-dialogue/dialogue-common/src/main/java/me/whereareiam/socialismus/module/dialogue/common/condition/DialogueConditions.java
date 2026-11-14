@@ -24,6 +24,7 @@ import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +120,14 @@ public class DialogueConditions implements EventListener {
 		if (!requires.passed() || current.isReachesAnyone()) return requires;
 		if (recipient == null) return unbound("messaging.reaches");
 
-		return current.getReaches().check(Situation.of(RECIPIENT, recipient).and(SENDER, sender));
+		Verdict reaches = current.getReaches().check(Situation.of(RECIPIENT, recipient).and(SENDER, sender));
+		if (!(reaches instanceof Verdict.Passed both)) return reaches;
+
+		// What both lists record, such as a cooldown, is recorded once the message is sent.
+		List<Verdict.Recordable> recordings = new ArrayList<>(((Verdict.Passed) requires).recordings());
+		recordings.addAll(both.recordings());
+
+		return new Verdict.Passed(recordings);
 	}
 
 	/**

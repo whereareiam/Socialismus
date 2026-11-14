@@ -45,6 +45,7 @@ import me.whereareiam.socialismus.common.event.EventController;
 import me.whereareiam.socialismus.common.integration.IntegrationLifecycle;
 import me.whereareiam.socialismus.common.logging.LoggingLifecycle;
 import me.whereareiam.socialismus.common.player.DefaultPlayerRegistry;
+import me.whereareiam.socialismus.common.store.DefaultStores;
 import me.whereareiam.socialismus.common.provider.*;
 import me.whereareiam.socialismus.common.style.DefaultStyles;
 import me.whereareiam.socialismus.common.style.StyleLifecycle;
@@ -70,6 +71,7 @@ import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.SerializationService;
+import me.whereareiam.socialismus.store.Stores;
 import me.whereareiam.socialismus.service.UpdateProvider;
 import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
@@ -157,6 +159,7 @@ public class CommonConfiguration extends AbstractModule {
 		// Services
 		bind(SerializerEngine.class).toProvider(SerializerEngineProvider.class);
 		bind(SerializationService.class).to(SerializationServiceAdapter.class);
+		bind(Stores.class).to(DefaultStores.class);
 		bind(EventManager.class).to(EventController.class);
 		bind(PlayerRegistry.class).to(DefaultPlayerRegistry.class);
 		bind(ChatCoordinationService.class).to(ChatCoordinator.class);

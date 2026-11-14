@@ -35,6 +35,7 @@ import me.whereareiam.socialismus.module.network.common.config.migration.CoreSyn
 import me.whereareiam.socialismus.module.network.common.config.migration.NetworkConfigMigrations;
 import me.whereareiam.socialismus.module.network.common.ownership.NetworkChatOwnership;
 import me.whereareiam.socialismus.module.network.common.replication.DefaultReplicationSystem;
+import me.whereareiam.socialismus.module.network.common.store.NetworkStoreReplication;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
@@ -44,6 +45,7 @@ import me.whereareiam.socialismus.service.chat.ChatHistoryService;
 import me.whereareiam.socialismus.service.chat.ChatOwnershipService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.service.resource.ResourceProvider;
+import me.whereareiam.socialismus.store.Stores;
 import me.whereareiam.socialismus.type.PlatformType;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
@@ -74,10 +76,12 @@ public class SocialismusNetwork implements SocialisticModule, ResourceProvider, 
 	private final ChatCoordinationService chatCoordinationService;
 	private final ChatContainerService chatContainerService;
 	private final ChatHistoryService chatHistoryService;
+	private final Stores stores;
 
 	private ScheduledExecutorService executor;
 	private DefaultNetworkService network;
 	private NetworkChatOwnership ownership;
+	private NetworkStoreReplication storeReplication;
 	private Duration lifetime;
 
 	@Override
@@ -130,6 +134,8 @@ public class SocialismusNetwork implements SocialisticModule, ResourceProvider, 
 		playerRegistry.addSource(network.players());
 		network.players().onServerByProxy((player, server) -> executor.execute(this::learnServerName));
 		chatOwnershipService.register(ownership);
+		storeReplication = new NetworkStoreReplication(replication);
+		stores.addReplication(storeReplication);
 		playerRegistry.getPlayers().forEach(this::host);
 		resourceRegistry.get(NetworkResources.TRANSPORT).ifPresent(this::attach);
 
@@ -139,6 +145,7 @@ public class SocialismusNetwork implements SocialisticModule, ResourceProvider, 
 
 	@Override
 	public void disable() {
+		stores.removeReplication(storeReplication);
 		chatOwnershipService.unregister(ownership);
 		playerRegistry.removeSource(network.players());
 		network.leave();

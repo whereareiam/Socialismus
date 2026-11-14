@@ -53,7 +53,7 @@ public final class DefaultDialogueService implements DialogueService {
 			return;
 		}
 
-		MessagingConditions.Verdict verdict = conditions.judge(sender, recipient.orElse(null), recipientAsSpelled);
+		MessagingConditions.Judgement verdict = conditions.judge(sender, recipient.orElse(null), recipientAsSpelled);
 		if (!verdict.allowed()) {
 			notices.notAllowed(sender, recipientAsSpelled, verdict.reason());
 			return;
@@ -68,6 +68,7 @@ public final class DefaultDialogueService implements DialogueService {
 
 		privileges.grant(message);
 		deliveryCoordinator.processMessageDelivery(message);
+		verdict.record();
 		// A message the recipient refused belongs to no conversation of theirs.
 		if (message.getDeliveryStatus() != DeliveryStatus.MESSAGES_OFF && message.getDeliveryStatus() != DeliveryStatus.IGNORED)
 			conversationService.addMessage(conversation, message);

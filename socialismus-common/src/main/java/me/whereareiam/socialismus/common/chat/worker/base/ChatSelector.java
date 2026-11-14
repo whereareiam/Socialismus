@@ -14,6 +14,7 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.ChatTrigger;
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.model.condition.Recordings;
 import me.whereareiam.socialismus.model.chat.trigger.RegexChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.model.phrase.Phrase;
@@ -124,6 +125,9 @@ public class ChatSelector {
 			message.setCancelled(true);
 			return message;
 		}
+
+		// What the chosen chat's requires record, such as a cooldown, is recorded once the message went out.
+		Recordings.of(message).add(conditions.writes(match.chat, message));
 
 		// Fire event and set chat
 		ChatResolvedEvent event = new ChatResolvedEvent(message, match.chat, message.isCancelled());

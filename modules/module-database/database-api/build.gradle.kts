@@ -12,7 +12,11 @@ dependencies {
     compileOnlyApi(libs.strata.adapter.database)
 
     testImplementation(libs.dialectica.bundle)
-    testImplementation(libs.strata.adapter.database.dialectica)
+    testImplementation(libs.strata.adapter.database.dialectica) {
+        // Its Dialectica is the one SocialismusDatabase declares, not the 3.x it was built against.
+        exclude(group = "me.whereareiam", module = "dialectica")
+        exclude(group = "me.whereareiam", module = "dialectica-api")
+    }
 }
 
 toolkitPublish {

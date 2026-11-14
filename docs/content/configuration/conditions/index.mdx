@@ -69,6 +69,7 @@ reaches:
 | `time` | from `from` until before `to` each day | `time: { from: "22:00", to: "06:00" }` |
 | `date` | on the days from `from` to `to` | `date: { from: 2026-12-20, to: 2027-01-06 }` |
 | `chance` | for a share of checks | `chance: 0.25` |
+| `cooldown` | the player did not use this line within that time; with `key`, lines that share the key share one cooldown | `cooldown: 30s`, `cooldown: { duration: 5m, key: everyone }` |
 | `language` | the player's game client is set to one of the languages; `de` takes every German, `pt_br` only Brazilian Portuguese | `language: [de, pt_br]` |
 | `nearby` | the player is within that many blocks of the sender, in the same world; not on a proxy | `nearby: 200` |
 | `same` | the player shares the sender's `world` (not on a proxy) or `server`, or the value of a placeholder; an empty value is shared with nobody | `same: { placeholder: "%townyadvanced_town%" }` |
@@ -76,6 +77,8 @@ reaches:
 | `bubbler:activator`, `bubbler:chat` | what raised a bubble: `CHAT` or `COMMAND`, and the chat of the message | `bubbler:chat: [fallback, local]` |
 
 `nearby`, `same` and `sees` compare two players: in a `reaches` list the recipient with the sender, which `sees: [recipient, sender]` spells out. On a proxy, which knows no positions, a local chat reaches its server with `same: server`.
+
+A `cooldown` counts a use only once the action happened: a chat message that went out, a private message that was sent. A message a later line refused, or that reached nobody, uses none. It works in a chat's and a format's `requires` and in Dialogue's `messaging.requires`; with SocialismusNetwork every server knows a player's cooldowns. Its reason is `cooldown.waiting`, with `{remaining}` such as `1m 30s`.
 
 Modules add conditions of their own, named `<module id>:<name>`. A list that names a condition nobody registered, a part its place does not have, or settings that cannot be read stops the start with its path, such as `chats.staff.requires[0].permission`; after `/socialismus reload` the console names the list and the previous one stays in use.
 
@@ -113,6 +116,7 @@ A blank phrase leaves the reason to the next place that words it. Phrases Social
 | `same.outside`, `same.inside` | `{place}`: `world`, `server`, or the sender's value of the placeholder |
 | `sees.hidden`, `sees.visible` | none |
 | `language.outside`, `language.inside` | `{languages}` listed and the player's `{language}` |
+| `cooldown.waiting` | `{remaining}` |
 
 ### A message that reaches nobody
 
