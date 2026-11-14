@@ -1,0 +1,190 @@
+---
+title: Mentionator
+description: Discord-style tags in chat, such as @Steve, @everyone or @staff, and how tagged players are notified.
+---
+
+Mentionator lets players tag others in chat. A tag is highlighted for everyone who reads the message, and the players it tags are notified with a sound, a title, an action bar text, a boss bar or a chat line.
+
+Install the Mentionator jar in `plugins/Socialismus/modules/` (`plugins/socialismus/modules/` on Velocity) next to Socialismus. Its files are in `modules/mentionator/`:
+
+```text
+modules/mentionator/
+  settings.yml          limits
+  messages.yml          what /socialismus mentions says
+  commands.yml          /socialismus mentions
+  phrases.yml           what a sender a tag refuses is told
+  tags/
+    players.yml         player, nickname (off; needs Essentials)
+    groups.yml          everyone, here, server, nearby
+    roles.yml           staff, rank (off; needs LuckPerms)
+  notifications/
+    pings.yml           ping, quiet, whisper
+    alerts.yml          alert, everyone
+```
+
+Mentionator writes the files of `tags/` and `notifications/` only while the folder is empty. Add your own files next to them; every file of each folder is read. Tags that need another plugin ship disabled.
+
+## Tags
+
+Everything a player can write to tag someone is a tag:
+
+```yaml
+# tags/players.yml
+tags:
+  - id: "player"
+    enabled: true
+    priority: 0
+    written: ["@{username}", "{username}"]
+    parameters:
+      minimumLength: 3
+    formats:
+      - format: "<aqua>@{match}</aqua>"
+      - format: "<gold><bold>@{match}</bold></gold>"
+        reaches:
+          - mentionator:targeted: [recipient, message]
+    notify: [ping]
+    targets:
+      - sees: [target, sender]
+```
+
+| Field | What it does |
+|-------|--------------|
+| `id` | the tag's name, for `{tag}`, its permission and its phrases |
+| `enabled` | a disabled tag is plain text |
+| `priority` | where a word fits several tags, the higher priority wins |
+| `written` | the ways the tag is written; see below |
+| `parameters` | how it is matched and counted; see below |
+| `formats` | how it looks; each viewer sees the last format whose `requires` the sender and whose `reaches` the viewer meets, and the tag as written when none fits |
+| `notify` | the notifications a tagged player gets, by their id in `notifications/` |
+| `requires` | who may use the tag: the sender; a tag the sender may not use stays plain text and they are told why |
+| `targets` | whom the tag tags, checked for each player as `target`, with `sender` and `message` |
+| `bypass` | senders whose tag notifies players who turned tags off |
+
+A form of `written` is one of three kinds:
+
+- `{username}` names a player: `@{username}` tags Steve when someone writes `@Steve`.
+- A `%placeholder%` names every player whose value it is: `@%luckperms_primary_group_name%` tags every player whose primary group is the word written, such as `@admin`. Each server reads the values of its own players when they join or change servers and every `refresh`, so it works across the network and on a proxy.
+- Anything else is written as is and names every player `targets` lets through, as `@everyone` does.
+
+Tags are matched as written, ignoring case, by whole words: letters, digits and `_` end a word, so `@Steve,` is a tag and `@Steves` is not, nor is `mail@Steve`. A tag never matches part of a name. A player who is offline is no tag: `@Steve` stays plain text while Steve is away. `\@everyone` shows `@everyone` without tagging anyone. Only what the player typed is scanned, never the chat's format.
+
+`{match}` in a format or a notification is what the tag matched in its own spelling: the player's name or the value, however the sender wrote it.
+
+| Parameter | Default | What it does |
+|-----------|---------|--------------|
+| `minimumLength` | any | how long a bare form, such as `{username}` without `@`, must be, so short names in ordinary words tag nobody |
+| `perMessage` | any | how often the tag counts in one message; the rest stay plain text |
+| `refresh` | `1m` | how often the values of a `%placeholder%` form are read again |
+| `direct` | true for `{username}` forms | whether the tag names the player, for players who hear only direct tags |
+
+### Who receives the message
+
+Being tagged does not decide who receives a message; the chat's `reaches` does. A tagged player the chat does not reach is notified, but does not see the line. To let tagged players receive it, add `mentionator:targeted` to the chat's `reaches`:
+
+```yaml
+# chat/list/default.yml
+reaches:
+  - any:
+      - nearby: 200
+      - mentionator:targeted: [recipient, message]
+```
+
+`mentionator:reached` holds for the players the message's chat reaches; the default `@here` tags only them. With Dialogue installed, the default tags skip players who ignore the sender with `not: { dialogue:ignores: [target, sender] }`.
+
+### Cooldowns
+
+A cooldown on a tag is the `cooldown` condition in its `requires`. It counts a use only once the message went out:
+
+```yaml
+requires:
+  - permission: "socialismus.mentionator.tag.everyone"
+    denied: "<ref:everyone-denied>"
+  - cooldown: 5m
+    denied: "<ref:everyone-cooldown>"
+```
+
+A refused sender is told the line's `denied` text, or else the phrase of the reason under `mentionator.denied` in `phrases.yml`, such as `mentionator.denied.cooldown.waiting`; `{tag}` names the tag.
+
+## Notifications
+
+A notification is a named list of contents. A tagged player gets each notification once per message, however often it tagged them.
+
+```yaml
+# notifications/alerts.yml
+notifications:
+  - id: "alert"
+    contents:
+      - sound: "minecraft:block.note_block.pling"
+        parameters: { volume: 1.0, pitch: 1.4 }
+      - title: "<gold>@{match}"
+        subtitle: "<dark_gray>{sender}: {message}"
+        parameters: { fadeIn: 5, stay: 40, fadeOut: 10 }
+        requires:
+          - not: { world: "pvp_arena" }
+```
+
+| Content | Parameters |
+|---------|------------|
+| `chat` | none |
+| `actionbar` | none |
+| `title`, with `subtitle` | `fadeIn`, `stay`, `fadeOut` in ticks; a title is gold and a subtitle dark gray unless their text says otherwise |
+| `sound` | `volume`, `pitch` |
+| `bossbar` | `color`, `overlay`, `duration`; the bar empties over its duration |
+
+A content's `requires` is about the tagged player, as `target`. Texts fill `{sender}`, `{tag}`, `{match}`, `{message}`, `{chat}` and `{server}`, and PlaceholderAPI placeholders of the tagged player. The message goes in as the sender wrote it, never read as formatting.
+
+## Limits
+
+```yaml
+# settings.yml
+limits:
+  perMessage:                     # tags one message may hold; the last entry the sender meets counts; -1 for any
+    - limit: 3
+    - limit: 10
+      requires:
+        - permission: "socialismus.mentionator.limit.vip"
+    - limit: -1
+      requires:
+        - permission: "socialismus.admin"
+  received:                       # notifications a player gets in a while; tags past it are shown but silent
+    count: 5
+    per: 1m
+    bypass:
+      - permission: "socialismus.mentionator.limit.bypass"
+  repeat: 10s                     # the same sender notifies the same player at most this often
+  self: false                     # whether players may tag themselves
+```
+
+A tag counts once each time it is written, however many players it tags.
+
+## Players
+
+`/socialismus mentions` shows a player which tags notify them and the tags they may use; hovering a tag shows how it is written. `/socialismus mentions <all | direct | none>` chooses:
+
+- `all`: every tag notifies them.
+- `direct`: only direct tags, such as their name.
+- `none`: no tag, except tags whose `bypass` the sender meets.
+
+Whatever they choose, the tag stays highlighted in chat. With SocialismusNetwork the choice holds on every server, and with SocialismusDatabase it outlives restarts. On Paper, the chat offers the tags a player may use as completions while they type.
+
+## Permissions
+
+| Permission | For |
+|------------|-----|
+| `socialismus.mentionator.tag.<id>` | using the default group tags, such as `socialismus.mentionator.tag.everyone` |
+| `socialismus.mentionator.staff` | being tagged by `@staff` |
+| `socialismus.mentionator.format.clickable` | tagging players with a name others can click to message them |
+| `socialismus.mentionator.limit.vip` | ten tags per message instead of three |
+| `socialismus.mentionator.limit.bypass` | notifying players past `limits.received` |
+
+`/socialismus mentions` needs no permission.
+
+## Across a network
+
+With SocialismusNetwork, every player of the network may be tagged. The server a message is written on decides whom it tags; the server of each tagged player notifies them, as their mode and the limits allow. The tags travel with the chat line, so every server shows them and a chat's `reaches` there knows whom they tag. Where a proxy handles chat, it shows titles, action bars, boss bars and chat lines itself, and the server the player is on plays the sounds.
+
+Private messages of Dialogue are never scanned for tags. Chat bubbles of Bubbler show each tag in its first format without a `reaches`.
+
+## For developers
+
+`me.whereareiam.socialismus.module:Mentionator` holds the models of tags and notifications, `MentionatorService` for players' modes and usable tags, `Tagging.ATTRIBUTE` for the tags a chat message holds, and `PlayerTaggedEvent`, fired on the tagged player's server before they are notified; cancelling it keeps them silent.
