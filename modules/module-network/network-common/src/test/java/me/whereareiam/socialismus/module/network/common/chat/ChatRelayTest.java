@@ -73,11 +73,11 @@ class ChatRelayTest {
 	}
 
 	@Test
-	void aRelayedOrCancelledMessageIsNotSentOn() {
+	void aMessageFromAnotherNodeOrCancelledIsNotSentOn() {
 		Side lobby = side("lobby");
 		Side survival = side("survival");
 		FormattedChatMessage relayed = message(player("Alice", null), GLOBAL);
-		relayed.setRelayed(true);
+		relayed.setAttribute(NetworkAttributes.ORIGIN, Origin.remote(NodeId.of("survival")));
 
 		lobby.relay.onChatBroadcast(new ChatBroadcastEvent(relayed, false));
 		lobby.relay.onChatBroadcast(new ChatBroadcastEvent(message(player("Bob", null), GLOBAL), true));

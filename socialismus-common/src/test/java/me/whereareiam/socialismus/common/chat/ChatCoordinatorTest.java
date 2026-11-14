@@ -43,14 +43,13 @@ class ChatCoordinatorTest {
 	}
 
 	@Test
-	void aRelayedMessageFiresNoReceivedEventAndIsMarkedRelayed() {
+	void aRelayedMessageFiresNoReceivedEvent() {
 		ChatMessage fromElsewhere = ChatMessage.builder().cancelled(true).build();
 		when(chatMessageProcessor.process(fromElsewhere)).thenReturn(fromElsewhere);
 
 		coordinator.relay(fromElsewhere);
 
 		verify(eventManager, never()).call(any(ChatReceivedEvent.class));
-		assertTrue(fromElsewhere.isRelayed());
 	}
 
 	@Test
@@ -63,7 +62,6 @@ class ChatCoordinatorTest {
 
 		coordinator.relay(relayed);
 
-		assertTrue(relayed.isRelayed());
 		assertEquals(format, processed.getFormat());
 	}
 }

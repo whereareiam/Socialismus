@@ -78,7 +78,9 @@ public final class ChatRelay implements EventListener {
 	@SocialisticEvent(EventOrder.HIGHEST)
 	public void onChatBroadcast(ChatBroadcastEvent event) {
 		FormattedChatMessage message = event.getChatMessage();
-		if (event.isCancelled() || message.isRelayed() || !settings.get().isEnabled()) return;
+		// A message that arrived from another node carries its origin and is never sent on.
+		if (event.isCancelled() || message.getAttribute(NetworkAttributes.ORIGIN).isPresent()) return;
+		if (!settings.get().isEnabled()) return;
 		if (message.getChat() == null) return;
 
 		SocialismusPlayer sender = message.getSender();

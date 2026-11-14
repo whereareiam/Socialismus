@@ -78,7 +78,7 @@ public class RecipientSelector {
 		boolean reachesOthers = finalRecipients.stream().anyMatch(recipient -> recipient != sender);
 		if (reachesOthers || !settings.getNotifications().isNobody()) return chatMessage;
 
-		if (!chatMessage.isRelayed()) nobody.tell(sender, chat, refusals);
+		if (sender.isHostedHere()) nobody.tell(sender, chat, refusals);
 		chatMessage.setCancelled(true);
 
 		return chatMessage;

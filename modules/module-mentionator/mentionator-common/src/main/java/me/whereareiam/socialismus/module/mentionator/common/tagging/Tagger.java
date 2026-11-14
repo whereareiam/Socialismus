@@ -32,8 +32,8 @@ import java.util.UUID;
  * Finds the tags of a message once its chat is chosen and before its recipients are, so a chat's {@code reaches} can
  * let tagged players receive it: checks who may use each tag and whom it tags, applies the limits of a message, puts
  * each tag into the message in its plain format and marks the message with its {@link Tagging}. A sender who may not
- * use a tag is told why; the tag stays plain text. Only messages written on this server are tagged; a relayed one
- * carries its tagging from where it was written.
+ * use a tag is told why; the tag stays plain text. Only messages of players this server hosts are tagged; a message
+ * relayed from another server carries its tagging from where it was written.
  */
 @Singleton
 public class Tagger {
@@ -89,7 +89,7 @@ public class Tagger {
 	 * @return the message, its tags in place
 	 */
 	public @NotNull ChatMessage tag(@NotNull ChatMessage message) {
-		if (message.isCancelled() || message.isRelayed() || message.getChat() == null || message.getContent() == null) return message;
+		if (message.isCancelled() || !message.getSender().isHostedHere() || message.getChat() == null || message.getContent() == null) return message;
 		if (message.getAttribute(Tagging.ATTRIBUTE).isPresent()) return message;
 
 		Catalog catalog = conditions.catalog();
