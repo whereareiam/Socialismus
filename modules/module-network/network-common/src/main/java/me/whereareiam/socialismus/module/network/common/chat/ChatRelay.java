@@ -19,12 +19,14 @@ import me.whereareiam.socialismus.module.network.api.player.NetworkPlayers;
 import me.whereareiam.socialismus.module.network.api.replication.ReplicatedChannel;
 import me.whereareiam.socialismus.module.network.api.replication.ReplicationSystem;
 import me.whereareiam.socialismus.module.network.common.config.NetworkSettings;
+import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.chat.ChatCoordinationService;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -32,7 +34,8 @@ import java.util.function.Supplier;
  * Carries chat between the nodes of the network: a message written on this node and broadcast here goes to the other
  * nodes, which deliver it to the players whose chat they handle and its {@code reaches} lets through, and so does a
  * removal from the chat history. A sender on another server is never {@code nearby}, so a chat that reaches only
- * nearby players stays on its node by itself. A message or removal that arrived from another node is never sent on.
+ * nearby players stays on its node by itself. A message carries the attributes modules ask SocialismusNetwork to
+ * carry. A message or removal that arrived from another node is never sent on.
  */
 public final class ChatRelay implements EventListener {
 	static final String CHAT_CHANNEL = "socialismus:chat";
@@ -45,6 +48,8 @@ public final class ChatRelay implements EventListener {
 	private final ChatContainerService chats;
 	private final ChatHistoryService chatHistory;
 	private final NetworkPlayers players;
+	private final CarriedAttributes attributes;
+	private final SerializationService serialization;
 
 	public ChatRelay(
 			@NotNull ReplicationSystem replication,
@@ -52,7 +57,9 @@ public final class ChatRelay implements EventListener {
 			@NotNull ChatCoordinationService coordination,
 			@NotNull ChatContainerService chats,
 			@NotNull ChatHistoryService chatHistory,
-			@NotNull NetworkPlayers players
+			@NotNull NetworkPlayers players,
+			@NotNull CarriedAttributes attributes,
+			@NotNull SerializationService serialization
 	) {
 		this.chat = replication.channel(CHAT_CHANNEL, ChatRecord.class);
 		this.history = replication.channel(HISTORY_CHANNEL, HistoryRemoval.class);
@@ -61,6 +68,8 @@ public final class ChatRelay implements EventListener {
 		this.chats = chats;
 		this.chatHistory = chatHistory;
 		this.players = players;
+		this.attributes = attributes;
+		this.serialization = serialization;
 
 		chat.subscribe(this::receive);
 		history.subscribe(this::receive);
@@ -80,7 +89,8 @@ public final class ChatRelay implements EventListener {
 				sender.getServer(),
 				message.getChat().getId(),
 				message.getContent(),
-				message.getFormat()
+				message.getFormat(),
+				attributes.write(message, serialization)
 		));
 	}
 
@@ -126,7 +136,7 @@ public final class ChatRelay implements EventListener {
 					.chat(chatOfRecord)
 					.format(record.getFormat())
 					.build();
-			message.setAttribute(NetworkAttributes.ORIGIN, origin);
+			receive(message, record, origin);
 			coordination.relay(message);
 			return;
 		}
@@ -138,8 +148,13 @@ public final class ChatRelay implements EventListener {
 				.content(record.getContent())
 				.chat(chatOfRecord)
 				.build();
-		message.setAttribute(NetworkAttributes.ORIGIN, origin);
+		receive(message, record, origin);
 		coordination.relay(message);
+	}
+
+	private void receive(ChatMessage message, ChatRecord record, Origin origin) {
+		message.setAttribute(NetworkAttributes.ORIGIN, origin);
+		attributes.read(record.getAttributes() == null ? Map.of() : record.getAttributes(), message, serialization);
 	}
 
 	private void receive(HistoryRemoval removal, Origin origin) {

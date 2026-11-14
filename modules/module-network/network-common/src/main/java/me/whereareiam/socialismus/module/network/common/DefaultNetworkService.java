@@ -1,11 +1,13 @@
 package me.whereareiam.socialismus.module.network.common;
 
+import me.whereareiam.socialismus.model.attribute.AttributeKey;
 import me.whereareiam.socialismus.module.network.api.NetworkService;
 import me.whereareiam.socialismus.module.network.api.lease.Leases;
 import me.whereareiam.socialismus.module.network.api.model.NetworkNode;
 import me.whereareiam.socialismus.module.network.api.replication.ReplicationSystem;
 import me.whereareiam.socialismus.module.network.api.transport.ReplicationStore;
 import me.whereareiam.socialismus.module.network.api.transport.ReplicationTransport;
+import me.whereareiam.socialismus.module.network.common.chat.CarriedAttributes;
 import me.whereareiam.socialismus.module.network.common.lease.DefaultLeases;
 import me.whereareiam.socialismus.module.network.common.lease.LeaseRecord;
 import me.whereareiam.socialismus.module.network.common.node.NodeDirectory;
@@ -31,6 +33,7 @@ public final class DefaultNetworkService implements NetworkService {
 	private final DefaultNetworkPlayers players;
 	private final Duration lifetime;
 	private final Map<String, DefaultLeases> leases = new ConcurrentHashMap<>();
+	private final CarriedAttributes attributes = new CarriedAttributes();
 
 	/**
 	 * Creates this node's part in the network.
@@ -83,6 +86,25 @@ public final class DefaultNetworkService implements NetworkService {
 				replication.cache("lease:" + name, LeaseRecord.class),
 				lifetime
 		));
+	}
+
+	@Override
+	public void carry(@NotNull AttributeKey<?> key) {
+		attributes.carry(key);
+	}
+
+	@Override
+	public void drop(@NotNull AttributeKey<?> key) {
+		attributes.drop(key);
+	}
+
+	/**
+	 * Returns the attributes chat messages carry to the other nodes.
+	 *
+	 * @return the carried attributes
+	 */
+	public @NotNull CarriedAttributes attributes() {
+		return attributes;
 	}
 
 	/**
