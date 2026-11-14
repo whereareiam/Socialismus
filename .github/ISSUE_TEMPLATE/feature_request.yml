@@ -43,6 +43,7 @@ body:
         - Chirper
         - Bubbler
         - Dialogue
+        - Mentionator
         - SocialismusRedis
         - SocialismusChannelizer
         - A new module

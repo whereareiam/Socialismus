@@ -43,6 +43,7 @@ body:
         - label: Chirper
         - label: Bubbler
         - label: Dialogue
+        - label: Mentionator
         - label: SocialismusRedis
         - label: SocialismusChannelizer
 
