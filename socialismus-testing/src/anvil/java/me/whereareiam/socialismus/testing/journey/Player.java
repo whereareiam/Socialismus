@@ -326,6 +326,24 @@ public final class Player {
 	}
 
 	/**
+	 * Moves the player onto another player through the server's console, and waits until it sees that player.
+	 *
+	 * <p>Spigot decides whether a player sees another when one of them moves to another section, or when the player
+	 * moves or confirms a teleport, and only once the chunk the other stands in reached the player. A journey's
+	 * players never move on their own, so the player that joins second may confirm its spawn before that chunk
+	 * reached it and never see the first one. The teleport makes it decide again, after its chunks arrived.
+	 *
+	 * @param other the player to stand beside
+	 */
+	@NotNull
+	public Player standsBeside(@NotNull Player other) {
+		Console.of(anvil).run("tp " + name + " " + other.name())
+				.printed("Teleported " + name);
+		sees(other);
+		return this;
+	}
+
+	/**
 	 * Moves the player into another dimension through the server's console, for a journey that needs players in
 	 * different worlds.
 	 *
