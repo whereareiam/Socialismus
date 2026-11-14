@@ -12,7 +12,8 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.module.mentionator.api.model.config.MentionatorSettings;
 import me.whereareiam.socialismus.module.mentionator.api.model.notification.Notification;
 import me.whereareiam.socialismus.module.mentionator.api.model.tag.Tag;
-import me.whereareiam.socialismus.service.Phrasebook;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -23,13 +24,10 @@ import java.util.List;
  */
 @Singleton
 public class MentionatorConditions implements EventListener {
-	/**
-	 * The scope of the phrases Mentionator tells, such as {@code mentionator.denied.permission.missing}.
-	 */
-	public static final String PHRASE_SCOPE = "mentionator";
+	private static final String PHRASE_SCOPE = "mentionator";
 
 	private final Conditions conditions;
-	private final Phrasebook phrases;
+	private final PhraseScope phrases;
 	private final Provider<List<Tag>> tags;
 	private final Provider<List<Notification>> notifications;
 	private final Provider<MentionatorSettings> settings;
@@ -44,7 +42,7 @@ public class MentionatorConditions implements EventListener {
 			@NotNull Provider<MentionatorSettings> settings
 	) {
 		this.conditions = conditions;
-		this.phrases = phrases;
+		this.phrases = phrases.scope(PHRASE_SCOPE);
 		this.tags = tags;
 		this.notifications = notifications;
 		this.settings = settings;
@@ -57,6 +55,16 @@ public class MentionatorConditions implements EventListener {
 	 */
 	public @NotNull Catalog catalog() {
 		return catalog;
+	}
+
+	/**
+	 * The phrases Mentionator tells, in the scope {@code mentionator}, such as
+	 * {@code mentionator.denied.permission.missing}.
+	 *
+	 * @return the scope of Mentionator's phrases
+	 */
+	public @NotNull PhraseScope phrases() {
+		return phrases;
 	}
 
 	/**

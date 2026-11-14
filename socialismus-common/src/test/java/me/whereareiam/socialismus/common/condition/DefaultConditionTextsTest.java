@@ -27,11 +27,12 @@ class DefaultConditionTextsTest {
 					.text("staff-only", "Only staff write in {chat}.")
 					.section("denied", denied -> denied.text("world.outside", "{chat} is not for {world}")))
 			.build();
-	private final DefaultConditionTexts texts = new DefaultConditionTexts(new DefaultPhrasebook(() -> phrases));
+	private final DefaultPhrasebook phrasebook = new DefaultPhrasebook(() -> phrases);
+	private final DefaultConditionTexts texts = new DefaultConditionTexts(phrasebook);
 
 	@Test
 	void wordsAReasonWithThePhraseOfTheFeaturesScopeFirst() {
-		Phrase reason = texts.denied(OUTSIDE, "chat", Map.of("chat", "local")).orElseThrow();
+		Phrase reason = texts.denied(OUTSIDE, phrasebook.scope("chat"), Map.of("chat", "local")).orElseThrow();
 
 		assertEquals("{chat} is not for {world}", reason.getMessage());
 		assertEquals(Map.of("chat", "local", "world", "world_nether"), reason.getPlaceholders());
@@ -39,7 +40,7 @@ class DefaultConditionTextsTest {
 
 	@Test
 	void wordsAReasonTheScopeLeavesWithTheRootPhrase() {
-		assertEquals("Not in {world}", texts.denied(OUTSIDE, "dialogue", Map.of()).orElseThrow().getMessage());
+		assertEquals("Not in {world}", texts.denied(OUTSIDE, phrasebook.scope("dialogue"), Map.of()).orElseThrow().getMessage());
 	}
 
 	@Test
@@ -47,21 +48,21 @@ class DefaultConditionTextsTest {
 		Verdict.Failed recipient = new Verdict.Failed("messaging.reaches[0].world", "world", List.of(ConditionParts.RECIPIENT),
 				Optional.of(new Outside("world_nether")));
 
-		assertEquals("{recipientName} is not here", texts.denied(recipient, "", Map.of()).orElseThrow().getMessage());
+		assertEquals("{recipientName} is not here", texts.denied(recipient, phrasebook.scope(""), Map.of()).orElseThrow().getMessage());
 	}
 
 	@Test
 	void prefersTheLinesDeniedText_AndRendersItsReferences() {
 		Verdict.Failed failed = outside(Map.of("denied", "<red><ref:staff-only>"));
 
-		assertEquals("<red>Only staff write in {chat}.", texts.denied(failed, "chat", Map.of()).orElseThrow().getMessage());
+		assertEquals("<red>Only staff write in {chat}.", texts.denied(failed, phrasebook.scope("chat"), Map.of()).orElseThrow().getMessage());
 	}
 
 	@Test
 	void addsTheLinesHint_AfterWhyItDenied() {
 		Verdict.Failed failed = outside(Map.of("hint", "Use /spawn."));
 
-		assertEquals("{chat} is not for {world}\nUse /spawn.", texts.denied(failed, "chat", Map.of()).orElseThrow().getMessage());
+		assertEquals("{chat} is not for {world}\nUse /spawn.", texts.denied(failed, phrasebook.scope("chat"), Map.of()).orElseThrow().getMessage());
 	}
 
 	@Test
@@ -69,8 +70,8 @@ class DefaultConditionTextsTest {
 		Verdict.Failed any = new Verdict.Failed("chats.local.requires[0].any", "any", List.of(), Optional.empty());
 		phrases = Phrases.builder().section("denied", denied -> denied.text("world.outside", " ")).build();
 
-		assertTrue(texts.denied(any, "chat", Map.of()).isEmpty());
-		assertTrue(texts.denied(OUTSIDE, "", Map.of()).isEmpty());
+		assertTrue(texts.denied(any, phrasebook.scope("chat"), Map.of()).isEmpty());
+		assertTrue(texts.denied(OUTSIDE, phrasebook.scope(""), Map.of()).isEmpty());
 	}
 
 	private static Verdict.Failed outside(Map<String, String> wording) {

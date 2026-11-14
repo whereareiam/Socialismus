@@ -33,10 +33,11 @@ import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
-import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
+import me.whereareiam.socialismus.service.phrase.PhraseSource;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 import me.whereareiam.strata.Strata;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +57,7 @@ public class Dialogue implements SocialisticModule {
 	private final Injector parentInjector;
 	private final Registry<Reloadable> reloadableRegistry;
 	private Injector injector;
+	private PhraseSource phraseSource;
 	// Set only while SocialismusNetwork is enabled, so its classes load only then.
 	private DialogueNetwork network;
 
@@ -89,7 +91,7 @@ public class Dialogue implements SocialisticModule {
 		).forEach(injector::getInstance);
 		DialoguePhrasesProvider phrases = injector.getInstance(DialoguePhrasesProvider.class);
 		phrases.get();
-		injector.getInstance(Phrasebook.class).add(ID, phrases::get);
+		phraseSource = injector.getInstance(Phrasebook.class).add(ID, phrases::get);
 		// A list that cannot be bound stops the module, naming the list.
 		injector.getInstance(DialogueConditions.class).bind();
 		// dialogue:ignores, for other modules' lists, such as the players Mentionator tags.
@@ -110,7 +112,10 @@ public class Dialogue implements SocialisticModule {
 		listeners().forEach(eventManager()::unregister);
 		injector.getInstance(Scheduler.class).cancelByModule(ID);
 		injector.getInstance(DialogueConditions.class).close();
-		injector.getInstance(Phrasebook.class).remove(ID);
+		if (phraseSource != null) {
+			phraseSource.close();
+			phraseSource = null;
+		}
 	}
 
 	private List<EventListener> listeners() {

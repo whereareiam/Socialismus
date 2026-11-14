@@ -26,8 +26,8 @@ import me.whereareiam.socialismus.common.condition.type.relation.SeesCondition;
 import me.whereareiam.socialismus.common.phrase.DefaultPhrasebook;
 import me.whereareiam.socialismus.integration.Integration;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
-import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 import me.whereareiam.socialismus.store.Stores;
 import me.whereareiam.socialismus.type.PlatformType;
 

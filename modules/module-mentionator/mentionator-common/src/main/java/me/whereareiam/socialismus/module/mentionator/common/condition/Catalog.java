@@ -17,7 +17,7 @@ import me.whereareiam.socialismus.module.mentionator.api.model.notification.Noti
 import me.whereareiam.socialismus.module.mentionator.api.model.notification.NotificationContent;
 import me.whereareiam.socialismus.module.mentionator.api.model.tag.Tag;
 import me.whereareiam.socialismus.module.mentionator.api.model.tag.TagFormat;
-import me.whereareiam.socialismus.service.Phrasebook;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,7 +73,7 @@ public final class Catalog implements AutoCloseable {
 	 */
 	public static @NotNull Catalog bind(
 			@NotNull Conditions conditions,
-			@NotNull Phrasebook phrases,
+			@NotNull PhraseScope phrases,
 			@NotNull List<Tag> tags,
 			@NotNull List<Notification> notifications,
 			@NotNull MentionatorSettings settings
@@ -325,10 +325,10 @@ public final class Catalog implements AutoCloseable {
 	private record Limit(int limit, Place place) {
 	}
 
-	private record Binding(Conditions conditions, Phrasebook phrases, List<Place> bound) {
+	private record Binding(Conditions conditions, PhraseScope phrases, List<Place> bound) {
 		Place open(String path, @Nullable Requirements requires, Part<?>... parts) {
 			Place place = conditions.place(path, requires == null ? Requirements.none() : requires, parts);
-			bound.add(phrases.checked(MentionatorConditions.PHRASE_SCOPE, place));
+			bound.add(phrases.checked(place));
 
 			return place;
 		}

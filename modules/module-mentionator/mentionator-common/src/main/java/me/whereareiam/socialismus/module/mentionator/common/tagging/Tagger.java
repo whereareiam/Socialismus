@@ -201,7 +201,7 @@ public class Tagger {
 			verdicts.forEach((tag, verdict) -> {
 				if (!(verdict instanceof Verdict.Failed failed)) return;
 
-				texts.denied(failed, MentionatorConditions.PHRASE_SCOPE, Map.of("tag", tag.getId()))
+				texts.denied(failed, conditions.phrases(), Map.of("tag", tag.getId()))
 						.ifPresent(phrase -> sender.sendMessage(Serializer.serialize(phrase.toContent(sender))));
 			});
 			if (!overLimit) return;
