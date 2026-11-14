@@ -1,59 +1,19 @@
 package me.whereareiam.socialismus.service.chat;
 
+import me.whereareiam.socialismus.model.chat.history.HistorySelection;
+import org.jetbrains.annotations.NotNull;
+
 /**
- * Service interface for managing chat history operations.
- * Provides methods for removing messages from chat history based on different criteria.
- * This service acts as a facade for chat history management operations.
+ * Removes messages from the chat history and shows the players the history that is left.
  */
 public interface ChatHistoryService {
 	/**
-	 * Removes a specific message from the chat history.
+	 * Removes the selected messages from the chat history. When any were removed, it calls the
+	 * {@link me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveEvent} of the selection and shows the
+	 * players the history that is left.
 	 *
-	 * @param id the unique identifier of the message to remove
-	 * @return true if the message was successfully removed, false otherwise
+	 * @param selection the messages to remove
+	 * @return how many messages were removed, {@code 0} when none were
 	 */
-	boolean removeMessage(int id);
-
-	/**
-	 * Removes a specific message from the chat history.
-	 *
-	 * @param id        the unique identifier of the message to remove
-	 * @param callEvent whether to call the event
-	 * @return true if the message was successfully removed, false otherwise
-	 */
-	boolean removeMessage(int id, boolean callEvent);
-
-	/**
-	 * Removes a specified number of oldest messages from the chat history.
-	 *
-	 * @param amount the number of messages to remove
-	 * @return the actual number of messages removed
-	 */
-	int removeMessages(int amount);
-
-	/**
-	 * Removes a specified number of oldest messages from the chat history.
-	 *
-	 * @param amount    the number of messages to remove
-	 * @param callEvent whether to call the event
-	 * @return the actual number of messages removed
-	 */
-	int removeMessages(int amount, boolean callEvent);
-
-	/**
-	 * Removes all messages from a specific user in the chat history.
-	 *
-	 * @param username the username whose messages should be removed
-	 * @return the number of messages removed
-	 */
-	int removeMessages(String username);
-
-	/**
-	 * Removes all messages from a specific user in the chat history.
-	 *
-	 * @param username  the username whose messages should be removed
-	 * @param callEvent whether to call the event
-	 * @return the number of messages removed
-	 */
-	int removeMessages(String username, boolean callEvent);
+	int remove(@NotNull HistorySelection selection);
 }

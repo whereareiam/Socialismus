@@ -11,14 +11,16 @@ import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveByIdEvent;
 import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveByPlayerEvent;
 import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveEvent;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
+import me.whereareiam.socialismus.model.chat.history.HistorySelection;
+import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import me.whereareiam.socialismus.type.BroadcastTarget;
 import me.whereareiam.socialismus.util.EventUtil;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
+import java.util.List;
 
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
@@ -29,55 +31,34 @@ public class ChatHistoryController implements ChatHistoryService {
 	private final PlatformInteractor interactor;
 
 	@Override
-	public boolean removeMessage(int id) {
-		return removeMessage(id, true);
-	}
-
-	@Override
-	public boolean removeMessage(int id, boolean callEvent) {
-		return processRemoval(() -> chatHistoryContainer.removeMessage(id) ? 1 : 0,
-				() -> new ChatHistoryRemoveByIdEvent(id), callEvent) > 0;
-	}
-
-	@Override
-	public int removeMessages(int amount) {
-		return removeMessages(amount, true);
-	}
-
-	@Override
-	public int removeMessages(int amount, boolean callEvent) {
-		return processRemoval(() -> chatHistoryContainer.removeMessages(amount),
-				() -> new ChatHistoryRemoveByAmountEvent(amount), callEvent);
-	}
-
-	@Override
-	public int removeMessages(String username) {
-		return removeMessages(username, true);
-	}
-
-	@Override
-	public int removeMessages(String username, boolean callEvent) {
-		return processRemoval(() -> (int) chatHistoryContainer.getMessages(username).stream()
-						.filter(message -> chatHistoryContainer.removeMessage(message.getId()))
-						.count(),
-				() -> new ChatHistoryRemoveByPlayerEvent(username), callEvent);
-	}
-
-	private int processRemoval(
-			IntSupplier removalFunction,
-			Supplier<ChatHistoryRemoveEvent> eventSupplier,
-			boolean callEvent
-	) {
-		int removed = removalFunction.getAsInt();
+	public int remove(@NotNull HistorySelection selection) {
+		int removed = switch (selection) {
+			case HistorySelection.Message message -> chatHistoryContainer.removeMessage(message.id()) ? 1 : 0;
+			case HistorySelection.Oldest oldest -> chatHistoryContainer.removeMessages(oldest.amount());
+			case HistorySelection.OfPlayer player -> removeAll(chatHistoryContainer.getMessages(player.player().getUniqueId()));
+			case HistorySelection.ByName name -> removeAll(chatHistoryContainer.getMessages(name.username()));
+		};
 		if (removed == 0)
 			return 0;
 
-		if (callEvent)
-			EventUtil.callEvent(eventSupplier.get(), this::sendChatHistory);
-		else
-			sendChatHistory();
+		EventUtil.callEvent(event(selection), this::sendChatHistory);
 
 		return removed;
+	}
+
+	private int removeAll(List<FormattedChatMessage> messages) {
+		return (int) messages.stream()
+				.filter(message -> chatHistoryContainer.removeMessage(message.getId()))
+				.count();
+	}
+
+	private static ChatHistoryRemoveEvent event(HistorySelection selection) {
+		return switch (selection) {
+			case HistorySelection.Message message -> new ChatHistoryRemoveByIdEvent(message);
+			case HistorySelection.Oldest oldest -> new ChatHistoryRemoveByAmountEvent(oldest);
+			case HistorySelection.OfPlayer player -> new ChatHistoryRemoveByPlayerEvent(player);
+			case HistorySelection.ByName name -> new ChatHistoryRemoveByPlayerEvent(name);
+		};
 	}
 
 	private void sendChatHistory() {

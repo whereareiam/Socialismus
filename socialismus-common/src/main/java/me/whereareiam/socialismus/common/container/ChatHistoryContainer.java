@@ -34,6 +34,9 @@ public class ChatHistoryContainer implements ChatHistoryContainerService {
 	@Override
 	public boolean removeMessage(int id) {
 		FormattedChatMessage chatMessage = chatHistory.get(id);
+		if (chatMessage == null)
+			return false;
+
 		return EventUtil.callEvent(new MessageRemovedEvent(chatMessage, chatMessage.isCancelled()), () -> chatHistory.remove(id));
 	}
 

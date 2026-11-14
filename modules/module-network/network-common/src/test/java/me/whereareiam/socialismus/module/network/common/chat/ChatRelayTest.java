@@ -4,6 +4,7 @@ import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
 import me.whereareiam.socialismus.event.chat.ChatBroadcastEvent;
 import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveByAmountEvent;
 import me.whereareiam.socialismus.model.chat.InternalChat;
+import me.whereareiam.socialismus.model.chat.history.HistorySelection;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
@@ -98,9 +99,24 @@ class ChatRelayTest {
 		Side lobby = side("lobby");
 		Side survival = side("survival");
 
-		lobby.relay.onRemoveByAmount(new ChatHistoryRemoveByAmountEvent(5));
+		lobby.relay.onHistoryRemove(new ChatHistoryRemoveByAmountEvent(new HistorySelection.Oldest(5)));
 
-		verify(survival.history).removeMessages(5, false);
+		verify(survival.history).remove(HistorySelection.oldest(5));
+	}
+
+	@Test
+	void aRemovalFromTheOtherNodeIsNotSentBack() {
+		Side lobby = side("lobby");
+		Side survival = side("survival");
+		when(survival.history.remove(any())).thenAnswer(call -> {
+			survival.relay.onHistoryRemove(new ChatHistoryRemoveByAmountEvent(call.getArgument(0)));
+			return 5;
+		});
+
+		lobby.relay.onHistoryRemove(new ChatHistoryRemoveByAmountEvent(new HistorySelection.Oldest(5)));
+
+		verify(survival.history).remove(HistorySelection.oldest(5));
+		verify(lobby.history, never()).remove(any());
 	}
 
 	@Test
@@ -110,10 +126,10 @@ class ChatRelayTest {
 		Side survival = side("survival");
 
 		lobby.relay.onChatBroadcast(new ChatBroadcastEvent(message(player("Alice", null), GLOBAL), false));
-		lobby.relay.onRemoveByAmount(new ChatHistoryRemoveByAmountEvent(5));
+		lobby.relay.onHistoryRemove(new ChatHistoryRemoveByAmountEvent(new HistorySelection.Oldest(5)));
 
 		verify(survival.coordination, never()).relay(any(FormattedChatMessage.class));
-		verify(survival.history, never()).removeMessages(5, false);
+		verify(survival.history, never()).remove(HistorySelection.oldest(5));
 	}
 
 	private Side side(String name) {
