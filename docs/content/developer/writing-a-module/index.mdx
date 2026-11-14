@@ -127,6 +127,14 @@ A condition that fails with a reason declares it, so administrators can word it:
 
 A module checks lists of its own files through Socialismus's `Conditions`: `conditions.place("greeter.requires", settings.getRequires(), ConditionParts.SENDER)` binds a list once, so a mistake stops `enable` with its path, and `place.check(Situation.of(ConditionParts.SENDER, player))` checks it. Close the places of a file you reload. The [Conditions](../../configuration/conditions/index.mdx) page lists what administrators write.
 
+A list may name a condition that counts uses, such as `cooldown`. Checking counts nothing: record a passed verdict once the action it allowed happened, or the cooldown never starts:
+
+```java
+if (!(place.check(situation) instanceof Verdict.Passed passed)) return refuse(player);
+greet(player);
+passed.record();
+```
+
 ## Phrases
 
 A module that tells players texts administrators refer to, such as why a list refused them, ships a `phrases.yml` in its folder and adds it to Socialismus's phrases while it runs. Keep your keys under your id, and the texts of your conditions' reasons under `denied.`:
