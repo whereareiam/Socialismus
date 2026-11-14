@@ -48,7 +48,7 @@ class StyleReaderTest {
 	}
 
 	@Test
-	void leavesARelayedMessageAsTheServerOfItsSenderReadIt() {
+	void leavesTheMessageOfASenderHostedElsewhereAsTheirServerReadIt() {
 		ChatMessage message = reader.read(message(chat(List.of("basic")), true));
 
 		assertEquals(Component.text("<bold>hi"), message.getContent());
@@ -63,16 +63,15 @@ class StyleReaderTest {
 				.build();
 	}
 
-	private ChatMessage message(Chat chat, boolean relayed) {
-		ChatMessage message = ChatMessage.builder()
+	private ChatMessage message(Chat chat, boolean hostedElsewhere) {
+		when(sender.isHostedHere()).thenReturn(!hostedElsewhere);
+
+		return ChatMessage.builder()
 				.id(1)
 				.sender(sender)
 				.content(Component.text("<bold>hi"))
 				.chat(chat)
 				.build();
-		message.setRelayed(relayed);
-
-		return message;
 	}
 
 	private static final class Styled implements TextStyle {

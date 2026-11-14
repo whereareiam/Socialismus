@@ -10,8 +10,9 @@ import me.whereareiam.socialismus.util.ComponentUtil;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Reads what a sender wrote with the style their chat gives them, once the chat is chosen. A message relayed from
- * another server was read where it was written, by the server that knows the sender, so it stays as it came.
+ * Reads what a sender wrote with the style their chat gives them, once the chat is chosen. A message of a sender
+ * hosted on another server was read there, by the server that can check the sender's conditions, so it stays as it
+ * came.
  */
 @Singleton
 public class StyleReader {
@@ -25,7 +26,7 @@ public class StyleReader {
 	}
 
 	ChatMessage read(ChatMessage message) {
-		if (message.isRelayed() || message.getChat() == null) return message;
+		if (!message.getSender().isHostedHere() || message.getChat() == null) return message;
 		if (message.getChat().getParameters().getStyles().isEmpty()) return message;
 
 		String text = ComponentUtil.toPlain(message.getContent());
