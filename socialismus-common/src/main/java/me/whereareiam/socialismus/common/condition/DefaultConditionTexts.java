@@ -2,13 +2,13 @@ package me.whereareiam.socialismus.common.condition;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import me.whereareiam.conditia.model.Part;
 import me.whereareiam.conditia.result.Reason;
 import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.socialismus.model.phrase.Phrase;
-import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,14 +24,18 @@ import java.util.stream.Stream;
  * its reason, and adds the line's {@code hint}.
  */
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class DefaultConditionTexts implements ConditionTexts {
-	private final Phrasebook phrasebook;
+	private final PhraseScope none;
+
+	@Inject
+	public DefaultConditionTexts(@NotNull Phrasebook phrasebook) {
+		this.none = phrasebook.scope("");
+	}
 
 	@Override
 	public @NotNull Optional<Phrase> denied(
 			@NotNull Verdict.Failed failed,
-			@NotNull String scope,
+			@NotNull PhraseScope scope,
 			@NotNull Map<String, String> placeholders
 	) {
 		Optional<String> denied = failed.wording(Word.DENIED.word()).or(() -> phrase(failed, scope));
@@ -39,7 +43,7 @@ public class DefaultConditionTexts implements ConditionTexts {
 
 		String message = Stream.of(denied, hint)
 				.flatMap(Optional::stream)
-				.map(text -> phrasebook.render(scope, text))
+				.map(scope::render)
 				.filter(text -> !text.isBlank())
 				.collect(Collectors.joining("\n"));
 		if (message.isEmpty()) return Optional.empty();
@@ -52,7 +56,7 @@ public class DefaultConditionTexts implements ConditionTexts {
 
 	// The phrase of the reason: in the feature's scope before Socialismus's own, and in each for the part the
 	// condition was about before anyone. A blank phrase leaves the reason to the next.
-	private Optional<String> phrase(Verdict.Failed failed, String scope) {
+	private Optional<String> phrase(Verdict.Failed failed, PhraseScope scope) {
 		Optional<String> key = failed.key();
 		if (key.isEmpty()) return Optional.empty();
 
@@ -62,11 +66,11 @@ public class DefaultConditionTexts implements ConditionTexts {
 		keys.add(Word.DENIED.word() + "." + key.get());
 
 		List<String> candidates = new ArrayList<>();
-		if (!scope.isEmpty()) keys.forEach(each -> candidates.add(scope + "." + each));
+		if (!scope.name().isEmpty()) keys.forEach(each -> candidates.add(scope.name() + "." + each));
 		candidates.addAll(keys);
 
 		return candidates.stream()
-				.map(each -> phrasebook.find("", each))
+				.map(none::find)
 				.flatMap(Optional::stream)
 				.filter(text -> !text.isBlank())
 				.findFirst();

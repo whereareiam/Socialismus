@@ -19,8 +19,9 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.condition.Recordings;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 import me.whereareiam.socialismus.service.style.Styles;
 import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
@@ -43,8 +44,10 @@ import static me.whereareiam.socialismus.model.condition.ConditionParts.VIEWER;
  */
 @Singleton
 public class DefaultChatConditionService implements ChatConditionService, EventListener {
+	private static final String PHRASE_SCOPE = "chat";
+
 	private final Conditions conditions;
-	private final Phrasebook phrases;
+	private final PhraseScope phrases;
 	private final Styles styles;
 	private final Provider<ChatSettings> chatSettings;
 
@@ -62,7 +65,7 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 			@NotNull EventManager eventManager
 	) {
 		this.conditions = conditions;
-		this.phrases = phrases;
+		this.phrases = phrases.scope(PHRASE_SCOPE);
 		this.styles = styles;
 		this.chatSettings = chatSettings;
 
@@ -115,6 +118,11 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 		waiting.clear();
 		chats.values().forEach(ChatPlaces::close);
 		chats.clear();
+	}
+
+	@Override
+	public @NotNull PhraseScope phrases() {
+		return phrases;
 	}
 
 	@SocialisticEvent

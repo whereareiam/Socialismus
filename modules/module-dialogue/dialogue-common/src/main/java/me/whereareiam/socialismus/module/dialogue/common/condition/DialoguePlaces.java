@@ -8,7 +8,7 @@ import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
-import me.whereareiam.socialismus.service.Phrasebook;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
 import me.whereareiam.socialismus.service.style.StylePlace;
 import me.whereareiam.socialismus.service.style.Styles;
 
@@ -52,7 +52,7 @@ final class DialoguePlaces implements AutoCloseable {
 	 */
 	static DialoguePlaces bind(
 			Conditions conditions,
-			Phrasebook phrases,
+			PhraseScope phrases,
 			Styles styles,
 			DialogueSettings settings,
 			Map<String, List<DialogueFormat>> formats
@@ -112,8 +112,8 @@ final class DialoguePlaces implements AutoCloseable {
 		}
 	}
 
-	private record Binding(Conditions conditions, Phrasebook phrases, List<Place> bound, List<StylePlace> styled) {
-		Binding(Conditions conditions, Phrasebook phrases) {
+	private record Binding(Conditions conditions, PhraseScope phrases, List<Place> bound, List<StylePlace> styled) {
+		Binding(Conditions conditions, PhraseScope phrases) {
 			this(conditions, phrases, new ArrayList<>(), new ArrayList<>());
 		}
 
@@ -128,7 +128,7 @@ final class DialoguePlaces implements AutoCloseable {
 			Place place = aboutRecipient
 					? conditions.place(path, listOf(requires), RECIPIENT, SENDER)
 					: conditions.place(path, listOf(requires), SENDER);
-			bound.add(phrases.checked(DialogueConditions.PHRASE_SCOPE, place));
+			bound.add(phrases.checked(place));
 
 			return place;
 		}

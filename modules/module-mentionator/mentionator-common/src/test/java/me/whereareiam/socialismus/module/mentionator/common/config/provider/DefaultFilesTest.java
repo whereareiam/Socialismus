@@ -106,7 +106,7 @@ class DefaultFilesTest {
 	void everyDefaultListBinds() {
 		MentionatorSettings settings = new MentionatorSettingsDefaults().supply(new MentionatorSettings());
 
-		try (Catalog catalog = Catalog.bind(conditions(), phrases(), tags(), notifications(), settings)) {
+		try (Catalog catalog = Catalog.bind(conditions(), phrases().scope("mentionator"), tags(), notifications(), settings)) {
 			assertEquals(6, catalog.getTags().size());
 			assertEquals("everyone", catalog.getTags().getFirst().getId());
 		}

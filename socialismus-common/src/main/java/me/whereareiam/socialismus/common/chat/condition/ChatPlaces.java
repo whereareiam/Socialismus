@@ -8,8 +8,7 @@ import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
-import me.whereareiam.socialismus.service.Phrasebook;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
 import me.whereareiam.socialismus.service.style.StylePlace;
 import me.whereareiam.socialismus.service.style.Styles;
 
@@ -46,7 +45,7 @@ final class ChatPlaces implements AutoCloseable {
 	 *                                                              closed
 	 * @throws me.whereareiam.socialismus.exception.StyleException when the chat accepts a style no one defines
 	 */
-	static ChatPlaces bind(Conditions conditions, Phrasebook phrases, Styles styles, Chat chat) {
+	static ChatPlaces bind(Conditions conditions, PhraseScope phrases, Styles styles, Chat chat) {
 		String path = "chats." + chat.getId();
 		List<Place> bound = new ArrayList<>();
 		try {
@@ -73,8 +72,8 @@ final class ChatPlaces implements AutoCloseable {
 		return requires == null ? Requirements.none() : requires;
 	}
 
-	private static Place open(List<Place> bound, Phrasebook phrases, Place place) {
-		bound.add(phrases.checked(ChatConditionService.PHRASE_SCOPE, place));
+	private static Place open(List<Place> bound, PhraseScope phrases, Place place) {
+		bound.add(phrases.checked(place));
 
 		return place;
 	}

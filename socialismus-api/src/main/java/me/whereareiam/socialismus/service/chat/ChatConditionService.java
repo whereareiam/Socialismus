@@ -5,6 +5,7 @@ import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
 import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,9 +23,12 @@ import java.util.Optional;
  */
 public interface ChatConditionService {
 	/**
-	 * The scope of the phrases chats tell, such as {@code chat.denied.world.outside} or {@code chat.staff-only}.
+	 * The phrases chats tell, in the scope {@code chat}, such as {@code chat.denied.world.outside} or
+	 * {@code chat.staff-only}.
+	 *
+	 * @return the scope of the chats' phrases
 	 */
-	String PHRASE_SCOPE = "chat";
+	@NotNull PhraseScope phrases();
 
 	/**
 	 * Checks whether the sender of a message may write in a chat: the chat's {@code requires}.

@@ -18,7 +18,8 @@ import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
-import me.whereareiam.socialismus.service.Phrasebook;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 import me.whereareiam.socialismus.service.style.Styles;
 import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
@@ -39,13 +40,10 @@ import static me.whereareiam.socialismus.model.condition.ConditionParts.SENDER;
  */
 @Singleton
 public class DialogueConditions implements EventListener {
-	/**
-	 * The scope of the phrases Dialogue tells, such as {@code dialogue.denied.sender.permission.missing}.
-	 */
-	public static final String PHRASE_SCOPE = "dialogue";
+	private static final String PHRASE_SCOPE = "dialogue";
 
 	private final Conditions conditions;
-	private final Phrasebook phrases;
+	private final PhraseScope phrases;
 	private final Styles styles;
 	private final Provider<DialogueSettings> settings;
 	private final Provider<MessagingFormats> messagingFormats;
@@ -62,7 +60,7 @@ public class DialogueConditions implements EventListener {
 			@NotNull Provider<ModerationFormats> moderationFormats
 	) {
 		this.conditions = conditions;
-		this.phrases = phrases;
+		this.phrases = phrases.scope(PHRASE_SCOPE);
 		this.styles = styles;
 		this.settings = settings;
 		this.messagingFormats = messagingFormats;
@@ -93,6 +91,16 @@ public class DialogueConditions implements EventListener {
 		if (places != null) places.close();
 
 		places = null;
+	}
+
+	/**
+	 * The phrases Dialogue tells, in the scope {@code dialogue}, such as
+	 * {@code dialogue.denied.sender.permission.missing}.
+	 *
+	 * @return the scope of Dialogue's phrases
+	 */
+	public @NotNull PhraseScope phrases() {
+		return phrases;
 	}
 
 	@SocialisticEvent

@@ -13,7 +13,9 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSetti
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
-import me.whereareiam.socialismus.service.Phrasebook;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
+import me.whereareiam.socialismus.service.phrase.PhraseSource;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 import me.whereareiam.socialismus.service.style.Styles;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,22 +65,29 @@ public final class TestDialogueConditions {
 	 */
 	static Phrasebook phrases() {
 		return new Phrasebook() {
-			public @NotNull Optional<String> find(@NotNull String scope, @NotNull String key) {
-				return Optional.empty();
+			public @NotNull PhraseScope scope(@NotNull String scope) {
+				return new PhraseScope() {
+					public @NotNull String name() {
+						return scope;
+					}
+
+					public @NotNull Optional<String> find(@NotNull String key) {
+						return Optional.empty();
+					}
+
+					public @NotNull String render(@NotNull String text) {
+						return text;
+					}
+
+					public @NotNull List<String> unresolved(@NotNull String text) {
+						return List.of();
+					}
+				};
 			}
 
-			public @NotNull String render(@NotNull String scope, @NotNull String text) {
-				return text;
-			}
-
-			public @NotNull List<String> unresolved(@NotNull String scope, @NotNull String text) {
-				return List.of();
-			}
-
-			public void add(@NotNull String owner, @NotNull Supplier<Phrases> phrases) {
-			}
-
-			public void remove(@NotNull String owner) {
+			public @NotNull PhraseSource add(@NotNull String owner, @NotNull Supplier<Phrases> phrases) {
+				return () -> {
+				};
 			}
 		};
 	}
