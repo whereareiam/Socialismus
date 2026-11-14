@@ -2,8 +2,10 @@ package me.whereareiam.socialismus.common.chat.worker.base;
 
 import me.whereareiam.conditia.model.Part;
 import me.whereareiam.conditia.result.Verdict;
-import me.whereareiam.socialismus.common.chat.toggle.InMemoryChatToggleStore;
+import me.whereareiam.socialismus.common.chat.toggle.ChatToggles;
+import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
 import me.whereareiam.socialismus.common.config.defaults.chat.ChatSettingsDefaults;
+import me.whereareiam.socialismus.common.store.DefaultStores;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
@@ -36,7 +38,7 @@ import static org.mockito.Mockito.*;
 
 class RecipientSelectorTest {
 	private final ChatSettings settings = new ChatSettingsDefaults().supply(new ChatSettings());
-	private final InMemoryChatToggleStore toggles = new InMemoryChatToggleStore();
+	private final ChatToggles toggles = new ChatToggles(new DefaultStores(new SerializationServiceAdapter()));
 	private final ChatConditionService conditions = mock(ChatConditionService.class);
 	private final NobodyNotice nobody = mock(NobodyNotice.class);
 	private final SocialismusPlayer alice = player("Alice");

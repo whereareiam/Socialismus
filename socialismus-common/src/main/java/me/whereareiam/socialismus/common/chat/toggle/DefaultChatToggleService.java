@@ -11,7 +11,6 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.service.chat.ChatToggleService;
-import me.whereareiam.socialismus.service.chat.ChatToggleStore;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +22,7 @@ public class DefaultChatToggleService implements ChatToggleService {
 	private final Provider<ChatSettings> settings;
 	private final Provider<ChatMessages> messages;
 	private final ChatContainerService chats;
-	private final ChatToggleStore toggles;
+	private final ChatToggles toggles;
 
 	@Override
 	public void toggle(@NotNull SocialismusPlayer player, @NotNull String chatId) {
