@@ -36,7 +36,6 @@ public class FormattedChatMessage extends ChatMessage {
 				.chat(msg.getChat())
 				.cancelled(msg.isCancelled())
 				.vanillaSending(vanillaSending)
-				.relayed(msg.isRelayed())
 				.format(format)
 				.build();
 		msg.getAttributes().forEach((key, value) -> copy(formatted, key, value));

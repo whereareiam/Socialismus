@@ -39,8 +39,6 @@ public class ChatCoordinator implements ChatCoordinationService {
 
 	@Override
 	public FormattedChatMessage relay(@NotNull ChatMessage message) {
-		message.setRelayed(true);
-
 		return processAndBroadcast(message);
 	}
 
@@ -48,7 +46,6 @@ public class ChatCoordinator implements ChatCoordinationService {
 	public void relay(@NotNull FormattedChatMessage formatted) {
 		if (formatted.isCancelled()) return;
 
-		formatted.setRelayed(true);
 		FormattedChatMessage processed = (FormattedChatMessage) chatMessageProcessor.process(formatted);
 		processed.setFormat(formatted.getFormat());
 

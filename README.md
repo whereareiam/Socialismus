@@ -3,9 +3,9 @@
 # Information
 
 ![release](https://img.shields.io/github/v/release/whereareiam/Socialismus)
-![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/development.yml)
+![build](https://img.shields.io/github/actions/workflow/status/whereareiam/Socialismus/build-cache.yml?branch=dev)
 
-[![GitHub Downloads](https://img.shields.io/github/downloads/whereareiam/Socialismus/total?&label=GitHub%20Downloads)](https://github.com/OWNER/REPO/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/whereareiam/Socialismus/total?&label=GitHub%20Downloads)](https://github.com/whereareiam/Socialismus/releases)
 [![SpigotMC Downloads](https://img.shields.io/spiget/downloads/113119?&label=SpigotMC%20Downloads)](https://www.spigotmc.org/resources/113119/)
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/aeIrNw73?&label=Modrinth%20Downloads)](https://modrinth.com/project/aeIrNw73)
 
@@ -23,38 +23,39 @@
 
 - [Chirper](./modules/module-chirper) - The loudmouth of the server! Make sure your announcements are
   heard by all. Ideal for rallying the troops or just making sure everyone knows it’s pizza night.
-- [Bubbler](./modules/module-bubbler) - The chat bubble artist! Elevate your conversations
-  with
-  animated
-  bubbles that hover above players’ heads. Great for adding a splash of creativity to your chat.
+- [Bubbler](./modules/module-bubbler) - The chat bubble artist! Elevate your conversations with animated bubbles that
+  hover above players’ heads. Great for adding a splash of creativity to your chat.
 - [Dialogue](./modules/module-dialogue) - The private line! Players message each other with
   `/msg` and answer with `/reply`, on one server or across the network. Great for the words not meant for everyone.
-- [Mentionator](https://github.com/whereareiam/Mentionator) *[WIP]* - The @mention maestro! Summon anyone and everyone
-  with
-  ease. Great for announcements, jokes, or just making sure you’re heard.
-- [Swapper](https://github.com/whereareiam/Swapper) *[WIP]* - The message magician! Transform words into emojis,
-  phrases,
-  or anything you fancy. Perfect for adding a touch of surprise to your chat.
-- [Roomster](https://github.com/whereareiam/Roomster) *[WIP]* - The group-chat guru! Create dedicated chat rooms, manage
-  invites, and give
-  your community a space for focused discussion.
-- [Bridger](https://github.com/whereareiam/Bridger) *[WIP]* - The connection expert! Seamlessly link your server with
+- [Mentionator](./modules/module-mentionator) - The @mention maestro! Summon anyone and everyone with ease. Great for
+  announcements, jokes, or just making sure you’re heard.
+- Swapper *[WIP]* - The message magician! Transform words into emojis, phrases, or anything you fancy. Perfect for
+  adding a touch of surprise to your chat.
+- Roomster *[WIP]* - The group-chat guru! Create dedicated chat rooms, manage invites, and give your community a space
+  for focused discussion.
+- Bridger *[WIP]* - The connection expert! Seamlessly link your server with
   Discord using DiscordSRV and similar plugins.
-- [Colorizer](https://github.com/whereareiam/Colorizer) *[WIP]* - The chat colorist! Allow players to select chat color
+- Colorizer *[WIP]* - The chat colorist! Allow players to select chat color
   and message palette. Ideal for adding a touch of personalization to your chat.
-- [Warden](https://github.com/whereareiam/Warden) *[WIP]* - The chat cop! Keep your server safe and friendly with
+- Warden *[WIP]* - The chat cop! Keep your server safe and friendly with
   automatic moderation. Ideal for filtering out bad language, spam, or anything else you don’t want to see.
-- [Chatter](https://github.com/whereareiam/Chatter) *[WIP]* - Conditional chat helper! Your personal chat assistant
+- Chatter *[WIP]* - Conditional chat helper! Your personal chat assistant
   that can help you with your chat needs. Great for adding a touch of automation to your server.
-- [Statistics](https://github.com/whereareiam/Statistics) *[WIP]* - The data analyst! Keep track of your server’s
+- Statistics *[WIP]* - The data analyst! Keep track of your server’s
   activity with detailed statistics. Ideal for monitoring chat trends, player activity, and more.
 
 ### Infrastructure modules
 
-- [SocialismusRedis](./modules/module-redis) - The resource provider! Enables caching and
-  synchronization features for other modules using Redis.
-
-- [SocialismusChannelizer](./modules/module-channelizer) - The resource provider! Enables synchronization feature for other modules using BungeeCord channels.
+- [SocialismusNetwork](./modules/module-network) - The network keeper! Shares chat, players and private messages
+  between the servers and proxies of your network, over one of the transports below.
+- [SocialismusRedis](./modules/module-redis) - The resource provider! A transport for SocialismusNetwork through a
+  Redis server.
+- [SocialismusChannelizer](./modules/module-channelizer) - The messenger! A transport for SocialismusNetwork through
+  BungeeCord channels, without a further server.
+- [SocialismusLink](./modules/module-link) - The direct line! A transport for SocialismusNetwork straight between a
+  proxy and its servers.
+- [SocialismusDatabase](./modules/module-database) - The record keeper! A database for the modules that store data, on
+  MySQL, MariaDB, PostgreSQL or SQLite.
 
 ## Premium modules
 

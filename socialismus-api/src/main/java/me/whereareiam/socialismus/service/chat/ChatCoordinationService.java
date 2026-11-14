@@ -11,8 +11,9 @@ import org.jetbrains.annotations.NotNull;
  * <p>A message written here is offered to modules as a
  * {@link me.whereareiam.socialismus.event.chat.ChatReceivedEvent}, its chat is selected and it is formatted; then
  * Socialismus delivers it to its recipients on this server and keeps it in the chat history. A relayed message is
- * only delivered and kept: it is neither offered to modules nor selected again, and a module that sends messages on
- * leaves it alone, since it is {@linkplain ChatMessage#isRelayed() relayed}.</p>
+ * only delivered and kept: it is neither offered to modules nor selected again. Its sender is not
+ * {@linkplain me.whereareiam.socialismus.model.player.SocialismusPlayer#isHostedHere() hosted here}, so nobody here is
+ * told that nobody heard it, and a module that relays messages recognises its own by what it set on them.</p>
  */
 public interface ChatCoordinationService {
 	/**
@@ -27,7 +28,8 @@ public interface ChatCoordinationService {
 	 * Delivers a message written elsewhere to its recipients on this server, in the format it was given where it was
 	 * written.
 	 *
-	 * @param message the formatted message; Socialismus marks it relayed and chooses its recipients here
+	 * @param message the formatted message, from a sender this server does not host; Socialismus chooses its
+	 *                recipients here
 	 */
 	void relay(@NotNull FormattedChatMessage message);
 
@@ -35,8 +37,8 @@ public interface ChatCoordinationService {
 	 * Delivers a message written elsewhere to its recipients on this server, formatted here by the formats of its
 	 * chat.
 	 *
-	 * @param message the message with its chat; Socialismus marks it relayed, formats it and chooses its recipients
-	 *                here
+	 * @param message the message with its chat, from a sender this server does not host; Socialismus formats it and
+	 *                chooses its recipients here
 	 * @return the formatted message, cancelled when it could not be formatted or delivered
 	 */
 	FormattedChatMessage relay(@NotNull ChatMessage message);
