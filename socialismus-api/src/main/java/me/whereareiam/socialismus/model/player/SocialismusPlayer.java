@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -165,6 +166,16 @@ public abstract class SocialismusPlayer implements Actor {
 	 */
 	public boolean canSee(@NotNull SocialismusPlayer other) {
 		return true;
+	}
+
+	/**
+	 * Offers the player words to complete while they type in chat, in place of those offered before, such as the tags
+	 * a module lets them write. Platforms whose clients take such words offer them, as Paper does; elsewhere nothing
+	 * is offered.
+	 *
+	 * @param completions the words, such as {@code @everyone}
+	 */
+	public void setChatCompletions(@NotNull Collection<String> completions) {
 	}
 
 	/**
