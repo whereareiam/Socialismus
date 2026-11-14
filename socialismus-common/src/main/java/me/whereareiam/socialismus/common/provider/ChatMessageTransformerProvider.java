@@ -5,16 +5,21 @@ import com.google.inject.Singleton;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.chat.render.ChatMessageTransformer;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class ChatMessageTransformerProvider implements Provider<Set<ChatMessageTransformer>>, Registry<ChatMessageTransformer> {
-	private final Set<ChatMessageTransformer> transformers = new HashSet<>();
+	private final Set<ChatMessageTransformer> transformers = ConcurrentHashMap.newKeySet();
 
 	@Override
 	public void register(ChatMessageTransformer transformer) {
 		if (transformer != null) transformers.add(transformer);
+	}
+
+	@Override
+	public void unregister(ChatMessageTransformer transformer) {
+		if (transformer != null) transformers.remove(transformer);
 	}
 
 	@Override

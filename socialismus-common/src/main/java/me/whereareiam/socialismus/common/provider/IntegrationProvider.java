@@ -18,6 +18,11 @@ public class IntegrationProvider implements Provider<Set<Integration>>, Registry
     }
 
     @Override
+    public void unregister(Integration integration) {
+        integrations.remove(integration);
+    }
+
+    @Override
     public Set<Integration> get() {
         return integrations;
     }

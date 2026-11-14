@@ -17,4 +17,12 @@ public interface Registry<T> {
      * @param integration the element to register
      */
     void register(T integration);
+
+    /**
+     * Removes an element registered before, such as a module's when the module stops; an element that was not
+     * registered is ignored.
+     *
+     * @param element the element to remove
+     */
+    void unregister(T element);
 }
