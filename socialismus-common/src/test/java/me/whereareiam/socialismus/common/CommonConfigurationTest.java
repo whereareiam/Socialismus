@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.common;
 import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.configura.Configura;
 import me.whereareiam.socialismus.common.config.defaults.PhrasesDefaults;
+import me.whereareiam.socialismus.common.provider.ReloadableProvider;
 import me.whereareiam.socialismus.config.PhrasesConfigProvider;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.condition.ConditionLists;
@@ -69,7 +70,7 @@ class CommonConfigurationTest {
 	}
 
 	private Phrases phrases(Configura configura) {
-		return new PhrasesConfigProvider(dataPath, reloadable -> {}, PhrasesDefaults.PHRASES) {
+		return new PhrasesConfigProvider(dataPath, new ReloadableProvider(), PhrasesDefaults.PHRASES) {
 			@Override
 			protected Configura configura() {
 				return configura;
