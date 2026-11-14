@@ -155,6 +155,7 @@ as a container process of the network (`containers = Container.REDIS`), so those
 - [x] A server that stops answering hands its players' chat to the proxy within the lease time, and takes it back once it answers
 - [x] A server behind a proxy learns its name, so a `server` condition judges its players
 - [x] `/msg` reaches a player on another backend, and the sender sees it once that backend confirms
+- [x] A chat a player turned off on one backend stays off after they switch to another
 - [ ] A private message to a player on no backend fails once `messaging.confirmation` has passed
 
 ## modules
@@ -210,6 +211,22 @@ Essentials keeps its feature framework, but has no feature since private message
 - [x] Bubbler shows a bubble above a player who chats or runs `/socialismus bubble`, with each render strategy
 - [x] Bubbler shows bubbles on Spigot and on Paper below 26.1, where the BUKKIT jar relocates its Adventure
 - [x] Bubbler warns below Minecraft 1.19.4 that text display bubbles show nothing
+
+## mentionator
+
+Mentionator's tags on a Paper server, with its default tags and notifications unless a journey writes its own.
+
+- [x] A tagged player is notified with the default `ping`, and every recipient sees the tag in its plain format
+- [x] An escaped tag such as `\@Bob`, and the name of an offline player, stay plain text
+- [x] `@everyone` needs its permission, tells a refused sender why, and is not used again during its `cooldown`
+- [x] `/socialismus mentions` shows the player's mode and tags; `direct` silences group tags, `none` every tag, and the tag is still shown
+- [x] With SocialismusNetwork, a player on another backend is tagged and notified by their own server
+- [ ] A tagged player sees their own name in the format whose `reaches` holds `mentionator:targeted` **needs Anvil**: players see messages as plain text, without their colors
+- [ ] A chat whose `reaches` holds `mentionator:targeted` lets a tagged player outside it receive the message
+- [ ] With Dialogue, a player who ignores the sender is not tagged
+- [ ] On a proxy that owns chat, the server the tagged player is on plays the sounds of their notification
+- [ ] `limits.received` and `limits.repeat` keep a player from being notified too often
+- [ ] Paper offers the tags a player may use as chat completions
 
 ## database
 

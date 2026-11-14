@@ -126,7 +126,9 @@ public class SocialismusNetwork implements SocialisticModule, ResourceProvider, 
 				chatCoordinationService,
 				chatContainerService,
 				chatHistoryService,
-				network.players()
+				network.players(),
+				network.attributes(),
+				serializationService
 		));
 		Logger.info("Joining the network as %s", self);
 

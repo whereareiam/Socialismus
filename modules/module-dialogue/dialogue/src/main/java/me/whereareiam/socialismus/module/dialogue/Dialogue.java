@@ -21,6 +21,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFor
 import me.whereareiam.socialismus.module.dialogue.command.CommandRegistrar;
 import me.whereareiam.socialismus.module.dialogue.common.CommonConfiguration;
 import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
+import me.whereareiam.socialismus.module.dialogue.common.condition.IgnoresCondition;
 import me.whereareiam.socialismus.module.dialogue.common.config.migration.DialogueConfigMigrations;
 import me.whereareiam.socialismus.module.dialogue.common.config.provider.DialoguePhrasesProvider;
 import me.whereareiam.socialismus.module.dialogue.common.control.IgnoredChat;
@@ -93,6 +94,8 @@ public class Dialogue implements SocialisticModule {
 		injector.getInstance(Phrasebook.class).add(ID, phrases::get);
 		// A list that cannot be bound stops the module, naming the list.
 		injector.getInstance(DialogueConditions.class).bind();
+		// dialogue:ignores, for other modules' lists, such as the players Mentionator tags.
+		context.conditions().register(injector.getInstance(IgnoresCondition.class));
 
 		injector.getInstance(CommandRegistrar.class).registerCommands();
 		if (isNetworkEnabled())

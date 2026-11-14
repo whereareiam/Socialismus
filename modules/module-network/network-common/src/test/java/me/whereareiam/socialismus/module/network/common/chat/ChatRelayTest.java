@@ -3,6 +3,7 @@ package me.whereareiam.socialismus.module.network.common.chat;
 import me.whereareiam.socialismus.common.config.SerializationServiceAdapter;
 import me.whereareiam.socialismus.event.chat.ChatBroadcastEvent;
 import me.whereareiam.socialismus.event.chat.history.ChatHistoryRemoveByAmountEvent;
+import me.whereareiam.socialismus.model.attribute.AttributeKey;
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
@@ -34,6 +35,8 @@ import static org.mockito.Mockito.when;
 
 class ChatRelayTest {
 	private static final InternalChat GLOBAL = InternalChat.builder().id("global").build();
+
+	private static final AttributeKey<Mark> MARK = AttributeKey.create("test", "mark", Mark.class);
 
 	private final TestNetwork network = new TestNetwork(Integer.MAX_VALUE, new SerializationServiceAdapter());
 	private final NetworkSettings.Chat settings = settings(true);
@@ -83,6 +86,25 @@ class ChatRelayTest {
 	}
 
 	@Test
+	void aCarriedAttributeTravelsWithTheMessageToANodeThatCarriesItToo() {
+		Side lobby = side("lobby");
+		Side survival = side("survival");
+		Side creative = side("creative");
+		lobby.node.service().carry(MARK);
+		survival.node.service().carry(MARK);
+		FormattedChatMessage message = message(player("Alice", "lobby"), GLOBAL);
+		message.setAttribute(MARK, new Mark("Bob", 2));
+
+		lobby.relay.onChatBroadcast(new ChatBroadcastEvent(message, false));
+
+		ArgumentCaptor<FormattedChatMessage> relayed = ArgumentCaptor.forClass(FormattedChatMessage.class);
+		verify(survival.coordination).relay(relayed.capture());
+		assertEquals(Optional.of(new Mark("Bob", 2)), relayed.getValue().getAttribute(MARK));
+		verify(creative.coordination).relay(relayed.capture());
+		assertEquals(Optional.empty(), relayed.getValue().getAttribute(MARK));
+	}
+
+	@Test
 	void aChatTheOtherNodeDoesNotHaveIsIgnoredThere() {
 		Side lobby = side("lobby");
 		Side survival = side("survival");
@@ -125,9 +147,18 @@ class ChatRelayTest {
 			case "global" -> Optional.of(GLOBAL);
 			default -> Optional.empty();
 		});
-		ChatRelay relay = new ChatRelay(node.service().replication(), () -> settings, coordination, chats, history, node.service().players());
+		ChatRelay relay = new ChatRelay(
+				node.service().replication(),
+				() -> settings,
+				coordination,
+				chats,
+				history,
+				node.service().players(),
+				node.service().attributes(),
+				new SerializationServiceAdapter()
+		);
 
-		return new Side(relay, coordination, chats, history);
+		return new Side(node, relay, coordination, chats, history);
 	}
 
 	private static FormattedChatMessage message(SocialismusPlayer sender, InternalChat chat) {
@@ -150,6 +181,9 @@ class ChatRelayTest {
 		return chat;
 	}
 
-	private record Side(ChatRelay relay, ChatCoordinationService coordination, ChatContainerService chats, ChatHistoryService history) {
+	public record Mark(String name, int times) {
+	}
+
+	private record Side(TestNetwork.Node node, ChatRelay relay, ChatCoordinationService coordination, ChatContainerService chats, ChatHistoryService history) {
 	}
 }

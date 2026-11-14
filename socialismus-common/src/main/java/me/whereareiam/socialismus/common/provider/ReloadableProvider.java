@@ -21,6 +21,11 @@ public class ReloadableProvider implements Provider<Set<Reloadable>>, Registry<R
 		reloadables.add(reloadable);
 	}
 
+	@Override
+	public synchronized void unregister(Reloadable reloadable) {
+		reloadables.remove(reloadable);
+	}
+
 	/**
 	 * Returns the registered documents in the order they registered.
 	 */

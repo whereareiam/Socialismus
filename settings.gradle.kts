@@ -138,6 +138,21 @@ project(":module-dialogue-network").projectDir = file("modules/module-dialogue/d
 include(":module-dialogue")
 project(":module-dialogue").projectDir = file("modules/module-dialogue/dialogue")
 
+include(":module-mentionator-api")
+project(":module-mentionator-api").projectDir = file("modules/module-mentionator/mentionator-api")
+
+include(":module-mentionator-common")
+project(":module-mentionator-common").projectDir = file("modules/module-mentionator/mentionator-common")
+
+include(":module-mentionator-command")
+project(":module-mentionator-command").projectDir = file("modules/module-mentionator/mentionator-command")
+
+include(":module-mentionator-network")
+project(":module-mentionator-network").projectDir = file("modules/module-mentionator/mentionator-network")
+
+include(":module-mentionator")
+project(":module-mentionator").projectDir = file("modules/module-mentionator/mentionator")
+
 include(":module-database-api")
 project(":module-database-api").projectDir = file("modules/module-database/database-api")
 

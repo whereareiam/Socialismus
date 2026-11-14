@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import me.whereareiam.socialismus.event.base.CancellableEvent;
 import me.whereareiam.socialismus.event.base.Event;
+import me.whereareiam.socialismus.event.base.SynchronousEvent;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 
@@ -21,12 +22,15 @@ import java.util.Collection;
  *
  * <p>Being a {@link CancellableEvent}, the recipient selection can be cancelled by
  * setting the cancelled flag to true.</p>
+ *
+ * <p>Its listeners run on the thread that selects the recipients, before the message is sent on, so the
+ * recipients a listener takes away or the cancelling it does reach the message.</p>
  */
 @Setter
 @Getter
 @ToString
 @AllArgsConstructor
-public class RecipientsSelectedEvent implements Event, CancellableEvent {
+public class RecipientsSelectedEvent implements Event, CancellableEvent, SynchronousEvent {
     /**
      * The chat message for which recipients are being selected
      */

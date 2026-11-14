@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import me.whereareiam.conditia.result.Verdict;
+import me.whereareiam.socialismus.common.chat.toggle.ChatToggles;
 import me.whereareiam.socialismus.event.chat.recipient.RecipientsSelectedEvent;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.Worker;
@@ -13,7 +14,6 @@ import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.service.chat.ChatConditionService;
-import me.whereareiam.socialismus.service.chat.ChatToggleStore;
 import me.whereareiam.socialismus.util.EventUtil;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import java.util.Set;
 public class RecipientSelector {
 	private final ChatConditionService conditions;
 	private final Provider<ChatSettings> settingsProvider;
-	private final ChatToggleStore toggles;
+	private final ChatToggles toggles;
 	private final NobodyNotice nobody;
 
 	@Inject
@@ -39,7 +39,7 @@ public class RecipientSelector {
 			WorkerProcessor<ChatMessage> workerProcessor,
 			ChatConditionService conditions,
 			Provider<ChatSettings> settings,
-			ChatToggleStore toggles,
+			ChatToggles toggles,
 			NobodyNotice nobody
 	) {
 		this.conditions = conditions;

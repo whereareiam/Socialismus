@@ -7,6 +7,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+
 /**
  * Abstract base class for all Paper SocialismusPlayer implementations.
  * Provides Paper-specific functionality for wrapping Bukkit Players.
@@ -39,5 +41,10 @@ public abstract class AbstractPaperSocialismusPlayer extends AbstractBukkitPlaye
 	@NotNull
 	public Audience getAudience() {
 		return bukkitPlayer;
+	}
+
+	@Override
+	public void setChatCompletions(@NotNull Collection<String> completions) {
+		bukkitPlayer.setCustomChatCompletions(completions);
 	}
 }
