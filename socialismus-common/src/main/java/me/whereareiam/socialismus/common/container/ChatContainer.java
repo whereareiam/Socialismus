@@ -12,6 +12,7 @@ import me.whereareiam.socialismus.event.base.SocialisticEvent;
 import me.whereareiam.socialismus.event.chat.ChatAddedEvent;
 import me.whereareiam.socialismus.event.chat.ChatUpdatedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
+import me.whereareiam.socialismus.exception.StyleException;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
@@ -124,13 +125,13 @@ public class ChatContainer implements ChatContainerService, EventListener {
 		return new HashSet<>(chats.values());
 	}
 
-	// A chat whose conditions cannot be bound is left out, and the console says which list is wrong.
+	// A chat whose conditions or styles cannot be bound is left out, and the console says which list is wrong.
 	private boolean bound(Chat chat) {
 		try {
 			conditions.bind(chat);
 
 			return true;
-		} catch (ConditionException exception) {
+		} catch (ConditionException | StyleException exception) {
 			Logger.severe("Leaving out the chat %s: %s", chat.getId(), exception.getMessage());
 
 			return false;

@@ -63,6 +63,7 @@ public class BubblesDefaults implements DefaultsProvider<BubblesConfig> {
 								.build()
 				)).requires(fromCommandOrChats("fallback", "local"))
 				.reaches(nearbyAndSeen(50))
+				.styles(List.of("basic", "full"))
 				.build();
 
 		config.getBubbles().add(bubble);

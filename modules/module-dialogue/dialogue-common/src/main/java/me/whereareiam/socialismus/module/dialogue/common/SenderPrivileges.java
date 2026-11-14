@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Decides what a sender's conditions allow their private message, on the server they write on, the only one where
- * those conditions can be checked: bypassing a recipient who turned messages off, not being ignored, and staying
- * hidden from spies. The message carries the answers to whichever server delivers it.
+ * those conditions can be checked: bypassing a recipient who turned messages off, not being ignored, staying hidden
+ * from spies, and the style of what they wrote. The message carries the answers to whichever server delivers it.
  */
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = @Inject)
@@ -28,6 +28,7 @@ public class SenderPrivileges {
 		message.setBypassesToggle(conditions.bypassesToggle(sender));
 		message.setExemptFromIgnore(conditions.exemptFromIgnore(sender));
 		message.setHiddenFromSpies(conditions.hiddenFromSpies(sender));
+		message.setStyle(conditions.style(sender).id());
 	}
 
 	/**

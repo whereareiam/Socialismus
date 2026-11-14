@@ -11,6 +11,7 @@ import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.base.SocialisticEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
+import me.whereareiam.socialismus.exception.StyleException;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
@@ -19,6 +20,8 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingForm
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.service.phrase.PhraseScope;
 import me.whereareiam.socialismus.service.phrase.Phrasebook;
+import me.whereareiam.socialismus.service.style.Styles;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,6 +44,7 @@ public class DialogueConditions implements EventListener {
 
 	private final Conditions conditions;
 	private final PhraseScope phrases;
+	private final Styles styles;
 	private final Provider<DialogueSettings> settings;
 	private final Provider<MessagingFormats> messagingFormats;
 	private final Provider<ModerationFormats> moderationFormats;
@@ -50,12 +54,14 @@ public class DialogueConditions implements EventListener {
 	public DialogueConditions(
 			@NotNull Conditions conditions,
 			@NotNull Phrasebook phrases,
+			@NotNull Styles styles,
 			@NotNull Provider<DialogueSettings> settings,
 			@NotNull Provider<MessagingFormats> messagingFormats,
 			@NotNull Provider<ModerationFormats> moderationFormats
 	) {
 		this.conditions = conditions;
 		this.phrases = phrases.scope(PHRASE_SCOPE);
+		this.styles = styles;
 		this.settings = settings;
 		this.messagingFormats = messagingFormats;
 		this.moderationFormats = moderationFormats;
@@ -74,7 +80,7 @@ public class DialogueConditions implements EventListener {
 		formats.put("formats.moderation.spy", moderationFormats.get().getSpy());
 
 		DialoguePlaces previous = places;
-		places = DialoguePlaces.bind(conditions, phrases, settings.get(), formats);
+		places = DialoguePlaces.bind(conditions, phrases, styles, settings.get(), formats);
 		if (previous != null) previous.close();
 	}
 
@@ -101,7 +107,7 @@ public class DialogueConditions implements EventListener {
 	public void onReloaded(PluginReloadedEvent event) {
 		try {
 			bind();
-		} catch (ConditionException exception) {
+		} catch (ConditionException | StyleException exception) {
 			Logger.severe("Keeping Dialogue's conditions as they were: %s", exception.getMessage());
 		}
 	}
@@ -177,6 +183,19 @@ public class DialogueConditions implements EventListener {
 	 */
 	public boolean hiddenFromSpies(@NotNull SocialismusPlayer player) {
 		return meets(DialoguePlaces::getHiddenFromSpies, player);
+	}
+
+	/**
+	 * Chooses the style a sender writes private messages with: the last of {@code messaging.styles} whose conditions
+	 * they meet, on the sender's server.
+	 *
+	 * @param sender the sender
+	 * @return the style, {@link TextStyle#PLAIN} when they meet none or Dialogue accepts none
+	 */
+	public @NotNull TextStyle style(@NotNull SocialismusPlayer sender) {
+		DialoguePlaces current = places;
+
+		return current == null ? TextStyle.PLAIN : current.getStyles().of(sender);
 	}
 
 	private boolean meets(Function<DialoguePlaces, Place> place, SocialismusPlayer player) {

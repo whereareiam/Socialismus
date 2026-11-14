@@ -13,13 +13,13 @@ import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.type.AnimationType;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.util.ComponentUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 
 import java.util.*;
 
 @Singleton
 public class ContentArranger {
-	private static final String MESSAGE_PLACEHOLDER = "{message}";
-
 	private static final Set<AnimationType> SINGLE_GROUP_ANIMATIONS = EnumSet.of(
 			AnimationType.POPOUT, AnimationType.EXPANSION, AnimationType.CONTRACTION
 	);
@@ -32,7 +32,7 @@ public class ContentArranger {
 	public BubbleMessage arrangeContent(BubbleMessage bubbleMessage) {
 		Logger.debug("Arranging content for " + bubbleMessage.getSender().getUsername());
 
-		String content = ComponentUtil.toLegacy(bubbleMessage.getContent());
+		String content = ComponentUtil.toLegacy(bubbleMessage.getContent(), true);
 		List<String> lines = formatContent(bubbleMessage, content);
 
 		Bubble bubble = bubbleMessage.getBubble();
@@ -54,7 +54,7 @@ public class ContentArranger {
 		List<BubbleLine> bubbleLines = new ArrayList<>(lines.size());
 		for (String text : lines) {
 			bubbleLines.add(BubbleLine.builder()
-					.content(Serializer.serialize(bubbleMessage.getSender(), text))
+					.content(line(bubbleMessage, text))
 					.build());
 		}
 
@@ -71,7 +71,7 @@ public class ContentArranger {
 		for (int i = 0; i < lines.size(); i++) {
 			String txt = lines.get(i);
 			BubbleLine bl = BubbleLine.builder()
-					.content(Serializer.serialize(bubbleMessage.getSender(), txt))
+					.content(line(bubbleMessage, txt))
 					.build();
 			current.getLines().add(bl);
 
@@ -155,12 +155,25 @@ public class ContentArranger {
 		}
 	}
 
+	/**
+	 * Puts a line of what the sender wrote into the bubble's format. The line goes in after the format is parsed, so
+	 * it shows as its chat or style read it and is never read as formatting or placeholders again.
+	 */
+	private static Component line(BubbleMessage bubbleMessage, String text) {
+		Component content = ComponentUtil.getLEGACY_SECTION_SERIALIZER().deserialize(text);
+
+		return Serializer.serialize(bubbleMessage.getSender(), bubbleMessage.getBubble().getFormat().getFormat())
+				.replaceText(TextReplacementConfig.builder()
+						.matchLiteral(Serializer.placeholder("message"))
+						.replacement(content)
+						.build());
+	}
+
 	private List<String> formatContent(BubbleMessage bubbleMessage, String content) {
 		List<String> lines = new ArrayList<>();
 		Bubble bubble = bubbleMessage.getBubble();
 		int maxWidth = bubble.getDisplay().getMaxLineWidth();
 		String[] words = content.split(" ");
-		String fmt = bubble.getFormat().getFormat();
 		StringBuilder curr = new StringBuilder();
 
 		for (String w : words) {
@@ -169,25 +182,25 @@ public class ContentArranger {
 					while (w.length() > maxWidth) {
 						int partLen = maxWidth - curr.length();
 						if (partLen <= 0) {
-							lines.add(fmt.replace(MESSAGE_PLACEHOLDER, curr.toString().trim()));
+							lines.add(curr.toString().trim());
 							curr = new StringBuilder();
 							partLen = maxWidth;
 						}
 						String part = w.substring(0, partLen);
 						w = w.substring(partLen);
 						curr.append(part).append(bubble.getFormat().getSeparatorFormat());
-						lines.add(fmt.replace(MESSAGE_PLACEHOLDER, curr.toString().trim()));
+						lines.add(curr.toString().trim());
 						curr = new StringBuilder();
 					}
 				} else {
-					lines.add(fmt.replace(MESSAGE_PLACEHOLDER, curr.toString().trim()));
+					lines.add(curr.toString().trim());
 					curr = new StringBuilder();
 				}
 			}
 			curr.append(w).append(" ");
 		}
 		if (!curr.isEmpty()) {
-			lines.add(fmt.replace(MESSAGE_PLACEHOLDER, curr.toString().trim()));
+			lines.add(curr.toString().trim());
 		}
 		return lines;
 	}

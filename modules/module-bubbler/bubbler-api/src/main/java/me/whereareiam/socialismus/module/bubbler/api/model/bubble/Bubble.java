@@ -14,6 +14,7 @@ import me.whereareiam.socialismus.module.bubbler.api.type.AnimationType;
 import me.whereareiam.socialismus.module.bubbler.api.type.DisplayType;
 import me.whereareiam.socialismus.module.bubbler.api.type.TransitionType;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +32,16 @@ public class Bubble {
 	private int priority;
 	private Display display;
 	private Format format;
+
+	/**
+	 * The styles of {@code styles.yml} whose tags a sender may use in a bubble raised by {@code /socialismus bubble},
+	 * by id, from lowest to highest: the sender gets the last one whose requirements they meet. A bubble raised by a
+	 * chat message shows the message as its chat read it.
+	 */
+	@Builder.Default
+	@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+	private List<String> styles = List.of();
+
 	private Style style;
 
 	private Map<TransitionType, BubbleTransition> transitions;

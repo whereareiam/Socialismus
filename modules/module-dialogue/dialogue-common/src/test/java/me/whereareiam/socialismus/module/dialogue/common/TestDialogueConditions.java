@@ -16,6 +16,7 @@ import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueCondi
 import me.whereareiam.socialismus.service.phrase.PhraseScope;
 import me.whereareiam.socialismus.service.phrase.PhraseSource;
 import me.whereareiam.socialismus.service.phrase.Phrasebook;
+import me.whereareiam.socialismus.service.style.Styles;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -32,7 +33,11 @@ public final class TestDialogueConditions {
 	}
 
 	public static DialogueConditions bound(DialogueSettings settings) {
-		return bound(() -> settings, MessagingFormats::new, ModerationFormats::new);
+		return bound(settings, new TestStyles());
+	}
+
+	public static DialogueConditions bound(DialogueSettings settings, Styles styles) {
+		return bound(styles, () -> settings, MessagingFormats::new, ModerationFormats::new);
 	}
 
 	public static DialogueConditions bound(
@@ -40,7 +45,16 @@ public final class TestDialogueConditions {
 			Supplier<MessagingFormats> formats,
 			Supplier<ModerationFormats> moderation
 	) {
-		DialogueConditions dialogueConditions = new DialogueConditions(conditions(), phrases(), settings::get, formats::get, moderation::get);
+		return bound(new TestStyles(), settings, formats, moderation);
+	}
+
+	private static DialogueConditions bound(
+			Styles styles,
+			Supplier<DialogueSettings> settings,
+			Supplier<MessagingFormats> formats,
+			Supplier<ModerationFormats> moderation
+	) {
+		DialogueConditions dialogueConditions = new DialogueConditions(conditions(), phrases(), styles, settings::get, formats::get, moderation::get);
 		dialogueConditions.bind();
 
 		return dialogueConditions;

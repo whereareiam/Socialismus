@@ -21,6 +21,7 @@ import me.whereareiam.socialismus.module.bubbler.common.processor.BubbleMessageP
 import me.whereareiam.socialismus.module.bubbler.common.worker.BubbleSelector;
 import me.whereareiam.socialismus.module.bubbler.common.worker.container.ContentArranger;
 import me.whereareiam.socialismus.module.bubbler.common.worker.container.ContentTimeEvaluator;
+import me.whereareiam.socialismus.module.bubbler.common.worker.container.StyleReader;
 import me.whereareiam.socialismus.module.bubbler.common.worker.recipient.RecipientResolver;
 import me.whereareiam.socialismus.module.bubbler.common.worker.recipient.RecipientSelector;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
@@ -58,6 +59,7 @@ public class CommonConfiguration extends AbstractModule {
 		bind(RecipientResolver.class).asEagerSingleton();
 		bind(RecipientSelector.class).asEagerSingleton();
 		bind(BubbleSelector.class).asEagerSingleton();
+		bind(StyleReader.class).asEagerSingleton();
 		bind(ContentArranger.class).asEagerSingleton();
 		bind(ContentTimeEvaluator.class).asEagerSingleton();
 

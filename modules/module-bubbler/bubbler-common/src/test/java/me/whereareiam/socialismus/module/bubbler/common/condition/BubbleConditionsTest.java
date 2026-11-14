@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.type.ActivatorType;
+import me.whereareiam.socialismus.module.bubbler.common.TestStyles;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.mock;
 class BubbleConditionsTest {
 	private final SocialismusPlayer alice = mock(SocialismusPlayer.class);
 	private final List<Bubble> bubbles = new ArrayList<>();
-	private final BubbleConditions bubbleConditions = new BubbleConditions(conditions(), () -> bubbles);
+	private final BubbleConditions bubbleConditions = new BubbleConditions(conditions(), new TestStyles(), () -> bubbles);
 
 	@Test
 	void selectsABubbleByWhatRaisedIt() {

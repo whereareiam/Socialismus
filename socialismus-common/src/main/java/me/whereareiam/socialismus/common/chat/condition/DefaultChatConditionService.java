@@ -22,6 +22,8 @@ import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.service.phrase.PhraseScope;
 import me.whereareiam.socialismus.service.phrase.Phrasebook;
+import me.whereareiam.socialismus.service.style.Styles;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,6 +48,7 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 
 	private final Conditions conditions;
 	private final PhraseScope phrases;
+	private final Styles styles;
 	private final Provider<ChatSettings> chatSettings;
 
 	private final Map<String, ChatPlaces> chats = new ConcurrentHashMap<>();
@@ -57,11 +60,13 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 	public DefaultChatConditionService(
 			@NotNull Conditions conditions,
 			@NotNull Phrasebook phrases,
+			@NotNull Styles styles,
 			@NotNull Provider<ChatSettings> chatSettings,
 			@NotNull EventManager eventManager
 	) {
 		this.conditions = conditions;
 		this.phrases = phrases.scope(PHRASE_SCOPE);
+		this.styles = styles;
 		this.chatSettings = chatSettings;
 
 		eventManager.register(this);
@@ -74,7 +79,7 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 	 */
 	public synchronized void start() {
 		settings = SettingsPlaces.bind(conditions, chatSettings.get());
-		for (Chat chat : waiting.values()) replace(chat.getId(), ChatPlaces.bind(conditions, phrases, chat));
+		for (Chat chat : waiting.values()) replace(chat.getId(), ChatPlaces.bind(conditions, phrases, styles, chat));
 
 		waiting.clear();
 		started = true;
@@ -103,7 +108,7 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 			return;
 		}
 
-		replace(chat.getId(), ChatPlaces.bind(conditions, phrases, chat));
+		replace(chat.getId(), ChatPlaces.bind(conditions, phrases, styles, chat));
 	}
 
 	/**
@@ -167,6 +172,13 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 		}
 
 		return Optional.empty();
+	}
+
+	@Override
+	public @NotNull TextStyle style(@NotNull Chat chat, @NotNull SocialismusPlayer sender) {
+		ChatPlaces places = chats.get(chat.getId());
+
+		return places == null ? TextStyle.PLAIN : places.getStyles().of(sender);
 	}
 
 	@Override

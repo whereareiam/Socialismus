@@ -11,10 +11,14 @@ import me.whereareiam.conditia.model.Situation;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.base.SocialisticEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
+import me.whereareiam.socialismus.exception.StyleException;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
+import me.whereareiam.socialismus.service.style.StylePlace;
+import me.whereareiam.socialismus.service.style.Styles;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -26,18 +30,20 @@ import static me.whereareiam.socialismus.model.condition.ConditionParts.SENDER;
 import static me.whereareiam.socialismus.module.bubbler.api.model.condition.BubblerParts.ACTIVATION;
 
 /**
- * The conditions of the bubbles: bound when Bubbler is enabled and again after every reload, checked at once on
+ * The conditions and styles of the bubbles: bound when Bubbler is enabled and again after every reload, checked at once on
  * the thread that shows the bubble. A bubble that is not bound meets nobody.
  */
 @Singleton
 public class BubbleConditions implements EventListener {
 	private final Conditions conditions;
+	private final Styles styles;
 	private final Provider<List<Bubble>> bubbles;
 	private volatile Map<String, Places> places = Map.of();
 
 	@Inject
-	public BubbleConditions(@NotNull Conditions conditions, @NotNull Provider<List<Bubble>> bubbles) {
+	public BubbleConditions(@NotNull Conditions conditions, @NotNull Styles styles, @NotNull Provider<List<Bubble>> bubbles) {
 		this.conditions = conditions;
+		this.styles = styles;
 		this.bubbles = bubbles;
 	}
 
@@ -49,8 +55,8 @@ public class BubbleConditions implements EventListener {
 	public synchronized void bind() {
 		Map<String, Places> bound = new HashMap<>();
 		try {
-			for (Bubble bubble : bubbles.get()) bound.put(bubble.getId(), Places.bind(conditions, bubble));
-		} catch (ConditionException exception) {
+			for (Bubble bubble : bubbles.get()) bound.put(bubble.getId(), Places.bind(conditions, styles, bubble));
+		} catch (ConditionException | StyleException exception) {
 			bound.values().forEach(Places::close);
 			throw exception;
 		}
@@ -72,7 +78,7 @@ public class BubbleConditions implements EventListener {
 	public void onReloaded(PluginReloadedEvent event) {
 		try {
 			bind();
-		} catch (ConditionException exception) {
+		} catch (ConditionException | StyleException exception) {
 			Logger.severe("Keeping the conditions of the bubbles as they were: %s", exception.getMessage());
 		}
 	}
@@ -105,14 +111,32 @@ public class BubbleConditions implements EventListener {
 		return bound != null && bound.reaches().check(situation).passed();
 	}
 
-	private record Places(Place requires, Place reaches) {
-		static Places bind(Conditions conditions, Bubble bubble) {
+	/**
+	 * Chooses the style a sender writes a bubble with: the last of its {@code styles} whose conditions they meet.
+	 *
+	 * @param bubble the bubble
+	 * @param sender the sender
+	 * @return the style, {@link TextStyle#PLAIN} when they meet none or the bubble accepts none
+	 */
+	public @NotNull TextStyle style(@NotNull Bubble bubble, @NotNull SocialismusPlayer sender) {
+		Places bound = places.get(bubble.getId());
+
+		return bound == null ? TextStyle.PLAIN : bound.styles().of(sender);
+	}
+
+	private record Places(Place requires, Place reaches, StylePlace styles) {
+		static Places bind(Conditions conditions, Styles styles, Bubble bubble) {
 			String path = "bubbles." + bubble.getId();
 			Place requires = conditions.place(path + ".requires", listOf(bubble.getRequires()), SENDER, ACTIVATION);
+			Place reaches = null;
 			try {
-				return new Places(requires, conditions.place(path + ".reaches", listOf(bubble.getReaches()), RECIPIENT, SENDER, ACTIVATION));
-			} catch (ConditionException exception) {
+				reaches = conditions.place(path + ".reaches", listOf(bubble.getReaches()), RECIPIENT, SENDER, ACTIVATION);
+				List<String> accepted = bubble.getStyles() == null ? List.of() : bubble.getStyles();
+
+				return new Places(requires, reaches, styles.place(path + ".styles", accepted));
+			} catch (ConditionException | StyleException exception) {
 				requires.close();
+				if (reaches != null) reaches.close();
 				throw exception;
 			}
 		}
@@ -124,6 +148,7 @@ public class BubbleConditions implements EventListener {
 		void close() {
 			requires.close();
 			reaches.close();
+			styles.close();
 		}
 	}
 }

@@ -107,7 +107,7 @@ public class RecipientSelector {
 	 */
 	private boolean reachesPlayersWhoTurnedItOff(Chat chat, SocialismusPlayer sender, ChatSettings settings) {
 		ChatSettings.Toggle toggle = settings.getToggle();
-		if (toggle == null || !toggle.isEnabled() || !chat.isToggleable()) return true;
+		if (toggle == null || !toggle.isEnabled() || !chat.getParameters().isToggleable()) return true;
 
 		return conditions.bypassesToggle(sender);
 	}

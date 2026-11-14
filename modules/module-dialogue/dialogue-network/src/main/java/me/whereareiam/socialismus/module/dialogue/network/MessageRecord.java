@@ -27,4 +27,5 @@ public class MessageRecord {
 	private boolean bypassesToggle;
 	private boolean exemptFromIgnore;
 	private boolean hiddenFromSpies;
+	private String style;
 }

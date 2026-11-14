@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.service.phrase.PhraseScope;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -57,6 +58,16 @@ public interface ChatConditionService {
 	 * @return the format, empty when the sender meets none
 	 */
 	@NotNull Optional<ChatFormat> format(@NotNull Chat chat, @NotNull ChatMessage message);
+
+	/**
+	 * Chooses the style a sender writes with in a chat: the last of the chat's {@code parameters.styles} whose
+	 * conditions they meet.
+	 *
+	 * @param chat   the chat
+	 * @param sender the sender
+	 * @return the style, {@link TextStyle#PLAIN} when they meet none or the chat accepts none
+	 */
+	@NotNull TextStyle style(@NotNull Chat chat, @NotNull SocialismusPlayer sender);
 
 	/**
 	 * Checks whether a player may clear messages from chat history: {@code history.requires}.

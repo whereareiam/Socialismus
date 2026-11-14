@@ -14,6 +14,7 @@ import me.whereareiam.socialismus.module.dialogue.api.model.Message;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
+import me.whereareiam.socialismus.service.style.Styles;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.title.Title;
@@ -33,6 +34,7 @@ public class MessageRenderer {
 	private final Provider<MessagingFormats> formats;
 	private final Provider<ModerationFormats> moderationFormats;
 	private final DialogueConditions conditions;
+	private final Styles styles;
 
 	/**
 	 * Shows the sender their message in a {@code sent} format.
@@ -97,9 +99,10 @@ public class MessageRenderer {
 
 	/**
 	 * Renders a text of a format for its viewer. The message goes in after the text is parsed, so what a player
-	 * wrote is shown as written and never read as formatting, such as a click that runs a command.
+	 * wrote is never read as the format's own formatting, such as a click that runs a command; it is read only with
+	 * the tags of the style the sender's server chose for it.
 	 */
-	private static Component render(SocialismusPlayer viewer, Message message, String text) {
+	private Component render(SocialismusPlayer viewer, Message message, String text) {
 		Component rendered = Serializer.serialize(SerializerContent.builder()
 				.receiver(viewer)
 				.message(text)
@@ -111,7 +114,7 @@ public class MessageRenderer {
 
 		return rendered.replaceText(TextReplacementConfig.builder()
 				.matchLiteral(Serializer.placeholder("message"))
-				.replacement(Component.text(message.getContent()))
+				.replacement(styles.style(message.getStyle()).read(message.getContent()))
 				.build());
 	}
 
