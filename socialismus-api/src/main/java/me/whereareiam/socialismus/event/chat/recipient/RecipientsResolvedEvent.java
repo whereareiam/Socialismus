@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import me.whereareiam.socialismus.event.base.CancellableEvent;
 import me.whereareiam.socialismus.event.base.Event;
+import me.whereareiam.socialismus.event.base.SynchronousEvent;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 
 /**
@@ -15,12 +16,15 @@ import me.whereareiam.socialismus.model.chat.message.ChatMessage;
  *
  * <p>Being a {@link CancellableEvent}, the message delivery can be cancelled by
  * setting the cancelled flag to true.</p>
+ *
+ * <p>Its listeners run on the thread that resolves the recipients, before the message is sent on, so a listener's
+ * cancelling reaches the message.</p>
  */
 @Setter
 @Getter
 @ToString
 @AllArgsConstructor
-public class RecipientsResolvedEvent implements Event, CancellableEvent {
+public class RecipientsResolvedEvent implements Event, CancellableEvent, SynchronousEvent {
     /**
      * The chat message with its resolved recipients
      */
