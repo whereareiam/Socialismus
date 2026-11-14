@@ -29,7 +29,8 @@ public final class PhrasesDefaults {
 					.text("same.inside", "{prefix}<white>This does not work in the same <gray>{place}</gray>.</white>")
 					.text("sees.hidden", "{prefix}<white>This player cannot see you.</white>")
 					.text("language.outside", "{prefix}<white>This only works for <gray>{languages}</gray>.</white>")
-					.text("language.inside", "{prefix}<white>This does not work for <gray>{language}</gray>.</white>"))
+					.text("language.inside", "{prefix}<white>This does not work for <gray>{language}</gray>.</white>")
+					.text("cooldown.waiting", "{prefix}<white>Wait <gray>{remaining}</gray> before that again.</white>"))
 			.section("chat", chat -> chat
 					.section("denied", denied -> denied
 							.text("permission.missing", "{prefix}<white>You may not write in <gray>{chat}</gray> chat.</white>")
@@ -37,6 +38,7 @@ public final class PhrasesDefaults {
 							.text("world.inside", "{prefix}<white><gray>{chat}</gray> chat does not work in <gray>{world}</gray>.</white>")
 							.text("server.outside", "{prefix}<white><gray>{chat}</gray> chat only works on <gray>{servers}</gray>.</white>")
 							.text("server.inside", "{prefix}<white><gray>{chat}</gray> chat does not work on <gray>{server}</gray>.</white>")
+							.text("cooldown.waiting", "{prefix}<white>Wait <gray>{remaining}</gray> before writing in <gray>{chat}</gray> chat again.</white>")
 							// What the sender of a message that reached nobody is told about the players it did not reach.
 							.section("recipient", recipient -> recipient
 									.text("permission.missing", "{prefix}<white>Nobody who may read <gray>{chat}</gray> chat received your message.</white>")

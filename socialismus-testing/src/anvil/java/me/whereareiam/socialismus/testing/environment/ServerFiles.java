@@ -186,6 +186,14 @@ public final class ServerFiles {
 	}
 
 	/**
+	 * Returns a list a player meets unless they used its line within the given time, such as {@code 1m}.
+	 */
+	@NotNull
+	public static Requirements cooldown(@NotNull String duration) {
+		return ConditionLists.of("cooldown", duration);
+	}
+
+	/**
 	 * Returns a list a player meets when they stand in one of the given worlds.
 	 */
 	@NotNull

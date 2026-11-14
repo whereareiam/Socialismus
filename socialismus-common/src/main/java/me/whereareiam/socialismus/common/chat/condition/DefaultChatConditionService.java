@@ -17,6 +17,7 @@ import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
+import me.whereareiam.socialismus.model.condition.Recordings;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.chat.ChatConditionService;
@@ -149,8 +150,13 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 		if (places == null || formats == null || formats.size() != places.getFormats().size()) return Optional.empty();
 
 		Situation situation = Situation.of(SENDER, message.getSender()).and(MESSAGE, message);
-		for (int index = formats.size() - 1; index >= 0; index--)
-			if (places.getFormats().get(index).check(situation).passed()) return Optional.of(formats.get(index));
+		for (int index = formats.size() - 1; index >= 0; index--) {
+			Verdict verdict = places.getFormats().get(index).check(situation);
+			if (!verdict.passed()) continue;
+
+			Recordings.of(message).add(verdict);
+			return Optional.of(formats.get(index));
+		}
 
 		return Optional.empty();
 	}

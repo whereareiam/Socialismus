@@ -185,7 +185,7 @@ class DefaultDialogueServiceTest {
 	void refusesAMessageTheConditionsDoNotAllow() {
 		online(bob);
 		Phrase reason = Phrase.of("Bob is elsewhere", Map.of());
-		when(conditions.judge(alice, bob, "Bob")).thenReturn(new MessagingConditions.Verdict(false, reason));
+		when(conditions.judge(alice, bob, "Bob")).thenReturn(new MessagingConditions.Verdict(false, reason, null));
 
 		dialogueService.send(alice, "bob", "hello");
 

@@ -39,13 +39,13 @@ public class MessagingConditions {
 			@NotNull String recipientName
 	) {
 		me.whereareiam.conditia.result.Verdict verdict = conditions.writes(sender, recipient);
-		if (verdict.passed()) return Verdict.ALLOWED;
+		if (verdict instanceof me.whereareiam.conditia.result.Verdict.Passed passed) return new Verdict(true, null, passed);
 		if (!(verdict instanceof me.whereareiam.conditia.result.Verdict.Failed failed)) return Verdict.REFUSED;
 
 		Phrase reason = conditionTexts.denied(failed, DialogueConditions.PHRASE_SCOPE, Map.of("recipientName", recipientName))
 				.orElse(null);
 
-		return new Verdict(false, reason);
+		return new Verdict(false, reason, null);
 	}
 
 	/**
@@ -53,9 +53,21 @@ public class MessagingConditions {
 	 *
 	 * @param allowed whether the message may be sent
 	 * @param reason  why it may not, as the sender is told; {@code null} when allowed or nothing words it
+	 * @param passed  the passed verdict, to {@link #record()} once the message is sent; {@code null} when refused
 	 */
-	public record Verdict(boolean allowed, @Nullable Phrase reason) {
-		static final Verdict ALLOWED = new Verdict(true, null);
-		static final Verdict REFUSED = new Verdict(false, null);
+	public record Verdict(
+			boolean allowed,
+			@Nullable Phrase reason,
+			@Nullable me.whereareiam.conditia.result.Verdict.Passed passed
+	) {
+		static final Verdict ALLOWED = new Verdict(true, null, null);
+		static final Verdict REFUSED = new Verdict(false, null, null);
+
+		/**
+		 * Records what the lists that allowed the message record, such as a cooldown, once it was sent.
+		 */
+		public void record() {
+			if (passed != null) passed.record();
+		}
 	}
 }
