@@ -152,6 +152,7 @@ as a container process of the network (`containers = Container.REDIS`), so those
 - [x] A server that stops answering hands its players' chat to the proxy within the lease time, and takes it back once it answers
 - [x] A server behind a proxy learns its name, so a `server` condition judges its players
 - [x] `/msg` reaches a player on another backend, and the sender sees it once that backend confirms
+- [x] A chat a player turned off on one backend stays off after they switch to another
 - [ ] A private message to a player on no backend fails once `messaging.confirmation` has passed
 
 ## modules
