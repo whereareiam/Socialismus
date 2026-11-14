@@ -71,7 +71,7 @@ val journeyParallelism = providers.gradleProperty("socialismus.journeys.parallel
  */
 val journeySuites = listOf(
     "chat", "commands", "platform", "network", "sync", "upgrade",
-    "modules", "chirper", "dialogue", "essentials", "bubbler", "database"
+    "modules", "chirper", "dialogue", "essentials", "bubbler", "database", "mentionator"
 )
 
 /**
@@ -127,6 +127,7 @@ anvil {
     artifact("bundle", pluginJar(projects.socialismusPlatform.bundle))
     artifact("chirper", pluginJar(projects.moduleChirper))
     artifact("dialogue", pluginJar(projects.moduleDialogue))
+    artifact("mentionator", pluginJar(projects.moduleMentionator))
     artifact("essentials", pluginJar(projects.moduleEssentials))
     artifact("bubbler", pluginJar(projects.moduleBubbler))
     artifact("redis", pluginJar(projects.moduleRedis))
