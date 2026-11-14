@@ -42,11 +42,12 @@ import me.whereareiam.socialismus.registry.ResourceRegistry;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
-import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.chat.ChatConditionService;
 import me.whereareiam.socialismus.service.chat.render.ChatMessageTransformer;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
+import me.whereareiam.socialismus.service.phrase.PhraseSource;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 import me.whereareiam.socialismus.store.Stores;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,6 +70,7 @@ public class Mentionator implements SocialisticModule {
 	private final Injector parentInjector;
 	private final Registry<Reloadable> reloadableRegistry;
 	private Injector injector;
+	private PhraseSource phraseSource;
 	// Set only while SocialismusNetwork is enabled, so its classes load only then.
 	private MentionatorNetwork network;
 
@@ -96,7 +98,7 @@ public class Mentionator implements SocialisticModule {
 		Stream.of(MentionatorSettings.class, MentionatorMessages.class, MentionatorCommands.class).forEach(injector::getInstance);
 		MentionatorPhrasesProvider phrases = injector.getInstance(MentionatorPhrasesProvider.class);
 		phrases.get();
-		injector.getInstance(Phrasebook.class).add(ID, phrases::get);
+		phraseSource = injector.getInstance(Phrasebook.class).add(ID, phrases::get);
 
 		context.conditions().register(new TargetedCondition());
 		context.conditions().register(injector.getInstance(ReachedCondition.class));
@@ -131,7 +133,10 @@ public class Mentionator implements SocialisticModule {
 		}
 		injector.getInstance(ChatCompletions.class).clear();
 		injector.getInstance(MentionatorConditions.class).close();
-		injector.getInstance(Phrasebook.class).remove(ID);
+		if (phraseSource != null) {
+			phraseSource.close();
+			phraseSource = null;
+		}
 		Stream.of(
 				MentionatorSettingsProvider.class,
 				MentionatorMessagesProvider.class,

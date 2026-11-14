@@ -9,10 +9,10 @@ import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
 import me.whereareiam.socialismus.registry.base.Registry;
 import me.whereareiam.socialismus.service.CommandService;
-import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.Scheduler;
 import me.whereareiam.socialismus.service.SerializationService;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 
 @RequiredArgsConstructor
 public class DialogueInjectorConfiguration extends AbstractModule {

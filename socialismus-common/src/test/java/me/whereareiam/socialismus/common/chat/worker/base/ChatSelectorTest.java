@@ -170,11 +170,13 @@ class ChatSelectorTest {
 						.text("staff.refusal", "Only staff write in {chat} chat.")
 						.text("overworld.refusal", "{chat} chat only works in the overworld.")))
 				.build();
+		DefaultPhrasebook phrasebook = new DefaultPhrasebook(() -> phrases);
+		when(conditions.phrases()).thenReturn(phrasebook.scope("chat"));
 
 		return new ChatSelector(
 				containerService,
 				conditions,
-				new DefaultConditionTexts(new DefaultPhrasebook(() -> phrases)),
+				new DefaultConditionTexts(phrasebook),
 				() -> messages,
 				() -> settings,
 				new ChatMessageProcessor()
@@ -237,10 +239,13 @@ class ChatSelectorTest {
 		ChatMessages messages = new ChatMessages();
 		messages.setEmptyMessage("{prefix}<white>You need to write a message.");
 
+		DefaultPhrasebook phrasebook = new DefaultPhrasebook(Phrases::none);
+		when(conditions.phrases()).thenReturn(phrasebook.scope("chat"));
+
 		return new ChatSelector(
 				containerService,
 				conditions,
-				new DefaultConditionTexts(new DefaultPhrasebook(Phrases::none)),
+				new DefaultConditionTexts(phrasebook),
 				() -> messages,
 				() -> settings,
 				new ChatMessageProcessor()

@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -49,7 +51,7 @@ class MessagingConditionsTest {
 	@Test
 	void wordsARefusedRecipientInDialoguesScope() {
 		Phrase reason = Phrase.of("Bob may not receive", Map.of());
-		when(conditionTexts.denied(any(), eq("dialogue"), eq(Map.of("recipientName", "Bob")))).thenReturn(Optional.of(reason));
+		when(conditionTexts.denied(any(), inDialoguesScope(), eq(Map.of("recipientName", "Bob")))).thenReturn(Optional.of(reason));
 
 		MessagingConditions.Judgement verdict = conditions().judge(alice, bob, "Bob");
 
@@ -67,7 +69,7 @@ class MessagingConditionsTest {
 		Verdict.Failed failed = refusal();
 		assertEquals("messaging.requires[0].permission", failed.path());
 		assertTrue(failed.about(ConditionParts.SENDER));
-		verify(conditionTexts).denied(failed, "dialogue", Map.of("recipientName", "Bob"));
+		verify(conditionTexts).denied(eq(failed), inDialoguesScope(), eq(Map.of("recipientName", "Bob")));
 		verify(bob, never()).hasPermission("dialogue.receive");
 	}
 
@@ -91,6 +93,10 @@ class MessagingConditionsTest {
 		verify(conditionTexts).denied(failed.capture(), any(), any());
 
 		return failed.getValue();
+	}
+
+	private static PhraseScope inDialoguesScope() {
+		return argThat(scope -> scope.name().equals("dialogue"));
 	}
 
 	private MessagingConditions conditions() {

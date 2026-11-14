@@ -38,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -64,7 +63,7 @@ class TaggerTest {
 				new Candidate(steve, Map.of()),
 				new Candidate(bob, Map.of())
 		));
-		when(texts.denied(any(), anyString(), anyMap())).thenReturn(Optional.of(Phrase.of("refused")));
+		when(texts.denied(any(), any(), anyMap())).thenReturn(Optional.of(Phrase.of("refused")));
 		messages.getLimits().setPerMessage("only {limit}");
 
 		tags.add(Tag.builder()

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import me.whereareiam.conditia.model.Wording;
 import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.socialismus.model.phrase.Phrase;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -25,7 +26,7 @@ import java.util.Optional;
  *
  * <pre>{@code
  * if (verdict instanceof Verdict.Failed failed)
- *     requirementTexts.denied(failed, "chat", Map.of("chat", chat.getId()))
+ *     conditionTexts.denied(failed, phrasebook.scope("chat"), Map.of("chat", chat.getId()))
  *             .ifPresent(phrase -> sender.sendMessage(Serializer.serialize(phrase.toContent(sender))));
  * }</pre>
  *
@@ -37,14 +38,15 @@ public interface ConditionTexts {
 	 * Words a failed condition for the player it refused.
 	 *
 	 * @param failed       the verdict of the place
-	 * @param scope        the feature's scope of phrases, such as {@code chat} or {@code dialogue}
+	 * @param scope        the feature's scope of phrases, such as {@code chat} or {@code dialogue}, which also renders
+	 *                     the texts' references
 	 * @param placeholders the feature's own placeholders, such as {@code {chat}}; the reason's values keep their
 	 *                     meaning and are not replaced by them
 	 * @return the phrase the player is told, empty when nothing words the failure
 	 */
 	@NotNull Optional<Phrase> denied(
 			@NotNull Verdict.Failed failed,
-			@NotNull String scope,
+			@NotNull PhraseScope scope,
 			@NotNull Map<String, String> placeholders
 	);
 

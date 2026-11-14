@@ -19,8 +19,9 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.condition.Recordings;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
-import me.whereareiam.socialismus.service.Phrasebook;
 import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.phrase.PhraseScope;
+import me.whereareiam.socialismus.service.phrase.Phrasebook;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -41,8 +42,10 @@ import static me.whereareiam.socialismus.model.condition.ConditionParts.VIEWER;
  */
 @Singleton
 public class DefaultChatConditionService implements ChatConditionService, EventListener {
+	private static final String PHRASE_SCOPE = "chat";
+
 	private final Conditions conditions;
-	private final Phrasebook phrases;
+	private final PhraseScope phrases;
 	private final Provider<ChatSettings> chatSettings;
 
 	private final Map<String, ChatPlaces> chats = new ConcurrentHashMap<>();
@@ -58,7 +61,7 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 			@NotNull EventManager eventManager
 	) {
 		this.conditions = conditions;
-		this.phrases = phrases;
+		this.phrases = phrases.scope(PHRASE_SCOPE);
 		this.chatSettings = chatSettings;
 
 		eventManager.register(this);
@@ -110,6 +113,11 @@ public class DefaultChatConditionService implements ChatConditionService, EventL
 		waiting.clear();
 		chats.values().forEach(ChatPlaces::close);
 		chats.clear();
+	}
+
+	@Override
+	public @NotNull PhraseScope phrases() {
+		return phrases;
 	}
 
 	@SocialisticEvent

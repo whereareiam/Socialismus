@@ -43,7 +43,7 @@ public class MessagingConditions {
 		if (verdict instanceof Verdict.Passed passed) return new Judgement(true, null, passed);
 		if (!(verdict instanceof Verdict.Failed failed)) return Judgement.REFUSED;
 
-		Phrase reason = conditionTexts.denied(failed, DialogueConditions.PHRASE_SCOPE, Map.of("recipientName", recipientName))
+		Phrase reason = conditionTexts.denied(failed, conditions.phrases(), Map.of("recipientName", recipientName))
 				.orElse(null);
 
 		return new Judgement(false, reason, null);
