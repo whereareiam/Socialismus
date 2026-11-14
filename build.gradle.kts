@@ -67,6 +67,7 @@ toolkitDistribution {
     file("Chirper", ":module-chirper", "shadowJar")
     file("Bubbler", ":module-bubbler", "shadowJar")
     file("Dialogue", ":module-dialogue", "shadowJar")
+    file("Mentionator", ":module-mentionator", "shadowJar")
     // Essentials builds, but carries no feature since private messages became Dialogue, so it is not shipped.
     file("Redis", ":module-redis", "shadowJar")
     file("Channelizer", ":module-channelizer", "shadowJar")

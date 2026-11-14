@@ -10,6 +10,7 @@ tasks.register("moduleArtifacts") {
         ":module-chirper:build",
         ":module-bubbler:build",
         ":module-dialogue:build",
+        ":module-mentionator:build",
         ":module-essentials:build",
         ":module-redis:build",
         ":module-channelizer:build"
