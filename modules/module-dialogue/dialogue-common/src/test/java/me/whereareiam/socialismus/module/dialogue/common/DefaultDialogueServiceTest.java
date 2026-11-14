@@ -48,7 +48,7 @@ class DefaultDialogueServiceTest {
 	@BeforeEach
 	void setUp() {
 		when(playerRegistry.getPlayerData(anyString())).thenReturn(Optional.empty());
-		when(conditions.judge(any(), any(), any())).thenReturn(MessagingConditions.Verdict.ALLOWED);
+		when(conditions.judge(any(), any(), any())).thenReturn(MessagingConditions.Judgement.ALLOWED);
 
 		dialogueService = new DefaultDialogueService(
 				conversationService,
@@ -185,7 +185,7 @@ class DefaultDialogueServiceTest {
 	void refusesAMessageTheConditionsDoNotAllow() {
 		online(bob);
 		Phrase reason = Phrase.of("Bob is elsewhere", Map.of());
-		when(conditions.judge(alice, bob, "Bob")).thenReturn(new MessagingConditions.Verdict(false, reason, null));
+		when(conditions.judge(alice, bob, "Bob")).thenReturn(new MessagingConditions.Judgement(false, reason, null));
 
 		dialogueService.send(alice, "bob", "hello");
 
