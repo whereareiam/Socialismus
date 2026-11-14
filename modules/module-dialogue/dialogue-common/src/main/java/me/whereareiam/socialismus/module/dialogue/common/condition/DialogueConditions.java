@@ -3,6 +3,8 @@ package me.whereareiam.socialismus.module.dialogue.common.condition;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.exception.ConditionException;
@@ -11,6 +13,7 @@ import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.base.SocialisticEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
+import me.whereareiam.socialismus.exception.StyleException;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
@@ -18,12 +21,15 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSetti
 import me.whereareiam.socialismus.module.dialogue.api.model.config.MessagingFormats;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFormats;
 import me.whereareiam.socialismus.service.Phrasebook;
+import me.whereareiam.socialismus.service.style.Styles;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static me.whereareiam.socialismus.model.condition.ConditionParts.RECIPIENT;
@@ -42,6 +48,7 @@ public class DialogueConditions implements EventListener {
 
 	private final Conditions conditions;
 	private final Phrasebook phrases;
+	private final Styles styles;
 	private final Provider<DialogueSettings> settings;
 	private final Provider<MessagingFormats> messagingFormats;
 	private final Provider<ModerationFormats> moderationFormats;
@@ -51,12 +58,14 @@ public class DialogueConditions implements EventListener {
 	public DialogueConditions(
 			@NotNull Conditions conditions,
 			@NotNull Phrasebook phrases,
+			@NotNull Styles styles,
 			@NotNull Provider<DialogueSettings> settings,
 			@NotNull Provider<MessagingFormats> messagingFormats,
 			@NotNull Provider<ModerationFormats> moderationFormats
 	) {
 		this.conditions = conditions;
 		this.phrases = phrases;
+		this.styles = styles;
 		this.settings = settings;
 		this.messagingFormats = messagingFormats;
 		this.moderationFormats = moderationFormats;
@@ -75,7 +84,7 @@ public class DialogueConditions implements EventListener {
 		formats.put("formats.moderation.spy", moderationFormats.get().getSpy());
 
 		DialoguePlaces previous = places;
-		places = DialoguePlaces.bind(conditions, phrases, settings.get(), formats);
+		places = DialoguePlaces.bind(conditions, phrases, styles, settings.get(), formats);
 		if (previous != null) previous.close();
 	}
 
@@ -92,7 +101,7 @@ public class DialogueConditions implements EventListener {
 	public void onReloaded(PluginReloadedEvent event) {
 		try {
 			bind();
-		} catch (ConditionException exception) {
+		} catch (ConditionException | StyleException exception) {
 			Logger.severe("Keeping Dialogue's conditions as they were: %s", exception.getMessage());
 		}
 	}
@@ -117,20 +126,15 @@ public class DialogueConditions implements EventListener {
 	}
 
 	/**
-	 * Checks whether a format fits a private message: its {@code requires} and {@code reaches}.
+	 * Finds the places of a format.
 	 *
-	 * @param format    the format, from Dialogue's formats as they are loaded now
-	 * @param sender    the player who writes
-	 * @param recipient the player written to, or {@code null} when they are on another server
-	 * @return whether the format fits
+	 * @param format the format, from Dialogue's formats as they are loaded now
+	 * @return its places; empty before Dialogue is enabled or for a format of an earlier load
 	 */
-	public boolean fits(@NotNull DialogueFormat format, @NotNull SocialismusPlayer sender, @Nullable SocialismusPlayer recipient) {
+	public @NotNull Optional<FormatPlaces> of(@NotNull DialogueFormat format) {
 		DialoguePlaces current = places;
-		DialoguePlaces.FormatPlaces bound = current == null ? null : current.getFormats().get(format);
-		if (bound == null || !bound.requires().check(Situation.of(SENDER, sender)).passed()) return false;
-		if (bound.reachesAnyone()) return true;
 
-		return recipient != null && bound.reaches().check(Situation.of(RECIPIENT, recipient).and(SENDER, sender)).passed();
+		return current == null ? Optional.empty() : Optional.ofNullable(current.getFormats().get(format));
 	}
 
 	/**
@@ -163,6 +167,19 @@ public class DialogueConditions implements EventListener {
 		return meets(DialoguePlaces::getHiddenFromSpies, player);
 	}
 
+	/**
+	 * Chooses the style a sender writes private messages with: the last of {@code messaging.styles} whose conditions
+	 * they meet, on the sender's server.
+	 *
+	 * @param sender the sender
+	 * @return the style, {@link TextStyle#PLAIN} when they meet none or Dialogue accepts none
+	 */
+	public @NotNull TextStyle style(@NotNull SocialismusPlayer sender) {
+		DialoguePlaces current = places;
+
+		return current == null ? TextStyle.PLAIN : current.getStyles().of(sender);
+	}
+
 	private boolean meets(Function<DialoguePlaces, Place> place, SocialismusPlayer player) {
 		DialoguePlaces current = places;
 
@@ -171,5 +188,35 @@ public class DialogueConditions implements EventListener {
 
 	private static Verdict unbound(String path) {
 		return new Verdict.Broken(path, path, new IllegalStateException(path + " cannot be checked here"));
+	}
+
+	/**
+	 * The places of one format, found through {@link #of}: what the sender and what the recipient must meet.
+	 */
+	@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+	public static final class FormatPlaces {
+		private final Place requires;
+		private final Place reaches;
+		private final boolean reachesAnyone;
+
+		/**
+		 * Checks whether the format fits a private message: its {@code requires} and {@code reaches}. A recipient
+		 * on another server cannot be checked here, so it meets only an empty {@code reaches}.
+		 *
+		 * @param sender    the player who writes
+		 * @param recipient the player written to, or {@code null} when they are on another server
+		 * @return whether the format fits
+		 */
+		public boolean fits(@NotNull SocialismusPlayer sender, @Nullable SocialismusPlayer recipient) {
+			if (!requires.check(Situation.of(SENDER, sender)).passed()) return false;
+			if (reachesAnyone) return true;
+
+			return recipient != null && reaches.check(Situation.of(RECIPIENT, recipient).and(SENDER, sender)).passed();
+		}
+
+		void close() {
+			requires.close();
+			reaches.close();
+		}
 	}
 }

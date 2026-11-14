@@ -18,7 +18,7 @@ import me.whereareiam.socialismus.model.chat.trigger.RegexChatTrigger;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.model.phrase.Phrase;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.chat.ChatConditions;
 import me.whereareiam.socialismus.service.condition.ConditionTexts;
 import me.whereareiam.socialismus.service.container.ChatContainerService;
 import me.whereareiam.socialismus.util.ComponentUtil;
@@ -35,7 +35,7 @@ import java.util.Optional;
 @Singleton
 public class ChatSelector {
 	private final ChatContainerService containerService;
-	private final ChatConditionService conditions;
+	private final ChatConditions chatConditions;
 	private final ConditionTexts conditionTexts;
 	private final Provider<ChatMessages> chatMessagesProvider;
 	private final Provider<ChatSettings> chatSettingsProvider;
@@ -46,14 +46,14 @@ public class ChatSelector {
 	@Inject
 	public ChatSelector(
 			ChatContainerService containerService,
-			ChatConditionService conditions,
+			ChatConditions chatConditions,
 			ConditionTexts conditionTexts,
 			Provider<ChatMessages> chatMessages,
 			Provider<ChatSettings> chatSettings,
 			WorkerProcessor<ChatMessage> workerProcessor
 	) {
 		this.containerService = containerService;
-		this.conditions = conditions;
+		this.chatConditions = chatConditions;
 		this.conditionTexts = conditionTexts;
 		this.chatMessagesProvider = chatMessages;
 		this.chatSettingsProvider = chatSettings;
@@ -99,14 +99,14 @@ public class ChatSelector {
 		}
 
 		// If nothing or conditions fail → alternative / fallback / notify
-		Verdict senderResult = match == null ? null : conditions.writes(match.chat, message);
-		if (match == null || !senderResult.passed()) {
+		Optional<Verdict> senderResult = match == null ? Optional.empty() : writes(match.chat, message);
+		if (match == null || !passed(senderResult)) {
 			ChatMatch alternative = findSameSymbolAlternative(leadingSymbol, match != null ? match.chat : null, message, settings);
 			if (alternative == null) {
 				Fallback fallback = findFallback(message, settings);
 				if (fallback.match() == null) {
 					// The sender hears why the chat they wrote for refused them; without one, why the fallback did.
-					if (senderResult != null) notifyRefusal(message, settings, match.chat, senderResult, fallback.missing());
+					if (match != null) notifyRefusal(message, settings, match.chat, senderResult, fallback.missing());
 					else notifyRefusal(message, settings, fallback.chat(), fallback.result(), fallback.missing());
 					message.setCancelled(true);
 					return message;
@@ -132,6 +132,18 @@ public class ChatSelector {
 		Logger.debug("Selected chat: %s", match.chat.getId());
 
 		return message;
+	}
+
+	/**
+	 * Checks whether the sender of a message may write in a chat; empty when the chat has no places, which nobody
+	 * writes in.
+	 */
+	private Optional<Verdict> writes(InternalChat chat, ChatMessage message) {
+		return chatConditions.of(chat).map(places -> places.writes(message));
+	}
+
+	private static boolean passed(Optional<Verdict> verdict) {
+		return verdict.filter(Verdict::passed).isPresent();
 	}
 
 	private Optional<String> detectLeadingSymbol(String plain) {
@@ -227,7 +239,7 @@ public class ChatSelector {
 				.filter(c -> !Objects.equals(c, current))
 				.filter(c -> !Objects.equals(c.getId(), settings.getFallback().getChat()))
 				.sorted(BY_PRIORITY_DESC)
-				.filter(c -> conditions.writes(c, msg).passed())
+				.filter(c -> passed(writes(c, msg)))
 				.findFirst()
 				.orElse(null);
 		if (alt == null) return null;
@@ -250,8 +262,8 @@ public class ChatSelector {
 		}
 
 		InternalChat fbChat = fallback.get();
-		Verdict result = conditions.writes(fbChat, msg);
-		if (!result.passed()) return new Fallback(null, fbChat, result, false);
+		Optional<Verdict> result = writes(fbChat, msg);
+		if (!passed(result)) return new Fallback(null, fbChat, result, false);
 
 		// Fallback shouldn't strip anything.
 		return new Fallback(new ChatMatch(fbChat, findDefaultSymbolTrigger(fbChat).orElse(null), false), fbChat, result, false);
@@ -265,12 +277,13 @@ public class ChatSelector {
 			ChatMessage message,
 			ChatSettings settings,
 			InternalChat chat,
-			Verdict refusal,
+			Optional<Verdict> refusal,
 			boolean fallbackMissing
 	) {
-		Optional<Phrase> reason = chat != null && refusal instanceof Verdict.Failed failed
-				? conditionTexts.denied(failed, ChatConditionService.PHRASE_SCOPE, Map.of("chat", chat.getId()))
-				: Optional.empty();
+		Optional<Phrase> reason = chat == null ? Optional.empty() : refusal
+				.filter(Verdict.Failed.class::isInstance)
+				.map(Verdict.Failed.class::cast)
+				.flatMap(failed -> conditionTexts.denied(failed, ChatConditions.PHRASE_SCOPE, Map.of("chat", chat.getId())));
 		if (reason.isPresent()) {
 			message.getSender().sendMessage(Serializer.serialize(reason.get().toContent(message.getSender())));
 			return;
@@ -345,9 +358,9 @@ public class ChatSelector {
 	 * What the fallback chat makes of a message: the match when it takes the sender, else whether it is missing, or
 	 * the chat and the result of its sender conditions.
 	 */
-	private record Fallback(ChatMatch match, InternalChat chat, Verdict result, boolean missing) {
-		static final Fallback NONE = new Fallback(null, null, null, false);
-		static final Fallback MISSING = new Fallback(null, null, null, true);
+	private record Fallback(ChatMatch match, InternalChat chat, Optional<Verdict> result, boolean missing) {
+		static final Fallback NONE = new Fallback(null, null, Optional.empty(), false);
+		static final Fallback MISSING = new Fallback(null, null, Optional.empty(), true);
 	}
 
 	/**

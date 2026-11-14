@@ -7,6 +7,7 @@ import me.whereareiam.socialismus.common.config.defaults.chat.ChatMessagesDefaul
 import me.whereareiam.socialismus.common.config.defaults.chat.ChatSettingsDefaults;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatMessages;
+import me.whereareiam.socialismus.model.chat.ChatParameters;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.InternalChat;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
@@ -89,6 +90,6 @@ class DefaultChatToggleServiceTest {
 
 	private static InternalChat chat(String id, boolean toggleable) {
 		return InternalChat.from(Chat.builder().id(id).enabled(true).triggers(List.of()).formats(List.of())
-				.toggleable(toggleable).build());
+				.parameters(ChatParameters.builder().toggleable(toggleable).build()).build());
 	}
 }

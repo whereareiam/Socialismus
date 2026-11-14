@@ -8,6 +8,7 @@ import me.whereareiam.configura.annotation.merge.Merge;
 import me.whereareiam.configura.type.merge.WhenPresent;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * How Dialogue behaves, {@code settings} in its working directory, grouped by area.
@@ -38,6 +39,14 @@ public class DialogueSettings {
 	@Setter
 	@ToString
 	public static class Messaging {
+		/**
+		 * The styles of {@code styles.yml} whose tags a sender may use in private messages, by id, from lowest to
+		 * highest: the sender gets the last one whose requirements they meet, checked on the sender's server.
+		 * Without one, what a sender writes stays plain text.
+		 */
+		@Merge(present = WhenPresent.KEEP_AS_WRITTEN)
+		private List<String> styles = List.of();
+
 		/**
 		 * What the sender must meet to send a private message, checked with the part sender on the sender's server.
 		 */

@@ -11,11 +11,13 @@ import me.whereareiam.socialismus.model.chat.ChatMessages;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.FormattedChatMessage;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.chat.ChatConditions;
+
+import java.util.Optional;
 
 @Singleton
 public class FormatSelector {
-	private final ChatConditionService conditions;
+	private final ChatConditions chatConditions;
 
 	// Configs
 	private final Provider<ChatMessages> chatMessages;
@@ -24,11 +26,11 @@ public class FormatSelector {
 	@Inject
 	public FormatSelector(
 			WorkerProcessor<FormattedChatMessage> workerProcessor,
-			ChatConditionService conditions,
+			ChatConditions chatConditions,
 			Provider<ChatMessages> chatMessages,
 			Provider<ChatSettings> chatSettings
 	) {
-		this.conditions = conditions;
+		this.chatConditions = chatConditions;
 		this.chatMessages = chatMessages;
 		this.chatSettings = chatSettings;
 
@@ -41,16 +43,15 @@ public class FormatSelector {
 	private FormattedChatMessage formatChat(FormattedChatMessage msg) {
 		Logger.debug("Formatting chat message for user " + msg.getSender().getUsername());
 
-		ChatFormat chosen = conditions.format(msg.getChat(), msg).orElse(null);
-
-		if (chosen == null) {
+		Optional<ChatFormat> chosen = chatConditions.of(msg.getChat()).flatMap(places -> places.format(msg));
+		if (chosen.isEmpty()) {
 			notifyAboutAbsentFormat(msg);
 			msg.setCancelled(true);
 			return msg;
 		}
 
 		Logger.debug("Selected format for user %s", msg.getSender().getUsername());
-		msg.setFormat(Serializer.serialize(msg.getSender(), chosen.getFormat()));
+		msg.setFormat(Serializer.serialize(msg.getSender(), chosen.get().getFormat()));
 		return msg;
 	}
 

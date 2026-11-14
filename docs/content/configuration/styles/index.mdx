@@ -1,0 +1,85 @@
+---
+title: Styles
+description: Which formatting tags players may use in what they write, in chat, bubbles and private messages.
+---
+
+What a player writes stays plain text unless the place they write in accepts styles.
+A style in `styles.yml` lists the MiniMessage tags a player may use, and who gets it; a chat, a Bubbler bubble or Dialogue's private messages list the styles they accept.
+
+```yaml
+# styles.yml
+styles:
+  - id: "basic"
+    tags: ["color", "bold", "italic"]
+    requires:
+      - permission: "socialismus.style.basic"
+  - id: "vip"
+    tags: ["*"]
+    excluded: ["obfuscated", "font"]
+    requires:
+      - permission: "socialismus.style.vip"
+  - id: "staff"
+    tags: ["*"]
+    requires:
+      - permission: "socialismus.style.staff"
+```
+
+```yaml
+# chat/list/chats-default.yml
+chats:
+  - id: "global"
+    parameters:
+      styles: ["basic", "vip", "staff"]
+```
+
+## Who gets which style
+
+A place lists its styles from lowest to highest, like the formats of a chat: the writer gets the last style whose `requires` they meet, and only that style's tags.
+With the lists above, a player with `socialismus.style.vip` writes with `vip` whether or not they also have `basic`, and a member of staff writes with `staff`.
+A writer who meets none of the listed styles, or a place that lists none, writes plain text: every tag shows as typed.
+
+A place that lists a style no one defines stops the start with its path, such as `chats.global.parameters.styles[1]`; after `/socialismus reload` the console names it and the previous styles stay in use.
+`plain` is the style of a writer who gets none, so no style in `styles.yml` may be called that.
+
+A tag the writer's style does not allow stays as typed too, so `<rainbow>hi</rainbow>` from a `basic` player reads `<rainbow>hi</rainbow>`.
+
+## Tags
+
+| Name | Tags it allows |
+|------|----------------|
+| `color` | named colours, hex colours and `<color:...>` |
+| `shadow` | `<shadow:...>` |
+| `bold`, `italic`, `underlined`, `strikethrough`, `obfuscated` | the decoration and its short forms, such as `<b>` |
+| `gradient`, `rainbow`, `transition`, `pride` | the colour effects |
+| `font` | `<font:...>` |
+| `hover` | `<hover:show_text:...>`; the hover text is read with the same style |
+| `lang`, `key` | translated text and key binds |
+| `sprite`, `head` | sprites and player heads |
+
+Groups name several at once: `decorations` (the five decorations), `gradients` (gradient, rainbow, transition, pride) and `*` (every tag above).
+`excluded` takes names or groups out of `tags` again.
+
+## Tags nobody may use
+
+`click`, `insert`, `nbt`, `selector`, `score`, `newline` and `reset` are never read from what a player writes, whatever a style says.
+A click could make an admin run a command such as `/op`, an insertion types text into the chat box of whoever shift-clicks it, `nbt`, `selector` and `score` make the server look up entities and data, and `newline` and `reset` would let a message fake lines of its own or break out of its format.
+A style that names one of them, or a name that is no tag, stops the start with its path, such as `styles[1].tags[2]`; after `/socialismus reload` the console names it and the previous styles stay in use.
+
+Placeholders are never filled in what a player writes either: `%player_ip%` and `{playerName}` stay as typed.
+
+## Legacy codes
+
+With `serialization.enableLegacyColors: true` in `settings.yml`, `&c`, `&l` or `&#ff0000` in what a player writes work as the tags they stand for, under the same style: `&l` only for a style with `bold`, colour codes only for one with `color`.
+`&r` always stays as typed.
+
+## Where styles are accepted
+
+| File | Field | Styles of |
+|------|-------|-----------|
+| `chat/list/*.yml` | a chat's `parameters.styles` | what a sender writes in the chat |
+| `modules/bubbler/bubbles/*.yml` | a bubble's `styles` | the text of `/socialismus bubble`; a bubble raised by a chat message shows it as its chat read it |
+| `modules/dialogue/settings.yml` | `messaging.styles` | private messages |
+
+On a network, the server a player writes on chooses their style, where their permissions can be checked, and the message travels as it was read; for private messages the id of the style travels with the text, so every server keeps the same `styles.yml`.
+
+The styles Socialismus ships are `basic` (colours, bold, italic, underlined, strikethrough) for `socialismus.style.basic` and `full` (every tag) for `socialismus.style.full`, and the default chats, the default bubble and Dialogue accept both.

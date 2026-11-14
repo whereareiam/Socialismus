@@ -15,6 +15,7 @@ import me.whereareiam.socialismus.module.bubbler.common.condition.BubbleConditio
 import me.whereareiam.socialismus.registry.WorkerProcessor;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -49,11 +50,11 @@ public class RecipientSelector {
 		SocialismusPlayer sender = bubbleMessage.getSender();
 
 		int oldRecipients = bubbleMessage.getRecipients().size();
-		Collection<SocialismusPlayer> recipients = bubbleMessage.getRecipients();
-
-		recipients = recipients.parallelStream()
-				.filter(recipient -> conditions.reaches(bubble, recipient, bubbleMessage))
-				.collect(Collectors.toSet());
+		Collection<SocialismusPlayer> recipients = conditions.of(bubble)
+				.map(places -> bubbleMessage.getRecipients().parallelStream()
+						.filter(recipient -> places.reaches(recipient, bubbleMessage))
+						.collect(Collectors.toSet()))
+				.orElseGet(HashSet::new);
 
 		if (recipients.size() < minimumRecipients) bubbleMessage.setCancelled(true);
 		if (recipients.size() < minimumRecipients && settings.get().getNotifications().isNoNearbyPlayers()) {

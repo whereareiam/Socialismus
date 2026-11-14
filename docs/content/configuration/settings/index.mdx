@@ -56,6 +56,7 @@ Use a legacy adapter only when you intentionally want older color-code conventio
 - Affects: whether legacy `&` and `§` color codes are converted during serialization
 
 This is useful when you want to keep `MINIMESSAGE` as the main format but still accept legacy color codes in input or migrated config content.
+It also lets players use codes such as `&c` and `&l` in what they write, as the tags they stand for and only where their [style](../styles/index.mdx) allows those tags.
 It is marked as a warning because this translation adds extra work during message serialization, so each serialized message becomes slightly more expensive.
 
 <Tabs items={["YAML", "JSON"]}>

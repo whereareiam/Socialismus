@@ -1,6 +1,7 @@
 package me.whereareiam.socialismus.testing.chat;
 
 import me.whereareiam.anvil.api.scenario.ScenarioContext;
+import me.whereareiam.socialismus.model.chat.ChatParameters;
 import me.whereareiam.socialismus.testing.environment.ServerFiles;
 import me.whereareiam.socialismus.testing.environment.Socialismus;
 import me.whereareiam.socialismus.testing.journey.Player;
@@ -57,7 +58,7 @@ class ChatToggleTest {
 		public void accept(ServerFiles files) {
 			files.chats(
 					chat("global", 0, "", "[G] {playerName}: {message}"),
-					chat("announcements", 1, "!", "[A] {playerName}: {message}").toBuilder().toggleable(false).build()
+					chat("announcements", 1, "!", "[A] {playerName}: {message}").toBuilder().parameters(ChatParameters.builder().toggleable(false).build()).build()
 			);
 		}
 	}

@@ -9,6 +9,8 @@ import me.whereareiam.conditia.model.Requirements;
 import me.whereareiam.socialismus.module.dialogue.api.model.DialogueFormat;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 import me.whereareiam.socialismus.service.Phrasebook;
+import me.whereareiam.socialismus.service.style.StylePlace;
+import me.whereareiam.socialismus.service.style.Styles;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -31,20 +33,30 @@ final class DialoguePlaces implements AutoCloseable {
 	private final Place bypassesToggle;
 	private final Place exemptFromIgnore;
 	private final Place hiddenFromSpies;
-	private final Map<DialogueFormat, FormatPlaces> formats;
+	private final Map<DialogueFormat, DialogueConditions.FormatPlaces> formats;
+	private final StylePlace styles;
 
 	/**
 	 * Binds the places of Dialogue's settings and formats.
 	 *
 	 * @param conditions binds the places
 	 * @param phrases    checks the phrases the lists' texts refer to
+	 * @param styles     binds the styles senders write with
 	 * @param settings   Dialogue's settings
 	 * @param formats    the lists of formats by their path, such as {@code formats.messaging.sent}
 	 * @return the places
 	 * @throws me.whereareiam.conditia.exception.ConditionException when a list cannot be bound; the places bound
 	 *                                                              before are closed
+	 * @throws me.whereareiam.socialismus.exception.StyleException when {@code messaging.styles} names a style no one
+	 *                                                             defines
 	 */
-	static DialoguePlaces bind(Conditions conditions, Phrasebook phrases, DialogueSettings settings, Map<String, List<DialogueFormat>> formats) {
+	static DialoguePlaces bind(
+			Conditions conditions,
+			Phrasebook phrases,
+			Styles styles,
+			DialogueSettings settings,
+			Map<String, List<DialogueFormat>> formats
+	) {
 		Binding binding = new Binding(conditions, phrases);
 		try {
 			Requirements reaches = listOf(settings.getMessaging().getReaches());
@@ -55,7 +67,8 @@ final class DialoguePlaces implements AutoCloseable {
 					binding.open("control.toggle.bypass", settings.getControl().getToggle().getBypass(), false),
 					binding.open("control.ignore.exempt", settings.getControl().getIgnore().getExempt(), false),
 					binding.open("moderation.spy.exempt", settings.getModeration().getSpy().getExempt(), false),
-					new IdentityHashMap<>()
+					new IdentityHashMap<>(),
+					binding.styles(styles, settings.getMessaging().getStyles())
 			);
 			formats.forEach((path, list) -> {
 				for (int index = 0; list != null && index < list.size(); index++)
@@ -65,6 +78,7 @@ final class DialoguePlaces implements AutoCloseable {
 			return places;
 		} catch (RuntimeException failure) {
 			binding.bound.forEach(Place::close);
+			binding.styled.forEach(StylePlace::close);
 			throw failure;
 		}
 	}
@@ -80,26 +94,20 @@ final class DialoguePlaces implements AutoCloseable {
 		bypassesToggle.close();
 		exemptFromIgnore.close();
 		hiddenFromSpies.close();
-		formats.values().forEach(FormatPlaces::close);
+		formats.values().forEach(DialogueConditions.FormatPlaces::close);
+		styles.close();
 	}
 
-	/**
-	 * The places of one format: what the sender and what the recipient must meet.
-	 *
-	 * @param requires      the format's {@code requires}, with the part sender
-	 * @param reaches       the format's {@code reaches}, with the parts recipient and sender
-	 * @param reachesAnyone whether the format's {@code reaches} is empty, so a recipient on another server meets it
-	 */
-	record FormatPlaces(Place requires, Place reaches, boolean reachesAnyone) {
-		void close() {
-			requires.close();
-			reaches.close();
-		}
-	}
-
-	private record Binding(Conditions conditions, Phrasebook phrases, List<Place> bound) {
+	private record Binding(Conditions conditions, Phrasebook phrases, List<Place> bound, List<StylePlace> styled) {
 		Binding(Conditions conditions, Phrasebook phrases) {
-			this(conditions, phrases, new ArrayList<>());
+			this(conditions, phrases, new ArrayList<>(), new ArrayList<>());
+		}
+
+		StylePlace styles(Styles styles, List<String> accepted) {
+			StylePlace place = styles.place("messaging.styles", accepted == null ? List.of() : accepted);
+			styled.add(place);
+
+			return place;
 		}
 
 		Place open(String path, Requirements requires, boolean aboutRecipient) {
@@ -111,10 +119,10 @@ final class DialoguePlaces implements AutoCloseable {
 			return place;
 		}
 
-		FormatPlaces format(String path, DialogueFormat format) {
+		DialogueConditions.FormatPlaces format(String path, DialogueFormat format) {
 			Requirements reaches = listOf(format.getReaches());
 
-			return new FormatPlaces(
+			return new DialogueConditions.FormatPlaces(
 					open(path + ".requires", format.getRequires(), false),
 					open(path + ".reaches", reaches, true),
 					reaches.getConditions().items().isEmpty()

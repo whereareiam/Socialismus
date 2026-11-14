@@ -12,20 +12,18 @@ import me.whereareiam.conditia.result.Verdict;
 import me.whereareiam.configura.Config;
 import me.whereareiam.configura.type.Format;
 import me.whereareiam.socialismus.common.condition.ConditionConfiguration;
-import me.whereareiam.socialismus.common.config.defaults.chat.ChatSettingsDefaults;
 import me.whereareiam.socialismus.common.phrase.DefaultPhrasebook;
-import me.whereareiam.socialismus.event.EventManager;
-import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
+import me.whereareiam.socialismus.common.style.TestStyles;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.logging.LoggingHelper;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
-import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.model.phrase.Phrases;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
+import me.whereareiam.socialismus.service.chat.ChatPlaces;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,14 +41,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class DefaultChatConditionServiceTest {
+class DefaultChatConditionsTest {
 	private final SocialismusPlayer alice = mock(SocialismusPlayer.class);
 	private final SocialismusPlayer bob = mock(SocialismusPlayer.class);
-	private final ChatSettings settings = new ChatSettingsDefaults().supply(new ChatSettings());
 
 	private Phrases phrases = Phrases.none();
 	private Conditions conditions;
-	private DefaultChatConditionService chatConditions;
+	private DefaultChatConditions chatConditions;
 
 	@BeforeEach
 	void setUp() {
@@ -60,7 +57,7 @@ class DefaultChatConditionServiceTest {
 				Set::of,
 				() -> mock(PlayerRegistry.class)
 		);
-		chatConditions = new DefaultChatConditionService(conditions, new DefaultPhrasebook(() -> phrases), () -> settings, mock(EventManager.class));
+		chatConditions = new DefaultChatConditions(conditions, new DefaultPhrasebook(() -> phrases), new TestStyles());
 		when(alice.hasPermission("socialismus.chat.local")).thenReturn(true);
 	}
 
@@ -72,7 +69,7 @@ class DefaultChatConditionServiceTest {
 
 		chatConditions.start();
 
-		assertTrue(chatConditions.writes(chat("staff", "[]", "[]"), message(alice)).passed());
+		assertTrue(places(chat("staff", "[]", "[]")).writes(message(alice)).passed());
 	}
 
 	@Test
@@ -85,11 +82,11 @@ class DefaultChatConditionServiceTest {
 	}
 
 	@Test
-	void aChatAddedLaterIsBoundAtOnce_AndRefusedWhenItCannotBe() {
+	void aChatAddedLaterIsBoundAtOnce_AndHasNoPlacesWhenItCannotBe() {
 		chatConditions.start();
 
 		assertThrows(ConditionException.class, () -> chatConditions.bind(chat("staff", "- nothing: here", "[]")));
-		assertInstanceOf(Verdict.Broken.class, chatConditions.writes(chat("staff", "[]", "[]"), message(alice)));
+		assertTrue(chatConditions.of(chat("staff", "[]", "[]")).isEmpty());
 	}
 
 	@Test
@@ -98,11 +95,11 @@ class DefaultChatConditionServiceTest {
 		chatConditions.bind(local);
 		chatConditions.start();
 
-		assertTrue(chatConditions.writes(local, message(alice)).passed());
-		Verdict.Failed refused = assertInstanceOf(Verdict.Failed.class, chatConditions.writes(local, message(bob)));
+		assertTrue(places(local).writes(message(alice)).passed());
+		Verdict.Failed refused = assertInstanceOf(Verdict.Failed.class, places(local).writes(message(bob)));
 		assertEquals("permission.missing", refused.key().orElseThrow());
-		assertTrue(chatConditions.reaches(local, alice, message(bob)).passed());
-		assertFalse(chatConditions.reaches(local, bob, message(alice)).passed());
+		assertTrue(places(local).reaches(alice, message(bob)).passed());
+		assertFalse(places(local).reaches(bob, message(alice)).passed());
 	}
 
 	@Test
@@ -117,14 +114,14 @@ class DefaultChatConditionServiceTest {
 		chatConditions.bind(staff);
 		chatConditions.start();
 
-		assertTrue(chatConditions.reaches(staff, alice, message(bob)).passed());
+		assertTrue(places(staff).reaches(alice, message(bob)).passed());
 
 		when(alice.canSee(bob)).thenReturn(false);
-		Verdict.Failed hidden = assertInstanceOf(Verdict.Failed.class, chatConditions.reaches(staff, alice, message(bob)));
+		Verdict.Failed hidden = assertInstanceOf(Verdict.Failed.class, places(staff).reaches(alice, message(bob)));
 		assertEquals("sees.hidden", hidden.key().orElseThrow());
 
 		when(bob.getServer()).thenReturn("survival");
-		Verdict.Failed elsewhere = assertInstanceOf(Verdict.Failed.class, chatConditions.reaches(staff, alice, message(bob)));
+		Verdict.Failed elsewhere = assertInstanceOf(Verdict.Failed.class, places(staff).reaches(alice, message(bob)));
 		assertEquals("same.outside", elsewhere.key().orElseThrow());
 	}
 
@@ -136,8 +133,8 @@ class DefaultChatConditionServiceTest {
 		chatConditions.bind(deutsch);
 		chatConditions.start();
 
-		assertTrue(chatConditions.reaches(deutsch, alice, message(bob)).passed());
-		assertFalse(chatConditions.reaches(deutsch, bob, message(alice)).passed());
+		assertTrue(places(deutsch).reaches(alice, message(bob)).passed());
+		assertFalse(places(deutsch).reaches(bob, message(alice)).passed());
 	}
 
 	@Test
@@ -166,20 +163,12 @@ class DefaultChatConditionServiceTest {
 		chatConditions.bind(chat);
 		chatConditions.start();
 
-		assertEquals(local, chatConditions.format(chat, message(alice)).orElseThrow());
-		assertEquals(plain, chatConditions.format(chat, message(bob)).orElseThrow());
+		assertEquals(local, places(chat).format(message(alice)).orElseThrow());
+		assertEquals(plain, places(chat).format(message(bob)).orElseThrow());
 	}
 
-	@Test
-	void keepsTheSettingsAsTheyWereWhenAReloadedListCannotBeBound() {
-		when(alice.hasPermission("socialismus.admin")).thenReturn(true);
-		chatConditions.start();
-		settings.getHistory().setRequires(yaml("- nothing: here"));
-
-		chatConditions.onReloaded(new PluginReloadedEvent());
-
-		assertTrue(chatConditions.clears(alice));
-		assertFalse(chatConditions.clears(bob));
+	private ChatPlaces places(Chat chat) {
+		return chatConditions.of(chat).orElseThrow();
 	}
 
 	private static Chat chat(String id, String requires, String reaches) {

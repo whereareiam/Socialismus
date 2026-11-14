@@ -17,9 +17,12 @@ import me.whereareiam.socialismus.module.dialogue.api.model.config.ModerationFor
 import me.whereareiam.socialismus.module.dialogue.common.TestDataBuilder;
 import me.whereareiam.socialismus.module.dialogue.common.TestDialogueConditions;
 import me.whereareiam.socialismus.module.dialogue.common.condition.DialogueConditions;
+import me.whereareiam.socialismus.service.style.Styles;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -34,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyFloat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class MessageRendererTest {
@@ -43,6 +47,7 @@ class MessageRendererTest {
 	private final ModerationFormats moderationFormats = new ModerationFormats();
 	private final SocialismusPlayer alice = TestDataBuilder.mockPlayer("Alice");
 	private final SocialismusPlayer bob = TestDataBuilder.mockPlayer("Bob");
+	private final Styles styles = mock(Styles.class);
 
 	private DialogueConditions conditions;
 	private MessageRenderer renderer;
@@ -55,6 +60,7 @@ class MessageRendererTest {
 		when(engine.getPlaceholderFormat()).thenReturn(SerializerOptions.PlaceholderFormat.CURLY_BRACES);
 		Serializer.initialize(() -> engine);
 		Logger.init(mock(LoggingHelper.class));
+		when(styles.style(anyString())).thenReturn(TextStyle.PLAIN);
 
 		formats.setSent(List.of(format("sent")));
 		formats.setReceived(List.of(
@@ -64,7 +70,7 @@ class MessageRendererTest {
 		));
 
 		conditions = TestDialogueConditions.bound(TestDataBuilder::defaultSettings, () -> formats, () -> moderationFormats);
-		renderer = new MessageRenderer(() -> formats, () -> moderationFormats, conditions);
+		renderer = new MessageRenderer(() -> formats, () -> moderationFormats, conditions, styles);
 	}
 
 	@Test
@@ -117,6 +123,22 @@ class MessageRendererTest {
 		verify(bob).sendMessage(shown.capture());
 		assertEquals("Alice: " + written, PlainTextComponentSerializer.plainText().serialize(shown.getValue()));
 		assertFalse(hasClick(shown.getValue()), "The message carries a click event: " + shown.getValue());
+	}
+
+	@Test
+	void showsWhatThePlayerWroteWithTheStyleTheSendersServerChose() {
+		useMiniMessage();
+		formats.setReceived(List.of(format("<gray>{senderName}: <white>{message}")));
+		conditions.bind();
+		TextStyle vip = mock(TextStyle.class);
+		when(vip.read("<bold>hi")).thenReturn(Component.text("hi", NamedTextColor.GOLD));
+		when(styles.style("vip")).thenReturn(vip);
+
+		renderer.showReceived(TestDataBuilder.messageFrom(alice, "Bob").content("<bold>hi").style("vip").build(), bob);
+
+		ArgumentCaptor<Component> shown = ArgumentCaptor.forClass(Component.class);
+		verify(bob).sendMessage(shown.capture());
+		assertEquals("Alice: hi", PlainTextComponentSerializer.plainText().serialize(shown.getValue()));
 	}
 
 	@Test

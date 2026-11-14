@@ -5,13 +5,14 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import me.whereareiam.conditia.exception.ConditionException;
-import me.whereareiam.socialismus.common.chat.condition.DefaultChatConditionService;
+import me.whereareiam.socialismus.common.chat.condition.DefaultChatConditions;
 import me.whereareiam.socialismus.event.EventListener;
 import me.whereareiam.socialismus.event.EventManager;
 import me.whereareiam.socialismus.event.base.SocialisticEvent;
 import me.whereareiam.socialismus.event.chat.ChatAddedEvent;
 import me.whereareiam.socialismus.event.chat.ChatUpdatedEvent;
 import me.whereareiam.socialismus.event.plugin.PluginReloadedEvent;
+import me.whereareiam.socialismus.exception.StyleException;
 import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
@@ -32,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatContainer implements ChatContainerService, EventListener {
 	private final Provider<ChatSettings> chatSettings;
 	private final Provider<List<Chat>> chatsProvider;
-	private final DefaultChatConditionService conditions;
+	private final DefaultChatConditions conditions;
 
 	private final ConcurrentHashMap<String, InternalChat> chats = new ConcurrentHashMap<>();
 
@@ -40,7 +41,7 @@ public class ChatContainer implements ChatContainerService, EventListener {
 	public ChatContainer(
 			@Named("chats") Provider<List<Chat>> chatsProvider,
 			Provider<ChatSettings> chatSettings,
-			DefaultChatConditionService conditions,
+			DefaultChatConditions conditions,
 			EventManager eventManager
 	) {
 		this.chatsProvider = chatsProvider;
@@ -124,13 +125,13 @@ public class ChatContainer implements ChatContainerService, EventListener {
 		return new HashSet<>(chats.values());
 	}
 
-	// A chat whose conditions cannot be bound is left out, and the console says which list is wrong.
+	// A chat whose conditions or styles cannot be bound is left out, and the console says which list is wrong.
 	private boolean bound(Chat chat) {
 		try {
 			conditions.bind(chat);
 
 			return true;
-		} catch (ConditionException exception) {
+		} catch (ConditionException | StyleException exception) {
 			Logger.severe("Leaving out the chat %s: %s", chat.getId(), exception.getMessage());
 
 			return false;

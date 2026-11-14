@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import me.whereareiam.socialismus.common.chat.worker.base.ChatSelector;
 import me.whereareiam.socialismus.common.chat.worker.base.RecipientResolver;
 import me.whereareiam.socialismus.common.chat.worker.base.RecipientSelector;
+import me.whereareiam.socialismus.common.chat.worker.base.StyleReader;
 import me.whereareiam.socialismus.common.chat.worker.formatted.FormatSelector;
 import me.whereareiam.socialismus.common.container.ChatContainer;
 import me.whereareiam.socialismus.lifecycle.RuntimeLifecycle;
@@ -36,6 +37,7 @@ public final class ChatLifecycle implements RuntimeLifecycle {
 
 		injector.getInstance(RecipientResolver.class);
 		injector.getInstance(ChatSelector.class);
+		injector.getInstance(StyleReader.class);
 		injector.getInstance(RecipientSelector.class);
 		injector.getInstance(FormatSelector.class);
 	}

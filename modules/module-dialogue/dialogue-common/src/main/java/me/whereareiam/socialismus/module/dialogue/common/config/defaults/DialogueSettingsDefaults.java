@@ -6,6 +6,7 @@ import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.module.dialogue.api.model.config.DialogueSettings;
 
 import java.time.Duration;
+import java.util.List;
 
 @Singleton
 public class DialogueSettingsDefaults implements DefaultsProvider<DialogueSettings> {
@@ -26,6 +27,7 @@ public class DialogueSettingsDefaults implements DefaultsProvider<DialogueSettin
 		messaging.setConversations(conversations);
 		messaging.setConversationMode(true);
 		messaging.setConfirmation(Duration.ofSeconds(3));
+		messaging.setStyles(List.of("basic", "full"));
 
 		config.setMessaging(messaging);
 

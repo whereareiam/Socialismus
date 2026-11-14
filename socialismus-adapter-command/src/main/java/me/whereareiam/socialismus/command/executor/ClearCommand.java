@@ -12,7 +12,7 @@ import me.whereareiam.socialismus.logging.Logger;
 import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.config.message.Messages;
 import me.whereareiam.socialismus.registry.PlayerRegistry;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.chat.ChatHistoryConditions;
 import me.whereareiam.socialismus.service.chat.ChatHistoryService;
 import me.whereareiam.socialismus.service.container.ChatHistoryContainerService;
 import net.kyori.adventure.text.Component;
@@ -29,7 +29,7 @@ public class ClearCommand {
 	private final ChatHistoryService chatHistory;
 	private final ChatHistoryContainerService containerService;
 	private final PlayerRegistry playerRegistry;
-	private final ChatConditionService conditions;
+	private final ChatHistoryConditions historyConditions;
 
 	@Definition("clear")
 	@Command("socialismus clear [context]")
@@ -105,7 +105,7 @@ public class ClearCommand {
 	 */
 	private boolean bypasses(String username) {
 		return playerRegistry.getPlayerData(username)
-				.map(conditions::keepsHistory)
+				.map(historyConditions::keeps)
 				.orElse(false);
 	}
 

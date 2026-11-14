@@ -98,7 +98,10 @@ One Paper server unless stated otherwise.
 - [x] Legacy serialization renders a format as MiniMessage does
 - [x] Only the players who meet chat history's conditions see the clear button
 - [ ] PlaceholderAPI placeholders are filled in formats when PlaceholderAPI is installed
-- [x] `/socialismus toggle <chat>` keeps a chat from the player, except from senders who meet `toggle.bypass`; a chat with `toggleable: false` refuses
+- [x] `/socialismus toggle <chat>` keeps a chat from the player, except from senders who meet `toggle.bypass`; a chat with `parameters.toggleable: false` refuses
+- [x] A sender formats with the tags of the last style of their chat they meet; other tags, and every tag in a chat
+  without styles, stay as typed
+- [x] No style lets a player write a click, even one that allows every tag
 
 ## commands
 

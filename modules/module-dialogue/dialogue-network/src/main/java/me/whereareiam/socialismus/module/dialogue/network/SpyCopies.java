@@ -13,6 +13,7 @@ import me.whereareiam.socialismus.module.network.api.model.NodeId;
 import me.whereareiam.socialismus.module.network.api.model.Origin;
 import me.whereareiam.socialismus.module.network.api.player.NetworkPlayer;
 import me.whereareiam.socialismus.module.network.api.replication.ReplicatedChannel;
+import me.whereareiam.socialismus.service.style.TextStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -53,7 +54,8 @@ public final class SpyCopies implements EventListener {
 				recipient.getUsername(),
 				recipient.getServer(),
 				message.getContent(),
-				message.getTimestamp() == null ? System.currentTimeMillis() : message.getTimestamp().toEpochMilli()
+				message.getTimestamp() == null ? System.currentTimeMillis() : message.getTimestamp().toEpochMilli(),
+				message.getStyle()
 		));
 	}
 
@@ -69,6 +71,7 @@ public final class SpyCopies implements EventListener {
 				.content(record.getContent())
 				.timestamp(Instant.ofEpochMilli(record.getTimestamp()))
 				.deliveryStatus(DeliveryStatus.DELIVERED_REMOTELY)
+				.style(record.getStyle() == null ? TextStyle.PLAIN.id() : record.getStyle())
 				.build();
 
 		spying.showToSpies(message, recipient);

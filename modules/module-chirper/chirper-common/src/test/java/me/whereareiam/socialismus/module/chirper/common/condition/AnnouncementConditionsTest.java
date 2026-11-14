@@ -40,10 +40,11 @@ class AnnouncementConditionsTest {
 		AnnouncementConditions announcementConditions = new AnnouncementConditions(conditions(), () -> List.of(announcement));
 		announcementConditions.bind();
 
-		assertTrue(announcementConditions.reaches(announcement, bob));
-		assertTrue(announcementConditions.reaches(announcement, AnnouncementType.MESSAGE, alice));
-		assertFalse(announcementConditions.reaches(announcement, AnnouncementType.MESSAGE, bob));
-		assertFalse(announcementConditions.reaches(announcement, mock(SocialismusPlayer.class)));
+		AnnouncementConditions.Places places = announcementConditions.of(announcement).orElseThrow();
+		assertTrue(places.reaches(bob));
+		assertTrue(places.reaches(AnnouncementType.MESSAGE, alice));
+		assertFalse(places.reaches(AnnouncementType.MESSAGE, bob));
+		assertFalse(places.reaches(mock(SocialismusPlayer.class)));
 	}
 
 	private static Conditions conditions() {

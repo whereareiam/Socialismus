@@ -12,7 +12,9 @@ import me.whereareiam.socialismus.model.chat.ChatSettings;
 import me.whereareiam.socialismus.model.chat.message.ChatMessage;
 import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.registry.WorkerProcessor;
-import me.whereareiam.socialismus.service.chat.ChatConditionService;
+import me.whereareiam.socialismus.service.chat.ChatConditions;
+import me.whereareiam.socialismus.service.chat.ChatPlaces;
+import me.whereareiam.socialismus.service.chat.ChatToggleConditions;
 import me.whereareiam.socialismus.service.chat.ChatToggleStore;
 import me.whereareiam.socialismus.util.EventUtil;
 
@@ -29,7 +31,8 @@ import java.util.Set;
  */
 @Singleton
 public class RecipientSelector {
-	private final ChatConditionService conditions;
+	private final ChatConditions chatConditions;
+	private final ChatToggleConditions toggleConditions;
 	private final Provider<ChatSettings> settingsProvider;
 	private final ChatToggleStore toggles;
 	private final NobodyNotice nobody;
@@ -37,12 +40,14 @@ public class RecipientSelector {
 	@Inject
 	public RecipientSelector(
 			WorkerProcessor<ChatMessage> workerProcessor,
-			ChatConditionService conditions,
+			ChatConditions chatConditions,
+			ChatToggleConditions toggleConditions,
 			Provider<ChatSettings> settings,
 			ChatToggleStore toggles,
 			NobodyNotice nobody
 	) {
-		this.conditions = conditions;
+		this.chatConditions = chatConditions;
+		this.toggleConditions = toggleConditions;
 		this.settingsProvider = settings;
 		this.toggles = toggles;
 		this.nobody = nobody;
@@ -62,7 +67,9 @@ public class RecipientSelector {
 		int beforeCount = chatMessage.getRecipients().size();
 
 		List<Verdict.Failed> refusals = new ArrayList<>();
-		Set<SocialismusPlayer> recipients = reached(chatMessage, refusals, reachesPlayersWhoTurnedItOff(chat, sender, settings));
+		Set<SocialismusPlayer> recipients = chatConditions.of(chat)
+				.map(places -> reached(places, chatMessage, refusals, reachesPlayersWhoTurnedItOff(chat, sender, settings)))
+				.orElseGet(HashSet::new);
 
 		RecipientsSelectedEvent event = new RecipientsSelectedEvent(chatMessage, recipients, chatMessage.isCancelled());
 		EventUtil.callEvent(event, () -> chatMessage.setRecipients(event.getNewRecipients()));
@@ -84,12 +91,12 @@ public class RecipientSelector {
 		return chatMessage;
 	}
 
-	private Set<SocialismusPlayer> reached(ChatMessage message, List<Verdict.Failed> refusals, boolean reachesToggledOff) {
+	private Set<SocialismusPlayer> reached(ChatPlaces places, ChatMessage message, List<Verdict.Failed> refusals, boolean reachesToggledOff) {
 		Set<SocialismusPlayer> reached = new HashSet<>();
 		for (SocialismusPlayer recipient : message.getRecipients()) {
 			if (!reachesToggledOff && turnedOff(recipient, message)) continue;
 
-			Verdict verdict = conditions.reaches(message.getChat(), recipient, message);
+			Verdict verdict = places.reaches(recipient, message);
 			if (verdict instanceof Verdict.Failed failed) refusals.add(failed);
 			if (verdict.passed()) reached.add(recipient);
 		}
@@ -107,8 +114,8 @@ public class RecipientSelector {
 	 */
 	private boolean reachesPlayersWhoTurnedItOff(Chat chat, SocialismusPlayer sender, ChatSettings settings) {
 		ChatSettings.Toggle toggle = settings.getToggle();
-		if (toggle == null || !toggle.isEnabled() || !chat.isToggleable()) return true;
+		if (toggle == null || !toggle.isEnabled() || !chat.getParameters().isToggleable()) return true;
 
-		return conditions.bypassesToggle(sender);
+		return toggleConditions.bypasses(sender);
 	}
 }

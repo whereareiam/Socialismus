@@ -22,4 +22,5 @@ public class SpyRecord {
 	private String recipientServer;
 	private String content;
 	private long timestamp;
+	private String style;
 }

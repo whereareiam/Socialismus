@@ -10,6 +10,7 @@ import me.whereareiam.socialismus.model.player.SocialismusPlayer;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.Bubble;
 import me.whereareiam.socialismus.module.bubbler.api.model.bubble.BubbleMessage;
 import me.whereareiam.socialismus.module.bubbler.api.type.ActivatorType;
+import me.whereareiam.socialismus.module.bubbler.common.TestStyles;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.mock;
 class BubbleConditionsTest {
 	private final SocialismusPlayer alice = mock(SocialismusPlayer.class);
 	private final List<Bubble> bubbles = new ArrayList<>();
-	private final BubbleConditions bubbleConditions = new BubbleConditions(conditions(), () -> bubbles);
+	private final BubbleConditions bubbleConditions = new BubbleConditions(conditions(), new TestStyles(), () -> bubbles);
 
 	@Test
 	void selectsABubbleByWhatRaisedIt() {
@@ -37,10 +38,10 @@ class BubbleConditionsTest {
 		bubbles.add(bubble);
 		bubbleConditions.bind();
 
-		assertTrue(bubbleConditions.selects(bubble, message(ActivatorType.COMMAND, null)));
-		assertTrue(bubbleConditions.selects(bubble, message(ActivatorType.CHAT, "local")));
-		assertFalse(bubbleConditions.selects(bubble, message(ActivatorType.CHAT, "global")));
-		assertTrue(bubbleConditions.reaches(bubble, alice, message(ActivatorType.CHAT, "global")));
+		assertTrue(places(bubble).selects(message(ActivatorType.COMMAND, null)));
+		assertTrue(places(bubble).selects(message(ActivatorType.CHAT, "local")));
+		assertFalse(places(bubble).selects(message(ActivatorType.CHAT, "global")));
+		assertTrue(places(bubble).reaches(alice, message(ActivatorType.CHAT, "global")));
 	}
 
 	@Test
@@ -53,7 +54,11 @@ class BubbleConditionsTest {
 		ConditionException exception = assertThrows(ConditionException.class, bubbleConditions::bind);
 
 		assertEquals("bubbles.default.reaches[0].bubbler:nearby", exception.getPath());
-		assertTrue(bubbleConditions.selects(bubble, message(ActivatorType.CHAT, "local")));
+		assertTrue(places(bubble).selects(message(ActivatorType.CHAT, "local")));
+	}
+
+	private BubbleConditions.Places places(Bubble bubble) {
+		return bubbleConditions.of(bubble).orElseThrow();
 	}
 
 	private BubbleMessage message(ActivatorType activator, String chat) {

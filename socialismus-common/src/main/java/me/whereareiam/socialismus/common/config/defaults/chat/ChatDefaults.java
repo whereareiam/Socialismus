@@ -7,6 +7,7 @@ import me.whereareiam.configura.merge.defaults.DefaultsProvider;
 import me.whereareiam.socialismus.common.config.dynamic.ChatsConfig;
 import me.whereareiam.socialismus.model.chat.Chat;
 import me.whereareiam.socialismus.model.chat.ChatFormat;
+import me.whereareiam.socialismus.model.chat.ChatParameters;
 import me.whereareiam.socialismus.model.chat.trigger.SymbolChatTrigger;
 import me.whereareiam.socialismus.model.condition.ConditionLists;
 import me.whereareiam.socialismus.type.PlatformType;
@@ -16,12 +17,15 @@ import java.util.List;
 
 @Singleton
 public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
+	private static final ChatParameters PARAMETERS = new ChatParameters(true, List.of("basic", "full"));
+
 	@Override
 	public ChatsConfig supply(ChatsConfig chatsConfig) {
 		Chat fallback = new Chat(
 				"fallback",
 				0,
 				true,
+				PARAMETERS,
 				List.of(
 						SymbolChatTrigger.builder()
 								.type(TriggerType.SYMBOL)
@@ -31,14 +35,14 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 				),
 				List.of(new ChatFormat("{clear}<gray>[F] {playerName}: <white>{message}", Requirements.none())),
 				Requirements.none(),
-				Requirements.none(),
-				true
+				Requirements.none()
 		);
 
 		Chat local = new Chat(
 				"local",
 				0,
 				true,
+				PARAMETERS,
 				List.of(
 						SymbolChatTrigger.builder()
 								.type(TriggerType.SYMBOL)
@@ -54,14 +58,14 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 				ConditionLines.of(
 						ConditionLines.line("permission", "socialismus.chat.local"),
 						nearby()
-				),
-				true
+				)
 		);
 
 		Chat global = new Chat(
 				"global",
 				1,
 				true,
+				PARAMETERS,
 				List.of(
 						SymbolChatTrigger.builder()
 								.type(TriggerType.SYMBOL)
@@ -74,8 +78,7 @@ public class ChatDefaults implements DefaultsProvider<ChatsConfig> {
 						new ChatFormat("{clear}<gray>[G] {playerName}: <gold>{message}", ConditionLists.permission("socialismus.admin"))
 				),
 				Requirements.none(),
-				Requirements.none(),
-				true
+				Requirements.none()
 		);
 
 		chatsConfig.getChats().addAll(List.of(fallback, local, global));

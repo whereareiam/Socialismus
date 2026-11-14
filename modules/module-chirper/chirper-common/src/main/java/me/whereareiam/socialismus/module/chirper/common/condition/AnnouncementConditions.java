@@ -3,6 +3,8 @@ package me.whereareiam.socialismus.module.chirper.common.condition;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import me.whereareiam.conditia.Conditions;
 import me.whereareiam.conditia.Place;
 import me.whereareiam.conditia.exception.ConditionException;
@@ -23,12 +25,13 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static me.whereareiam.socialismus.model.condition.ConditionParts.RECIPIENT;
 
 /**
  * The conditions of the announcements and of their contents, about the player who would receive them: bound when
- * Chirper is enabled and again after every reload. An announcement that is not bound reaches nobody.
+ * Chirper is enabled and again after every reload, and handed out per announcement as its {@link Places}.
  */
 @Singleton
 public class AnnouncementConditions implements EventListener {
@@ -79,35 +82,26 @@ public class AnnouncementConditions implements EventListener {
 	}
 
 	/**
-	 * Checks whether an announcement reaches a player: its {@code requires}.
+	 * Finds the places of an announcement.
 	 *
 	 * @param announcement the announcement
-	 * @param recipient    the player
-	 * @return whether the player receives it
+	 * @return its places; empty when it has none, before Chirper is enabled or for an announcement Chirper does not
+	 * hold
 	 */
-	public boolean reaches(@NotNull Announcement announcement, @NotNull SocialismusPlayer recipient) {
-		Places bound = places.get(announcement.getId());
-
-		return bound != null && bound.announcement().check(Situation.of(RECIPIENT, recipient)).passed();
+	public @NotNull Optional<Places> of(@NotNull Announcement announcement) {
+		return Optional.ofNullable(places.get(announcement.getId()));
 	}
 
 	/**
-	 * Checks whether one content of an announcement reaches a player: the content's {@code requires}.
-	 *
-	 * @param announcement the announcement
-	 * @param type         the content's type
-	 * @param recipient    the player
-	 * @return whether the player receives the content
+	 * The bound places of one announcement and of its contents, bound together and closed together when the
+	 * announcements are reloaded.
 	 */
-	public boolean reaches(@NotNull Announcement announcement, @NotNull AnnouncementType type, @NotNull SocialismusPlayer recipient) {
-		Places bound = places.get(announcement.getId());
-		Place content = bound == null ? null : bound.contents().get(type);
+	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	public static final class Places {
+		private final Place announcement;
+		private final Map<AnnouncementType, Place> contents;
 
-		return content != null && content.check(Situation.of(RECIPIENT, recipient)).passed();
-	}
-
-	private record Places(Place announcement, Map<AnnouncementType, Place> contents) {
-		static Places bind(Conditions conditions, Announcement announcement) {
+		private static Places bind(Conditions conditions, Announcement announcement) {
 			String path = "announcements." + announcement.getId();
 			List<Place> bound = new ArrayList<>();
 			try {
@@ -134,7 +128,30 @@ public class AnnouncementConditions implements EventListener {
 			return requires == null ? Requirements.none() : requires;
 		}
 
-		void close() {
+		/**
+		 * Checks whether the announcement reaches a player: its {@code requires}.
+		 *
+		 * @param recipient the player
+		 * @return whether the player receives it
+		 */
+		public boolean reaches(@NotNull SocialismusPlayer recipient) {
+			return announcement.check(Situation.of(RECIPIENT, recipient)).passed();
+		}
+
+		/**
+		 * Checks whether one content of the announcement reaches a player: the content's {@code requires}.
+		 *
+		 * @param type      the content's type
+		 * @param recipient the player
+		 * @return whether the player receives the content; never for a type the announcement has no content of
+		 */
+		public boolean reaches(@NotNull AnnouncementType type, @NotNull SocialismusPlayer recipient) {
+			Place content = contents.get(type);
+
+			return content != null && content.check(Situation.of(RECIPIENT, recipient)).passed();
+		}
+
+		private void close() {
 			announcement.close();
 			contents.values().forEach(Place::close);
 		}

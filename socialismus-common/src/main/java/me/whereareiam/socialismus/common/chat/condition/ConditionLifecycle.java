@@ -14,7 +14,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @RequiredArgsConstructor(onConstructor_ = {@Inject})
 public final class ConditionLifecycle implements RuntimeLifecycle {
-	private final DefaultChatConditionService conditions;
+	private final DefaultChatConditions chats;
+	private final ChatSettingsConditions settings;
 	private final PhraseCheck phrases;
 
 	@Override
@@ -25,11 +26,13 @@ public final class ConditionLifecycle implements RuntimeLifecycle {
 	@Override
 	public void initialize() {
 		phrases.run();
-		conditions.start();
+		settings.start();
+		chats.start();
 	}
 
 	@Override
 	public void shutdown() {
-		conditions.stop();
+		chats.stop();
+		settings.stop();
 	}
 }
